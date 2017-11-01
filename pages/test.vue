@@ -1,11 +1,8 @@
 <template>
-  <section>
-    <div>
-      <logo/>
-      <component :is="index"></component>
-      <component :is="test"></component>
-    </div>
-  </section>
+<div class="mui-content">
+  <component :is="index"></component>
+  <component :is="test"></component>
+</div>
 </template>
 
 <script>

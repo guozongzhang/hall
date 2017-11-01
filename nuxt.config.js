@@ -10,7 +10,8 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' }, 
+      {rel: 'stylesheet', href: '/css/mui.min.css'}
     ]
   },
   /*
@@ -35,7 +36,6 @@ module.exports = {
       }
     }
   },
-
   router: {
     middleware: 'theme'
   },

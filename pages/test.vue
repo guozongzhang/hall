@@ -1,16 +1,18 @@
 <template>
-<div class="mui-content">
-  <component :is="index"></component>
-  <component :is="test"></component>
-</div>
+  <section>
+    <div>
+      <component :is="test"></component>
+      <component :is="slider"></component>
+    </div>
+  </section>
 </template>
 
 <script>
   export default {
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)
-      this.component('index', 'home/index.vue')
-      this.component('test', 'home/test.vue')
+      this.component('test', 'dev/test.vue')
+      this.component('slider', 'dev/sliders.vue')
     }
   }
 </script>

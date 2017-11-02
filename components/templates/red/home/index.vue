@@ -1,5 +1,7 @@
 <template>
-  <div>
-    <h1>这里是测试red-home-index模板</h1>
-  </div>
+  <ul class="mui-table-view">
+    <li class="mui-table-view-cell">Item 1</li>
+    <li class="mui-table-view-cell">Item 2</li>
+    <li class="mui-table-view-cell">Item 3</li>
+</ul>
 </template>

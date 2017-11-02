@@ -9,8 +9,11 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
+    script: [
+      { src: 'js/mui.min.js' }
+    ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' }, 
+      { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },
       {rel: 'stylesheet', href: '/css/mui.min.css'}
     ]
   },

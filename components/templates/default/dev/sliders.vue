@@ -29,8 +29,23 @@ export default {
     }
   },
   methods: {
+    init: function (str) {
+    //   mui.init({
+    //     pullRefresh : {
+    //       container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+    //       down : {
+    //         auto: true,//可选,默认false.首次加载自动下拉刷新一次
+    //       },
+    //       up : {
+    //         auto: true //可选,默认false.首次加载自动上拉加载一次
+    //       }
+    //     }
+      });
+      console.log(str)
+    }
   },
   mounted () {
+    this.init(22)
   }
 }
 </script>

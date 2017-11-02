@@ -9,6 +9,9 @@
 
 <script>
   export default {
+    head: {
+      title: 'dpjia-test'
+    },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)
       this.component('test', 'dev/test.vue')

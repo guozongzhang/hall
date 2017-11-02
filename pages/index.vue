@@ -7,6 +7,9 @@
 
 <script>
   export default {
+    head: {
+      title: 'dpjia-index'
+    },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)
       this.component('index', 'home/index.vue')

@@ -1,3 +1,4 @@
+import axios from 'axios'
 let mockRequest = (query, store) => {
   let company = query.company
   let themes = {
@@ -9,9 +10,19 @@ let mockRequest = (query, store) => {
     theme = 'default'
   }
   return new Promise(resolve => {
-    setTimeout(function () {
+    var instance = axios.create({
+      headers: {
+        'X-DP-Key': 222,
+        'X-DP-ID': 111,
+        'X-DP-Token': '26ad27621d5666c54de299db80e78c1f'
+      }
+    })
+    instance.get('http://192.168.1.120/openapi/api/1.0/admin/current').then(function (response) {
       resolve(theme)
-    }, 2000)
+      console.log('them', response)
+    }).catch(function (error) {
+      console.log(error)
+    })
   })
 }
 

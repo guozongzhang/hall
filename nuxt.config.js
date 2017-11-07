@@ -13,7 +13,9 @@ module.exports = {
       { src: '/js/mui.min.js' },
       { src: '/js/mui.zoom.js' },
       { src: '/js/mui.previewimage.js' },
-      { src: '/js/mui.picker.min.js' }
+      { src: '/js/mui.picker.min.js' },
+      { src: '/js/jquery.min.js' },
+      { src: '/js/jquery.form.js' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },

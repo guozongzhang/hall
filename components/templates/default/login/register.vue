@@ -36,9 +36,14 @@
         <option value="item.id" v-for="item in storesArr">{{item.name}}</option>
       </select>
     </div>
-    <div class="mui-input-row label-input">
+    <div class="mui-input-row label-input" style="height: 110px;">
       <label>上传名片：</label>
-      <img src="/images/cbd.jpg">
+      <span class="upload-box" id="upload_com">
+        <span class="add-btn" @click="upload_com()">
+          <i class="fa fa-plus add-icon"></i>
+        </span>
+        <input class="hidden" type="file" name="files">
+      </span>
     </div>
     <div class="mui-content-padded login-btn register-btn">
       <button type="button" class="mui-btn mui-btn-primary mui-btn-block">提交</button>
@@ -47,11 +52,20 @@
 </div>
 </template>
 <script>
+var $ = require('jquery')
 let model
 export default {
+  head () {
+    return {
+      script: [
+        { src: '/js/jquery.min.js' },
+        { src: '/js/jquery.form.js' }
+      ]
+    }
+  },
   data () {
     return {
-      step: 'one',
+      step: 'two',
       storesArr: [
         {
           id: 1,
@@ -74,6 +88,43 @@ export default {
     // 下一步
     getNext: function (str) {
       model.step = str
+    },
+
+    // 上传图片
+    upload_com: function () {
+      var url = 'http://192.168.1.120/openapi/api/1.0/upload'
+      var $input = $('#upload_com').find('input')
+      $input.unbind().click()
+      $input.unbind().change(function () {
+        if ($input.val() === '') {
+          return false
+        }
+        var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+        $input.wrap(form)
+        window.$('#upload_com').find('form').ajaxSubmit({
+          type: 'post',
+          url: url,
+          data: {
+            mode: 'image',
+            mutiple: '0'
+          },
+          crossDomain: true,
+          headers: {
+            'X-DP-Key': '222',
+            'X-DP-ID': '111',
+            'X-DP-Token': 'd9cf5249ed675b1ee387397ec853e86f'
+          },
+          success: function (data) {
+            $input.unwrap()
+            var img = '<img src="' + data.url + '">'
+            $('#upload_com').find('img').remove()
+            $('#upload_com').append(img)
+          },
+          error: function (error) {
+            console.log(error)
+          }
+        })
+      })
     }
   },
   mounted () {
@@ -145,11 +196,30 @@ export default {
 }
 .label-input img{
   position: relative;
-  top: 10px;
+  top: -30px;
   width: 160px;
   height: 100px;
 }
 .register-btn button{
   margin-top: 50px;
+}
+.upload-box{
+  position: relative;
+  top: 10px;
+  display: inline-block;
+  width: 160px;
+  height: 100px;
+  text-align: center;
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+.upload-box .add-icon{
+  position: relative;
+  top: 38px;
+  font-size: 30px;
+  color: #bebebe;
+}
+.hidden{
+  display: none;
 }
 </style>

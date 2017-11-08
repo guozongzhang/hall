@@ -6,14 +6,17 @@
   <div v-show="type == 'number'">
     <div class="mui-input-row number-box">
       <input type="text" v-model="info.number" placeholder="搭配家账号">
+      <span class="has-data" v-show="info.number.length > 0"></span>
     </div>
     <div class="mui-input-row mui-password">
-      <input type="password" v-model="info.pwd" placeholder="密码">
+      <input type="password" v-model="info.pwd" placeholder="密码" @focus="onFocus()">
+      <span class="has-data" v-show="info.pwd.length > 0 && isfocus"></span>
+      <span class="has-data clear-data" v-show="info.pwd.length > 0 && !isfocus" @click="clearData()"></span>
     </div>
     <div class="pwd-box">
-      <div class="mui-input-row mui-checkbox mui-left">
+      <div class="mui-input-row mui-checkbox mui-left" @click="remeberMe()">
         <label>记住密码</label>
-        <input name="checkbox" value="true" v-model="info.remeber" type="checkbox" >
+        <span class="remeber" v-bind:class="info.remeber ? 'active' : ''"></span>
       </div>
       <a href="#" class="forget-pwd">忘记密码</a>
     </div>
@@ -35,9 +38,7 @@
     <button type="button" class="mui-btn mui-btn-block" @click="switchLogin()">{{subBtnText}}</button>
   </div>
   <div class="wechat-login">
-    <a href="">
-      <i class="fa fa-weixin"></i>
-    </a>
+    <a href="#"></a>
   </div>
 </div>
 </template>
@@ -52,6 +53,7 @@ export default {
       subBtnText: '手机验证码登录',
       verify: '获取动态密码',
       verifyState: false,
+      isfocus: false,
       info: {
         number: '',
         pwd: '',
@@ -65,6 +67,16 @@ export default {
     init: function () {
     },
 
+    // 清除密码数据
+    clearData: function () {
+      model.info.pwd = ''
+    },
+
+    // 聚焦密码输入
+    onFocus: function () {
+      model.isfocus = false
+    },
+
     // 获取动态密码
     getVerify: function () {
       if (!model.verifyState) {
@@ -73,12 +85,12 @@ export default {
             type: 'admin',
             mobile: model.info.phone
           }
-        }).then(function (response) {
+        }).then(function () {
           model.verifyState = true
           model.countdowntime()
-          console.log(response)
-        }).catch(function (error) {
-          console.log(error)
+          window.mui.toast('验证码发送成功!')
+        }).catch(function () {
+          window.mui.toast('验证码发送失败!')
         })
       }
     },
@@ -96,6 +108,11 @@ export default {
         startTime--
       }
       model.verify = startTime + 's后重新获取'
+    },
+
+    // 记住我
+    remeberMe: function () {
+      model.info.remeber = !model.info.remeber
     },
 
     // 切换登录方式
@@ -129,23 +146,54 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .login-box{
   background-color: #fff;
   padding: 20px;
 }
 .login-box h3{
-  margin-top: 50px;
+  margin-top: 24px;
   margin-bottom: 20px;
   text-align: center;
   color: #7e7e7e;
 }
 .number-box{
+  position: relative;
   margin-bottom: 20px;
 }
+.has-data{
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url('/images/login.png') no-repeat;
+  background-size: 242px;
+  background-position: -149px -19px;
+  cursor: pointer;
+}
+.remeber{
+  position: absolute;
+  left: 4px;
+  top: 10px;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url('/images/login.png') no-repeat;
+  background-size: 242px;
+  background-position: -69px -19px;
+  cursor: pointer;
+}
+.remeber.active{
+  background-position: -109px -19px;
+}
+.clear-data{
+  background-position: -188px -19px;
+}
 .login-box input{
-  height: 50px;
-  line-height: 50px;
+  height: 44px;
+  line-height: 44px;
   border-color: #e3e4e8;
   border-radius: 3px;
   font-size: 16px;
@@ -178,7 +226,7 @@ export default {
 }
 #getverify{
   position: absolute;
-  top: 15px;
+  top: 12px;
   right: 14px;
   font-size: 15px;
   color: #7e7e7e;
@@ -187,15 +235,15 @@ export default {
   margin: 20px 0;
 }
 .mui-content-padded button{
-  height: 50px;
+  height: 44px;
+  line-height: 12px;
   font-size: 16px;
 }
 .login-btn button{
   background-color: #4e73cd;
-  color: #aab8e4;
+  color: #fff;
 }
 .phone-btn button{
-
   border-color: #4e73cd;
   color: #5175ce;
 }
@@ -208,16 +256,11 @@ export default {
 }
 .wechat-login a{
   display: inline-block;
-  width: 66px;
-  height: 66px;
-  text-align: center;
-  border-radius: 100%;
-  background-color: #3fd256;
-}
-.wechat-login a i{
-  position: relative;
-  top: 10px;
-  font-size: 40px;
-  color: #fff;
+  width: 42px;
+  height: 42px;
+  background: url('/images/login.png') no-repeat;
+  background-size: 242px;
+  background-position: -12px -8px;
+  cursor: pointer;
 }
 </style>

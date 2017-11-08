@@ -2,11 +2,10 @@
 <div>
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">登录</h1>
-    <a href="/register?company=2" class="mui-pull-right register-link">注册</a>
+    <h1 class="mui-title">重置密码</h1>
   </header>
   <div class="mui-content">
-    <component :is="login"></component>
+    <component :is="resetpwd"></component>
   </div>
 </div>
 </template>
@@ -17,7 +16,7 @@
     },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)
-      this.component('login', 'login/login.vue')
+      this.component('resetpwd', 'login/resetpwd.vue')
     },
     methods: {
       init: function () {

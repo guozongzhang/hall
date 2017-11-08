@@ -13,12 +13,19 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "ansi-regex": "^3.0.0",
     "axios": "^0.17.0",
     "bulma": "^0.6.0",
+    "core-js": "^2.5.1",
+    "html-entities": "^1.2.1",
+    "is-buffer": "^1.1.6",
     "jquery": "^3.2.1",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "ms": "^2.0.0",
     "nuxt": "^1.0.0-rc11",
+    "regenerator-runtime": "^0.11.0",
+    "strip-ansi": "^4.0.0",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.3",
     "vux": "^2.7.0"

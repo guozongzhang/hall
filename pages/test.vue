@@ -8,7 +8,7 @@
   </section>
 </template>
 <script>
-  import axios from 'axios'
+  import axios from '~/plugins/axios'
   export default {
     head: {
       title: 'dpjia-test'
@@ -21,7 +21,7 @@
     },
     methods: {
       init: function (str) {
-        axios.get('http://192.168.1.120/openapi/api/1.0/admin/current').then(function (response) {
+        axios.get('admin/current').then(function (response) {
           console.log(response)
         }).catch(function (error) {
           console.log(error)

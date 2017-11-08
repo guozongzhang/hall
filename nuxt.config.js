@@ -52,6 +52,6 @@ module.exports = {
   },
   plugins: ['~plugins/common'],
   env: {
-    baseUrl: 'http://192.168.1.120/openapi/api/1.0/' || process.env.BASE_URL
+    baseUrl: process.env.BASE_URL || 'http://192.168.1.120/openapi/api/1.0/'
   }
 }

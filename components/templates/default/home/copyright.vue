@@ -1,6 +1,6 @@
 
 <template>
-<nav class="mui-bar mui-bar-tab">
+<nav class="mui-bar mui-bar-tab footer-style">
   <p> © 北京京乐网络技术有限公司版权所有 2014-2017</p>
 </nav>
 </template>
@@ -21,10 +21,10 @@ export default {
 </script>
 
 <style>
-.mui-bar{
+.footer-style{
   background-color: #414141;
 }
-.mui-bar p{
+.footer-style p{
   margin: 0;
   padding: 0;
   height: 50px;

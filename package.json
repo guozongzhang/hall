@@ -19,6 +19,7 @@
     "core-js": "^2.5.1",
     "html-entities": "^1.2.1",
     "is-buffer": "^1.1.6",
+    "jquery": "^3.2.1",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "ms": "^2.0.0",

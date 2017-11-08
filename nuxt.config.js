@@ -13,12 +13,15 @@ module.exports = {
       { src: '/js/mui.min.js' },
       { src: '/js/mui.zoom.js' },
       { src: '/js/mui.previewimage.js' },
-      { src: '/js/mui.picker.min.js' }
+      { src: '/js/mui.picker.min.js' },
+      { src: '/js/jquery.min.js' },
+      { src: '/js/jquery.form.js' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },
       { rel: 'stylesheet', href: '/css/mui.min.css' },
-      { rel: 'stylesheet', href: '/css/mui.picker.min.css' }
+      { rel: 'stylesheet', href: '/css/mui.picker.min.css' },
+      { rel: 'stylesheet', href: '/css/font-awesome.css' }
     ]
   },
   /*
@@ -49,6 +52,6 @@ module.exports = {
   },
   plugins: ['~plugins/common'],
   env: {
-    baseUrl: 'http://192.168.1.120/openapi/api/1.0/' || process.env.BASE_URL
+    baseUrl: process.env.BASE_URL || 'http://192.168.1.120/openapi/api/1.0/'
   }
 }

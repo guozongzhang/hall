@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="personbg">
-      <img class="bgimg" src="/images/shuijiao.jpg">
+      <img class="bgimg" src="/images/person_bg.png">
       <img class="bgheader" src="/images/shuijiao.jpg">
       <p>点击登录</p>
     </div>
     <ul class="mui-table-view">
       <li class="personli">
         <a href="javascript:;" class="mui-navigate-right">
-          <img class="mui-media-object mui-pull-left" src="/images/shuijiao.jpg">
+          <span class="phone"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
               手机号:
@@ -19,10 +19,10 @@
       </li>
       <li class="personli">
         <a href="javascript:;" class="mui-navigate-right">
-          <img class="mui-media-object mui-pull-left" src="/images/shuijiao.jpg">
+          <span class="wechet"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
-              手机号:
+              微信号:
               <span>13370179521</span>
             </p>
           </div>
@@ -30,10 +30,10 @@
       </li>
       <li class="personli">
         <a href="javascript:;" class="mui-navigate-right">
-          <img class="mui-media-object mui-pull-left" src="/images/shuijiao.jpg">
+          <span class="head"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
-              手机号:
+              当前身份:
               <span>13370179521</span>
             </p>
           </div>
@@ -41,10 +41,32 @@
       </li>
       <li class="personli">
         <a href="javascript:;" class="mui-navigate-right">
-          <img class="mui-media-object mui-pull-left" src="/images/shuijiao.jpg">
+          <span class="start"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
-              手机号:
+              我的收藏:
+              <span>13370179521</span>
+            </p>
+          </div>
+        </a>
+      </li>
+      <li class="personli">
+        <a href="javascript:;" class="mui-navigate-right">
+          <span class="set"></span>
+          <div class="mui-media-body">
+            <p class='mui-ellipsis'>
+              设置:
+              <span>13370179521</span>
+            </p>
+          </div>
+        </a>
+      </li>
+      <li class="personli">
+        <a href="javascript:;" class="mui-navigate-right">
+          <span class="about"></span>
+          <div class="mui-media-body">
+            <p class='mui-ellipsis'>
+              关于:
               <span>13370179521</span>
             </p>
           </div>
@@ -73,7 +95,7 @@ export default {
   .personbg {
     width: 100%;
     height: 182px;
-    background: #ccc;
+    background: #fff;
     position: relative;
     margin-bottom: 10px;
   }
@@ -102,14 +124,44 @@ export default {
     text-align: center;
     color: #5175CE;
   }
-  .mui-table-view .mui-media-object{
+  .personli span{
+    background: url("/images/person.png") no-repeat;
+    display: inline-block;
     height: 30px;
     width: 30px;
+    background-size: 490px;
+    margin-right: 10px;
   }
+  .personli span.phone{
+     background-position:  -212px -24px
+  }
+  .personli span.wechet{
+     background-position: -250px -24px;
+  }
+  .personli span.wechet{
+     background-position: -250px -24px;
+  }
+  .personli span.head{
+     background-position: -289px -24px;
+  }
+  .personli span.start{
+     background-position: -330px -24px;
+  }
+ .personli span.set{
+     background-position: -369px -24px;
+  }
+   .personli span.about{
+     background-position: -409px -24px;
+  }
+  
   .personli {
     padding: 10px;
     height: 50px;
     border-bottom: 1px solid #ccc;
+    position: relative;
+  }
+  .mui-media-body{
+    display: inline-block
   }
   .personli p{
     margin: 0px;

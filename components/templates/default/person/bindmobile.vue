@@ -57,10 +57,10 @@
     <div class="bind-box">
       <h4>确认与当前微信账号绑定吗?</h4>
       <div class="mui-content-padded sure-btn">
-        <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="loginBtn()">确认绑定</button>
+        <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="bindMobile()">确认绑定</button>
       </div>
       <div class="mui-content-padded cancel-btn">
-        <button type="button" class="mui-btn mui-btn-block" @click="switchLogin()">暂不绑定</button>
+        <button type="button" class="mui-btn mui-btn-block" @click="noBind()">暂不绑定</button>
       </div> 
     </div>
   </div>
@@ -129,6 +129,16 @@ export default {
     // 下一步
     getNext: function () {
       model.step = 'surebind'
+    },
+
+    // 绑定
+    bindMobile: function () {
+      console.log(model.info)
+    },
+
+    // 暂不绑定
+    noBind: function () {
+      console.log()
     }
   },
   mounted () {

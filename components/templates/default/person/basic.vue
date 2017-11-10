@@ -51,7 +51,7 @@
         </a>
       </li>
       <li class="personli">
-        <a href="javascript:;" class="mui-navigate-right">
+        <a href="/settings" class="mui-navigate-right">
           <span class="set"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>

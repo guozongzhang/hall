@@ -2,10 +2,10 @@
 <div>
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">重置密码</h1>
+    <h1 class="mui-title">更改密码</h1>
   </header>
   <div class="mui-content">
-    <component :is="resetpwd"></component>
+    <component :is="editpwd"></component>
   </div>
 </div>
 </template>
@@ -16,7 +16,7 @@
     },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)
-      this.component('resetpwd', 'login/resetpwd.vue')
+      this.component('editpwd', 'person/editpwd.vue')
     },
     methods: {
       init: function () {
@@ -45,5 +45,8 @@
   .mui-title{
     height: 44px !important;
     line-height: 44px !important;
+  }
+  .mui-content{
+    background-color: #fff;
   }
 </style>

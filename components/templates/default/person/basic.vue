@@ -7,7 +7,7 @@
     </div>
     <ul class="mui-table-view">
       <li class="personli">
-        <a href="javascript:;" class="mui-navigate-right">
+        <a href="/bindmobile" class="mui-navigate-right">
           <span class="phone"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>

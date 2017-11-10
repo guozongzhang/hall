@@ -44,6 +44,8 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let $ = require('jquery')
+let _ = require('underscore')
 let model
 let startTime = 60
 export default {
@@ -123,20 +125,36 @@ export default {
 
     // 登录
     loginBtn: function () {
+      if (_.isEmpty($.trim(model.info.number))) {
+        window.mui.toast('账号不能为空!')
+        return false
+      }
+      if (_.isEmpty($.trim(model.info.pwd))) {
+        window.mui.toast('密码不能为空!')
+        return false
+      }
       let obj
+      // 账号
       if (model.type === 'number') {
         obj = {
-          number: model.info.number,
-          pwd: model.info.pwd,
-          remeber: model.info.remeber
+          username: model.info.number,
+          password: model.info.pwd
+          // remeber: model.info.remeber
         }
       } else {
+        // 手机号
         obj = {
-          phone: model.info.phone,
-          verify: model.info.verify
+          number: model.info.phone,
+          pwd: model.info.verify
         }
       }
-      console.log(obj)
+      axios.get('users/login', {
+        params: obj
+      }).then(function () {
+        window.mui.toast('登录成功!')
+      }).catch(function (msg) {
+        window.mui.toast('登录失败!')
+      })
     }
   },
   mounted () {

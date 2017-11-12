@@ -1,0 +1,19 @@
+.mui-toast-container{
+  top: 50%;
+  -webkit-transform:translate(0,-50%);
+  -moz-transform:translate(0,-50%);
+  -o-transform:translate(0,-50%);
+  transform:translate(0,-50%);
+  left: 0;
+  -webkit-transform:none;
+  transform: none;
+  z-index: 100;
+}
+.mui-toast-message {
+  max-width: 180px;
+  padding: 8px 10px;
+  background-color: rgba(61, 61, 61, 0.9);
+  color: #fff;
+  border-radius: 0;
+  font-size: 13px;
+}

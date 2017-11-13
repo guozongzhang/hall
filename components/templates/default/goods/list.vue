@@ -41,7 +41,7 @@
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
           <a href="#">
-            <div class="mui-media-body" @click="showClasify()" id="show_btn">
+            <div class="mui-media-body" @click="showClassify()">
               <span class="tab-text">筛选</span>
               <span class="self-iocn selected-icon"></span>
             </div>
@@ -50,142 +50,155 @@
       </ul>
     </div>
   </div>
-  <div class="f4-line"></div>
-  <div class="goods-list">
-    <ul class="mui-table-view">
-      <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
-        <div class="info-box">
-          <img class="mui-media-object mui-pull-left" :src="item.img_url">
-          <div class="mui-media-body">
-            <a class="fur-name" href="javascript:;">{{item.name}}</a>
-            <div class="fur-price">
-              <span class="price">￥{{item.price}}</span>
-              <span class="sub-price">￥{{item.sub_price}}</span>
-              <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
-                <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
-                <span>{{item.star ? '取消' : '收藏'}}</span>
-              </a>
+  <div class="list-item" id="goodlist">
+    <div class="f4-line"></div>
+    <div class="goods-list" id="pullfresh">
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
+          <div class="info-box">
+            <img class="mui-media-object mui-pull-left" :src="item.fur_image">
+            <div class="mui-media-body">
+              <a class="fur-name" href="javascript:;">{{item.fur_name}}</a>
+              <div class="fur-price">
+                <span class="price">￥{{item.discount_cost}}</span>
+                <span class="sub-price">￥{{item.discount_cost}}</span>
+                <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
+                  <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
+                  <span>{{item.star ? '取消' : '收藏'}}</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
-    <!--菜单部分-->
-    <aside id="offCanvasSide" class="mui-off-canvas-right">
-      <div id="offCanvasSideScroll" class="mui-scroll-wrapper">
-        <div class="mui-scroll">
-          <button id="offCanvasHide" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button>
-          <ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
-            <li class="mui-table-view-cell">
-              <a class="mui-navigate-right">
-                Item 1
-              </a>
-            </li>
-          </ul>
-        </div>
+  <div class="classify-box" id="classifylist">
+    <div class="sub-classify">
+      <div class="clasify-item">
+        <p class="title">
+          <label>品牌</label>
+          <a href="javascript:;">
+            <span>展开</span>
+            <span class="fa fa-angle-down"></span>
+          </a>
+        </p>
+        <ul class="items-ul">
+          <li v-bind:class="item.active == item.id ? 'active' : ''" v-for="(item, index) in brandArr" @click="choiceType(item)" v-show="index < 3">
+            <a href="javascript:;" :title="item.com_brand_name">{{item.com_brand_name}}</a>
+          </li>
+        </ul>
       </div>
-    </aside>
-    <div class="mui-inner-wrap"></div>
+      <div class="clasify-btn">
+        <a href="javascript:;" @click="resetClassify()">重置</a>
+        <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
+      </div>
+    </div>
   </div>
 </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let $ = require('jquery')
 let model
 export default {
   data () {
     return {
       priceicon: true,
       activeprice: false,
-      goodsArr: [
-        {
-          id: 1,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的这里是商品的名称，估计会很长，还要换行的这里是商品的名称，估计会很长，还要换行的这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: false
-        },
-        {
-          id: 2,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 3,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: false
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        }
-      ]
+      classifyActiveArr: [],
+      params: {
+        limit: 4,
+        order: '-id'
+      },
+      goodsArr: [],
+      brandArr: []
     }
   },
   methods: {
     init: function () {
       window.mui.init({
-        swipeBack: false
+        pullRefresh: {
+          container: '#pullfresh',
+          down: {
+            callback: model.pulldownRefresh()
+          },
+          up: {
+            contentrefresh: '正在加载...',
+            callback: model.pullupRefresh()
+          }
+        }
       })
-      // 侧滑容器父节点
-      var offCanvasWrapper = window.mui('#offCanvasWrapper')
-      // 菜单容器
-      var offCanvasSide = document.getElementById('offCanvasSide')
-      // 侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
-      var classList = offCanvasWrapper[0].classList
-      offCanvasSide.classList.remove('mui-transitioning')
-      offCanvasSide.setAttribute('style', '')
-      classList.add('mui-slide-in')
-      offCanvasWrapper.offCanvas().refresh()
-      document.getElementById('show_btn').addEventListener('tap', function () {
-        offCanvasWrapper.offCanvas('show')
+      model.params.where = {
+        com_id_poi_companys: '86'
+      }
+      axios.get('classes/furnitures', {
+        params: model.params
+      }).then(function (data) {
+        model.goodsArr = data.data.items
+      }).catch(function () {
+        window.mui.toast('验证码发送失败!')
       })
-      document.getElementById('offCanvasHide').addEventListener('tap', function () {
-        offCanvasWrapper.offCanvas('close')
-      })
-      // 主界面和侧滑菜单界面均支持区域滚动；
-      window.mui('#offCanvasSideScroll').scroll()
+      model.getBands()
     },
 
-    showClasify: function () {
-      console.log('====')
+    pulldownRefresh: function () {
+      console.log('======')
+      model.goodsArr.push({
+        id: 0,
+        fur_name: '测试0000',
+        fur_image: '',
+        discount_cost: 0
+      })
+      window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
+    },
+
+    pullupRefresh: function () {
+      console.log('------------')
+      model.goodsArr.push({
+        id: 0,
+        fur_name: '测试11111',
+        fur_image: '',
+        discount_cost: 0
+      })
+      window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
+    },
+
+    // 获取分类数据
+    getBands: function () {
+      axios.get('classes/companys_brand', {
+        params: model.params
+      }).then(function (data) {
+        model.brandArr = data.data.items
+      }).catch(function () {
+        window.mui.toast('验证码发送失败!')
+      })
+    },
+
+    showClassify: function () {
+      $('#classifylist').show()
+      $('#classifylist').addClass('animated bounceInRight')
+      setTimeout(function () {
+        $('#classifylist').removeClass('bounceInRight')
+      }, 1000)
+    },
+
+    // 选择分类
+    choiceType: function (item) {
+      console.log(item)
+    },
+
+    // 重置分类
+    resetClassify: function () {
+      model.classifyActiveArr = []
+      $('#classifylist').hide()
+    },
+
+    // 确定分类
+    setClassify: function () {
+      console.log(model.classifyActiveArr)
+      $('#classifylist').hide()
     },
 
     // 按照价格排序
@@ -209,200 +222,273 @@ export default {
 </script>
 
 <style>
-  #offCanvasSide{
-    position: fixed;
-    top: 44px;
-  }
-  p {
-    text-indent: 22px;
-  }
-  span.mui-icon {
-    font-size: 14px;
-    color: #007aff;
-    margin-left: -15px;
-    padding-right: 10px;
-  }
-  .mui-off-canvas-right {
-    color: #fff;
-  }
-  .title {
-    margin: 35px 15px 10px;
-  }
-  .title+.content {
-    margin: 10px 15px 35px;
-    color: #bbb;
-    text-indent: 1em;
-    font-size: 14px;
-    line-height: 24px;
-  }
-  input {
-    color: #000;
-  }
-  .p20-box{
-    padding: 0 10px;
-  }
-  .mui-content .mui-input-clear {
-    background-color: #fff;
-    border-bottom: 1px solid #8f8f8f;
-    border-radius: 0;
-    color: #989898;
-    font-size: 14px;
-    margin: 0;
-  }
-  .mui-icon-search{
-    position: relative;
-    left: 5px;
-  }
-  .clasify-tabs{
-    height: 40px;
-  }
-  .clasify-tabs .mui-grid-9{
-    background-color: #fff !important;
-    border-top: none !important;
-    border-left: none !important;
-  }
-  .clasify-tabs .mui-grid-9 .mui-table-view-cell{
-    height: 40px;
-    border: none;
-    padding: 0;
-  }
-  .clasify-tabs .mui-grid-9 .mui-table-view-cell a{
-    height: 40px;
-    padding: 0 !important;
-  }
-  .clasify-tabs .mui-grid-9 .mui-table-view-cell .mui-media-body {
-    height: 40px;
-    line-height: 40px;
-    margin: 0;
-    padding: 0;
-  }
-  .clasify-tabs .tab-text{
-    display: inline-block;
-    height: 16px;
-  }
-  .activeprice{
-    color: #5075ce;
-  }
-  .clasify-tabs .self-iocn{
-    position: relative;
-    left: 2px;
-    display: inline-block;
-    background: url('/images/person.png') no-repeat;
-    background-size: 498px;
-  }
-  .clasify-tabs .price-down{
-    top: 5px;
-    width: 12px;
-    height: 16px;
-    background-position: -225px -71px;
-  }
-  .clasify-tabs .price-up{
-    top: 5px;
-    width: 12px;
-    height: 16px;
-    background-position: -241px -71px;
-  }
-  .clasify-tabs .selected-icon{
-    top: 3px;
-    width: 16px;
-    height: 16px;
-    background-position: -260px -68px;
-  }
-  .f4-line{
-    width: 100%;
-    height: 10px;
-    background-color: #f4f4f4;
-  }
-  .goods-list .mui-media {
-    height: 110px;
-    padding: 10px;
-    border-bottom: 1px solid #cccccc;
-  }
-  .goods-list .mui-media .info-box{
-    height: 90px;
-    padding: 0;
-    margin: 0;
-  }
-  .goods-list .mui-media .info-box img{
-    width: 90px;
-    height: 90px;
-    max-width: 90px;
-    max-height: 90px;
-  }
-  .goods-list .mui-media .fur-name{
-    height: 42px;
-    font-size: 16px;
-    color: #050505;
-    font-weight: 600;
-    white-space: pre-wrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .mui-media-body{
-    height: 90px;
-  }
-  .fur-price{
-    height: 48px;
-  }
-  .fur-price > span{
-    display: inline-block;
-    position: relative;
-    top: 26px;
-    font-weight: 600;
-  }
-  .fur-price .price{
-    font-size: 16px;
-    color: #4e73cd;
-  }
-  .fur-price .sub-price{
-    margin-left: 6px;
-    font-size: 12px;
-    color: #b0b0b0;
-    text-decoration:line-through;
-  }
-  .goods-list .mui-media .collection-bth{
-    position: relative;
-    top: 10px;
-    z-index: 100;
-    float: right;
-    display: inline-block;
-    width: 70px;
-    height: 36px;
-    line-height: 36px;
-    text-align: center;
-    border-radius: 3px;
-    font-size: 15px;
-  }
-  .star-active{
-    background-color: #5075ce;
-    color: #fff;
-  }
-  .collection-bth .fa{
-    display: inline-block;
-    margin-right: 3px;
-  }
-  .fa-star{
-    color: #fcc500;
-  }
-  .fa-star-o{
-    color: #8f8f8f;
-  }
-  .star-normal{
-    background-color: #fff;
-    border: 1px solid #5075ce;
-    color: #3d3d3d;
-  }
-  .goods-list .mui-media:after{
-    background-color: #fff;
-  }
-  .mui-table-view-cell:after{
-    background-color: #fff;
-  }
-  .mui-table-view:before,
-  .mui-table-view:after{
-    background-color: #fff;
-  }
+.p20-box{
+  position: fixed;
+  top: 44px;
+  width: 100%;
+  padding: 0 10px;
+  z-index: 10;
+}
+.list-item{
+  margin-top: 74px;
+}
+.mui-content .mui-input-clear {
+  background-color: #fff;
+  border-bottom: 1px solid #8f8f8f;
+  border-radius: 0;
+  color: #989898;
+  font-size: 14px;
+  margin: 0;
+}
+.mui-icon-search{
+  position: relative;
+  left: 5px;
+}
+.clasify-tabs{
+  height: 40px;
+}
+.clasify-tabs .mui-grid-9{
+  background-color: #fff !important;
+  border-top: none !important;
+  border-left: none !important;
+}
+.clasify-tabs .mui-grid-9 .mui-table-view-cell{
+  height: 40px;
+  border: none;
+  padding: 0;
+}
+.clasify-tabs .mui-grid-9 .mui-table-view-cell a{
+  height: 40px;
+  padding: 0 !important;
+}
+.clasify-tabs .mui-grid-9 .mui-table-view-cell .mui-media-body {
+  height: 40px;
+  line-height: 40px;
+  margin: 0;
+  padding: 0;
+}
+.clasify-tabs .tab-text{
+  display: inline-block;
+  height: 16px;
+}
+.activeprice{
+  color: #5075ce;
+}
+.clasify-tabs .self-iocn{
+  position: relative;
+  left: 2px;
+  display: inline-block;
+  background: url('/images/person.png') no-repeat;
+  background-size: 498px;
+}
+.clasify-tabs .price-down{
+  top: 5px;
+  width: 12px;
+  height: 16px;
+  background-position: -225px -71px;
+}
+.clasify-tabs .price-up{
+  top: 5px;
+  width: 12px;
+  height: 16px;
+  background-position: -241px -71px;
+}
+.clasify-tabs .selected-icon{
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  background-position: -260px -68px;
+}
+.f4-line{
+  width: 100%;
+  height: 10px;
+  background-color: #f4f4f4;
+}
+.goods-list .mui-media {
+  height: 110px;
+  padding: 10px;
+  border-bottom: 1px solid #cccccc;
+}
+.goods-list .mui-media .info-box{
+  height: 90px;
+  padding: 0;
+  margin: 0;
+}
+.goods-list .mui-media .info-box img{
+  width: 90px;
+  height: 90px;
+  max-width: 90px;
+  max-height: 90px;
+}
+.goods-list .mui-media .fur-name{
+  height: 42px;
+  font-size: 16px;
+  color: #050505;
+  font-weight: 600;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.mui-media-body{
+  height: 90px;
+}
+.fur-price{
+  height: 48px;
+}
+.fur-price > span{
+  display: inline-block;
+  position: relative;
+  top: 26px;
+  font-weight: 600;
+}
+.fur-price .price{
+  font-size: 16px;
+  color: #4e73cd;
+}
+.fur-price .sub-price{
+  margin-left: 6px;
+  font-size: 12px;
+  color: #b0b0b0;
+  text-decoration:line-through;
+}
+.goods-list .mui-media .collection-bth{
+  position: relative;
+  top: 10px;
+  z-index: 100;
+  float: right;
+  display: inline-block;
+  width: 70px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 3px;
+  font-size: 15px;
+}
+.star-active{
+  background-color: #5075ce;
+  color: #fff;
+}
+.collection-bth .fa{
+  display: inline-block;
+  margin-right: 3px;
+}
+.fa-star{
+  color: #fcc500;
+}
+.fa-star-o{
+  color: #8f8f8f;
+}
+.star-normal{
+  background-color: #fff;
+  border: 1px solid #5075ce;
+  color: #3d3d3d;
+}
+.goods-list .mui-media:after{
+  background-color: #fff;
+}
+.mui-table-view-cell:after{
+  background-color: #fff;
+}
+.mui-table-view:before,
+.mui-table-view:after{
+  background-color: #fff;
+}
+.classify-box{
+  display: none;
+  position: fixed;
+  top: 44px;
+  z-index: 1000;
+  width: 100%;
+  height: calc(100% - 44px);
+  background-color: rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+}
+.sub-classify{
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 280px;
+  height: 100%;
+  padding: 10px;
+  background-color: #fff;
+  padding-bottom: 50px;
+}
+.clasify-item .title{
+  margin: 0;
+  padding: 0;
+  height: 22px;
+  line-height: 22px;
+  margin-bottom: 10px;
+}
+.title > label {
+  color: #050505;
+}
+.title > a{
+  float: right;
+}
+.clasify-item .items-ul{
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+}
+.clasify-item .items-ul li{
+  display: inline-block;
+  list-style: none;
+  width: 74px;
+  height: 30px;
+  margin-right: 12px;
+  margin-bottom: 6px;
+}
+.clasify-item .items-ul li:nth-child(3n){
+  margin-right: 0;
+}
+.clasify-item .items-ul li a{
+  display: inline-block;
+  width: 80px;
+  height: 30px;
+  padding: 0 5px;
+  text-align: center;
+  line-height: 28px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #3d3d3d;
+  border: 1px solid #737373;
+  border-radius: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.clasify-item .items-ul .active a{
+  background-color: #5075ce;
+  border: 1px solid #5075ce;
+  color: #fff;
+}
+.clasify-btn{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  z-index: 100;
+  background-color: #fff;
+}
+.clasify-btn > a{
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+  height: 50px;
+  line-height: 50px;
+  color: #3d3d3d;
+  font-size: 15px;
+  border-top: 1px solid #ababab;
+  cursor: pointer;
+}
+.clasify-btn .submit-btn{
+  background-color: #5075ce;
+  border-top: 1px solid #5075ce;
+  color: #fff;
+}
 </style>

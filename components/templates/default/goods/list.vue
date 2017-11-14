@@ -76,6 +76,9 @@
           <span class="mui-spinner"></span>
           <span class="loading-text">{{loadingText}}</span>
         </p>
+        <p class="nodata-icon" v-show="is_nodata">
+          <span class="nodata-text">没有更多数据啦~</span>
+        </p>
       </div>
     </div>
   </div>
@@ -90,8 +93,8 @@
           </a>
         </p>
         <ul class="items-ul">
-          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item)" v-show="index < 3 || item.showall">
-            <a href="javascript:;" :title="sub.com_brand_name || sub.sp_type_name">{{sub.com_brand_name || sub.sp_type_name}}</a>
+          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
+            <a href="javascript:;" :title="sub.com_brand_name || sub.sp_type_name || sub.style_name || sub.field_name">{{sub.com_brand_name || sub.sp_type_name || sub.style_name || sub.field_name}}</a>
           </li>
         </ul>
       </div>
@@ -107,24 +110,24 @@
 <script>
 import axios from '~/plugins/axios'
 let $ = require('jquery')
+let _ = require('underscore')
 let model
+let pagesize = 1
 export default {
   data () {
     return {
+      pages: 1,
       is_loading: true,
+      is_nodata: false,
       loadingText: '正在加载...',
       priceicon: true,
       activeprice: false,
       classifyActiveArr: [],
-      params: {
-        limit: 8,
-        order: '-id'
-      },
       goodsArr: [],
       classifyArr: [
         {
           name: '品类',
-          type: 'classify',
+          type: 'simpletypes',
           active: 0,
           showall: false,
           list: []
@@ -154,57 +157,121 @@ export default {
     }
   },
   methods: {
-    inits: function () {
-      model.params.where = {
-        com_id_poi_companys: '86'
-      }
-      axios.get('classes/furnitures', {
-        params: model.params
-      }).then(function (data) {
-        model.is_loading = false
-        model.goodsArr = data.data.items
-      }).catch(function () {
-        window.mui.toast('验证码发送失败!')
-      })
+    inits: function (pages) {
+      model.getGoodsList(pages, null)
       model.getSimpleType()
       model.getBands()
+      model.getStyle()
+      model.getSpace()
     },
 
+    // 获取商品数据
+    getGoodsList: function (pages, whereobj) {
+      let param = {
+        limit: pagesize,
+        skip: pagesize * (pages - 1),
+        where: {
+          com_id_poi_companys: '86'
+        }
+      }
+      if (_.isEmpty(whereobj)) {
+        delete param.where
+        param.where = {
+          com_id_poi_companys: '86'
+        }
+      } else {
+        param.where = _.extend(param.where, whereobj)
+      }
+      console.log(param)
+      axios.get('classes/furnitures', {
+        params: param
+      }).then(function (data) {
+        model.is_loading = false
+        if (data.data.items.length > 0) {
+          model.goodsArr = _.union(model.goodsArr, data.data.items)
+          model.pages++
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
+        } else {
+          model.is_nodata = true
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh(true)
+        }
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 下拉刷新获取数据
     pulldownRefresh: function () {
       model.is_loading = true
       $('.mui-pull-bottom-pocket').remove()
-      setTimeout(function () {
-        model.goodsArr.push({
-          id: 0,
-          fur_name: '测试0000',
-          fur_image: '',
-          discount_cost: 0
-        })
-        model.is_loading = false
-        window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
-      }, 1500)
+      model.getGoodsList(model.pages, null)
     },
 
     // 获取分类数据（品类）
     getSimpleType: function () {
-      model.params.limit = 100
+      let param = {
+        limit: 100,
+        where: {
+          com_id_poi_companys: '86'
+        }
+      }
       axios.get('classes/furniture_simple_types', {
-        params: model.params
+        params: param
       }).then(function (data) {
         model.classifyArr[0].list = data.data.items
       }).catch(function () {
-        window.mui.toast('验证码发送失败!mui-pull-loading mui-icon mui-spinner')
+        window.mui.toast('获取数据失败!')
       })
     },
 
     // 获取分类数据（品牌）
     getBands: function () {
+      let param = {
+        limit: 100,
+        where: {
+          com_id_poi_companys: '86'
+        }
+      }
+      axios.get('classes/furniture_styles', {
+        params: param
+      }).then(function (data) {
+        model.classifyArr[2].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 获取分类数据（风格）
+    getStyle: function () {
+      let param = {
+        limit: 100,
+        where: {
+          com_id_poi_companys: '86'
+        }
+      }
       axios.get('classes/companys_brand', {
-        params: model.params
+        params: param
       }).then(function (data) {
         model.classifyArr[1].list = data.data.items
       }).catch(function () {
-        window.mui.toast('验证码发送失败!mui-pull-loading mui-icon mui-spinner')
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 获取分类数据（空间）
+    getSpace: function () {
+      let param = {
+        limit: 100,
+        where: {
+          com_id_poi_companys: '86'
+        }
+      }
+      axios.get('classes/furniture_field_types', {
+        params: param
+      }).then(function (data) {
+        model.classifyArr[3].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
       })
     },
 
@@ -223,20 +290,52 @@ export default {
     },
 
     // 选择分类
-    choiceType: function (item) {
-      console.log(item)
+    choiceType: function (item, sub) {
+      model.classifyActiveArr = _.filter(model.classifyActiveArr, function (tmp) {
+        return tmp.type !== item.type
+      })
+      let obj = {
+        type: item.type,
+        val: sub.id
+      }
+      item.active = sub.id
+      model.classifyActiveArr.push(obj)
     },
 
     // 重置分类
     resetClassify: function () {
       model.classifyActiveArr = []
+      model.goodsArr = []
+      model.pages = 1
+      model.getGoodsList(1, null)
       $('#classifylist').hide()
     },
 
     // 确定分类
     setClassify: function () {
-      console.log(model.classifyActiveArr)
+      let obj = {
+        simpletypes: model.getFilter(model.classifyActiveArr, 'simpletypes'),
+        brand: model.getFilter(model.classifyActiveArr, 'brand'),
+        styles: model.getFilter(model.classifyActiveArr, 'style'),
+        spaces: model.getFilter(model.classifyActiveArr, 'space')
+      }
+      for (var key in obj) {
+        if (_.isEmpty(obj[key])) {
+          delete obj[key]
+        }
+      }
+      model.goodsArr = []
+      model.pages = 1
+      model.getGoodsList(1, obj)
       $('#classifylist').hide()
+    },
+
+    // 过滤分类筛选条件
+    getFilter: function (arr, type) {
+      let obj = _.filter(arr, function (item) {
+        return item.type === type
+      })
+      return ((obj || [])[0] || {}).val
     },
 
     // 按照价格排序
@@ -254,7 +353,7 @@ export default {
   },
   mounted () {
     model = this
-    this.inits()
+    this.inits(1)
     window.mui.init({
       pullRefresh: {
         container: '#pullfresh',
@@ -291,16 +390,18 @@ export default {
     position: relative;
     left: 5px;
   }
-  .loading-icon{
+  .loading-icon,
+  .nodata-icon{
     height: 30px;
     margin: 10px 0;
     text-align: center;
   }
-  .loading-text{
+  .loading-text,
+  .nodata-text{
     position: relative;
     top: -7px;
     left: 5px;
-    font-size: 16px;
+    font-size: 14px;
   }
   .clasify-tabs{
     height: 40px;

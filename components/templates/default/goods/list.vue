@@ -52,40 +52,46 @@
   </div>
   <div class="list-item" id="goodlist">
     <div class="f4-line"></div>
-    <div class="goods-list" id="pullfresh">
-      <ul class="mui-table-view">
-        <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
-          <div class="info-box">
-            <img class="mui-media-object mui-pull-left" :src="item.fur_image">
-            <div class="mui-media-body">
-              <a class="fur-name" href="javascript:;">{{item.fur_name}}</a>
-              <div class="fur-price">
-                <span class="price">￥{{item.discount_cost}}</span>
-                <span class="sub-price">￥{{item.discount_cost}}</span>
-                <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
-                  <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
-                  <span>{{item.star ? '取消' : '收藏'}}</span>
-                </a>
+    <div class="goods-list mui-scroll-wrapper" id="pullfresh">
+      <div class="mui-scroll">
+        <ul class="mui-table-view">
+          <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
+            <div class="info-box">
+              <img class="mui-media-object mui-pull-left" :src="item.fur_image">
+              <div class="mui-media-body">
+                <a class="fur-name" href="javascript:;">{{item.fur_name}}</a>
+                <div class="fur-price">
+                  <span class="price">￥{{item.discount_cost}}</span>
+                  <span class="sub-price">￥{{item.discount_cost}}</span>
+                  <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
+                    <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
+                    <span>{{item.star ? '取消' : '收藏'}}</span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+        <p class="loading-icon" v-show="is_loading">
+          <span class="mui-spinner"></span>
+          <span class="loading-text">{{loadingText}}</span>
+        </p>
+      </div>
     </div>
   </div>
   <div class="classify-box" id="classifylist">
     <div class="sub-classify">
-      <div class="clasify-item">
+      <div class="clasify-item" v-for="item in classifyArr">
         <p class="title">
-          <label>品牌</label>
-          <a href="javascript:;">
-            <span>展开</span>
-            <span class="fa fa-angle-down"></span>
+          <label>{{item.name}}</label>
+          <a href="javascript:;" @click="showAllTypes(item)">
+            <span>{{item.showall ? '收起' : '全部'}}</span>
+            <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
           </a>
         </p>
         <ul class="items-ul">
-          <li v-bind:class="item.active == item.id ? 'active' : ''" v-for="(item, index) in brandArr" @click="choiceType(item)" v-show="index < 3">
-            <a href="javascript:;" :title="item.com_brand_name">{{item.com_brand_name}}</a>
+          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item)" v-show="index < 3 || item.showall">
+            <a href="javascript:;" :title="sub.com_brand_name || sub.sp_type_name">{{sub.com_brand_name || sub.sp_type_name}}</a>
           </li>
         </ul>
       </div>
@@ -105,77 +111,109 @@ let model
 export default {
   data () {
     return {
+      is_loading: true,
+      loadingText: '正在加载...',
       priceicon: true,
       activeprice: false,
       classifyActiveArr: [],
       params: {
-        limit: 4,
+        limit: 8,
         order: '-id'
       },
       goodsArr: [],
-      brandArr: []
+      classifyArr: [
+        {
+          name: '品类',
+          type: 'classify',
+          active: 0,
+          showall: false,
+          list: []
+        },
+        {
+          name: '品牌',
+          type: 'brand',
+          active: 0,
+          showall: false,
+          list: []
+        },
+        {
+          name: '风格',
+          type: 'style',
+          active: 0,
+          showall: false,
+          list: []
+        },
+        {
+          name: '空间',
+          type: 'space',
+          active: 0,
+          showall: false,
+          list: []
+        }
+      ]
     }
   },
   methods: {
-    init: function () {
-      window.mui.init({
-        pullRefresh: {
-          container: '#pullfresh',
-          down: {
-            callback: model.pulldownRefresh()
-          },
-          up: {
-            contentrefresh: '正在加载...',
-            callback: model.pullupRefresh()
-          }
-        }
-      })
+    inits: function () {
       model.params.where = {
         com_id_poi_companys: '86'
       }
       axios.get('classes/furnitures', {
         params: model.params
       }).then(function (data) {
+        model.is_loading = false
         model.goodsArr = data.data.items
       }).catch(function () {
         window.mui.toast('验证码发送失败!')
       })
+      model.getSimpleType()
       model.getBands()
     },
 
     pulldownRefresh: function () {
-      console.log('======')
-      model.goodsArr.push({
-        id: 0,
-        fur_name: '测试0000',
-        fur_image: '',
-        discount_cost: 0
-      })
-      window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
+      model.is_loading = true
+      $('.mui-pull-bottom-pocket').remove()
+      setTimeout(function () {
+        model.goodsArr.push({
+          id: 0,
+          fur_name: '测试0000',
+          fur_image: '',
+          discount_cost: 0
+        })
+        model.is_loading = false
+        window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
+      }, 1500)
     },
 
-    pullupRefresh: function () {
-      console.log('------------')
-      model.goodsArr.push({
-        id: 0,
-        fur_name: '测试11111',
-        fur_image: '',
-        discount_cost: 0
+    // 获取分类数据（品类）
+    getSimpleType: function () {
+      model.params.limit = 100
+      axios.get('classes/furniture_simple_types', {
+        params: model.params
+      }).then(function (data) {
+        model.classifyArr[0].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('验证码发送失败!mui-pull-loading mui-icon mui-spinner')
       })
-      window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
     },
 
-    // 获取分类数据
+    // 获取分类数据（品牌）
     getBands: function () {
       axios.get('classes/companys_brand', {
         params: model.params
       }).then(function (data) {
-        model.brandArr = data.data.items
+        model.classifyArr[1].list = data.data.items
       }).catch(function () {
-        window.mui.toast('验证码发送失败!')
+        window.mui.toast('验证码发送失败!mui-pull-loading mui-icon mui-spinner')
       })
     },
 
+    // 显示各分类全部（收起）
+    showAllTypes: function (obj) {
+      obj.showall = !obj.showall
+    },
+
+    // 点击筛选
     showClassify: function () {
       $('#classifylist').show()
       $('#classifylist').addClass('animated bounceInRight')
@@ -216,279 +254,305 @@ export default {
   },
   mounted () {
     model = this
-    this.init()
+    this.inits()
+    window.mui.init({
+      pullRefresh: {
+        container: '#pullfresh',
+        up: {
+          contentnomore: '没有更多',
+          callback: model.pulldownRefresh
+        }
+      }
+    })
   }
 }
 </script>
 
 <style>
-.p20-box{
-  position: fixed;
-  top: 44px;
-  width: 100%;
-  padding: 0 10px;
-  z-index: 10;
-}
-.list-item{
-  margin-top: 74px;
-}
-.mui-content .mui-input-clear {
-  background-color: #fff;
-  border-bottom: 1px solid #8f8f8f;
-  border-radius: 0;
-  color: #989898;
-  font-size: 14px;
-  margin: 0;
-}
-.mui-icon-search{
-  position: relative;
-  left: 5px;
-}
-.clasify-tabs{
-  height: 40px;
-}
-.clasify-tabs .mui-grid-9{
-  background-color: #fff !important;
-  border-top: none !important;
-  border-left: none !important;
-}
-.clasify-tabs .mui-grid-9 .mui-table-view-cell{
-  height: 40px;
-  border: none;
-  padding: 0;
-}
-.clasify-tabs .mui-grid-9 .mui-table-view-cell a{
-  height: 40px;
-  padding: 0 !important;
-}
-.clasify-tabs .mui-grid-9 .mui-table-view-cell .mui-media-body {
-  height: 40px;
-  line-height: 40px;
-  margin: 0;
-  padding: 0;
-}
-.clasify-tabs .tab-text{
-  display: inline-block;
-  height: 16px;
-}
-.activeprice{
-  color: #5075ce;
-}
-.clasify-tabs .self-iocn{
-  position: relative;
-  left: 2px;
-  display: inline-block;
-  background: url('/images/person.png') no-repeat;
-  background-size: 498px;
-}
-.clasify-tabs .price-down{
-  top: 5px;
-  width: 12px;
-  height: 16px;
-  background-position: -225px -71px;
-}
-.clasify-tabs .price-up{
-  top: 5px;
-  width: 12px;
-  height: 16px;
-  background-position: -241px -71px;
-}
-.clasify-tabs .selected-icon{
-  top: 3px;
-  width: 16px;
-  height: 16px;
-  background-position: -260px -68px;
-}
-.f4-line{
-  width: 100%;
-  height: 10px;
-  background-color: #f4f4f4;
-}
-.goods-list .mui-media {
-  height: 110px;
-  padding: 10px;
-  border-bottom: 1px solid #cccccc;
-}
-.goods-list .mui-media .info-box{
-  height: 90px;
-  padding: 0;
-  margin: 0;
-}
-.goods-list .mui-media .info-box img{
-  width: 90px;
-  height: 90px;
-  max-width: 90px;
-  max-height: 90px;
-}
-.goods-list .mui-media .fur-name{
-  height: 42px;
-  font-size: 16px;
-  color: #050505;
-  font-weight: 600;
-  white-space: pre-wrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-.mui-media-body{
-  height: 90px;
-}
-.fur-price{
-  height: 48px;
-}
-.fur-price > span{
-  display: inline-block;
-  position: relative;
-  top: 26px;
-  font-weight: 600;
-}
-.fur-price .price{
-  font-size: 16px;
-  color: #4e73cd;
-}
-.fur-price .sub-price{
-  margin-left: 6px;
-  font-size: 12px;
-  color: #b0b0b0;
-  text-decoration:line-through;
-}
-.goods-list .mui-media .collection-bth{
-  position: relative;
-  top: 10px;
-  z-index: 100;
-  float: right;
-  display: inline-block;
-  width: 70px;
-  height: 36px;
-  line-height: 36px;
-  text-align: center;
-  border-radius: 3px;
-  font-size: 15px;
-}
-.star-active{
-  background-color: #5075ce;
-  color: #fff;
-}
-.collection-bth .fa{
-  display: inline-block;
-  margin-right: 3px;
-}
-.fa-star{
-  color: #fcc500;
-}
-.fa-star-o{
-  color: #8f8f8f;
-}
-.star-normal{
-  background-color: #fff;
-  border: 1px solid #5075ce;
-  color: #3d3d3d;
-}
-.goods-list .mui-media:after{
-  background-color: #fff;
-}
-.mui-table-view-cell:after{
-  background-color: #fff;
-}
-.mui-table-view:before,
-.mui-table-view:after{
-  background-color: #fff;
-}
-.classify-box{
-  display: none;
-  position: fixed;
-  top: 44px;
-  z-index: 1000;
-  width: 100%;
-  height: calc(100% - 44px);
-  background-color: rgba(0, 0, 0, 0.6);
-  overflow-y: auto;
-}
-.sub-classify{
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 280px;
-  height: 100%;
-  padding: 10px;
-  background-color: #fff;
-  padding-bottom: 50px;
-}
-.clasify-item .title{
-  margin: 0;
-  padding: 0;
-  height: 22px;
-  line-height: 22px;
-  margin-bottom: 10px;
-}
-.title > label {
-  color: #050505;
-}
-.title > a{
-  float: right;
-}
-.clasify-item .items-ul{
-  margin: 0;
-  padding: 4px;
-  list-style: none;
-}
-.clasify-item .items-ul li{
-  display: inline-block;
-  list-style: none;
-  width: 74px;
-  height: 30px;
-  margin-right: 12px;
-  margin-bottom: 6px;
-}
-.clasify-item .items-ul li:nth-child(3n){
-  margin-right: 0;
-}
-.clasify-item .items-ul li a{
-  display: inline-block;
-  width: 80px;
-  height: 30px;
-  padding: 0 5px;
-  text-align: center;
-  line-height: 28px;
-  font-size: 14px;
-  text-decoration: none;
-  color: #3d3d3d;
-  border: 1px solid #737373;
-  border-radius: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.clasify-item .items-ul .active a{
-  background-color: #5075ce;
-  border: 1px solid #5075ce;
-  color: #fff;
-}
-.clasify-btn{
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 50px;
-  z-index: 100;
-  background-color: #fff;
-}
-.clasify-btn > a{
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-  height: 50px;
-  line-height: 50px;
-  color: #3d3d3d;
-  font-size: 15px;
-  border-top: 1px solid #ababab;
-  cursor: pointer;
-}
-.clasify-btn .submit-btn{
-  background-color: #5075ce;
-  border-top: 1px solid #5075ce;
-  color: #fff;
-}
+  .p20-box{
+    position: fixed;
+    top: 44px;
+    width: 100%;
+    padding: 0 10px;
+    z-index: 10;
+  }
+  .list-item{
+    margin-top: 74px;
+  }
+  .mui-content .mui-input-clear {
+    background-color: #fff;
+    border-bottom: 1px solid #8f8f8f;
+    border-radius: 0;
+    color: #989898;
+    font-size: 14px;
+    margin: 0;
+  }
+  .mui-icon-search{
+    position: relative;
+    left: 5px;
+  }
+  .loading-icon{
+    height: 30px;
+    margin: 10px 0;
+    text-align: center;
+  }
+  .loading-text{
+    position: relative;
+    top: -7px;
+    left: 5px;
+    font-size: 16px;
+  }
+  .clasify-tabs{
+    height: 40px;
+  }
+  .clasify-tabs .mui-grid-9{
+    background-color: #fff !important;
+    border-top: none !important;
+    border-left: none !important;
+  }
+  .clasify-tabs .mui-grid-9 .mui-table-view-cell{
+    height: 40px;
+    border: none;
+    padding: 0;
+  }
+  .clasify-tabs .mui-grid-9 .mui-table-view-cell a{
+    height: 40px;
+    padding: 0 !important;
+  }
+  .clasify-tabs .mui-grid-9 .mui-table-view-cell .mui-media-body {
+    height: 40px;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+  }
+  .clasify-tabs .tab-text{
+    display: inline-block;
+    height: 16px;
+  }
+  .activeprice{
+    color: #5075ce;
+  }
+  .clasify-tabs .self-iocn{
+    position: relative;
+    left: 2px;
+    display: inline-block;
+    background: url('/images/person.png') no-repeat;
+    background-size: 498px;
+  }
+  .clasify-tabs .price-down{
+    top: 5px;
+    width: 12px;
+    height: 16px;
+    background-position: -225px -71px;
+  }
+  .clasify-tabs .price-up{
+    top: 5px;
+    width: 12px;
+    height: 16px;
+    background-position: -241px -71px;
+  }
+  .clasify-tabs .selected-icon{
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    background-position: -260px -68px;
+  }
+  .f4-line{
+    width: 100%;
+    height: 10px;
+    background-color: #f4f4f4;
+  }
+  .goods-list{
+    top: 128px !important;
+  }
+  .goods-list .mui-media {
+    height: 110px;
+    padding: 10px;
+    border-bottom: 1px solid #cccccc;
+  }
+  .goods-list .mui-media .info-box{
+    height: 90px;
+    padding: 0;
+    margin: 0;
+  }
+  .goods-list .mui-media .info-box img{
+    width: 90px;
+    height: 90px;
+    max-width: 90px;
+    max-height: 90px;
+  }
+  .goods-list .mui-media .fur-name{
+    height: 42px;
+    font-size: 16px;
+    color: #050505;
+    font-weight: 600;
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .mui-media-body{
+    height: 90px;
+  }
+  .fur-price{
+    height: 48px;
+  }
+  .fur-price > span{
+    display: inline-block;
+    position: relative;
+    top: 26px;
+    font-weight: 600;
+  }
+  .fur-price .price{
+    font-size: 16px;
+    color: #4e73cd;
+  }
+  .fur-price .sub-price{
+    margin-left: 6px;
+    font-size: 12px;
+    color: #b0b0b0;
+    text-decoration:line-through;
+  }
+  .goods-list .mui-media .collection-bth{
+    position: relative;
+    top: 10px;
+    z-index: 100;
+    float: right;
+    display: inline-block;
+    width: 70px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 15px;
+  }
+  .star-active{
+    background-color: #5075ce;
+    color: #fff;
+  }
+  .collection-bth .fa{
+    display: inline-block;
+    margin-right: 3px;
+  }
+  .fa-star{
+    color: #fcc500;
+  }
+  .fa-star-o{
+    color: #8f8f8f;
+  }
+  .star-normal{
+    background-color: #fff;
+    border: 1px solid #5075ce;
+    color: #3d3d3d;
+  }
+  .goods-list .mui-media:after{
+    background-color: #fff;
+  }
+  .mui-table-view-cell:after{
+    background-color: #fff;
+  }
+  .mui-table-view:before,
+  .mui-table-view:after{
+    background-color: #fff;
+  }
+  .classify-box{
+    display: none;
+    position: fixed;
+    top: 44px;
+    z-index: 1000;
+    width: 100%;
+    height: calc(100% - 44px);
+    background-color: rgba(0, 0, 0, 0.6);
+    overflow-y: auto;
+  }
+  .sub-classify{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 280px;
+    min-height: calc(100% - 44px);
+    padding: 10px;
+    background-color: #fff;
+    padding-bottom: 50px;
+  }
+  .clasify-item{
+    margin-bottom: 20px;
+  }
+  .clasify-item .title{
+    margin: 0;
+    padding: 0;
+    height: 22px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+  .title > label {
+    color: #050505;
+  }
+  .title > a{
+    float: right;
+  }
+  .clasify-item .items-ul{
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+  }
+  .clasify-item .items-ul li{
+    display: inline-block;
+    list-style: none;
+    width: 74px;
+    height: 30px;
+    margin-right: 12px;
+    margin-bottom: 6px;
+  }
+  .clasify-item .items-ul li:nth-child(3n){
+    margin-right: 0;
+  }
+  .clasify-item .items-ul li a{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    padding: 0 5px;
+    text-align: center;
+    line-height: 28px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3d3d3d;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clasify-item .items-ul .active a{
+    background-color: #5075ce;
+    border: 1px solid #5075ce;
+    color: #fff;
+  }
+  .clasify-btn{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    height: 50px;
+    z-index: 100;
+    background-color: #fff;
+  }
+  .clasify-btn > a{
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    color: #3d3d3d;
+    font-size: 15px;
+    border-top: 1px solid #ababab;
+    cursor: pointer;
+  }
+  .clasify-btn .submit-btn{
+    background-color: #5075ce;
+    border-top: 1px solid #5075ce;
+    color: #fff;
+  }
 </style>

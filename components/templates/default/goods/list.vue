@@ -182,7 +182,6 @@ export default {
       } else {
         param.where = _.extend(param.where, whereobj)
       }
-      console.log(param)
       axios.get('classes/furnitures', {
         params: param
       }).then(function (data) {
@@ -368,6 +367,9 @@ export default {
 </script>
 
 <style>
+  .mui-search.mui-active:before{
+    top: 26px !important;
+  }
   .p20-box{
     position: fixed;
     top: 44px;

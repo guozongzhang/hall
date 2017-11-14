@@ -41,7 +41,7 @@
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
           <a href="#">
-            <div class="mui-media-body" @click="showClasify()" id="show_btn">
+            <div class="mui-media-body" @click="showClassify()">
               <span class="tab-text">筛选</span>
               <span class="self-iocn selected-icon"></span>
             </div>
@@ -50,142 +50,193 @@
       </ul>
     </div>
   </div>
-  <div class="f4-line"></div>
-  <div class="goods-list">
-    <ul class="mui-table-view">
-      <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
-        <div class="info-box">
-          <img class="mui-media-object mui-pull-left" :src="item.img_url">
-          <div class="mui-media-body">
-            <a class="fur-name" href="javascript:;">{{item.name}}</a>
-            <div class="fur-price">
-              <span class="price">￥{{item.price}}</span>
-              <span class="sub-price">￥{{item.sub_price}}</span>
-              <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
-                <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
-                <span>{{item.star ? '取消' : '收藏'}}</span>
-              </a>
+  <div class="list-item" id="goodlist">
+    <div class="f4-line"></div>
+    <div class="goods-list mui-scroll-wrapper" id="pullfresh">
+      <div class="mui-scroll">
+        <ul class="mui-table-view">
+          <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
+            <div class="info-box">
+              <img class="mui-media-object mui-pull-left" :src="item.fur_image">
+              <div class="mui-media-body">
+                <a class="fur-name" href="javascript:;">{{item.fur_name}}</a>
+                <div class="fur-price">
+                  <span class="price">￥{{item.discount_cost}}</span>
+                  <span class="sub-price">￥{{item.discount_cost}}</span>
+                  <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
+                    <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
+                    <span>{{item.star ? '取消' : '收藏'}}</span>
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-  <div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
-    <!--菜单部分-->
-    <aside id="offCanvasSide" class="mui-off-canvas-right">
-      <div id="offCanvasSideScroll" class="mui-scroll-wrapper">
-        <div class="mui-scroll">
-          <button id="offCanvasHide" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button>
-          <ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
-            <li class="mui-table-view-cell">
-              <a class="mui-navigate-right">
-                Item 1
-              </a>
-            </li>
-          </ul>
-        </div>
+          </li>
+        </ul>
+        <p class="loading-icon" v-show="is_loading">
+          <span class="mui-spinner"></span>
+          <span class="loading-text">{{loadingText}}</span>
+        </p>
       </div>
-    </aside>
-    <div class="mui-inner-wrap"></div>
+    </div>
+  </div>
+  <div class="classify-box" id="classifylist">
+    <div class="sub-classify">
+      <div class="clasify-item" v-for="item in classifyArr">
+        <p class="title">
+          <label>{{item.name}}</label>
+          <a href="javascript:;" @click="showAllTypes(item)">
+            <span>{{item.showall ? '收起' : '全部'}}</span>
+            <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
+          </a>
+        </p>
+        <ul class="items-ul">
+          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item)" v-show="index < 3 || item.showall">
+            <a href="javascript:;" :title="sub.com_brand_name || sub.sp_type_name">{{sub.com_brand_name || sub.sp_type_name}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="clasify-btn">
+        <a href="javascript:;" @click="resetClassify()">重置</a>
+        <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
+      </div>
+    </div>
   </div>
 </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let $ = require('jquery')
 let model
 export default {
   data () {
     return {
+      is_loading: true,
+      loadingText: '正在加载...',
       priceicon: true,
       activeprice: false,
-      goodsArr: [
+      classifyActiveArr: [],
+      params: {
+        limit: 8,
+        order: '-id'
+      },
+      goodsArr: [],
+      classifyArr: [
         {
-          id: 1,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的这里是商品的名称，估计会很长，还要换行的这里是商品的名称，估计会很长，还要换行的这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: false
+          name: '品类',
+          type: 'classify',
+          active: 0,
+          showall: false,
+          list: []
         },
         {
-          id: 2,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
+          name: '品牌',
+          type: 'brand',
+          active: 0,
+          showall: false,
+          list: []
         },
         {
-          id: 3,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: false
+          name: '风格',
+          type: 'style',
+          active: 0,
+          showall: false,
+          list: []
         },
         {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
-        },
-        {
-          id: 4,
-          img_url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          name: '这里是商品的名称，估计会很长，还要换行的',
-          price: '19888',
-          sub_price: '9888',
-          star: true
+          name: '空间',
+          type: 'space',
+          active: 0,
+          showall: false,
+          list: []
         }
       ]
     }
   },
   methods: {
-    init: function () {
-      window.mui.init({
-        swipeBack: false
+    inits: function () {
+      model.params.where = {
+        com_id_poi_companys: '86'
+      }
+      axios.get('classes/furnitures', {
+        params: model.params
+      }).then(function (data) {
+        model.is_loading = false
+        model.goodsArr = data.data.items
+      }).catch(function () {
+        window.mui.toast('验证码发送失败!')
       })
-      // 侧滑容器父节点
-      var offCanvasWrapper = window.mui('#offCanvasWrapper')
-      // 菜单容器
-      var offCanvasSide = document.getElementById('offCanvasSide')
-      // 侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
-      var classList = offCanvasWrapper[0].classList
-      offCanvasSide.classList.remove('mui-transitioning')
-      offCanvasSide.setAttribute('style', '')
-      classList.add('mui-slide-in')
-      offCanvasWrapper.offCanvas().refresh()
-      document.getElementById('show_btn').addEventListener('tap', function () {
-        offCanvasWrapper.offCanvas('show')
-      })
-      document.getElementById('offCanvasHide').addEventListener('tap', function () {
-        offCanvasWrapper.offCanvas('close')
-      })
-      // 主界面和侧滑菜单界面均支持区域滚动；
-      window.mui('#offCanvasSideScroll').scroll()
+      model.getSimpleType()
+      model.getBands()
     },
 
-    showClasify: function () {
-      console.log('====')
+    pulldownRefresh: function () {
+      model.is_loading = true
+      $('.mui-pull-bottom-pocket').remove()
+      setTimeout(function () {
+        model.goodsArr.push({
+          id: 0,
+          fur_name: '测试0000',
+          fur_image: '',
+          discount_cost: 0
+        })
+        model.is_loading = false
+        window.mui('#pullfresh').pullRefresh().endPulldownToRefresh()
+      }, 1500)
+    },
+
+    // 获取分类数据（品类）
+    getSimpleType: function () {
+      model.params.limit = 100
+      axios.get('classes/furniture_simple_types', {
+        params: model.params
+      }).then(function (data) {
+        model.classifyArr[0].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('验证码发送失败!mui-pull-loading mui-icon mui-spinner')
+      })
+    },
+
+    // 获取分类数据（品牌）
+    getBands: function () {
+      axios.get('classes/companys_brand', {
+        params: model.params
+      }).then(function (data) {
+        model.classifyArr[1].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('验证码发送失败!mui-pull-loading mui-icon mui-spinner')
+      })
+    },
+
+    // 显示各分类全部（收起）
+    showAllTypes: function (obj) {
+      obj.showall = !obj.showall
+    },
+
+    // 点击筛选
+    showClassify: function () {
+      $('#classifylist').show()
+      $('#classifylist').addClass('animated bounceInRight')
+      setTimeout(function () {
+        $('#classifylist').removeClass('bounceInRight')
+      }, 1000)
+    },
+
+    // 选择分类
+    choiceType: function (item) {
+      console.log(item)
+    },
+
+    // 重置分类
+    resetClassify: function () {
+      model.classifyActiveArr = []
+      $('#classifylist').hide()
+    },
+
+    // 确定分类
+    setClassify: function () {
+      console.log(model.classifyActiveArr)
+      $('#classifylist').hide()
     },
 
     // 按照价格排序
@@ -203,43 +254,30 @@ export default {
   },
   mounted () {
     model = this
-    this.init()
+    this.inits()
+    window.mui.init({
+      pullRefresh: {
+        container: '#pullfresh',
+        up: {
+          contentnomore: '没有更多',
+          callback: model.pulldownRefresh
+        }
+      }
+    })
   }
 }
 </script>
 
 <style>
-  #offCanvasSide{
+  .p20-box{
     position: fixed;
     top: 44px;
-  }
-  p {
-    text-indent: 22px;
-  }
-  span.mui-icon {
-    font-size: 14px;
-    color: #007aff;
-    margin-left: -15px;
-    padding-right: 10px;
-  }
-  .mui-off-canvas-right {
-    color: #fff;
-  }
-  .title {
-    margin: 35px 15px 10px;
-  }
-  .title+.content {
-    margin: 10px 15px 35px;
-    color: #bbb;
-    text-indent: 1em;
-    font-size: 14px;
-    line-height: 24px;
-  }
-  input {
-    color: #000;
-  }
-  .p20-box{
+    width: 100%;
     padding: 0 10px;
+    z-index: 10;
+  }
+  .list-item{
+    margin-top: 74px;
   }
   .mui-content .mui-input-clear {
     background-color: #fff;
@@ -252,6 +290,17 @@ export default {
   .mui-icon-search{
     position: relative;
     left: 5px;
+  }
+  .loading-icon{
+    height: 30px;
+    margin: 10px 0;
+    text-align: center;
+  }
+  .loading-text{
+    position: relative;
+    top: -7px;
+    left: 5px;
+    font-size: 16px;
   }
   .clasify-tabs{
     height: 40px;
@@ -312,6 +361,9 @@ export default {
     width: 100%;
     height: 10px;
     background-color: #f4f4f4;
+  }
+  .goods-list{
+    top: 128px !important;
   }
   .goods-list .mui-media {
     height: 110px;
@@ -404,5 +456,103 @@ export default {
   .mui-table-view:before,
   .mui-table-view:after{
     background-color: #fff;
+  }
+  .classify-box{
+    display: none;
+    position: fixed;
+    top: 44px;
+    z-index: 1000;
+    width: 100%;
+    height: calc(100% - 44px);
+    background-color: rgba(0, 0, 0, 0.6);
+    overflow-y: auto;
+  }
+  .sub-classify{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 280px;
+    min-height: calc(100% - 44px);
+    padding: 10px;
+    background-color: #fff;
+    padding-bottom: 50px;
+  }
+  .clasify-item{
+    margin-bottom: 20px;
+  }
+  .clasify-item .title{
+    margin: 0;
+    padding: 0;
+    height: 22px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+  .title > label {
+    color: #050505;
+  }
+  .title > a{
+    float: right;
+  }
+  .clasify-item .items-ul{
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+  }
+  .clasify-item .items-ul li{
+    display: inline-block;
+    list-style: none;
+    width: 74px;
+    height: 30px;
+    margin-right: 12px;
+    margin-bottom: 6px;
+  }
+  .clasify-item .items-ul li:nth-child(3n){
+    margin-right: 0;
+  }
+  .clasify-item .items-ul li a{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    padding: 0 5px;
+    text-align: center;
+    line-height: 28px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3d3d3d;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clasify-item .items-ul .active a{
+    background-color: #5075ce;
+    border: 1px solid #5075ce;
+    color: #fff;
+  }
+  .clasify-btn{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    height: 50px;
+    z-index: 100;
+    background-color: #fff;
+  }
+  .clasify-btn > a{
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    color: #3d3d3d;
+    font-size: 15px;
+    border-top: 1px solid #ababab;
+    cursor: pointer;
+  }
+  .clasify-btn .submit-btn{
+    background-color: #5075ce;
+    border-top: 1px solid #5075ce;
+    color: #fff;
   }
 </style>

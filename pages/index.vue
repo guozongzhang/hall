@@ -19,7 +19,7 @@
 <script>
 export default {
   head: {
-    title: 'dpjia-index'
+    title: '首页'
   },
   beforeCreate () {
     // 注册组件 component(名字, 相对路径)

@@ -13,7 +13,7 @@
 <script>
   export default {
     head: {
-      title: 'dpjia-test'
+      title: '登录'
     },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)

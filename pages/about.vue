@@ -2,10 +2,10 @@
 <div>
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">注册账号</h1>
+    <h1 class="mui-title">关于</h1>
   </header>
   <div class="mui-content">
-    <component :is="register"></component>
+    <component :is="about"></component>
   </div>
 </div>
 </template>
@@ -16,7 +16,7 @@
     },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)
-      this.component('register', 'login/register.vue')
+      this.component('about', 'person/about.vue')
     },
     methods: {
       init: function () {
@@ -34,5 +34,12 @@
   }
   .mui-bar{
     box-shadow: none;
+  }
+  .register-link{
+    position: relative;
+    top: 12px;
+    right: 10px;
+    font-size: 14px;
+    color: #3f3f3f;
   }
 </style>

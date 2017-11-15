@@ -21,7 +21,9 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },
       { rel: 'stylesheet', href: '/css/mui.min.css' },
       { rel: 'stylesheet', href: '/css/mui.picker.min.css' },
-      { rel: 'stylesheet', href: '/css/font-awesome.css' }
+      { rel: 'stylesheet', href: '/css/font-awesome.css' },
+      { rel: 'stylesheet', href: '/css/animate.css' },
+      { rel: 'stylesheet', href: '/css/layout.css' }
     ]
   },
   /*

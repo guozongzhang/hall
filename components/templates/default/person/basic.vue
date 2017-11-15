@@ -11,7 +11,7 @@
     </div>
     <ul class="mui-table-view">
       <li class="personli">
-        <a href="javascript:;">
+        <a href="/bindmobile" class="mui-navigate-right">
           <span class="phone"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
@@ -59,7 +59,7 @@
         </a>
       </li>
       <li class="personli">
-        <a href="javascript:;">
+        <a href="/settings" class="mui-navigate-right">
           <span class="set"></span>
           <div class="mui-media-body">
             <p :class="data.info3.type == 'wait' ? 'colorhui' : ''" class="mui-ellipsis">

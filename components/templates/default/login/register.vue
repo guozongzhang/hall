@@ -9,6 +9,7 @@
     </div>
     <div class="mui-input-row number-box">
       <input type="text" placeholder="动态验证码">
+      <a href="javascript:;" id="getverify" @click="getVerify()">{{verify}}</a>
     </div>
     <div class="mui-input-row number-box">
       <input type="text" placeholder="设置密码">
@@ -52,8 +53,10 @@
 </div>
 </template>
 <script>
-var $ = require('jquery')
+import axios from '~/plugins/axios'
+let $ = require('jquery')
 let model
+let startTime = 60
 export default {
   head () {
     return {
@@ -65,7 +68,9 @@ export default {
   },
   data () {
     return {
-      step: 'two',
+      verify: '获取动态密码',
+      verifyState: false,
+      step: 'one',
       storesArr: [
         {
           id: 1,
@@ -85,6 +90,40 @@ export default {
   methods: {
     init: function () {
     },
+
+    // 获取动态密码
+    getVerify: function () {
+      if (!model.verifyState) {
+        axios.get('requestSmsCode/sms', {
+          params: {
+            type: 'admin',
+            mobile: model.info.phone
+          }
+        }).then(function () {
+          model.verifyState = true
+          model.countdowntime()
+          window.mui.toast('验证码发送成功!')
+        }).catch(function () {
+          window.mui.toast('验证码发送失败!')
+        })
+      }
+    },
+
+    // 倒计时函数
+    countdowntime: function () {
+      var time = setTimeout(this.countdowntime, 1000)
+      if (startTime === 0) {
+        clearTimeout(time)
+        model.verify = '获取动态密码'
+        startTime = 60
+        model.verifyState = false
+        return false
+      } else {
+        startTime--
+      }
+      model.verify = startTime + 's后重新获取'
+    },
+
     // 下一步
     getNext: function (str) {
       model.step = str
@@ -140,7 +179,7 @@ export default {
   padding: 20px;
 }
 .login-box h3{
-  margin-top: 50px;
+  margin-top: 22px;
   margin-bottom: 20px;
   text-align: center;
   color: #7e7e7e;
@@ -148,9 +187,16 @@ export default {
 .number-box{
   margin-bottom: 20px;
 }
+#getverify{
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 15px;
+  color: #7e7e7e;
+}
 .login-box input{
-  height: 50px;
-  line-height: 50px;
+  height: 44px;
+  line-height: 44px;
   border-color: #e3e4e8;
   border-radius: 3px;
   font-size: 16px;
@@ -161,13 +207,14 @@ export default {
   margin: 20px 0;
 }
 .mui-content-padded button{
-  height: 50px;
+  height: 44px;
+  line-height: 12px;
   font-size: 16px;
 }
 .login-btn button,
 .register-btn button{
   background-color: #4e73cd;
-  color: #aab8e4;
+  color: #fff;
 }
 .label-input{
   margin-bottom: 10px;
@@ -175,7 +222,8 @@ export default {
 .label-input label{
   position: relative;
   top: 5px;
-  width: 28% !important;
+  font-size: 16px;
+  width: 24% !important;
   padding: 10px 0 !important;
 }
 .label-text{
@@ -184,15 +232,15 @@ export default {
 }
 .label-input input{
   border: 1px solid #e3e4e8 !important;
-  width: 72% !important;
+  width: 76% !important;
   padding: 0 15px !important;
   border-radius: 3px !important;
-  height: 50px !important;
+  height: 44px !important;
 }
 .label-input .mui-btn-block{
   border: 1px solid #e3e4e8 !important;
-  width: 72% !important;
-  height: 50px !important;
+  width: 76% !important;
+  height: 44px !important;
 }
 .label-input img{
   position: relative;
@@ -201,7 +249,7 @@ export default {
   height: 100px;
 }
 .register-btn button{
-  margin-top: 50px;
+  margin-top: 44px;
 }
 .upload-box{
   position: relative;

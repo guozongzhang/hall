@@ -26,6 +26,7 @@
     "nuxt": "^1.0.0-rc11",
     "regenerator-runtime": "^0.11.0",
     "strip-ansi": "^4.0.0",
+    "underscore": "^1.8.3",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.3",
     "vux": "^2.7.0"

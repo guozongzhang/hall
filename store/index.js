@@ -5,7 +5,8 @@ import mutations from './mutations'
 const store = () => {
   return new Vuex.Store({
     state: {
-      theme: 'default'
+      theme: 'default',
+      authUser: null
     },
     mutations
   })

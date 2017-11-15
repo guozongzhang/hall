@@ -4,6 +4,12 @@
   "description": "Nuxt.js project",
   "author": "hxh <1246996371@qq.com>",
   "private": true,
+  "config": {
+    "nuxt": {
+      "host": "0.0.0.0",
+      "port": "5008"
+    }
+  },
   "scripts": {
     "dev": "HOST=0.0.0.0 PORT=5001 nuxt",
     "build": "nuxt build",

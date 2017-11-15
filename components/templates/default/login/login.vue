@@ -18,7 +18,7 @@
         <label>记住密码</label>
         <span class="remeber" v-bind:class="info.remeber ? 'active' : ''"></span>
       </div>
-      <a href="#" class="forget-pwd">忘记密码</a>
+      <a href="/forgetpwd" class="forget-pwd">忘记密码</a>
     </div>
   </div>
   <div v-show="type == 'phone'">

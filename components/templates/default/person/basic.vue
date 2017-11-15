@@ -5,7 +5,10 @@
       <img :src="data.info3.header_img" class="bgheader" > 
       <div class="name">
         <p>
-          <span>{{data.info3.header_name}}<i v-if="data.info3.type != 'wait'" class="editheader"> </i></span>
+          <span>
+            <a href="/login">{{data.info.header_name}}<i v-if="data.info.type != 'wait'" class="editheader"> </i>
+            </a>
+          </span>
         </p>
       </div>
     </div>
@@ -69,7 +72,7 @@
         </a>
       </li>
       <li class="personli">
-        <a href="" class="mui-navigate-right">
+        <a href="/about" class="mui-navigate-right">
           <span class="about"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
@@ -88,6 +91,7 @@ export default {
       data: {
         info: {
           header_img: '/images/shuijiao.jpg',
+          header_name: '点击登录',
           type: 'wait',
           fur_num: 10,
           tel: {

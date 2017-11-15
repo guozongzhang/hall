@@ -18,7 +18,7 @@
         <label>记住密码</label>
         <span class="remeber" v-bind:class="info.remeber ? 'active' : ''"></span>
       </div>
-      <a href="#" class="forget-pwd">忘记密码</a>
+      <a href="/forgetpwd" class="forget-pwd">忘记密码</a>
     </div>
   </div>
   <div v-show="type == 'phone'">
@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     init: function () {
-      window.mui.toast('验证码发送成功!')
     },
 
     // 清除密码数据

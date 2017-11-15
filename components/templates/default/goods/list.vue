@@ -112,7 +112,7 @@ import axios from '~/plugins/axios'
 let $ = require('jquery')
 let _ = require('underscore')
 let model
-let pagesize = 1
+let pagesize = 4
 export default {
   data () {
     return {

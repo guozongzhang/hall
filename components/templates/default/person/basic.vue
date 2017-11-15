@@ -62,7 +62,7 @@
         </a>
       </li>
       <li class="personli">
-        <a href="javascript:;" class="mui-navigate-right">
+        <a href="/about" class="mui-navigate-right">
           <span class="about"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>

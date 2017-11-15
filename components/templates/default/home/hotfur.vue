@@ -5,7 +5,7 @@
     <span class="right-icon">
       <span class="mui-icon mui-icon-arrowright"></span>
     </span>
-    <a href="#" class="go-more">更多</a>
+    <a href="/goodslist" class="go-more">更多</a>
   </div>
   <div class="mui-slider-group mui-slider-loop">
     <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一个图文表格) -->

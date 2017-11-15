@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     init: function () {
-      window.mui.toast('验证码发送成功!')
     },
 
     // 清除密码数据

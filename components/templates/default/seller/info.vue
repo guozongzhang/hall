@@ -52,17 +52,110 @@
 					<a class="mui-control-item" href="#store">线下门店</a>
 				</div>
 				<div id="designer" class="mui-control-content mui-active">
-					<p>销售经理</p>
+					<p>
+            <span class="name">张三</span>
+            <span class="tel">18702760110</span>
+            <span class="area">华北区</span>
+          </p>
+          <p>
+            <span class="name">李四</span>
+            <span class="tel">18702760110</span>
+            <span class="area">华北区</span>
+          </p>
+          <p>
+            <span class="name">习大大</span>
+            <span class="tel">18702760110</span>
+            <span class="area">华北区</span>
+          </p>
+          <p>
+            <span class="name">马云</span>
+            <span class="tel">18702760110</span>
+            <span class="area">华北区</span>
+          </p>
+          <p>
+            <span class="name">销售员</span>
+            <span class="tel">18702760110</span>
+            <span class="area">华北区</span>
+          </p>
+          <p>
+            <span class="name">销售员</span>
+            <span class="tel">18702760110</span>
+            <span class="area">华北区</span>
+          </p>
 				</div>
 				<div id="store" class="mui-control-content">
-					<p>门店</p>
+          <div class="store-item">
+            <img src="/images/shuijiao.jpg">
+            <div class="store-detail">
+              <label>体验店名称</label>
+              <p>湖北省武汉市洪山区鲁磨路388号地址大学</p>
+              <p>010-87657680</p>
+            </div>
+          </div>
+          <div class="store-item">
+            <img src="/images/shuijiao.jpg">
+            <div class="store-detail">
+              <label>体验店名称</label>
+              <p>体验店地址</p>
+              <p>010-87657680</p>
+            </div>
+          </div>
+          <div class="store-item">
+            <img src="/images/shuijiao.jpg">
+            <div class="store-detail">
+              <label>体验店名称</label>
+              <p>体验店地址体验店地址体验店地址体验店地址体验店地址</p>
+              <p>010-87657680</p>
+            </div>
+          </div>
+          <div class="store-item">
+            <img src="/images/shuijiao.jpg">
+            <div class="store-detail">
+              <label>体验店名称</label>
+              <p>体验店地址</p>
+              <p>010-87657680</p>
+            </div>
+          </div>
 				</div>
 			</div>
+    </div>
+    <p class="preview-share" @click="previewShare()">
+      <span class="mui-icon mui-icon-eye"></span>
+      <span>预览我的分享</span>
+    </p>
+    <div class="share-box animated">
+      <div class="share-info">
+        <p class="close-box">
+          <span class="mui-icon mui-icon-closeempty" @click="closeShare()"></span>
+        </p>
+        <p class="share-tips">您将首页、商品详情页或者联系信息页分享出去后,其他人通过您分享的链接只能看到您自己的联系方式</p>
+        <div class="designer-box">
+          <div class="up-info">
+            <div class="img-circle">
+              <img src="/images/shuijiao.jpg">
+            </div>
+            <div class="designer-info">
+              <label>嘉利信得云展厅官方定制销售经理</label>
+              <p>
+                <span class="designer-name">习大大</span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+              </p>
+              <p>联系电话:18702760110</p>
+            </div>
+          </div>
+          <div class="down-info">服务区域: 华北区(北京、天津、河北)</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 </template>
 <script>
+let $ = require('jquery')
 export default {
   data () {
     return {
@@ -77,6 +170,20 @@ export default {
   },
   methods: {
     init: function () {
+    },
+
+    // 预览分享
+    previewShare: function () {
+      $('.share-box').show()
+      $('.share-box').addClass('bounceInUp')
+      setTimeout(function () {
+        $('.share-box').removeClass('bounceInUp')
+      }, 1000)
+    },
+
+    // 关闭分享
+    closeShare: function () {
+      $('.share-box').hide()
     }
   },
   mounted () {
@@ -181,5 +288,175 @@ html,body{
   border: 1px solid #7f7f7f;
   border-top: none;
   background-color: #fff;
+}
+#designer,
+#store{
+  padding-bottom: 20px;
+  height: 220px;
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+#designer p{
+  height: 54px;
+  line-height: 54px;
+  border-bottom: 1px dashed #b0b0b0;
+  margin: 0;
+  padding: 0;
+}
+#designer p span{
+  display: inline-block;
+  text-align: center;
+  color: #050505;
+}
+#designer .name{
+  width: 30%;
+}
+#designer .tel{
+  width: 40%;
+  color: #5175ce;
+}
+#designer .area{
+  width: 30%;
+}
+.store-item{
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px dashed #b0b0b0;
+}
+.store-item img{
+  width: 120px;
+  height: 80px;
+  float: left;
+  vertical-align: middle;
+}
+.store-item .store-detail{
+  display: inline-block;
+  padding: 8px 12px;
+  flex-grow: 1;
+}
+.store-detail label{
+  display: block;
+  font-size: 16px;
+  color: #050505;
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+.store-item .store-detail p{
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  max-width: 200px;
+  color: #3d3d3d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-share{
+  margin: 0;
+  padding: 0;
+  padding: 20px;
+  text-align: center;
+  color: #5175cd;
+  background-color: #ededed;
+  cursor: pointer;
+}
+.preview-share .mui-icon-eye{
+  display: inline-block;
+  font-size: 18px;
+  margin-right: 4px;
+}
+.share-box{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+.share-info{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 270px;
+  background-color: #fff;
+}
+.close-box{
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  cursor: pointer;
+}
+.close-box span{
+  font-size: 30px;
+}
+.share-tips{
+  padding: 0 20px;
+  margin: 0;
+  font-size: 13px;
+  color: #7e7e7e;
+}
+.designer-box{
+  margin: 10px 20px;
+  border-radius: 2px;
+  border: 1px solid #b4b4b4;
+  box-shadow: 0 0 6px #dccece;
+}
+.up-info{
+  padding: 15px;
+  height: 130px;
+  display: flex;
+}
+.img-circle{
+  width: 85px;
+  height: 85px;
+  border-radius: 100%;
+  border: 1px solid #d9d9da;
+  overflow: hidden;
+}
+.up-info .img-circle img{
+  width: 84px;
+  height: 84px;
+}
+.designer-info{
+  margin-left: 8px;
+  padding: 3px 0;
+  flex-grow: 1;
+}
+.designer-info label{
+  display: block;
+  border-bottom: 1px solid #a7a7a7;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #030303;
+}
+.designer-info p{
+  margin: 0;
+  padding: 0;
+  color: #030303;
+}
+.designer-info p span{
+  display: inline-block;
+}
+.designer-name{
+  font-size: 16px;
+  font-weight: 600;
+  color: #050505;
+  margin-right: 5px;
+}
+.designer-info p .fa-star{
+  color: #ffc700;
+}
+.down-info{
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  font-size: 15px;
+  background-color: #e9e9ea;
+  color: #4f4f50;
 }
 </style>

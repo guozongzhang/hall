@@ -81,10 +81,18 @@ export default {
 
     // 获取动态密码
     getVerify: function () {
+      if (_.isEmpty($.trim(model.info.phone))) {
+        window.mui.toast('手机号不能为空!')
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test($.trim(model.info.phone)))) {
+        window.mui.toast('手机号合适错误!')
+        return false
+      }
       if (!model.verifyState) {
         axios.get('requestSmsCode/sms', {
           params: {
-            type: 'admin',
+            type: 'web',
             mobile: model.info.phone
           }
         }).then(function () {
@@ -125,13 +133,26 @@ export default {
 
     // 登录
     loginBtn: function () {
-      if (_.isEmpty($.trim(model.info.number))) {
-        window.mui.toast('账号不能为空!')
-        return false
-      }
-      if (_.isEmpty($.trim(model.info.pwd))) {
-        window.mui.toast('密码不能为空!')
-        return false
+      // 账号登录
+      if (model.type === 'number') {
+        if (_.isEmpty($.trim(model.info.number))) {
+          window.mui.toast('账号不能为空!')
+          return false
+        }
+        if (_.isEmpty($.trim(model.info.pwd))) {
+          window.mui.toast('密码不能为空!')
+          return false
+        }
+      } else {
+        // 手机验证码
+        if (_.isEmpty($.trim(model.info.phone))) {
+          window.mui.toast('手机号不能为空!')
+          return false
+        }
+        if (_.isEmpty($.trim(model.info.verify))) {
+          window.mui.toast('动态密码不能为空!')
+          return false
+        }
       }
       let obj
       // 账号
@@ -139,19 +160,21 @@ export default {
         obj = {
           username: model.info.number,
           password: model.info.pwd
-          // remeber: model.info.remeber
         }
       } else {
         // 手机号
         obj = {
-          number: model.info.phone,
-          pwd: model.info.verify
+          username: model.info.phone,
+          password: model.info.verify
         }
       }
       axios.get('users/login', {
         params: obj
-      }).then(function () {
+      }).then(function (data) {
         window.mui.toast('登录成功!')
+        setTimeout(function () {
+          window.location.href = '/'
+        }, 1000)
       }).catch(function (msg) {
         window.mui.toast('登录失败!')
       })

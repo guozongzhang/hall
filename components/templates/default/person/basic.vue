@@ -286,6 +286,10 @@ export default {
     margin-right: 0px;
     display: inline
   }
+  .personli a {
+    display: inline-block;
+    width: 100%;
+  }
 
   .personli p.set{
     color: #A3A3A3

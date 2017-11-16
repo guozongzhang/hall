@@ -2,7 +2,7 @@
 <div class="login-box">
   <div class="mui-input-row label-input">
     <label>真实姓名：</label>
-    <input type="text" placeholder="">
+    <input type="text" placeholder="" v-model="info.relname">
   </div>
   <div class="mui-input-row label-input">
     <label>服务公司：</label>
@@ -10,9 +10,9 @@
   </div>
   <div class="mui-input-row label-input">
     <label>服务门店：</label>
-    <select class="mui-btn mui-btn-block">
+    <select class="mui-btn mui-btn-block" v-model="info.store">
       <option value="-1">请选择</option>
-      <option value="item.id" v-for="item in storesArr">{{item.name}}</option>
+      <option value="item.id" v-for="item in storesArr">{{item.st_name}}</option>
     </select>
   </div>
   <div class="mui-input-row label-input" style="height: 110px;">
@@ -25,12 +25,15 @@
     </span>
   </div>
   <div class="mui-content-padded login-btn">
-    <button type="button" class="mui-btn mui-btn-primary mui-btn-block">提交</button>
+    <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="upDesignBtn()">提交</button>
   </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let ESVal = require('es-validate')
 let $ = require('jquery')
+let model
 export default {
   head () {
     return {
@@ -42,24 +45,29 @@ export default {
   },
   data () {
     return {
-      storesArr: [
-        {
-          id: 1,
-          name: '大红门店'
-        },
-        {
-          id: 2,
-          name: '学院路店'
-        },
-        {
-          id: 3,
-          name: '展厅店'
-        }
-      ]
+      storesArr: [],
+      info: {
+        relname: '',
+        store: -1,
+        img: ''
+      }
     }
   },
   methods: {
     init: function () {
+      model.getStore()
+    },
+
+    // 获取门店列表
+    getStore: function () {
+      let param = {}
+      axios.get('classes/company_stores', {
+        params: param
+      }).then(function (data) {
+        model.storesArr = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     },
 
     // 上传图片
@@ -91,15 +99,54 @@ export default {
             var img = '<img src="' + data.url + '">'
             $('#upload_com').find('img').remove()
             $('#upload_com').append(img)
+            model.info.img = data.url
           },
           error: function (error) {
             console.log(error)
           }
         })
       })
+    },
+
+    // 提交升级成设计师信息
+    upDesignBtn: function () {
+      if (!model.validateForm(model.info)) {
+        return false
+      }
+      let param = model.info
+      axios.get('', {
+        params: param
+      }).then(function () {
+        window.mui.toast('升级成功!')
+      }).catch(function () {
+        window.mui.toast('升级失败!')
+      })
+    },
+
+    // 信息验证
+    validateForm (data) {
+      let result = ESVal.validate(data, {
+        relname: {
+          required: true,
+          msg: '真实姓名不能为空!'
+        },
+        store: {
+          notEqualTo: -1,
+          msg: '请选择服务门店!'
+        },
+        img: {
+          required: true,
+          msg: '请上传个人名片!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

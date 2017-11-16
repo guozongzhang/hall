@@ -38,7 +38,7 @@
     <button type="button" class="mui-btn mui-btn-block" @click="switchLogin()">{{subBtnText}}</button>
   </div>
   <div class="wechat-login">
-    <a href="#"></a>
+    <a href="javascript:;" @click="weChartLogin()"></a>
   </div>
 </div>
 </template>
@@ -67,6 +67,7 @@ export default {
   },
   methods: {
     init: function () {
+      console.log(this.$store.state)
     },
 
     // 清除密码数据
@@ -86,7 +87,7 @@ export default {
         return false
       }
       if (!(/^1(3|4|5|7|8)\d{9}$/.test($.trim(model.info.phone)))) {
-        window.mui.toast('手机号合适错误!')
+        window.mui.toast('手机号格式错误!')
         return false
       }
       if (!model.verifyState) {
@@ -178,6 +179,11 @@ export default {
       }).catch(function (msg) {
         window.mui.toast('登录失败!')
       })
+    },
+
+    // 微信登录
+    weChartLogin: function () {
+      window.mui.toast('开发中，敬请期待...')
     }
   },
   mounted () {

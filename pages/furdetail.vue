@@ -3,8 +3,8 @@
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <ul class="navheader">
-      <li class="active">商品</li>
-      <li>详情</li>
+      <li class="active"><a href="#item1">商品</a></li>
+      <li><a href="#item2">详情</a></li>
     </ul>
     <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
     <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
@@ -82,8 +82,14 @@ export default {
     text-align: center;
     line-height: 30px;
   }
+  .navheader li a{
+    color: #000;
+    font-size: 14px;
+  }
   .navheader li.active{
     background: #7f7f7f;
+  }
+  .navheader li.active a{
     color: #fff;
   }
 

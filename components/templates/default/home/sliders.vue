@@ -1,5 +1,6 @@
 <template>
 <div class="mui-slider">
+  <div class="maodian" id="item1"></div>
   <div class="mui-slider-group mui-slider-loop">
     <!--支持循环，需要重复图片节点-->
     <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img :src="imgarr[0].url" /></a></div>
@@ -36,8 +37,14 @@ export default {
 <style>
   .mui-slider {
     max-height: 240px;
+    position: relative;
   }
   .mui-slider-item img {
     max-height: 240px;
+  }
+  .maodian {
+    position: absolute;
+    height: 1px;
+    top: -44px;
   }
 </style>

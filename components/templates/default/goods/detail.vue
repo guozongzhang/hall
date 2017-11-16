@@ -143,7 +143,7 @@
         <div>原木色</div>
         <div>小板凳</div>
       </div>
-      <div>
+      <div class="submit">
         <span></span>
       </div>
     </div>
@@ -151,7 +151,9 @@
   </div>
 </template>
 <style>
-
+  #modal {
+    width: 100%;
+  }
   #modal .header {
     overflow: hidden;
     padding: 10px;
@@ -195,6 +197,25 @@
   #modal .mui-icon {
     margin-top: 10px;
     margin-right: 10px;
+  }
+  #modal .submit {
+    height: 50px;
+    background: #5075ce;
+  }
+  #modal .submit span {
+    margin-top: 10px;
+    display: block;
+    height: 30px;
+    width: 30px;
+    margin: 10px auto;
+    background: url('/images/login.png') no-repeat;
+    background-size: 242px;
+    cursor: pointer;
+    background-position: -146px -18px;
+    cursor: pointer;
+    border: 2px solid #fff;
+    border-radius: 30px;
+
   }
   .modelversion {
     padding: 0 10px;

@@ -15,7 +15,8 @@ module.exports = {
       { src: '/js/mui.previewimage.js' },
       { src: '/js/mui.picker.min.js' },
       { src: '/js/jquery.min.js' },
-      { src: '/js/jquery.form.js' }
+      { src: '/js/jquery.form.js' },
+      { src: '/js/js.cookie.js' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },

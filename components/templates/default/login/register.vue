@@ -5,17 +5,17 @@
   </div>
   <div v-show="step == 'one'">
     <div class="mui-input-row number-box">
-      <input type="text" placeholder="手机号">
+      <input type="text" v-model="info.phone" placeholder="手机号">
     </div>
     <div class="mui-input-row number-box">
-      <input type="text" placeholder="动态验证码">
+      <input type="text" v-model="info.verify" placeholder="动态验证码">
       <a href="javascript:;" id="getverify" @click="getVerify()">{{verify}}</a>
     </div>
     <div class="mui-input-row number-box">
-      <input type="text" placeholder="设置密码">
+      <input type="text" placeholder="设置密码" v-model="info.newpwd">
     </div>
     <div class="mui-input-row number-box">
-      <input type="text" placeholder="确认密码">
+      <input type="text" placeholder="确认密码" v-model="info.conpwd">
     </div>
     <div class="mui-content-padded login-btn">
       <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="getNext('two')">下一步</button>
@@ -24,7 +24,7 @@
   <div v-show="step == 'two'">
     <div class="mui-input-row label-input">
       <label>真实姓名：</label>
-      <input type="text" placeholder="">
+      <input type="text" placeholder="" v-model="info.relname">
     </div>
     <div class="mui-input-row label-input">
       <label>服务公司：</label>
@@ -32,9 +32,9 @@
     </div>
     <div class="mui-input-row label-input">
       <label>服务门店：</label>
-      <select class="mui-btn mui-btn-block">
+      <select class="mui-btn mui-btn-block" v-model="info.store">
         <option value="-1">请选择</option>
-        <option value="item.id" v-for="item in storesArr">{{item.name}}</option>
+        <option value="item.id" v-for="item in storesArr">{{item.st_name}}</option>
       </select>
     </div>
     <div class="mui-input-row label-input" style="height: 110px;">
@@ -47,14 +47,16 @@
       </span>
     </div>
     <div class="mui-content-padded login-btn register-btn">
-      <button type="button" class="mui-btn mui-btn-primary mui-btn-block">提交</button>
+      <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="registerBtn()">提交</button>
     </div>
   </div>
 </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
+let ESVal = require('es-validate')
 let $ = require('jquery')
+let _ = require('underscore')
 let model
 let startTime = 60
 export default {
@@ -70,29 +72,46 @@ export default {
     return {
       verify: '获取动态密码',
       verifyState: false,
+      info: {
+        phone: '',
+        verify: '',
+        newpwd: '',
+        conpwd: '',
+        relname: '',
+        store: -1,
+        img: ''
+      },
       step: 'one',
-      storesArr: [
-        {
-          id: 1,
-          name: '大红门店'
-        },
-        {
-          id: 2,
-          name: '学院路店'
-        },
-        {
-          id: 3,
-          name: '展厅店'
-        }
-      ]
+      storesArr: []
     }
   },
   methods: {
     init: function () {
+      model.getStore()
+    },
+
+    // 获取门店列表
+    getStore: function () {
+      let param = {}
+      axios.get('classes/company_stores', {
+        params: param
+      }).then(function (data) {
+        model.storesArr = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     },
 
     // 获取动态密码
     getVerify: function () {
+      if (_.isEmpty($.trim(model.info.phone))) {
+        window.mui.toast('手机号不能为空!')
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test($.trim(model.info.phone)))) {
+        window.mui.toast('手机号格式错误!')
+        return false
+      }
       if (!model.verifyState) {
         axios.get('requestSmsCode/sms', {
           params: {
@@ -158,12 +177,66 @@ export default {
             var img = '<img src="' + data.url + '">'
             $('#upload_com').find('img').remove()
             $('#upload_com').append(img)
+            model.info.img = data.url
           },
           error: function (error) {
             console.log(error)
           }
         })
       })
+    },
+
+    // 提交注册
+    registerBtn: function () {
+      if (!model.validateForm(model.info)) {
+        return false
+      }
+      let param = model.info
+      axios.get('', {
+        params: param
+      }).then(function () {
+        window.mui.toast('注册成功!')
+      }).catch(function () {
+        window.mui.toast('注册失败!')
+      })
+    },
+
+    // 信息验证
+    validateForm (data) {
+      let result = ESVal.validate(data, {
+        phone: {
+          required: true,
+          msg: '手机号不能为空!'
+        },
+        verify: {
+          required: true,
+          msg: '验证码不能为空!'
+        },
+        newpwd: {
+          required: true,
+          msg: '密码不能为空!'
+        },
+        conpwd: {
+          required: true,
+          msg: '确认密码不能为空!'
+        },
+        relname: {
+          required: true,
+          msg: '真实姓名不能为空!'
+        },
+        store: {
+          notEqualTo: -1,
+          msg: '请选择服务门店!'
+        },
+        img: {
+          required: true,
+          msg: '请上传个人名片!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     }
   },
   mounted () {
@@ -228,7 +301,7 @@ export default {
 }
 .label-text{
   position: relative;
-  top: 10px;
+  top: 13px;
 }
 .label-input input{
   border: 1px solid #e3e4e8 !important;

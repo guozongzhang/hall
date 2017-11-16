@@ -3,7 +3,7 @@
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">登录</h1>
-    <a href="/register?company=2" class="mui-pull-right register-link">注册</a>
+    <a href="/register" class="mui-pull-right register-link">注册</a>
   </header>
   <div class="mui-content">
     <component :is="login"></component>

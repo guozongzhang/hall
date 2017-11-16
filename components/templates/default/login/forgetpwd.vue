@@ -23,6 +23,9 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let ESVal = require('es-validate')
+let $ = require('jquery')
+let _ = require('underscore')
 let model
 let startTime = 60
 export default {
@@ -44,6 +47,14 @@ export default {
 
     // 获取动态密码
     getVerify: function () {
+      if (_.isEmpty($.trim(model.info.phone))) {
+        window.mui.toast('手机号不能为空!')
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test($.trim(model.info.phone)))) {
+        window.mui.toast('手机号格式错误!')
+        return false
+      }
       if (!model.verifyState) {
         axios.get('requestSmsCode/sms', {
           params: {
@@ -73,6 +84,47 @@ export default {
         startTime--
       }
       model.verify = startTime + 's后重新获取'
+    },
+
+    // 重置密码
+    resetPwd: function () {
+      if (!model.validateForm(model.info)) {
+        return false
+      }
+      let param = model.info
+      axios.get('', {
+        params: param
+      }).then(function () {
+        window.mui.toast('重置密码成功!')
+      }).catch(function () {
+        window.mui.toast('重置密码失败!')
+      })
+    },
+
+    // 信息验证
+    validateForm (data) {
+      let result = ESVal.validate(data, {
+        phone: {
+          required: true,
+          msg: '手机号不能为空!'
+        },
+        verify: {
+          required: true,
+          msg: '验证码不能为空!'
+        },
+        newpwd: {
+          required: true,
+          msg: '密码不能为空!'
+        },
+        conpwd: {
+          required: true,
+          msg: '确认密码不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     }
   },
   mounted () {

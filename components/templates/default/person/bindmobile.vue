@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="btn-box">
-      <button type="button" class="mui-btn mui-btn-primary mui-btn-outlined">取消</button>
+      <button type="button" class="mui-btn mui-btn-primary mui-btn-outlined" @click="cancelBtn()">取消</button>
       <button type="button" class="mui-btn mui-btn-royal" @click="getNext()">下一步</button>
     </div>
   </div>
@@ -68,6 +68,8 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let $ = require('jquery')
+let _ = require('underscore')
 let model
 let startTime = 60
 export default {
@@ -77,7 +79,7 @@ export default {
       verify: '获取动态密码',
       verifyState: false,
       info: {
-        mobile: '18702760110',
+        mobile: '',
         verify: '',
         pwd: '',
         repwd: ''
@@ -90,6 +92,14 @@ export default {
 
     // 获取动态密码
     getVerify: function () {
+      if (_.isEmpty($.trim(model.info.mobile))) {
+        window.mui.toast('手机号不能为空!')
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test($.trim(model.info.mobile)))) {
+        window.mui.toast('手机号格式错误!')
+        return false
+      }
       if (!model.verifyState) {
         axios.get('requestSmsCode/sms', {
           params: {
@@ -124,11 +134,24 @@ export default {
     // 提交验证
     submitData: function () {
       model.step = 'setpwd'
+      let param = {}
+      axios.get('', {
+        params: param
+      }).then(function (data) {
+        model.step = 'setpwd'
+      }).catch(function () {
+        window.mui.toast('验证失败!')
+      })
     },
 
     // 下一步
     getNext: function () {
       model.step = 'surebind'
+    },
+
+    // 取消
+    cancelBtn: function () {
+      model.step = 'inputmobile'
     },
 
     // 绑定

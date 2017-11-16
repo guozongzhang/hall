@@ -20,6 +20,8 @@
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let ESVal = require('es-validate')
 let model
 export default {
   data () {
@@ -37,7 +39,39 @@ export default {
 
     // 确认修改密码
     editPwd: function () {
-      console.log(model.info)
+      if (!model.validateForm(model.info)) {
+        return false
+      }
+      let param = model.info
+      axios.get('', {
+        params: param
+      }).then(function () {
+        window.mui.toast('修改密码成功!')
+      }).catch(function () {
+        window.mui.toast('修改密码失败!')
+      })
+    },
+
+    // 信息验证
+    validateForm (data) {
+      let result = ESVal.validate(data, {
+        oldpwd: {
+          required: true,
+          msg: '原密码不能为空!'
+        },
+        newpwd: {
+          required: true,
+          msg: '密码不能为空!'
+        },
+        conpwd: {
+          required: true,
+          msg: '确认密码不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     }
   },
   mounted () {

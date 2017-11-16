@@ -7,7 +7,7 @@
           <div class="mui-switch-handle"></div>
         </div>
         <div class="mui-media-body vip-price">
-          <span>专属价</span>
+          <span class="vip-title">专属价</span>
           <p class='mui-ellipsis vip-tips'>开启后,商品详情页显示与当前登录身份相关的专属价;<br>关闭后,详情页不出现专属价项。</p>
         </div>
       </a>
@@ -50,7 +50,7 @@ export default {
   border-bottom: 1px solid #cccccc;
 }
 .vip-price .vip-title{
-  font-size: 15px;
+  font-size: 14px;
   color: #696969;
 }
 .vip-price .vip-tips{
@@ -60,8 +60,9 @@ export default {
   color: #447dff;
 }
 .sub-item{
-  height: 50px;
-  line-height: 28px;
+  height: 44px;
+  line-height: 22px;
+  font-size: 14px;
   color: #050505 !important;
 }
 </style>

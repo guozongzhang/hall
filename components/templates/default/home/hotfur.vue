@@ -12,7 +12,7 @@
     <div class="mui-slider-item mui-slider-item-duplicate">
       <ul class="mui-table-view mui-grid-view">
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
             <span class="new-item">新品</span>
             <div class="mui-media-body">Color of SIP CBD</div>
@@ -23,7 +23,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
             <div class="mui-media-body">静静看这世界</div>
             <div class="money">
@@ -33,7 +33,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
             <div class="mui-media-body">静静看这世界</div>
             <div class="money">
@@ -47,7 +47,7 @@
     <div class="mui-slider-item">
       <ul class="mui-table-view mui-grid-view">
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
             <span class="new-item">新品</span>
             <div class="mui-media-body">Color of SIP CBD</div>
@@ -58,7 +58,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
             <div class="mui-media-body">静静看这世界</div>
             <div class="money">
@@ -68,7 +68,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
             <div class="mui-media-body">Color of SIP CBD</div>
             <div class="money">
@@ -82,7 +82,7 @@
     <div class="mui-slider-item">
       <ul class="mui-table-view mui-grid-view">
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
             <div class="mui-media-body">Color of SIP CBD</div>
             <div class="money">
@@ -92,7 +92,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
             <span class="new-item">新品</span>
             <div class="mui-media-body">静静看这世界</div>
@@ -103,7 +103,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
             <div class="mui-media-body">Color of SIP CBD</div>
             <div class="money">
@@ -117,7 +117,7 @@
     <div class="mui-slider-item">
       <ul class="mui-table-view mui-grid-view">
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
             <span class="new-item">新品</span>
             <div class="mui-media-body">Color of SIP CBD</div>
@@ -128,7 +128,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
             <div class="mui-media-body">静静看这世界</div>
             <div class="money">
@@ -138,7 +138,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
             <div class="mui-media-body">静静看这世界</div>
             <div class="money">
@@ -152,7 +152,7 @@
     <div class="mui-slider-item mui-slider-item-duplicate">
       <ul class="mui-table-view mui-grid-view">
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
             <span class="new-item">新品</span>
             <div class="mui-media-body">Color of SIP CBD</div>
@@ -163,7 +163,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
             <div class="mui-media-body">静静看这世界</div>
             <div class="money">
@@ -173,7 +173,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
+          <a href="/furdetail">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
             <div class="mui-media-body">Color of SIP CBD</div>
             <div class="money">

@@ -26,7 +26,7 @@
       <input type="text" v-model="info.phone" placeholder="手机号码">
     </div>
     <div class="mui-input-row mui-password">
-      <input type="password" v-model="info.verify" placeholder="动态密码">
+      <input type="text" v-model="info.verify" placeholder="动态密码">
       <a href="javascript:;" id="getverify" @click="getVerify()">{{verify}}</a>
     </div>
   </div>
@@ -44,6 +44,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
@@ -67,7 +68,8 @@ export default {
   },
   methods: {
     init: function () {
-      console.log(this.$store.state)
+      let rem = Cookies.get('dpjia-hall-remeber')
+      model.info.remeber = rem
     },
 
     // 清除密码数据
@@ -90,8 +92,27 @@ export default {
         window.mui.toast('手机号格式错误!')
         return false
       }
+      axios.get('classes/users', {
+        params: {
+          where: {
+            u_mobile: model.info.phone
+          }
+        }
+      }).then(function (data) {
+        if (data.data.items.length > 0) {
+          model.getSms()
+        } else {
+          window.mui.toast('该手机号还没有注册!')
+        }
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 单纯获取验证码（验证手机号已经注册过）
+    getSms: function () {
       if (!model.verifyState) {
-        axios.get('requestSmsCode/sms', {
+        axios.get('requestSmsCode/send_sms', {
           params: {
             type: 'web',
             mobile: model.info.phone
@@ -162,23 +183,41 @@ export default {
           username: model.info.number,
           password: model.info.pwd
         }
+        axios.get('users/login', {
+          params: obj
+        }).then(function (data) {
+          model.hadLogin(data.data)
+        }).catch(function (msg) {
+          window.mui.toast('登录失败!')
+        })
       } else {
         // 手机号
         obj = {
-          username: model.info.phone,
-          password: model.info.verify
+          mobile: model.info.phone,
+          code: model.info.verify
         }
+        axios.get('users/cloud_login', {
+          params: obj
+        }).then(function (data) {
+          model.hadLogin(data.data)
+        }).catch(function (msg) {
+          window.mui.toast('登录失败!')
+        })
       }
-      axios.get('users/login', {
-        params: obj
-      }).then(function (data) {
-        window.mui.toast('登录成功!')
-        setTimeout(function () {
-          window.location.href = '/'
-        }, 1000)
-      }).catch(function (msg) {
-        window.mui.toast('登录失败!')
-      })
+    },
+
+    // 登录成功
+    hadLogin: function (data) {
+      Cookies.set('dpjia-hall-token', data.token)
+      if (model.info.remeber) {
+        Cookies.set('dpjia-hall-remeber', true)
+      } else {
+        Cookies.set('dpjia-hall-remeber', '')
+      }
+      window.mui.toast('登录成功!')
+      setTimeout(function () {
+        window.location.href = '/'
+      }, 1000)
     },
 
     // 微信登录

@@ -24,7 +24,6 @@
         </div>
       </div>
     </div>
-
     <div class="version">
       <p class="mui-navigate-right" >
         <a href="#modal">
@@ -147,10 +146,25 @@
         <span></span>
       </div>
     </div>
-
   </div>
 </template>
-<style>
+<script>
+export default {
+  data () {
+    return {
+      data: {}
+    }
+  },
+  methods: {
+    init: function () {
+    }
+  },
+  mounted () {
+    this.init()
+  }
+}
+</script>
+<style scoped>
   #modal {
     width: 100%;
   }
@@ -215,7 +229,6 @@
     cursor: pointer;
     border: 2px solid #fff;
     border-radius: 30px;
-
   }
   .modelversion {
     padding: 0 10px;
@@ -242,296 +255,268 @@
     border: 1px solid #5075CE;
     color: #fff;
   }
-
-</style> 
-<script>
-export default {
-  data () {
-    return {
-      data: {
-
-      }
-    }
-  },
-  methods: {
-    init: function () {
-    }
-  },
-  mounted () {
-    this.init()
+  .down {
+    position: absolute;
+    top: -36px;
+    z-index: 22;
+    background: rgba(16, 2, 2, 0.41);
+    color: #fff;
+    height: 35px;
+    line-height: 35px;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
   }
-}
-</script>
+  .maodian {
+    height: 1px;
+    position: absolute;
+    top: -44px;
+  }
+  .c05 {
+    color: #050505
+  }
+  .c61{
+    color: #616161;
+  }
+  .c3d{
+    color: #3D3D3D
+  }
+  .furniture{
+    position: relative;
+  }
+  li {
+    list-style: none;
+  }
+  .version{
+    background: #fff;
+  }
+  .furdetail {
+    overflow: hidden;
+    padding: 0
+  }
+  .furdetail .mui-navigate-right {
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    margin:0
+  }
+  .furdetail p{
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    margin: 0
+  }
+  .desc{
+    overflow: hidden;
+    padding: 0 20px;
+  }
+  .furdetail .desc li {
+    border-bottom: 1px dashed #ccc;
+    float: left;
+    list-style: none;
+    padding-left: 35px;
+    width: 50%;
+    height: 30px;
+    line-height: 30px;
+  }
+  .furpic ul li:last-child{
+    margin-bottom: 0
+  }
+  .furdetail .desc li span {
+    font-size: 12px;
+    color: #616161;
+  }
+  .furdetail .desc li span:nth-child(2) {
+    padding-left: 5px;
+  }
+  .furpic {
+    background: #fff;
+    position: relative;
+  }
+  .furpic p {
+    height: 30px;
+    line-height: 38px;
+    text-align: center;
+  }
+  .furpic ul {
+    padding: 0
+  }
+  .furpic ul li{
+    padding: 0;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .furpic img{
+    float: left;
+    display: block;
+    height: 150px;
+    max-width: 60%;
+  }
+  .furpic .desc div{
+    width: 40%;
+    float: left;
+    padding: 0 20px;
+  }
+  .furpic h4 {
+    text-align: left;
+    margin: 50px 0 10px;
+    font-size: 12px;
+    font-weight: normal;
+    color: #616161;
+  }
+  .furpic .content {
+    text-align: left;
+    float: left;
+    font-size: 12px;
+    color: #616161;
+  }
+  .style {
+    background: #fff;
+    padding-bottom: 10px;
+  }
+  .style p:nth-child(1){
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin: 0
+  }
+  .style span{
+    font-size: 12px;
+    display: block;
+    width: 50%;
+    text-align: center;
+    margin:0 auto;
+  }
+  .styleimg {
+    padding: 0 20px;
+    overflow: hidden;
+  }
+  .styleimg div{
+    width: 30%;
+    height: 165px;
+    overflow: hidden;
+    float: left;
+    margin-right: 5%;
+  }
+  .styleimg div:nth-child(3){
+    margin-right: 0
+  }
+  .styleimg img{
+    height: 165px;
+  }
+  .style .text {
+    margin: 10px 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 2px;
+  }
 
-<style scoped>
-.down {
-  position: absolute;
-  top: -36px;
-  z-index: 22;
-  background: rgba(16, 2, 2, 0.41);
-  color: #fff;
-  height: 35px;
-  line-height: 35px;
-  font-size: 14px;
-  text-align: center;
-  width: 100%;
-}
-.maodian {
-  height: 1px;
-  position: absolute;
-  top: -44px;
-}
-.c05 {
-  color: #050505
-}
-.c61{
-  color: #616161;
-}
-.c3d{
-  color: #3D3D3D
-}
-.furniture{
-  position: relative;
-}
-li {
-  list-style: none;
-}
-.version{
-  background: #fff;
-}
-.furdetail {
-  overflow: hidden;
-  padding: 0
-}
-.furdetail .mui-navigate-right {
-  height: 35px;
-  line-height: 35px;
-  text-align: center;
-  margin:0
-}
-.furdetail p{
-  height: 35px;
-  line-height: 35px;
-  text-align: center;
-  margin: 0
-}
-.desc{
-  overflow: hidden;
-  padding: 0 20px;
-}
-.furdetail .desc li {
-  border-bottom: 1px dashed #ccc;
-  float: left;
-  list-style: none;
-  padding-left: 35px;
-  width: 50%;
-  height: 30px;
-  line-height: 30px;
-}
-.furpic ul li:last-child{
-  margin-bottom: 0
-}
-.furdetail .desc li span {
-  font-size: 12px;
-  color: #616161;
-}
-.furdetail .desc li span:nth-child(2) {
-  padding-left: 5px;
-}
-.furpic {
-  background: #fff;
-  position: relative;
-}
-.furpic p {
-  height: 30px;
-  line-height: 38px;
-  text-align: center;
-}
-.furpic ul {
-  padding: 0
-}
-.furpic ul li{
-  padding: 0;
-  margin-bottom: 10px;
-  overflow: hidden;
-}
-.furpic img{
-  float: left;
-  display: block;
-  height: 150px;
-  max-width: 60%;
-}
-.furpic .desc div{
-  width: 40%;
-  float: left;
-  padding: 0 20px;
-}
-.furpic h4 {
-  text-align: left;
-  margin: 50px 0 10px;
-  font-size: 12px;
-  font-weight: normal;
-  color: #616161;
-}
-.furpic .content {
-  text-align: left;
-  float: left;
-  font-size: 12px;
-  color: #616161;
-}
-.style {
-  background: #fff;
-  padding-bottom: 10px;
-}
-.style p:nth-child(1){
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-  margin: 0
-}
-.style span{
-  font-size: 12px;
-  display: block;
-  width: 50%;
-  text-align: center;
-  margin:0 auto;
-}
-.styleimg {
-  padding: 0 20px;
-  overflow: hidden;
-}
-.styleimg div{
-  width: 30%;
-  height: 165px;
-  overflow: hidden;
-  float: left;
-  margin-right: 5%;
-}
-.styleimg div:nth-child(3){
-  margin-right: 0
-}
-.styleimg img{
-  height: 165px;
-}
-.style .text {
-  margin: 10px 20px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 2px;
-}
-
-.version .mui-navigate-right{
-  height: 50px;
-  border-bottom: 1px solid #ccc;
-  line-height: 50px;
-  padding: 0 20px;
-  position: relative;
-  margin: 0;
-}
-.fur_info {
-  height: 140px;
-  margin-bottom: 10px;
-  padding: 0 20px;
-  background: #fff;
-}
-.fur_info .title {
-  height: 45px;
-  line-height: 50px;
-  font-size: 16px;
-  color: #050505;
-  margin: 0;
-}
-.bqian{
-  font-size: 12px;
-  color: #ABABAB;
-  border: 1px solid #ABABAB;
-  border-radius: 2px;
-  padding: 0 5px;
-  display: inline-block;
-}
-.titelfoot{
-  overflow: hidden;
-  margin-top: 10px;
-  height: 45px;
-}
-.titelfoot .price {
-  float:left;
-}
-.titelfoot .price span:nth-child(1){
-  display: block;
-  margin-bottom: 6px;
-  overflow: hidden;
-}
-.titelfoot .price span:nth-child(1) i:nth-child(1){
-  font-size: 12px;
-  color: #050505;
-  font-style: normal;
-  float: left;
-  margin-right: 5px;
-}
-.titelfoot .price span:nth-child(1) i:nth-child(2){
-  font-size: 18px;
-  color: #4E73CD;
-  font-style: normal;
-  float: left;
-  line-height: 18px;
-}
-
-
-.titelfoot .price span:nth-child(2){
-  display: inline-block;
-  margin-bottom: 10px;
-  overflow: hidden;
-}
-.titelfoot .price span:nth-child(2) i:nth-child(1){
-  font-size: 12px;
-  color: #050505;
-  font-style: normal;
-  float: left;
-  margin-right: 5px;
-  
-}
-.titelfoot .price span:nth-child(2) i:nth-child(2){
-  font-size: 18px;
-  color: #B0B0B0;
-  font-style: normal;
-  float: left;
-  line-height: 18px;
-  text-decoration:line-through
-}
-
-.titelfoot .price span:nth-child(3){
-  display: inline-block;
-  margin-left: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  margin-left: 10px;
-}
-.titelfoot .price span:nth-child(3) i:nth-child(1){
-  font-size: 12px;
-  color: #050505;
-  font-style: normal;
-  float: left;
-  margin-right: 5px;
-}
-.titelfoot .price span:nth-child(3) i:nth-child(2){
-  font-size: 18px;
-  color: #FFC800;
-  font-style: normal;
-  float: left;
-  line-height: 18px;
-}
-
-
-.scang {
-  float: right;
-  border: 1px solid #4E73CD;
-  border-radius: 2px;
-  background: url("/images/person.png") no-repeat;
-  background-position: -212px -24px;
-  height: 34px;
-  line-height: 34px;
-  padding: 0 20px;
-  margin-top: 11px;
-}
+  .version .mui-navigate-right{
+    height: 50px;
+    border-bottom: 1px solid #ccc;
+    line-height: 50px;
+    padding: 0 20px;
+    position: relative;
+    margin: 0;
+  }
+  .fur_info {
+    height: 140px;
+    margin-bottom: 10px;
+    padding: 0 20px;
+    background: #fff;
+  }
+  .fur_info .title {
+    height: 45px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #050505;
+    margin: 0;
+  }
+  .bqian{
+    font-size: 12px;
+    color: #ABABAB;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    padding: 0 5px;
+    display: inline-block;
+  }
+  .titelfoot{
+    overflow: hidden;
+    margin-top: 10px;
+    height: 45px;
+  }
+  .titelfoot .price {
+    float:left;
+  }
+  .titelfoot .price span:nth-child(1){
+    display: block;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .titelfoot .price span:nth-child(1) i:nth-child(1){
+    font-size: 12px;
+    color: #050505;
+    font-style: normal;
+    float: left;
+    margin-right: 5px;
+  }
+  .titelfoot .price span:nth-child(1) i:nth-child(2){
+    font-size: 18px;
+    color: #4E73CD;
+    font-style: normal;
+    float: left;
+    line-height: 18px;
+  }
+  .titelfoot .price span:nth-child(2){
+    display: inline-block;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .titelfoot .price span:nth-child(2) i:nth-child(1){
+    font-size: 12px;
+    color: #050505;
+    font-style: normal;
+    float: left;
+    margin-right: 5px;
+  }
+  .titelfoot .price span:nth-child(2) i:nth-child(2){
+    font-size: 18px;
+    color: #B0B0B0;
+    font-style: normal;
+    float: left;
+    line-height: 18px;
+    text-decoration:line-through
+  }
+  .titelfoot .price span:nth-child(3){
+    display: inline-block;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    margin-left: 10px;
+  }
+  .titelfoot .price span:nth-child(3) i:nth-child(1){
+    font-size: 12px;
+    color: #050505;
+    font-style: normal;
+    float: left;
+    margin-right: 5px;
+  }
+  .titelfoot .price span:nth-child(3) i:nth-child(2){
+    font-size: 18px;
+    color: #FFC800;
+    font-style: normal;
+    float: left;
+    line-height: 18px;
+  }
+  .scang {
+    float: right;
+    border: 1px solid #4E73CD;
+    border-radius: 2px;
+    background: url("/images/person.png") no-repeat;
+    background-position: -212px -24px;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 20px;
+    margin-top: 11px;
+  }
 </style>

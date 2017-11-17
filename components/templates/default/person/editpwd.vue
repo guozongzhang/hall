@@ -2,7 +2,7 @@
 <div class="login-box">
   <p>
     您正在为账号
-    <a>18702760110</a>
+    <a>{{mobile}}</a>
     修改密码
   </p>
   <div class="mui-input-row number-box">
@@ -21,11 +21,15 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
+let $ = require('jquery')
+let _ = require('underscore')
 let ESVal = require('es-validate')
 let model
 export default {
   data () {
     return {
+      mobile: '',
       info: {
         oldpwd: '',
         newpwd: '',
@@ -35,6 +39,24 @@ export default {
   },
   methods: {
     init: function () {
+      let token = Cookies.get('dpjia-hall-token')
+      if (!_.isEmpty($.trim(token))) {
+        model.loginstate = true
+        model.getPersonInfo(token)
+      }
+    },
+
+    // 获取个人信息
+    getPersonInfo: function (token) {
+      axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+        headers: {
+          'X-DP-Token': token
+        }
+      }).then(function (data) {
+        model.mobile = data.data.mobile
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     },
 
     // 确认修改密码

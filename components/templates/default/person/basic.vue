@@ -2,11 +2,11 @@
   <div>
     <div class="personbg">
       <img class="bgimg" src="/images/person_bg.png">
-      <img :src="data.info3.header_img" class="bgheader" > 
+      <img :src="info.header_img" class="bgheader" > 
       <div class="name">
         <p>
           <span>
-            <a href="/login">{{data.info.header_name}}<i v-if="data.info.type != 'wait'" class="editheader"> </i>
+            <a href="javascript:;" @click="isLogin()">{{info.header_name}}
             </a>
           </span>
         </p>
@@ -14,58 +14,48 @@
     </div>
     <ul class="mui-table-view">
       <li class="personli">
-        <a href="/bindmobile" class="mui-navigate-right">
+        <a href="javascript:;">
           <span class="phone"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
-              手机号:
-              <span>{{data.info3.tel.num}}</span>
-              <span class="colorlan">{{data.info3.tel.txt}}</span>
+              手机号<i style="font-style: normal;">:</i>
+              <span>{{info.tel}}</span>
             </p>
           </div>
         </a>
       </li>
       <li class="personli">
-        <a href="javascript:;">
-          <span class="wechet"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              微信号:
-              <span>{{data.info3.wechet.first}}</span>
-              <span class="colorlan">{{data.info3.wechet.second}}</span>
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;">
+        <a href="javascript:;" v-bind:class="(loginstate && !info.identity.none) ? 'mui-navigate-right' : ''" @click="goNextPage('/uptodesigner', 'identify')">
           <span class="head"></span>
           <div class="mui-media-body">
-            <p :class="data.info3.type != 'wait' ? 'h16' : ''" class='mui-ellipsis' >
-              当前身份:
-              <span>{{data.info3.identity.txt}}</span>
+            <p class='mui-ellipsis' v-bind:class="!info.identity.none ? 'h16' : ''">
+              当前身份<i style="font-style: normal;">:</i>
+              <span>{{info.identity.txt}}</span>
             </p>
-            <i class="sjdesign" v-if="!data.info3.identity.none">升级为销售设计师,享受更多特权</i>
+            <i class="sjdesign" v-if="!info.identity.none">升级为销售设计师,享受更多特权</i>
           </div>
         </a>
       </li>
       <li class="personli">
-        <a href="javascript:;" class="mui-navigate-right">
+        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/mycollect', 'normal')">
           <span class="start"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
-              我的收藏:
-              <a>{{data.info3.fur_num}}</a>
-              个商品
+              我的收藏<i style="font-style: normal;">:</i>
+              <span v-show="loginstate">
+                共
+                <i style="font-style: normal;color: #5075ce">{{info.fur_num}}</i>
+                个
+              </span>
             </p>
           </div>
         </a>
       </li>
       <li class="personli">
-        <a href="/settings" class="mui-navigate-right">
+        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/settings', 'normal')">
           <span class="set"></span>
           <div class="mui-media-body">
-            <p :class="data.info3.type == 'wait' ? 'colorhui' : ''" class="mui-ellipsis">
+            <p class='mui-ellipsis'>
               设置
             </p>
           </div>
@@ -85,116 +75,91 @@
   </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
+let $ = require('jquery')
+let _ = require('underscore')
+let model
 export default {
   data () {
     return {
-      data: {
-        info: {
-          header_img: '/images/shuijiao.jpg',
-          header_name: '点击登录',
-          type: 'wait',
-          fur_num: 10,
-          tel: {
-            num: '-',
-            txt: ''
-          },
-          wechet: {
-            first: '-',
-            second: ''
-          },
-          identity: {
-            txt: '游客',
-            none: true
-          },
-          about: '/about/ms'
-        },
-        // 账号登录后
-        info1: {
-          header_img: '/images/muwu.jpg',
-          header_name: '黄老板',
-          type: 'zhlogin',
-          fur_num: 10,
-          tel: {
-            num: 1393095412,
-            txt: ''
-          },
-          wechet: {
-            first: '暂无,马上去',
-            second: '绑定'
-          },
-          identity: {
-            txt: '嘉利信得 销售设计师',
-            none: true
-          },
-          about: '/about/ms'
-        },
-        // 微信登录后2
-        info2: {
-          header_img: '/images/muwu.jpg',
-          header_name: '黄老板',
-          type: 'wechatlogin',
-          fur_num: 10,
-          tel: {
-            num: 1393095412,
-            txt: '更换手机号',
-            href: ''
-          },
-          wechet: {
-            first: '已绑定',
-            second: '黄鑫',
-            href: ''
-          },
-          identity: {
-            txt: '嘉利信得普通用户',
-            none: false
-          },
-          about: '/about/ms'
-        },
-        // 微信登录后1
-        info3: {
-          header_img: '/images/muwu.jpg',
-          header_name: '黄老板',
-          type: 'wechatlogin1',
-          fur_num: 10,
-          tel: {
-            first: '暂无,马上去',
-            second: '绑定',
-            href: ''
-          },
-          wechet: {
-            first: '已绑定',
-            second: '黄鑫',
-            href: ''
-          },
-          identity: {
-            txt: '嘉利信得普通用户',
-            none: false
-          },
-          about: '/about/ms'
+      loginstate: false,
+      info: {
+        header_img: '/images/shuijiao.jpg',
+        header_name: '点击登录',
+        fur_num: 0,
+        tel: '-',
+        identity: {
+          txt: '游客',
+          none: true
         }
       }
     }
   },
   methods: {
     init: function () {
+      let token = Cookies.get('dpjia-hall-token')
+      if (!_.isEmpty($.trim(token))) {
+        model.loginstate = true
+        model.getPersonInfo(token)
+      }
+    },
+
+    // 获取个人信息
+    getPersonInfo: function (token) {
+      axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+        headers: {
+          'X-DP-Token': token
+        }
+      }).then(function (data) {
+        model.info = {
+          header_img: data.data.ui_head,
+          header_name: data.data.ui_name || '未设置',
+          tel: data.data.mobile,
+          fur_num: data.data.count,
+          identity: {
+            txt: data.data.user_type,
+            none: data.data.type
+          }
+        }
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 是否要登录
+    isLogin: function () {
+      if (!model.loginstate) {
+        window.location.href = '/login'
+      }
+    },
+
+    // 跳转页面
+    goNextPage: function (url, type) {
+      if (model.loginstate) {
+        if (type === 'normal') {
+          console.log(url)
+          window.location.href = url
+        } else {
+          if (!model.info.identity.none) {
+            window.location.href = url
+          }
+        }
+      }
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }
 </script>
-
 <style scoped>
-  
   .sjdesign {
     position: absolute;
     top: 23px;
     font-size: 12px;
     font-style: normal;
-  }
-  .colorlan{
-    color: blue
   }
   .name span{
     display: inline-block
@@ -306,8 +271,4 @@ export default {
   .personli p.h16{
     line-height: 16px;
   }
-  .personli .colorhui {
-    color: #9C9C9C
-  }
-
 </style>

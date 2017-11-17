@@ -19,7 +19,8 @@ let mockRequest = (query, store) => {
       } else {
         obj = {
           theme: 'default',
-          comid: 0
+          comid: 0,
+          comname: ''
         }
       }
       resolve(obj)

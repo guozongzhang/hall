@@ -12,10 +12,10 @@
       <a href="javascript:;" id="getverify" @click="getVerify()">{{verify}}</a>
     </div>
     <div class="mui-input-row number-box">
-      <input type="text" placeholder="设置密码" v-model="info.newpwd">
+      <input class="newpwd" type="password" placeholder="设置密码" v-model="info.newpwd" @blur="verLength()">
     </div>
     <div class="mui-input-row number-box">
-      <input type="text" placeholder="确认密码" v-model="info.conpwd">
+      <input type="password" placeholder="确认密码" v-model="info.conpwd">
     </div>
     <div class="mui-content-padded login-btn">
       <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="getNext('two')">下一步</button>
@@ -28,13 +28,13 @@
     </div>
     <div class="mui-input-row label-input">
       <label>服务公司：</label>
-      <span class="label-text">习大大</span>
+      <span class="label-text">{{comname}}</span>
     </div>
     <div class="mui-input-row label-input">
       <label>服务门店：</label>
       <select class="mui-btn mui-btn-block" v-model="info.store">
         <option value="-1">请选择</option>
-        <option value="item.id" v-for="item in storesArr">{{item.st_name}}</option>
+        <option v-bind:value="item.id" v-for="item in storesArr">{{item.st_name}}</option>
       </select>
     </div>
     <div class="mui-input-row label-input" style="height: 110px;">
@@ -54,6 +54,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let ESVal = require('es-validate')
 let $ = require('jquery')
 let _ = require('underscore')
@@ -82,17 +83,41 @@ export default {
         img: ''
       },
       step: 'one',
+      comname: '',
       storesArr: []
     }
   },
   methods: {
     init: function () {
+      model.getCompany()
       model.getStore()
+    },
+
+    // 获取公司信息
+    getCompany: function () {
+      let param = {
+        where: {
+          com_id: this.$store.state.comid
+        },
+        keys: 'id,com_name'
+      }
+      axios.get('classes/companys', {
+        params: param
+      }).then(function (data) {
+        model.comname = data.data.items[0].com_name
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     },
 
     // 获取门店列表
     getStore: function () {
-      let param = {}
+      let param = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid
+        },
+        keys: 'id,st_name'
+      }
       axios.get('classes/company_stores', {
         params: param
       }).then(function (data) {
@@ -112,10 +137,29 @@ export default {
         window.mui.toast('手机号格式错误!')
         return false
       }
+      axios.get('classes/users', {
+        params: {
+          where: {
+            u_mobile: model.info.phone
+          }
+        }
+      }).then(function (data) {
+        if (data.data.items.length > 0) {
+          window.mui.toast('该手机号已经注册过,可以直接登录!')
+        } else {
+          model.getSms()
+        }
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 单纯获取验证码（验证手机号已经注册过）
+    getSms: function () {
       if (!model.verifyState) {
-        axios.get('requestSmsCode/sms', {
+        axios.get('requestSmsCode/send_sms', {
           params: {
-            type: 'admin',
+            type: 'web',
             mobile: model.info.phone
           }
         }).then(function () {
@@ -143,14 +187,58 @@ export default {
       model.verify = startTime + 's后重新获取'
     },
 
+    // 检验密码长度
+    verLength: function () {
+      if (($.trim(model.info.newpwd)).length < 6) {
+        window.mui.toast('密码长度必须大于6个字符!')
+        $('.newpwd').focus()
+        return false
+      }
+    },
+
     // 下一步
     getNext: function (str) {
+      // 下一步验证
+      if (!model.nextValidateForm(model.info)) {
+        return false
+      }
+      if (String($.trim(model.info.newpwd)) !== String($.trim(model.info.conpwd))) {
+        window.mui.toast('确认密码错误!')
+        $('.newpwd').focus()
+        return
+      }
       model.step = str
+    },
+
+    // 下一步信息验证
+    nextValidateForm (data) {
+      let result = ESVal.validate(data, {
+        phone: {
+          required: true,
+          msg: '手机号不能为空!'
+        },
+        verify: {
+          required: true,
+          msg: '验证码不能为空!'
+        },
+        newpwd: {
+          required: true,
+          msg: '密码不能为空!'
+        },
+        conpwd: {
+          required: true,
+          msg: '确认密码不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     },
 
     // 上传图片
     upload_com: function () {
-      var url = 'http://192.168.1.120/openapi/api/1.0/upload'
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
       var $input = $('#upload_com').find('input')
       $input.unbind().click()
       $input.unbind().change(function () {
@@ -168,9 +256,8 @@ export default {
           },
           crossDomain: true,
           headers: {
-            'X-DP-Key': '222',
-            'X-DP-ID': '111',
-            'X-DP-Token': 'd9cf5249ed675b1ee387397ec853e86f'
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
           },
           success: function (data) {
             $input.unwrap()
@@ -191,17 +278,27 @@ export default {
       if (!model.validateForm(model.info)) {
         return false
       }
-      let param = model.info
-      axios.get('', {
-        params: param
-      }).then(function () {
+      let param = {
+        mobile: model.info.phone,
+        password: model.info.newpwd,
+        code: model.info.verify,
+        designer_type: 'seller',
+        com_id_poi_companys: this.$store.state.comid,
+        designer_url: model.info.img,
+        st_id: model.info.store
+      }
+      axios.post('users/signUpBySmsCode', param).then(function (data) {
+        Cookies.set('dpjia-hall-token', data.data.token)
         window.mui.toast('注册成功!')
+        setTimeout(function () {
+          window.location.href = '/'
+        }, 1000)
       }).catch(function () {
         window.mui.toast('注册失败!')
       })
     },
 
-    // 信息验证
+    // 提交信息验证
     validateForm (data) {
       let result = ESVal.validate(data, {
         phone: {

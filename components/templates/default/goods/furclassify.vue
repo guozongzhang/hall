@@ -127,7 +127,7 @@ export default {
   padding: 10px;
 }
 .right-box .mui-table-view.mui-grid-view .mui-table-view-cell{
-  padding: 10px;
+  padding: 10px 10px 0 10px;
 }
 .right-box .mui-table-view.mui-grid-view img{
   border: 1px solid #c9c9c9;

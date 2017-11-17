@@ -1,7 +1,7 @@
 const mutations = {
-  setTheme (state, themeVal, comId) {
-    state.theme = themeVal || 'default'
-    state.comid = comId || '0'
+  setTheme (state, themeobj) {
+    state.theme = themeobj.theme || 'default'
+    state.comid = themeobj.comid || '0'
   }
 }
 export default mutations

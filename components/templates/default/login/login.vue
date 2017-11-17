@@ -92,21 +92,7 @@ export default {
         window.mui.toast('手机号格式错误!')
         return false
       }
-      axios.get('classes/users', {
-        params: {
-          where: {
-            u_mobile: model.info.phone
-          }
-        }
-      }).then(function (data) {
-        if (data.data.items.length > 0) {
-          model.getSms()
-        } else {
-          window.mui.toast('该手机号还没有注册!')
-        }
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
-      })
+      model.getSms()
     },
 
     // 单纯获取验证码（验证手机号已经注册过）

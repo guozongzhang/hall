@@ -6,13 +6,13 @@
     修改密码
   </p>
   <div class="mui-input-row number-box">
-    <input type="text" placeholder="原密码" v-model="info.oldpwd">
+    <input type="password" placeholder="原密码" v-model="info.oldpwd">
   </div>
   <div class="mui-input-row number-box">
-    <input type="text" placeholder="新密码" v-model="info.newpwd">
+    <input type="password" class="newpwd" placeholder="新密码" v-model="info.newpwd" @blur="verLength()">
   </div>
   <div class="mui-input-row number-box">
-    <input type="text" placeholder="确认新密码" v-model="info.conpwd">
+    <input type="password" placeholder="确认新密码" v-model="info.conpwd">
   </div>
   <div class="mui-content-padded login-btn">
     <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="editPwd()">确认修改</button>
@@ -26,6 +26,7 @@ let $ = require('jquery')
 let _ = require('underscore')
 let ESVal = require('es-validate')
 let model
+let token
 export default {
   data () {
     return {
@@ -39,7 +40,7 @@ export default {
   },
   methods: {
     init: function () {
-      let token = Cookies.get('dpjia-hall-token')
+      token = Cookies.get('dpjia-hall-token')
       if (!_.isEmpty($.trim(token))) {
         model.loginstate = true
         model.getPersonInfo(token)
@@ -59,18 +60,40 @@ export default {
       })
     },
 
+    // 检验密码长度
+    verLength: function () {
+      if (($.trim(model.info.newpwd)).length < 6) {
+        window.mui.toast('密码长度必须大于6个字符!')
+        $('.newpwd').focus()
+        return false
+      }
+    },
+
     // 确认修改密码
     editPwd: function () {
       if (!model.validateForm(model.info)) {
         return false
       }
-      let param = model.info
-      axios.get('', {
-        params: param
+      if (String($.trim(model.info.newpwd)) !== String($.trim(model.info.conpwd))) {
+        window.mui.toast('确认密码错误!')
+        $('.newpwd').focus()
+        return
+      }
+      let param = {
+        old_password: model.info.oldpwd,
+        new_password: model.info.newpwd
+      }
+      axios.put('users/resetPassword', param, {
+        headers: {
+          'X-DP-Token': token
+        }
       }).then(function () {
         window.mui.toast('修改密码成功!')
+        setTimeout(function () {
+          window.location.href = '/person'
+        }, 1000)
       }).catch(function () {
-        window.mui.toast('修改密码失败!')
+        window.mui.toast('原密码输入错误!')
       })
     },
 

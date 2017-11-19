@@ -122,6 +122,8 @@ export default {
             none: data.data.type
           }
         }
+        let isupgrade = data.data.upgrade ? 'yes' : 'no'
+        Cookies.set('can-upgrade', isupgrade)
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })

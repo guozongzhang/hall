@@ -6,7 +6,7 @@
   </div>
   <div class="mui-input-row label-input">
     <label>服务公司：</label>
-    <span class="label-text">习大大</span>
+    <span class="label-text">{{comname}}</span>
   </div>
   <div class="mui-input-row label-input">
     <label>服务门店：</label>
@@ -31,9 +31,11 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let ESVal = require('es-validate')
 let $ = require('jquery')
 let model
+let token
 export default {
   head () {
     return {
@@ -46,6 +48,7 @@ export default {
   data () {
     return {
       storesArr: [],
+      comname: '',
       info: {
         relname: '',
         store: -1,
@@ -55,12 +58,19 @@ export default {
   },
   methods: {
     init: function () {
+      model.comname = Cookies.get('com-name')
+      token = Cookies.get('dpjia-hall-token')
       model.getStore()
     },
 
-    // 获取门店列表
+    // 获取当前公司下门店列表
     getStore: function () {
-      let param = {}
+      let param = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid
+        },
+        keys: 'id,st_name'
+      }
       axios.get('classes/company_stores', {
         params: param
       }).then(function (data) {
@@ -72,7 +82,7 @@ export default {
 
     // 上传图片
     upload_com: function () {
-      var url = 'http://192.168.1.120/openapi/api/1.0/upload'
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
       var $input = $('#upload_com').find('input')
       $input.unbind().click()
       $input.unbind().change(function () {
@@ -90,9 +100,8 @@ export default {
           },
           crossDomain: true,
           headers: {
-            'X-DP-Key': '222',
-            'X-DP-ID': '111',
-            'X-DP-Token': 'd9cf5249ed675b1ee387397ec853e86f'
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
           },
           success: function (data) {
             $input.unwrap()
@@ -110,14 +119,28 @@ export default {
 
     // 提交升级成设计师信息
     upDesignBtn: function () {
+      let upgrade = Cookies.get('can-upgrade')
+      if (upgrade === 'no') {
+        window.mui.toast('您已经是销售设计师了，暂时不能同时成为两家销售设计师!')
+        return false
+      }
       if (!model.validateForm(model.info)) {
         return false
       }
-      let param = model.info
-      axios.get('', {
-        params: param
+      let param = {
+        per_img: model.info.img,
+        com_id: this.$store.state.comid,
+        realname: model.info.relname
+      }
+      axios.put('users/users_to_designer', param, {
+        headers: {
+          'X-DP-Token': token
+        }
       }).then(function () {
         window.mui.toast('升级成功!')
+        setTimeout(function () {
+          window.location.href = '/person'
+        }, 1000)
       }).catch(function () {
         window.mui.toast('升级失败!')
       })

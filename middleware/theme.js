@@ -19,8 +19,7 @@ let mockRequest = (query, store) => {
       } else {
         obj = {
           theme: 'default',
-          comid: 0,
-          comname: ''
+          comid: 0
         }
       }
       resolve(obj)
@@ -36,12 +35,12 @@ export default async function ({query, store, isServer, req, res}) {
     let company = query.themename
     let _cookie = req.headers.cookie
     let _themeData = {}
-    // 检查cookie里面是否有公司和主题`
+    // 检查cookie里面是否有公司和主题
     if (_cookie) {
       try {
-        _themeData = _cookie.match(/theme=([\w":,\d{}]+);/)[1]
-        _themeData = JSON.parse(_themeData)
-        _theme = _themeData[company]
+        _themeData = (_cookie.match(/theme=([\w":,\d{}]+);/) || [])[1]
+        _themeData = _themeData ? JSON.parse(_themeData) : {}
+        _theme = _themeData ? _themeData[company] : {}
       } catch (ex) {
       }
     }

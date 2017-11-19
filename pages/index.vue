@@ -11,12 +11,13 @@
     <div style="height: 20px;background-color: #f4f4f4;"></div>
     <component :is="hotfur"></component>
     <div style="height: 20px;background-color: #f4f4f4;"></div>
-    <component :is="newfur"></component>
-    <component :is="copyright"></component>
+    <component :is="newfur" :imgarr="imgs"></component>
   </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 export default {
   head: {
     title: '首页'
@@ -28,7 +29,6 @@ export default {
     this.component('classifytab', 'home/classifytab.vue')
     this.component('hotfur', 'home/hotfur.vue')
     this.component('newfur', 'home/newfur.vue')
-    this.component('copyright', 'home/copyright.vue')
   },
   data () {
     return {
@@ -51,6 +51,26 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    init: function () {
+      let param = {
+        where: {
+          com_id: this.$store.state.comid
+        },
+        keys: 'id,com_name'
+      }
+      axios.get('classes/companys', {
+        params: param
+      }).then(function (data) {
+        Cookies.set('com-name', data.data.items[0].com_name)
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    }
+  },
+  mounted () {
+    this.init()
   }
 }
 </script>

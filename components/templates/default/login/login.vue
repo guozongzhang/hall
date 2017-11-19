@@ -37,9 +37,6 @@
   <div class="mui-content-padded phone-btn">
     <button type="button" class="mui-btn mui-btn-block" @click="switchLogin()">{{subBtnText}}</button>
   </div>
-  <div class="wechat-login">
-    <a href="javascript:;" @click="weChartLogin()"></a>
-  </div>
 </div>
 </template>
 <script>
@@ -204,11 +201,6 @@ export default {
       setTimeout(function () {
         window.location.href = '/'
       }, 1000)
-    },
-
-    // 微信登录
-    weChartLogin: function () {
-      window.mui.toast('开发中，敬请期待...')
     }
   },
   mounted () {

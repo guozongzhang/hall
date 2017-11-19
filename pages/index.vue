@@ -6,7 +6,7 @@
   </header>
   <div class="mui-content">
     <component :is="search"></component>
-    <component :is="slider" :imgarr="imgs"></component>
+    <component :is="slider" :imgarr="swiperArr"></component>
     <component :is="classifytab"></component>
     <div style="height: 20px;background-color: #f4f4f4;"></div>
     <component :is="hotfur"></component>
@@ -18,6 +18,7 @@
 <script>
 import axios from '~/plugins/axios'
 let Cookies = require('js-cookie')
+let model
 export default {
   head: {
     title: '首页'
@@ -32,28 +33,22 @@ export default {
   },
   data () {
     return {
-      imgs: [
+      swiperArr: [
         {
-          url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          link: ''
-        },
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg',
-          link: ''
-        },
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg',
-          link: ''
-        },
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          link: ''
+          pic: ''
         }
-      ]
+      ],
+      imgs: []
     }
   },
   methods: {
-    init: function () {
+    init: async function () {
+      await model.getInitData()
+      await model.getCompanyData()
+    },
+
+    // 获取公司信息
+    getCompanyData: function () {
       let param = {
         where: {
           com_id: this.$store.state.comid
@@ -67,9 +62,28 @@ export default {
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })
+    },
+
+    getInitData: function () {
+      let param = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid
+        },
+        limit: 1,
+        order: '-id'
+      }
+      axios.get('classes/company_mobile_skin_logs', {
+        params: param
+      }).then(function (data) {
+        let info = JSON.parse(data.data.items[0].config)
+        model.swiperArr = info[0].header[0].list[1].banner
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

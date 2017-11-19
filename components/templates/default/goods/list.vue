@@ -11,36 +11,36 @@
     <div class="clasify-tabs">
       <ul class="mui-table-view mui-grid-view mui-grid-9">
         <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
-          <a href="#">
+          <a href="javascript:;" v-bind:class="activeTab === 'comprehensive' ? 'active' : ''" @click="matchSearch('comprehensive')">
             <div class="mui-media-body">
               <span class="tab-text">综合</span>
             </div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-          <a href="#">
+          <a href="javascript:;" v-bind:class="activeTab === 'up_time' ? 'active' : ''" @click="matchSearch('up_time')">
             <div class="mui-media-body">
               <span class="tab-text">上架时间</span>
             </div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-          <a href="javascript:;" @click="orderByPrice()">
+          <a href="javascript:;" v-bind:class="activeTab === 'price' ? 'active' : ''"  @click="orderByPrice('price')">
             <div class="mui-media-body">
-              <span class="tab-text" v-bind:class="activeprice ? 'activeprice' : ''">价格</span>
+              <span class="tab-text">价格</span>
               <span class="self-iocn" v-bind:class="priceicon ? 'price-down' : 'price-up'"></span>
             </div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
-          <a href="#">
+          <a href="javascript:;" v-bind:class="activeTab === 'sales_count' ? 'active' : ''"  @click="matchSearch('sales_count')">
             <div class="mui-media-body">
               <span class="tab-text">销量</span>
             </div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
-          <a href="#">
+          <a href="javascript:;">
             <div class="mui-media-body" @click="showClassify()">
               <span class="tab-text">筛选</span>
               <span class="self-iocn selected-icon"></span>
@@ -59,7 +59,7 @@
             <div class="info-box">
               <img class="mui-media-object mui-pull-left" :src="item.fur_image">
               <div class="mui-media-body">
-                <a class="fur-name" href="javascript:;">{{item.fur_name}}</a>
+                <a class="fur-name" href="/furdetail">{{item.fur_name}}</a>
                 <div class="fur-price">
                   <span class="price">￥{{item.discount_cost}}</span>
                   <span class="sub-price">￥{{item.discount_cost}}</span>
@@ -109,25 +109,41 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
+let querystring = require('querystring')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
 let pagesize = 4
+let tabsObj = {
+  'comprehensive': {
+    'comprehensive': 'comprehensive'
+  },
+  'up_time': {
+    'up_time': 'up_time'
+  },
+  'sales_count': {
+    'sales_count': 'sales_count'
+  },
+  'price': {
+    'price': 'desc'
+  }
+}
 export default {
   data () {
     return {
       pages: 1,
+      activeTab: '',
       is_loading: true,
       is_nodata: false,
       loadingText: '正在加载...',
       priceicon: true,
-      activeprice: false,
       classifyActiveArr: [],
       goodsArr: [],
       classifyArr: [
         {
           name: '品类',
-          type: 'simpletypes',
+          type: 'secondtype',
           active: 0,
           showall: false,
           list: []
@@ -148,7 +164,7 @@ export default {
         },
         {
           name: '空间',
-          type: 'space',
+          type: 'field',
           active: 0,
           showall: false,
           list: []
@@ -157,32 +173,73 @@ export default {
     }
   },
   methods: {
-    inits: function (pages) {
-      model.getGoodsList(pages, null)
-      model.getSimpleType()
-      model.getBands()
-      model.getStyle()
-      model.getSpace()
+    inits: async function (pages) {
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      await model.getGoodsList(pages, urlObj, 'no')
+      await model.getSimpleType()
+      await model.getBands()
+      await model.getStyle()
+      await model.getField()
+      await model.checkUrl(urlObj)
+    },
+
+    // 判断是否高亮
+    checkUrl: function (urlObj) {
+      model.classifyArr[0].active = urlObj.secondtype ? urlObj.secondtype : 0
+      model.classifyArr[1].active = urlObj.brand ? urlObj.brand : 0
+      model.classifyArr[2].active = urlObj.style ? urlObj.style : 0
+      model.classifyArr[3].active = urlObj.field ? urlObj.field : 0
+      if (urlObj.comprehensive) {
+        model.activeTab = 'comprehensive'
+      }
+      if (urlObj.up_time) {
+        model.activeTab = 'up_time'
+      }
+      if (urlObj.sales_count) {
+        model.activeTab = 'sales_count'
+      }
+      if (urlObj.price) {
+        model.activeTab = 'price'
+      }
+    },
+
+    matchSearch: function (type) {
+      model.activeTab = type
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.up_time
+      delete urlObj.price
+      delete urlObj.comprehensive
+      delete urlObj.sales_count
+      urlObj = _.extend(urlObj, tabsObj[type])
+      model.pages = 1
+      model.getGoodsList(model.pages, urlObj, 'no')
     },
 
     // 获取商品数据
-    getGoodsList: function (pages, whereobj) {
+    getGoodsList: function (pages, whereobj, addtype) {
+      let myURL = url.parse(window.location.href)
+      if (addtype === 'no') {
+        model.goodsArr = []
+      }
+      model.is_loading = true
+      delete whereobj.limit
+      delete whereobj.skip
+      let tmpurl = ''
+      if (!_.isEmpty(whereobj)) {
+        tmpurl = myURL.pathname + '?' + querystring.stringify(whereobj)
+      } else {
+        tmpurl = myURL.pathname
+      }
+      history.pushState('', '', tmpurl)
       let param = {
         limit: pagesize,
         skip: pagesize * (pages - 1),
-        where: {
-          com_id_poi_companys: '86'
-        }
+        com_id: this.$store.state.comid
       }
-      if (_.isEmpty(whereobj)) {
-        delete param.where
-        param.where = {
-          com_id_poi_companys: '86'
-        }
-      } else {
-        param.where = _.extend(param.where, whereobj)
-      }
-      axios.get('classes/furnitures', {
+      param = _.extend(param, whereobj)
+      axios.get('functions/furnitures/cloud_furnitures', {
         params: param
       }).then(function (data) {
         model.is_loading = false
@@ -201,23 +258,27 @@ export default {
 
     // 下拉刷新获取数据
     pulldownRefresh: function () {
+      let myURL = url.parse(window.location.href)
       model.is_loading = true
+      let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
-      model.getGoodsList(model.pages, null)
+      model.getGoodsList(model.pages, urlObj, 'getmore')
     },
 
     // 获取分类数据（品类）
     getSimpleType: function () {
       let param = {
-        limit: 100,
         where: {
-          com_id_poi_companys: '86'
-        }
+          com_id_poi_companys: this.$store.state.comid
+        },
+        order: '-id',
+        limit: 1
       }
-      axios.get('classes/furniture_simple_types', {
+      axios.get('classes/company_skin_logs', {
         params: param
       }).then(function (data) {
-        model.classifyArr[0].list = data.data.items
+        let info = JSON.parse(data.data.items[0].config)
+        model.classifyArr[0].list = info[0].header[2].nav
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })
@@ -245,7 +306,7 @@ export default {
       let param = {
         limit: 100,
         where: {
-          com_id_poi_companys: '86'
+          com_id_poi_companys: this.$store.state.comid
         }
       }
       axios.get('classes/companys_brand', {
@@ -258,11 +319,11 @@ export default {
     },
 
     // 获取分类数据（空间）
-    getSpace: function () {
+    getField: function () {
       let param = {
         limit: 100,
         where: {
-          com_id_poi_companys: '86'
+          com_id_poi_companys: this.$store.state.comid
         }
       }
       axios.get('classes/furniture_field_types', {
@@ -281,6 +342,9 @@ export default {
 
     // 点击筛选
     showClassify: function () {
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      model.checkUrl(urlObj)
       $('#classifylist').show()
       $('#classifylist').addClass('animated bounceInRight')
       setTimeout(function () {
@@ -303,20 +367,28 @@ export default {
 
     // 重置分类
     resetClassify: function () {
+      let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
       model.pages = 1
-      model.getGoodsList(1, null)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
+      model.checkUrl(urlObj)
+      model.getGoodsList(model.pages, urlObj, 'no')
       $('#classifylist').hide()
     },
 
     // 确定分类
     setClassify: function () {
       let obj = {
-        simpletypes: model.getFilter(model.classifyActiveArr, 'simpletypes'),
+        secondtype: model.getFilter(model.classifyActiveArr, 'secondtype'),
         brand: model.getFilter(model.classifyActiveArr, 'brand'),
-        styles: model.getFilter(model.classifyActiveArr, 'style'),
-        spaces: model.getFilter(model.classifyActiveArr, 'space')
+        style: model.getFilter(model.classifyActiveArr, 'style'),
+        field: model.getFilter(model.classifyActiveArr, 'field')
       }
       for (var key in obj) {
         if (_.isEmpty(obj[key])) {
@@ -325,7 +397,15 @@ export default {
       }
       model.goodsArr = []
       model.pages = 1
-      model.getGoodsList(1, obj)
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
+      urlObj = _.extend(urlObj, obj)
+      model.getGoodsList(model.pages, urlObj, 'no')
       $('#classifylist').hide()
     },
 
@@ -338,9 +418,19 @@ export default {
     },
 
     // 按照价格排序
-    orderByPrice: function () {
+    orderByPrice: function (type) {
+      let myURL = url.parse(window.location.href)
+      model.activeTab = type
       model.priceicon = !model.priceicon
-      model.activeprice = true
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.up_time
+      delete urlObj.price
+      delete urlObj.comprehensive
+      delete urlObj.sales_count
+      urlObj = _.extend(urlObj, tabsObj[type])
+      urlObj.price = model.priceicon ? 'desc' : 'asc'
+      model.pages = 1
+      model.getGoodsList(model.pages, urlObj, 'no')
     },
 
     // 收藏
@@ -421,6 +511,9 @@ export default {
   .clasify-tabs .mui-grid-9 .mui-table-view-cell a{
     height: 40px;
     padding: 0 !important;
+  }
+  .clasify-tabs .mui-grid-9 .mui-table-view-cell a.active .tab-text{
+    color: #5075ce;
   }
   .clasify-tabs .mui-grid-9 .mui-table-view-cell .mui-media-body {
     height: 40px;

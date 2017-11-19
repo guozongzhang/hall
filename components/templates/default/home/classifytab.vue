@@ -8,7 +8,7 @@
       </a>
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-      <a href="/goodslist">
+      <a href="/goodslist?comprehensive=comprehensive">
         <span class="mui-icon mui-icon-email"></span>
         <div class="mui-media-body">全部商品</div>
       </a>

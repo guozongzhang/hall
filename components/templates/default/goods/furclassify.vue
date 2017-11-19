@@ -4,16 +4,16 @@
     <div class="left-classify">
       <a href="javascript:;" v-bind:class="activeid == item.id ? 'active' : ''"  @click="choiceType(item)" v-for="item in leftArr">
         <span class="active-icon"></span>
-        <span>{{item.sp_type_name}}</span>
+        <span>{{item.norname ? item.norname : item.sp_type_name}}</span>
       </a>
     </div>
   </div>
   <div class="right-box">
     <ul class="mui-table-view mui-grid-view">
       <li class="mui-table-view-cell mui-media mui-col-xs-4" v-for="item in subArr">
-        <a v-bind:href="'/furdetail?classifyid=' + item.id">
+        <a v-bind:href="'/goodslist?secondtype='+ activeid + '&thirdtype=' + item.id">
           <img class="mui-media-object" :src="item.icon_url">
-          <div class="mui-media-body">{{item.type_name}}</div>
+          <div class="mui-media-body">{{item.norname ? item.norname : item.type_name}}</div>
         </a>
       </li>
     </ul> 
@@ -38,11 +38,18 @@ export default {
 
     // 获取二级分类
     getClassify: function () {
-      let param = {}
-      axios.get('classes/furniture_simple_types', {
+      let param = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid
+        },
+        order: '-id',
+        limit: 1
+      }
+      axios.get('classes/company_skin_logs', {
         params: param
       }).then(function (data) {
-        model.leftArr = data.data.items
+        let info = JSON.parse(data.data.items[0].config)
+        model.leftArr = info[0].header[2].nav
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })
@@ -51,18 +58,7 @@ export default {
     // 获取三级分类
     choiceType: function (obj) {
       model.activeid = obj.id
-      let param = {
-        where: {
-          sp_type_id_poi_furniture_simple_types: obj.id
-        }
-      }
-      axios.get('classes/furniture_types', {
-        params: param
-      }).then(function (data) {
-        model.subArr = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
-      })
+      model.subArr = obj.sp_type_id_rel_furniture_types.items
     }
   },
   mounted () {

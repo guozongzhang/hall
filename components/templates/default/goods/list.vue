@@ -59,13 +59,13 @@
             <div class="info-box">
               <img class="mui-media-object mui-pull-left" :src="item.fur_image">
               <div class="mui-media-body">
-                <a class="fur-name" href="/furdetail">{{item.fur_name}}</a>
+                <a class="fur-name" :href="'/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price">
                   <span class="price">￥{{item.discount_cost}}</span>
                   <span class="sub-price">￥{{item.discount_cost}}</span>
-                  <a href="javascript:;" class="collection-bth" v-bind:class="item.star ? 'star-active' : 'star-normal'" @click="collectBtn(item)">
-                    <span class="fa" v-bind:class="item.star ? 'fa-star' : 'fa-star-o'"></span>
-                    <span>{{item.star ? '取消' : '收藏'}}</span>
+                  <a href="#" class="collection-bth" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'" v-on:click="collectBtn(item)">
+                    <span class="fa" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
+                    <span>{{item.user_preference ? '取消' : '收藏'}}</span>
                   </a>
                 </div>
               </div>
@@ -435,8 +435,9 @@ export default {
 
     // 收藏
     collectBtn: function (obj) {
-      obj.star = !obj.star
-      let text = obj.star ? '收藏成功！' : '取消收藏'
+      console.log('000000' + obj)
+      obj.user_preference = !obj.user_preference
+      let text = obj.user_preference ? '收藏成功！' : '取消收藏'
       window.mui.toast(text)
     }
   },

@@ -1,7 +1,7 @@
 <template>
 <div>
   <header class="mui-bar mui-bar-nav">
-    <h1 class="mui-title">嘉利信得云展厅</h1>
+    <h1 class="mui-title">{{comName}}云展厅</h1>
     <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
   </header>
   <div class="mui-content">
@@ -33,6 +33,7 @@ export default {
   },
   data () {
     return {
+      comName: '',
       swiperArr: [
         {
           pic: ''
@@ -59,6 +60,7 @@ export default {
         params: param
       }).then(function (data) {
         Cookies.set('com-name', data.data.items[0].com_name)
+        model.comName = data.data.items[0].com_name
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })

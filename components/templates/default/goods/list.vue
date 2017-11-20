@@ -55,11 +55,11 @@
     <div class="goods-list mui-scroll-wrapper" id="pullfresh">
       <div class="mui-scroll">
         <ul class="mui-table-view">
-          <li class="mui-table-view-cell mui-media" v-for="item in goodsArr" @click="test()">
+          <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
               <img class="mui-media-object mui-pull-left" :src="item.fur_image">
               <div class="mui-media-body">
-                <a class="fur-name" :href="'/furdetail?id=' + item.id">{{item.fur_name}}</a>
+                <a class="fur-name" :href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price col-flag">
                   <span class="price">￥{{item.discount_cost}}</span>
                   <span class="sub-price">￥{{item.discount_cost}}</span>
@@ -109,6 +109,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let url = require('url')
 let querystring = require('querystring')
 let $ = require('jquery')
@@ -132,6 +133,7 @@ let tabsObj = {
 export default {
   data () {
     return {
+      linkPath: '',
       pages: 1,
       activeTab: '',
       is_loading: true,
@@ -173,11 +175,9 @@ export default {
     }
   },
   methods: {
-    test: function () {
-      console.log('9999')
-    },
     inits: async function (pages) {
       let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       await model.getGoodsList(pages, urlObj, 'no')
       await model.getSimpleType()
@@ -188,19 +188,45 @@ export default {
       window.mui('#pullfresh').on('tap', 'a', function (event) {
         let classFlag = $(event.target).attr('class')
         if (classFlag.indexOf('collect-flag') > -1) {
-          let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
-          model.goodsArr.forEach((item) => {
-            if (String(item.id) === String(objid)) {
-              item.user_preference = !item.user_preference
-              let text = item.user_preference ? '收藏成功！' : '取消收藏'
-              console.log(text)
-              window.mui.toast(text)
-            }
-          })
+          let token = Cookies.get('dpjia-hall-token')
+          if (_.isEmpty($.trim(token))) {
+            var btnArray = ['否', '是']
+            window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
+              if (e.index === 1) {
+                window.location.href = model.linkPath + '/login'
+              }
+            })
+            return false
+          } else {
+            let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
+            model.goodsArr.forEach((item) => {
+              if (String(item.id) === String(objid)) {
+                item.user_preference = !item.user_preference
+                let opt = {
+                  furid: item.id,
+                  user_preference: item.user_preference
+                }
+                model.collectFur(opt)
+              }
+            })
+          }
         }
         if (classFlag.indexOf('fur-name') > -1) {
           window.location.href = $(event.target).attr('href')
         }
+      })
+    },
+
+    // 收藏、取消收藏商品
+    collectFur: function (obj) {
+      let param = {}
+      axios.get('', {
+        params: param
+      }).then(function () {
+        let text = obj.user_preference ? '收藏成功！' : '取消收藏'
+        window.mui.toast(text)
+      }).catch(function () {
+        window.mui.toast('操作失败!')
       })
     },
 
@@ -309,7 +335,7 @@ export default {
       let param = {
         limit: 100,
         where: {
-          com_id_poi_companys: '86'
+          com_id_poi_companys: this.$store.state.comid
         }
       }
       axios.get('classes/furniture_styles', {

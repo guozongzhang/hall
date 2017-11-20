@@ -2,13 +2,13 @@
 <div class="tabs">
   <ul class="mui-table-view mui-grid-view mui-grid-9">
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-      <a href="/furclassify">
+      <a :href="linkPath + '/furclassify'">
         <span class="mui-icon mui-icon-home"></span>
         <div class="mui-media-body">分类查询</div>
       </a>
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-      <a href="/goodslist?comprehensive=comprehensive">
+      <a :href="linkPath + '/goodslist?comprehensive=comprehensive'">
         <span class="mui-icon mui-icon-email"></span>
         <div class="mui-media-body">全部商品</div>
       </a>
@@ -20,7 +20,7 @@
       </a>
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-      <a href="/person">
+      <a :href="linkPath + '/person'">
         <span class="mui-icon mui-icon-location"></span>
         <div class="mui-media-body">个人中心</div>
       </a>
@@ -29,16 +29,21 @@
 </div> 
 </template>
 <script>
+let url = require('url')
 let Cookies = require('js-cookie')
 let $ = require('jquery')
 let _ = require('underscore')
+let model
 export default {
   data () {
     return {
+      linkPath: ''
     }
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
 
     // 我的收藏
@@ -48,16 +53,17 @@ export default {
         var btnArray = ['否', '是']
         window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
-            window.location.href = '/login'
+            window.location.href = model.linkPath + '/login'
           }
         })
         return false
       } else {
-        window.location.href = '/mycollect'
+        window.location.href = model.linkPath + '/mycollect'
       }
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

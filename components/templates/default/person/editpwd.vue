@@ -21,6 +21,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
 let $ = require('jquery')
 let _ = require('underscore')
@@ -30,6 +31,7 @@ let token
 export default {
   data () {
     return {
+      linkPath: '',
       mobile: '',
       info: {
         oldpwd: '',
@@ -40,6 +42,8 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       token = Cookies.get('dpjia-hall-token')
       if (!_.isEmpty($.trim(token))) {
         model.loginstate = true
@@ -90,7 +94,7 @@ export default {
       }).then(function () {
         window.mui.toast('修改密码成功!')
         setTimeout(function () {
-          window.location.href = '/person'
+          window.location.href = model.linkPath + '/person'
         }, 1000)
       }).catch(function () {
         window.mui.toast('原密码输入错误!')

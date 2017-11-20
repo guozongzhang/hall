@@ -11,7 +11,7 @@
   <div class="right-box">
     <ul class="mui-table-view mui-grid-view">
       <li class="mui-table-view-cell mui-media mui-col-xs-4" v-for="item in subArr">
-        <a v-bind:href="'/goodslist?secondtype='+ activeid + '&thirdtype=' + item.id">
+        <a v-bind:href="linkPath + '/goodslist?secondtype='+ activeid + '&thirdtype=' + item.id">
           <img class="mui-media-object" :src="item.icon_url">
           <div class="mui-media-body">{{item.norname ? item.norname : item.type_name}}</div>
         </a>
@@ -22,10 +22,12 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let model
 export default {
   data () {
     return {
+      linkPath: '',
       activeid: 0,
       leftArr: [],
       subArr: []
@@ -33,6 +35,8 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getClassify()
     },
 

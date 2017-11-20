@@ -4,21 +4,21 @@
     <div class="clasify-tabs">
       <ul class="mui-table-view mui-grid-view mui-grid-9">
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-          <a href="#">
+          <a href="javascript:;" v-bind:class="activeTab === 'comprehensive' ? 'active' : ''" @click="matchSearch('comprehensive')">
             <div class="mui-media-body">
               <span class="tab-text">智能</span>
             </div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-          <a href="#">
+          <a href="javascript:;" v-bind:class="activeTab === 'up_time' ? 'active' : ''" @click="matchSearch('up_time')">
             <div class="mui-media-body">
               <span class="tab-text">上架时间</span>
             </div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-          <a href="javascript:;" @click="orderByPrice()">
+          <a href="javascript:;" v-bind:class="activeTab === 'price' ? 'active' : ''"  @click="orderByPrice('price')">
             <div class="mui-media-body">
               <span class="tab-text" v-bind:class="activeprice ? 'activeprice' : ''">价格</span>
               <span class="self-iocn" v-bind:class="priceicon ? 'price-down' : 'price-up'"></span>
@@ -26,7 +26,7 @@
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
-          <a href="#">
+          <a href="javascript:;">
             <div class="mui-media-body" @click="showClassify()">
               <span class="tab-text">筛选</span>
               <span class="self-iocn selected-icon"></span>
@@ -43,10 +43,10 @@
         <ul class="mui-table-view">
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
-              <span class="check-btn" v-bind:class="item.checked == item.id ? 'checked' : 'uncheck'" @click="checkOne(item)"></span>
+              <a v-bind:href="item.id" class="check-btn check-flag" v-bind:class="item.checked == item.id ? 'checked' : 'uncheck'" @click="checkOne(item)"></a>
               <img class="mui-media-object mui-pull-left" :src="item.fur_image">
               <div class="mui-media-body">
-                <a class="fur-name" v-bind:href="'/furdetail?id=' + item.id">{{item.fur_name}}</a>
+                <a class="fur-name" v-bind:href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price">
                   <span class="price">￥{{item.discount_cost}}</span>
                   <span class="sub-price">￥{{item.discount_cost}}</span>
@@ -101,13 +101,30 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
+let url = require('url')
+let querystring = require('querystring')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
-let pagesize = 8
+let pagesize = 4
+let token
+let tabsObj = {
+  'comprehensive': {
+    'comprehensive': 'comprehensive'
+  },
+  'up_time': {
+    'up_time': 'up_time'
+  },
+  'price': {
+    'price': 'desc'
+  }
+}
 export default {
   data () {
     return {
+      linkPath: '',
+      activeTab: '',
       checkIdAll: [],
       checkedall: false,
       pages: 1,
@@ -121,7 +138,7 @@ export default {
       classifyArr: [
         {
           name: '品类',
-          type: 'simpletypes',
+          type: 'secondtype',
           active: 0,
           showall: false,
           list: []
@@ -142,7 +159,7 @@ export default {
         },
         {
           name: '空间',
-          type: 'space',
+          type: 'field',
           active: 0,
           showall: false,
           list: []
@@ -151,32 +168,102 @@ export default {
     }
   },
   methods: {
-    inits: function (pages) {
-      model.getGoodsList(pages, null)
-      model.getSimpleType()
-      model.getBands()
-      model.getStyle()
-      model.getSpace()
+    inits: async function (pages) {
+      token = Cookies.get('dpjia-hall-token')
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      let urlObj = querystring.parse(myURL.query)
+      await model.getGoodsList(pages, urlObj, 'no')
+      await model.getSimpleType()
+      await model.getBands()
+      await model.getStyle()
+      await model.getField()
+      await model.checkUrl(urlObj)
+      window.mui('#pullfresh').on('tap', 'a', function (event) {
+        let classFlag = $(event.target).attr('class')
+        if (classFlag.indexOf('check-flag') > -1) {
+          let objid = $(event.target).attr('href')
+          if (_.indexOf(model.checkIdAll, objid) > -1) {
+            model.goodsArr.forEach((item) => {
+              if (String(item.id) === String(objid)) {
+                item.checked = 0
+              }
+            })
+            model.checkIdAll = _.without(model.checkIdAll, objid)
+          } else {
+            model.goodsArr.forEach((item) => {
+              if (String(item.id) === String(objid)) {
+                item.checked = objid
+              }
+            })
+            model.checkIdAll.push(objid)
+          }
+          if (model.checkIdAll.length === model.goodsArr.length) {
+            model.checkedall = true
+          } else {
+            model.checkedall = false
+          }
+        }
+        if (classFlag.indexOf('fur-name') > -1) {
+          window.location.href = $(event.target).attr('href')
+        }
+      })
+    },
+
+    // 判断是否高亮
+    checkUrl: function (urlObj) {
+      model.classifyArr[0].active = urlObj.secondtype ? urlObj.secondtype : 0
+      model.classifyArr[1].active = urlObj.brand ? urlObj.brand : 0
+      model.classifyArr[2].active = urlObj.style ? urlObj.style : 0
+      model.classifyArr[3].active = urlObj.field ? urlObj.field : 0
+      if (urlObj.comprehensive) {
+        model.activeTab = 'comprehensive'
+      }
+      if (urlObj.up_time) {
+        model.activeTab = 'up_time'
+      }
+      if (urlObj.price) {
+        model.activeTab = 'price'
+      }
+    },
+
+    // 选择筛选条件
+    matchSearch: function (type) {
+      model.activeTab = type
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.up_time
+      delete urlObj.price
+      delete urlObj.comprehensive
+      urlObj = _.extend(urlObj, tabsObj[type])
+      model.pages = 1
+      model.getGoodsList(model.pages, urlObj, 'no')
     },
 
     // 获取商品数据
-    getGoodsList: function (pages, whereobj) {
+    getGoodsList: function (pages, whereobj, addtype) {
+      let myURL = url.parse(window.location.href)
+      if (addtype === 'no') {
+        model.goodsArr = []
+      }
+      model.is_loading = true
+      let tmpurl = ''
+      if (!_.isEmpty(whereobj)) {
+        tmpurl = myURL.pathname + '?' + querystring.stringify(whereobj)
+      } else {
+        tmpurl = myURL.pathname
+      }
+      history.pushState('', '', tmpurl)
       let param = {
         limit: pagesize,
         skip: pagesize * (pages - 1),
-        where: {
-          com_id_poi_companys: '86'
-        }
+        com_id: this.$store.state.comid
       }
-      if (_.isEmpty(whereobj)) {
-        delete param.where
-        param.where = {
-          com_id_poi_companys: '86'
-        }
-      } else {
-        param.where = _.extend(param.where, whereobj)
-      }
-      axios.get('classes/furnitures', {
+      param = _.extend(param, whereobj)
+      axios.get('functions/furnitures/cloud_furnitures', {
+        headers: {
+          'X-DP-Token': token
+        },
         params: param
       }).then(function (data) {
         model.is_loading = false
@@ -203,22 +290,6 @@ export default {
       model.getGoodsList(model.pages, null)
     },
 
-    // 选择单个
-    checkOne: function (obj) {
-      if (_.indexOf(model.checkIdAll, obj.id) > -1) {
-        obj.checked = 0
-        model.checkIdAll = _.without(model.checkIdAll, obj.id)
-      } else {
-        obj.checked = obj.id
-        model.checkIdAll.push(obj.id)
-      }
-      if (model.checkIdAll.length === model.goodsArr.length) {
-        model.checkedall = true
-      } else {
-        model.checkedall = false
-      }
-    },
-
     // 全选
     checkAllItem: function () {
       model.checkIdAll = []
@@ -238,21 +309,43 @@ export default {
 
     // 删除收藏
     delMyCollect: function () {
-      console.log(model.checkIdAll)
+      var btnArray = ['否', '是']
+      window.mui.confirm('确认删除收藏？', '友情提示', btnArray, function (e) {
+        if (e.index === 1) {
+          let param = {}
+          axios.get('', {
+            headers: {
+              'X-DP-Token': token
+            },
+            params: param
+          }).then(function (data) {
+            model.goodsArr.forEach((item) => {
+              if (_.indexOf(model.checkIdAll, item.id) > -1) {
+                model.goodsArr = _.without(model.goodsArr, item)
+              }
+            })
+            window.mui.toast('取消收藏成功!')
+          }).catch(function () {
+            window.mui.toast('获取数据失败!')
+          })
+        }
+      })
     },
 
     // 获取分类数据（品类）
     getSimpleType: function () {
       let param = {
-        limit: 100,
         where: {
-          com_id_poi_companys: '86'
-        }
+          com_id_poi_companys: this.$store.state.comid
+        },
+        order: '-id',
+        limit: 1
       }
-      axios.get('classes/furniture_simple_types', {
+      axios.get('classes/company_skin_logs', {
         params: param
       }).then(function (data) {
-        model.classifyArr[0].list = data.data.items
+        let info = JSON.parse(data.data.items[0].config)
+        model.classifyArr[0].list = info[0].header[2].nav
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })
@@ -263,7 +356,7 @@ export default {
       let param = {
         limit: 100,
         where: {
-          com_id_poi_companys: '86'
+          com_id_poi_companys: this.$store.state.comid
         }
       }
       axios.get('classes/furniture_styles', {
@@ -280,7 +373,7 @@ export default {
       let param = {
         limit: 100,
         where: {
-          com_id_poi_companys: '86'
+          com_id_poi_companys: this.$store.state.comid
         }
       }
       axios.get('classes/companys_brand', {
@@ -293,11 +386,11 @@ export default {
     },
 
     // 获取分类数据（空间）
-    getSpace: function () {
+    getField: function () {
       let param = {
         limit: 100,
         where: {
-          com_id_poi_companys: '86'
+          com_id_poi_companys: this.$store.state.comid
         }
       }
       axios.get('classes/furniture_field_types', {
@@ -338,20 +431,28 @@ export default {
 
     // 重置分类
     resetClassify: function () {
+      let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
       model.pages = 1
-      model.getGoodsList(1, null)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
+      model.checkUrl(urlObj)
+      model.getGoodsList(model.pages, urlObj, 'no')
       $('#classifylist').hide()
     },
 
     // 确定分类
     setClassify: function () {
       let obj = {
-        simpletypes: model.getFilter(model.classifyActiveArr, 'simpletypes'),
+        secondtype: model.getFilter(model.classifyActiveArr, 'secondtype'),
         brand: model.getFilter(model.classifyActiveArr, 'brand'),
-        styles: model.getFilter(model.classifyActiveArr, 'style'),
-        spaces: model.getFilter(model.classifyActiveArr, 'space')
+        style: model.getFilter(model.classifyActiveArr, 'style'),
+        field: model.getFilter(model.classifyActiveArr, 'field')
       }
       for (var key in obj) {
         if (_.isEmpty(obj[key])) {
@@ -360,7 +461,15 @@ export default {
       }
       model.goodsArr = []
       model.pages = 1
-      model.getGoodsList(1, obj)
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
+      urlObj = _.extend(urlObj, obj)
+      model.getGoodsList(model.pages, urlObj, 'no')
       $('#classifylist').hide()
     },
 
@@ -373,16 +482,18 @@ export default {
     },
 
     // 按照价格排序
-    orderByPrice: function () {
+    orderByPrice: function (type) {
+      let myURL = url.parse(window.location.href)
+      model.activeTab = type
       model.priceicon = !model.priceicon
-      model.activeprice = true
-    },
-
-    // 收藏
-    collectBtn: function (obj) {
-      obj.star = !obj.star
-      let text = obj.star ? '收藏成功！' : '取消收藏'
-      window.mui.toast(text)
+      let urlObj = querystring.parse(myURL.query)
+      delete urlObj.up_time
+      delete urlObj.price
+      delete urlObj.comprehensive
+      urlObj = _.extend(urlObj, tabsObj[type])
+      urlObj.price = model.priceicon ? 'desc' : 'asc'
+      model.pages = 1
+      model.getGoodsList(model.pages, urlObj, 'no')
     }
   },
   mounted () {
@@ -443,6 +554,9 @@ export default {
   .clasify-tabs .mui-grid-9 .mui-table-view-cell a{
     height: 40px;
     padding: 0 !important;
+  }
+  .clasify-tabs .mui-grid-9 .mui-table-view-cell a.active .tab-text{
+    color: #5075ce;
   }
   .clasify-tabs .mui-grid-9 .mui-table-view-cell .mui-media-body {
     height: 40px;
@@ -543,7 +657,7 @@ export default {
     height: 50px;
     border-top: 1px solid #ababab;
     background-color: #fff;
-    z-index: 9999;
+    z-index: 1000;
   }
   .opt-box a {
     display: inline-block;

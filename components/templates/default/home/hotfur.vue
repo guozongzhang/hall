@@ -12,7 +12,7 @@
     <div class="mui-slider-item mui-slider-item-duplicate">
       <ul class="mui-table-view mui-grid-view">
         <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="/furdetail">
+          <a :href="linkPath + '/furdetail'">
             <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
             <span class="new-item">新品</span>
             <div class="mui-media-body">Color of SIP CBD</div>
@@ -188,17 +188,23 @@
 </div>
 </template>
 <script>
+let url = require('url')
+let model
 export default {
   data () {
     return {
+      linkPath: ''
     }
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       window.mui.init()
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

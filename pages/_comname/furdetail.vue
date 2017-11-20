@@ -6,8 +6,8 @@
       <li class="active"><a href="#item1">商品</a></li>
       <li><a href="#item2">详情</a></li>
     </ul>
+    <a :href="linkPath + '/sellerinfo'" class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
     <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
-    <a href="/sellerinfo" class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
   </header>
   <div class="mui-content">
     <component :is="swiperdetail" :imgarr="imgs"></component>
@@ -31,6 +31,7 @@ export default {
   },
   data () {
     return {
+      linkPath: '',
       imgs: [],
       detailinfo: {}
     }
@@ -38,6 +39,7 @@ export default {
   methods: {
     init: function () {
       let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       if (urlObj.id > 0) {
         axios.get('functions/app_homepage/app_furnitures?id=' + urlObj.id).then(function (data) {

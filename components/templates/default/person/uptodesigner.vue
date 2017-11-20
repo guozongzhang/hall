@@ -31,6 +31,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
 let ESVal = require('es-validate')
 let $ = require('jquery')
@@ -47,6 +48,7 @@ export default {
   },
   data () {
     return {
+      linkPath: '',
       storesArr: [],
       comname: '',
       info: {
@@ -58,6 +60,8 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.comname = Cookies.get('com-name')
       token = Cookies.get('dpjia-hall-token')
       model.getStore()
@@ -139,7 +143,7 @@ export default {
       }).then(function () {
         window.mui.toast('升级成功!')
         setTimeout(function () {
-          window.location.href = '/person'
+          window.location.href = model.linkPath + '/person'
         }, 1000)
       }).catch(function () {
         window.mui.toast('升级失败!')

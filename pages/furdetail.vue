@@ -41,7 +41,10 @@ export default {
       let urlObj = querystring.parse(myURL.query)
       if (urlObj.id > 0) {
         axios.get('functions/app_homepage/app_furnitures?id=' + urlObj.id).then(function (data) {
-          model.imgs = data.data.furniture_intro_pics
+          model.imgs = data.data.furniture_intro_pics.filter(item => {
+            return item.intro_type === 'intro'
+          })
+          console.log(model.imgs)
           model.detailinfo = data.data
         }).catch(function () {
           window.mui.toast('获取数据失败!')

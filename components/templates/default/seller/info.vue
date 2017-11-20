@@ -155,21 +155,56 @@
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
 let $ = require('jquery')
+let model
 export default {
   data () {
     return {
       basic: {
-        logo: 'http://cdn.dpjia.com/files/uploads/images/82d9d215d58aa06eb8e52f8d6852132b.jpg?x-oss-process=image/resize,m_fill,h_160,w_230',
-        name: '北京嘉利信得有限公司',
-        subname: '嘉利信得',
-        address: '北京市海淀区学院路7号弘彧大厦',
-        tel: '010-87556767'
+        logo: '',
+        name: '',
+        subname: '',
+        address: '',
+        tel: ''
       }
     }
   },
   methods: {
     init: function () {
+      model.getCompanyInfo()
+    },
+
+    // 获取公司信息
+    getCompanyInfo: async function () {
+      // 获取头像
+      let logo = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid
+        }
+      }
+      let logoInfo = await axios.get('classes/company_mobile_skins', {
+        params: logo
+      })
+      let info = JSON.parse(logoInfo.data.items[0].config)
+
+      // 详细信息
+      let detail = {
+        where: {
+          com_id: this.$store.state.comid
+        }
+      }
+      let detailinfo = await axios.get('classes/companys', {
+        params: detail
+      })
+      let resData = detailinfo.data.items[0]
+      model.basic = {
+        logo: info[0].header[0].list[0].page,
+        name: resData.com_name,
+        subname: resData.com_name,
+        address: resData.com_addr,
+        tel: resData.mobile
+      }
     },
 
     // 预览分享
@@ -187,6 +222,7 @@ export default {
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

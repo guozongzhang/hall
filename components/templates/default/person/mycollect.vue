@@ -312,13 +312,11 @@ export default {
       window.mui.confirm('确认删除收藏？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
           let param = {
+            _method: 'DELETE',
             ids: model.checkIdAll.join(',')
           }
-          axios.post('functions/cart/app_preference', {
-            headers: {
-              'X-DP-Token': token
-            },
-            params: param
+          axios.post('functions/cart/app_preference', null, {
+            data: param
           }).then(function (data) {
             model.goodsArr.forEach((item) => {
               if (_.indexOf(model.checkIdAll, item.id) > -1) {

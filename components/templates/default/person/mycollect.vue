@@ -44,12 +44,12 @@
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
               <a v-bind:href="item.id" class="check-btn check-flag" v-bind:class="item.checked == item.id ? 'checked' : 'uncheck'" @click="checkOne(item)"></a>
-              <img class="mui-media-object mui-pull-left" :src="item.fur_image">
+              <img class="mui-media-object mui-pull-left" :src="item.thumbnail">
               <div class="mui-media-body">
-                <a class="fur-name" v-bind:href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
+                <a class="fur-name" v-bind:href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}{{item.name}}</a>
                 <div class="fur-price">
-                  <span class="price">￥{{item.discount_cost}}</span>
-                  <span class="sub-price">￥{{item.discount_cost}}</span>
+                  <span class="price">￥{{item.price}}</span>
+                  <span class="sub-price">￥{{item.discount}}</span>
                 </div>
               </div>
             </div>
@@ -256,11 +256,10 @@ export default {
       history.pushState('', '', tmpurl)
       let param = {
         limit: pagesize,
-        skip: pagesize * (pages - 1),
-        com_id: this.$store.state.comid
+        skip: pagesize * (pages - 1)
       }
       param = _.extend(param, whereobj)
-      axios.get('functions/furnitures/cloud_furnitures', {
+      axios.get('functions/furnitures/cloud_collect', {
         headers: {
           'X-DP-Token': token
         },
@@ -312,8 +311,10 @@ export default {
       var btnArray = ['否', '是']
       window.mui.confirm('确认删除收藏？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
-          let param = {}
-          axios.get('', {
+          let param = {
+            ids: model.checkIdAll.join(',')
+          }
+          axios.post('functions/cart/app_preference', {
             headers: {
               'X-DP-Token': token
             },

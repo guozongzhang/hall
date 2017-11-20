@@ -9,7 +9,7 @@
     <component :is="slider" :imgarr="swiperArr"></component>
     <component :is="classifytab"></component>
     <div style="height: 20px;background-color: #f4f4f4;"></div>
-    <component :is="hotfur"></component>
+    <component :is="hotfur" :goodsids="hotids"></component>
     <div style="height: 20px;background-color: #f4f4f4;"></div>
     <component :is="newfur" :imgarr="imgs"></component>
   </div>
@@ -34,6 +34,7 @@ export default {
   data () {
     return {
       comName: '',
+      hotids: [],
       swiperArr: [
         {
           pic: ''
@@ -79,6 +80,7 @@ export default {
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
         model.swiperArr = info[0].header[0].list[1].banner
+        model.hotids = info[0].header[1].list[0].goods
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })

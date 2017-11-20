@@ -188,12 +188,23 @@
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
 let url = require('url')
 let model
 export default {
+  props: ['goodsids'],
   data () {
     return {
       linkPath: ''
+    }
+  },
+  watch: {
+    goodsids: function () {
+      let idsArr = []
+      model.goodsids.forEach((item) => {
+        idsArr.push(item.id)
+      })
+      model.getFur(idsArr)
     }
   },
   methods: {
@@ -201,6 +212,22 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       window.mui.init()
+    },
+
+    // 获取商品信息
+    getFur: async function (arr) {
+      let param = {
+        where: JSON.stringify({
+          fur_id: {
+            $in: arr
+          }
+        }),
+        keys: 'id, fur_name,fur_image'
+      }
+      let result = await axios.get('classes/furnitures', {
+        params: param
+      })
+      console.log(result.data.items)
     }
   },
   mounted () {

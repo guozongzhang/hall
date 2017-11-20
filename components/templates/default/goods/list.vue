@@ -50,22 +50,22 @@
       </ul>
     </div>
   </div>
-  <div class="list-item" id="goodlist">
+  <div class="list-item">
     <div class="f4-line"></div>
     <div class="goods-list mui-scroll-wrapper" id="pullfresh">
       <div class="mui-scroll">
         <ul class="mui-table-view">
-          <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
+          <li class="mui-table-view-cell mui-media" v-for="item in goodsArr" @click="test()">
             <div class="info-box">
               <img class="mui-media-object mui-pull-left" :src="item.fur_image">
               <div class="mui-media-body">
                 <a class="fur-name" :href="'/furdetail?id=' + item.id">{{item.fur_name}}</a>
-                <div class="fur-price">
+                <div class="fur-price col-flag">
                   <span class="price">￥{{item.discount_cost}}</span>
                   <span class="sub-price">￥{{item.discount_cost}}</span>
-                  <a href="#" class="collection-bth" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'" v-on:click="collectBtn(item)">
-                    <span class="fa" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
-                    <span>{{item.user_preference ? '取消' : '收藏'}}</span>
+                  <a :href="item.id" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
+                    <span class="fa collect-flag" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
+                    <span class="collect-flag">{{item.user_preference ? '取消' : '收藏'}}</span>
                   </a>
                 </div>
               </div>
@@ -173,6 +173,9 @@ export default {
     }
   },
   methods: {
+    test: function () {
+      console.log('9999')
+    },
     inits: async function (pages) {
       let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
@@ -182,6 +185,23 @@ export default {
       await model.getStyle()
       await model.getField()
       await model.checkUrl(urlObj)
+      window.mui('#pullfresh').on('tap', 'a', function (event) {
+        let classFlag = $(event.target).attr('class')
+        if (classFlag.indexOf('collect-flag') > -1) {
+          let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
+          model.goodsArr.forEach((item) => {
+            if (String(item.id) === String(objid)) {
+              item.user_preference = !item.user_preference
+              let text = item.user_preference ? '收藏成功！' : '取消收藏'
+              console.log(text)
+              window.mui.toast(text)
+            }
+          })
+        }
+        if (classFlag.indexOf('fur-name') > -1) {
+          window.location.href = $(event.target).attr('href')
+        }
+      })
     },
 
     // 判断是否高亮
@@ -431,14 +451,6 @@ export default {
       urlObj.price = model.priceicon ? 'desc' : 'asc'
       model.pages = 1
       model.getGoodsList(model.pages, urlObj, 'no')
-    },
-
-    // 收藏
-    collectBtn: function (obj) {
-      console.log('000000' + obj)
-      obj.user_preference = !obj.user_preference
-      let text = obj.user_preference ? '收藏成功！' : '取消收藏'
-      window.mui.toast(text)
     }
   },
   mounted () {

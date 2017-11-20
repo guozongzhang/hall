@@ -2,13 +2,13 @@
   <div class="furniture">
     <div class="down">该商品已下架,如有需要请联系卖家</div>
     <div class="fur_info">
-      <p class="title">银丰科技红烧云系列yyoowww</p>
+      <p class="title">{{detail.fur_name}}</p>
       <span class="bqian">新品上市特价三天</span>
       <div class="titelfoot">
         <div class="price">
           <span>
             <i>优惠价:</i>
-            <i>¥2699</i>
+            <i>{{detail.fur_cost}}</i>
           </span>
           <span>
             <i>原价:</i>
@@ -36,43 +36,43 @@
         <ul class="desc">
           <li>
             <span>品牌:</span>
-            <span>银丰科艺</span>
+            <span>{{detail.com_brand_name}}</span>
           </li>
           <li>
             <span>系列:</span>
-            <span>火烧云</span>
+            <span>{{detail.companys_self_series_name}}</span>
           </li>
           <li>
             <span>编码:</span>
-            <span>YFKY001245</span>
+            <span>{{detail.fur_num}}</span>
           </li>
           <li>
             <span>用途:</span>
-            <span>民用</span>
+            <span>{{detail.ftt_name}}</span>
           </li>
           <li>
             <span>分类:</span>
-            <span>炎炎夏日</span>
+            <span>{{detail.sp_type_name}}</span>
           </li>
           <li>
             <span>型号:</span>
-            <span>SPD-009</span>
+            <span>{{detail.fur_code}}</span>
           </li>
           <li>
             <span>毛重:</span>
-            <span>0.125KG</span>
+            <span>{{detail.fur_weight}}KG</span>
           </li>
           <li>
             <span>体积:</span>
-            <span>3.2M</span>
+            <span>{{detail.fur_volume}}M</span>
           </li>
           <li>
             <span>空间:</span>
-            <span>办公室</span>
+            <span>{{detail.field_name}}</span>
           </li>
           <li>
             <span>风格:</span>
-            <span>自然风</span>
+            <span>{{detail.style_name}}</span>
           </li>
         </ul>
       </div>
@@ -150,9 +150,16 @@
 </template>
 <script>
 export default {
+  props: ['info'],
   data () {
     return {
-      data: {}
+      detail: {}
+    }
+  },
+  watch: {
+    info: function () {
+      console.log(this.info)
+      this.detail = this.info
     }
   },
   methods: {

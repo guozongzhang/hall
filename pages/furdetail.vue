@@ -10,42 +10,50 @@
     <a href="/sellerinfo" class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
   </header>
   <div class="mui-content">
-    <component :is="slider" :imgarr="imgs"></component>
-    <component :is="detail"></component>
+    <component :is="swiperdetail" :imgarr="imgs"></component>
+    <component :is="detail" :info="detailinfo"></component>
   </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let url = require('url')
+let querystring = require('querystring')
+let model
 export default {
   head: {
-    title: 'dpjia-index'
+    title: '商品详情页'
   },
   beforeCreate () {
     // 注册组件 component(名字, 相对路径)
-    this.component('slider', 'home/sliders.vue')
+    this.component('swiperdetail', 'goods/swiperdetail.vue')
     this.component('detail', 'goods/detail.vue')
   },
   data () {
     return {
-      imgs: [
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          link: ''
-        },
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg',
-          link: ''
-        },
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg',
-          link: ''
-        },
-        {
-          url: 'http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg',
-          link: ''
-        }
-      ]
+      imgs: [],
+      detailinfo: {}
     }
+  },
+  methods: {
+    init: function () {
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      if (urlObj.id > 0) {
+        axios.get('functions/app_homepage/app_furnitures?id=' + urlObj.id).then(function (data) {
+          model.imgs = data.data.furniture_intro_pics
+          model.detailinfo = data.data
+        }).catch(function () {
+          window.mui.toast('获取数据失败!')
+        })
+      } else {
+        window.mui.toast('没有指定商品!')
+      }
+    }
+  },
+  mounted () {
+    model = this
+    model.init()
   }
 }
 </script>

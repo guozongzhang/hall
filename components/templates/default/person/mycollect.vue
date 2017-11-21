@@ -48,8 +48,8 @@
               <div class="mui-media-body">
                 <a class="fur-name" v-bind:href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}{{item.name}}</a>
                 <div class="fur-price">
-                  <span class="price">￥{{item.price}}</span>
-                  <span class="sub-price">￥{{item.discount}}</span>
+                  <span class="price">￥{{item.discount}}</span>
+                  <span class="sub-price">￥{{item.price}}</span>
                 </div>
               </div>
             </div>
@@ -259,7 +259,7 @@ export default {
         skip: pagesize * (pages - 1)
       }
       param = _.extend(param, whereobj)
-      axios.get('functions/furnitures/cloud_collect', {
+      axios.get('functions/cloud/cloud_collect', {
         headers: {
           'X-DP-Token': token
         },

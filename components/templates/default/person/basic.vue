@@ -78,7 +78,6 @@
 import axios from '~/plugins/axios'
 let url = require('url')
 let Cookies = require('js-cookie')
-let $ = require('jquery')
 let _ = require('underscore')
 let model
 export default {
@@ -103,7 +102,7 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let token = Cookies.get('dpjia-hall-token')
-      if (!_.isEmpty($.trim(token))) {
+      if (!_.isEmpty(token)) {
         model.loginstate = true
         model.getPersonInfo(token)
       }

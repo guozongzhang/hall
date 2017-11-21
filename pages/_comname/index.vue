@@ -8,10 +8,10 @@
     <component :is="search"></component>
     <component :is="slider" :imgarr="swiperArr"></component>
     <component :is="classifytab"></component>
-    <div style="height: 20px;background-color: #f4f4f4;"></div>
+    <div style="height: 10px;background-color: #f4f4f4;"></div>
     <component :is="hotfur" :goodsids="hotids"></component>
-    <div style="height: 20px;background-color: #f4f4f4;"></div>
-    <component :is="newfur" :imgarr="imgs"></component>
+    <div style="height: 10px;background-color: #f4f4f4;"></div>
+    <component :is="newfur"></component>
   </div>
 </div>
 </template>
@@ -39,8 +39,7 @@ export default {
         {
           pic: ''
         }
-      ],
-      imgs: []
+      ]
     }
   },
   methods: {
@@ -67,6 +66,7 @@ export default {
       })
     },
 
+    // 获取配置信息
     getInitData: function () {
       let param = {
         where: {

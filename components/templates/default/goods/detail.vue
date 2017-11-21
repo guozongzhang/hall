@@ -3,20 +3,20 @@
     <div class="down">该商品已下架,如有需要请联系卖家</div>
     <div class="fur_info">
       <p class="title">{{detail.fur_name}}</p>
-      <span class="bqian">新品上市特价三天</span>
+      <span class="bqian">{{detail.fur_adv}}</span>
       <div class="titelfoot">
         <div class="price">
           <span>
             <i>优惠价:</i>
-            <i>{{detail.fur_cost}}</i>
+            <i>¥{{defaluteSku.price}}</i>
           </span>
           <span>
             <i>原价:</i>
-            <i>¥29699</i>
+            <i>¥{{defaluteSku.discount}}</i>
           </span>
           <span>
             <i>专属价:</i>
-            <i>¥699</i>
+            <i>¥</i>
           </span>
         </div>
         <div class="scang">
@@ -28,7 +28,7 @@
       <p class="mui-navigate-right" >
         <a href="#modal">
           <span>已选择</span>
-          <span>原木色、三层、658790321654、保修....x1</span>
+          <span>{{defaluteSku.color}}{{defaluteSku.size}}{{defaluteSku.version}}</span>
         </a>
       </p>
       <div class="furdetail">
@@ -82,65 +82,39 @@
       <div class="maodian" id="item2"></div>
       <p class="c05">图文详情</p>
       <ul class="desc">
-        <li>
-          <img src="/images/shuijiao.jpg" />
-          <div>
-            <h4>地中海风格</h4>
-            <span class="content">风格简洁,造型经典,带您领略地中海风情</span>
-          </div>
-        </li>
-        <li>
-          <img src="/images/shuijiao.jpg" />
-          <div>
-            <h4>地中海风格</h4>
-            <span class="content">风格简洁,造型经典,带您领略地中海风情</span>
-          </div>
+        <li v-for="item in detailpics">
+          <img v-bind:src="item.fip_url" />
         </li>
       </ul>
+      <p class="text" v-html="detail.fur_info"></p>
     </div>
 
-    <div class="style">
-      <p class='c3d'>地中海风格</p>
-      <span class="c61">地中海风格是一种很特别的风格到底有多特别呢，我也不知道</span>
-      <div class="styleimg">
-        <div><img src="/images/shuijiao.jpg"></img></div>
-        <div><img src="/images/shuijiao.jpg"></img></div>
-        <div><img src="/images/shuijiao.jpg"></img></div>
-      </div>
-      <p class="text">地中海风格是一种很特别的风格到底有多特别呢，我也不知道地中海风格是一种很特别的风格到底有多特别呢，我也不知道地中海风格是一种很特别的风格到底有多特别呢，我也不知道地中海风格是一种很特别的风格到底有多特别呢，我也不知道</p>
-    </div>
+
 
     <div id="modal" class="mui-modal">
       <a class="mui-icon mui-icon-close mui-pull-right" href="#modal"></a>
       <div class="header">
-        <img src="" />
+        <img v-bind:src="detail.fur_image" />
         <div class="title">
           <p>银丰科艺的非常厉害的一个产品</p>
-          <div class="price"><i>专属价格：</i><i>¥26999</i></div>
+          <div class="price"><i>专属价格：</i><i>¥{{defaluteSku.discount}}</i></div>
           <span>请选择规格属性</span>
           <!-- <span>已选择：原木色</span> -->
         </div>
       </div>
       <div class="modelversion">
-        <p class="c05">颜色</p>
-        <div class="active">原木色</div>
-        <div>原木色</div>
-        <div>原木色</div>
-        <div>原木色</div>
+        <p class="c05">颜色</p> 
+        <div v-bind:class="item.fur_id_poi_furnitures === detail.fur_id ? 'active' : ''" v-for="item in detail.furniture_sku" >{{item.color}}</div>
       </div>
       <div class="modelversion">
         <p class="c05">尺寸</p>
-        <div class="active">200*150</div>
-        <div>200*150*154</div>
-        <div>200*150*154</div>
-        <div>200*150*154</div>
+        <div v-bind:class="item.fur_id_poi_furnitures === detail.fur_id ? 'active' : ''" v-for="item in detail.furniture_sku" >{{item.size}}</div>
+
       </div>
       <div class="modelversion">
         <p class="c05">其他规格</p>
-        <div class="active">有扶手</div>
-        <div>没扶手</div>
-        <div>原木色</div>
-        <div>小板凳</div>
+        <div v-bind:class="item.fur_id_poi_furnitures === detail.fur_id ? 'active' : ''" v-for="item in detail.furniture_sku" >{{item.version}}</div>
+
       </div>
       <div class="submit">
         <span></span>
@@ -148,26 +122,37 @@
     </div>
   </div>
 </template>
+
 <script>
+let model
 export default {
   props: ['info'],
   data () {
     return {
-      detail: {}
+      detail: {},
+      defaluteSku: {},
+      detailpics: []
     }
   },
   watch: {
     info: function () {
-      console.log(this.info)
       this.detail = this.info
+      this.init(this.info)
     }
   },
   methods: {
-    init: function () {
+    init: function (obj) {
+      console.log('111',obj)
+      this.defaluteSku = obj.furniture_sku.filter(item => {
+        return obj.fur_id == item.fur_id_poi_furnitures
+      })[0]
+      this.detailpics = obj.furniture_intro_pics.filter(item => {
+        return item.intro_type != "intro"
+      })
     }
   },
   mounted () {
-    this.init()
+    model = this
   }
 }
 </script>
@@ -240,6 +225,9 @@ export default {
   .modelversion {
     padding: 0 10px;
     overflow: hidden;
+  }
+  p{
+    margin: 0;
   }
   .modelversion p {
     height: 30px;
@@ -339,6 +327,7 @@ export default {
   .furpic {
     background: #fff;
     position: relative;
+    padding-bottom: 10px;
   }
   .furpic p {
     height: 30px;
@@ -357,65 +346,18 @@ export default {
     float: left;
     display: block;
     height: 150px;
-    max-width: 60%;
+    width: 100%;
   }
-  .furpic .desc div{
-    width: 40%;
-    float: left;
-    padding: 0 20px;
-  }
-  .furpic h4 {
-    text-align: left;
-    margin: 50px 0 10px;
-    font-size: 12px;
-    font-weight: normal;
-    color: #616161;
-  }
-  .furpic .content {
-    text-align: left;
-    float: left;
-    font-size: 12px;
-    color: #616161;
-  }
-  .style {
-    background: #fff;
-    padding-bottom: 10px;
-  }
-  .style p:nth-child(1){
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    margin: 0
-  }
-  .style span{
-    font-size: 12px;
-    display: block;
-    width: 50%;
-    text-align: center;
-    margin:0 auto;
-  }
-  .styleimg {
-    padding: 0 20px;
-    overflow: hidden;
-  }
-  .styleimg div{
-    width: 30%;
-    height: 165px;
-    overflow: hidden;
-    float: left;
-    margin-right: 5%;
-  }
-  .styleimg div:nth-child(3){
-    margin-right: 0
-  }
-  .styleimg img{
-    height: 165px;
-  }
-  .style .text {
-    margin: 10px 20px;
+
+  
+  .furpic p.text {
+    margin: 10px;
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 2px;
+    line-height: normal;
+    height: auto;
+    text-align: left;
   }
 
   .version .mui-navigate-right{

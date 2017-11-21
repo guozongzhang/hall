@@ -137,17 +137,16 @@ export default {
   watch: {
     info: function () {
       this.detail = this.info
-      this.init(this.info)
+      model.init(this.info)
     }
   },
   methods: {
     init: function (obj) {
-      console.log('111',obj)
       this.defaluteSku = obj.furniture_sku.filter(item => {
-        return obj.fur_id == item.fur_id_poi_furnitures
+        return obj.fur_id === item.fur_id_poi_furnitures
       })[0]
       this.detailpics = obj.furniture_intro_pics.filter(item => {
-        return item.intro_type != "intro"
+        return item.intro_type !== 'intro'
       })
     }
   },

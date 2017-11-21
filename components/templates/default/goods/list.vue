@@ -57,13 +57,13 @@
         <ul class="mui-table-view">
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
-              <img class="mui-media-object mui-pull-left" :src="item.fur_image">
+              <img class="mui-media-object mui-pull-left" :src="item.fur_image || 'images/default_null.jpg'">
               <div class="mui-media-body">
                 <a class="fur-name" :href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price col-flag">
-                  <span class="price">￥{{item.discount_cost}}</span>
-                  <span class="sub-price">￥{{item.discount_cost}}</span>
-                  <a :href="item.id" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
+                  <span class="price">￥{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
+                  <span class="sub-price">￥{{(item.sku_poi_furniture_sku || {}).price || '0'}}</span>
+                  <a :href="item.id + '_' + (item.sku_poi_furniture_sku || {}).id || '0'" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
                     <span class="fa collect-flag" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
                     <span class="collect-flag">{{item.user_preference ? '取消' : '收藏'}}</span>
                   </a>
@@ -200,10 +200,10 @@ export default {
           } else {
             let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
             model.goodsArr.forEach((item) => {
-              if (String(item.id) === String(objid)) {
+              if (String(item.id) === String(objid.split('_')[0])) {
                 item.user_preference = !item.user_preference
                 let opt = {
-                  furid: item.id,
+                  skuid: objid.split('_')[1],
                   user_preference: item.user_preference
                 }
                 model.collectFur(opt)
@@ -218,16 +218,42 @@ export default {
     },
 
     // 收藏、取消收藏商品
-    collectFur: function (obj) {
-      let param = {}
-      axios.get('', {
-        params: param
-      }).then(function () {
-        let text = obj.user_preference ? '收藏成功！' : '取消收藏'
-        window.mui.toast(text)
-      }).catch(function () {
-        window.mui.toast('操作失败!')
-      })
+    collectFur: async function (obj) {
+      let text = obj.user_preference ? '收藏成功！' : '取消收藏'
+      if (obj.user_preference) {
+        let param = {
+          point: obj.skuid,
+          type: 'sku',
+          action: 'favor',
+          fur_type: 'online'
+        }
+        axios.post('classes/user_preference', null, {
+          data: param
+        }).then(function (data) {
+          window.mui.toast(text)
+        }).catch(function () {
+          window.mui.toast('收藏失败!')
+        })
+      } else {
+        let getresult = await axios.get('classes/user_preference', {
+          params: {
+            point: obj.skuid,
+            limit: 1,
+            order: '-id'
+          }
+        })
+        let param = {
+          _method: 'DELETE',
+          ids: getresult.data.items[0].id
+        }
+        axios.post('functions/cart/app_preference', null, {
+          data: param
+        }).then(function (data) {
+          window.mui.toast(text)
+        }).catch(function () {
+          window.mui.toast('操作失败!')
+        })
+      }
     },
 
     // 判断是否高亮
@@ -285,7 +311,7 @@ export default {
         com_id: this.$store.state.comid
       }
       param = _.extend(param, whereobj)
-      axios.get('functions/furnitures/cloud_furnitures', {
+      axios.get('functions/cloud/cloud_furnitures', {
         params: param
       }).then(function (data) {
         model.is_loading = false

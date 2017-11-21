@@ -17,28 +17,28 @@
       <ul class="mui-table-view mui-grid-view mui-grid-9">
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;">
-            <span class="number">5</span>
+            <span class="number">{{(detail.com_id_rel_companys_brand || {}).count}}</span>
             <span>个</span>
             <div class="mui-media-body">品牌</div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;">
-            <span class="number">26</span>
+            <span class="number">{{(detail.com_id_rel_companys_self_series || {}).count}}</span>
             <span>个</span>
             <div class="mui-media-body">系列</div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;">
-            <span class="number">9999</span>
+            <span class="number">{{(detail.com_id_rel_furnitures || {}).count}}</span>
             <span>个</span>
             <div class="mui-media-body">商品</div>
           </a>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;">
-            <span class="number">99</span>
+            <span class="number">{{(detail.com_id_rel_company_stores || {}).count}}</span>
             <span>个</span>
             <div class="mui-media-body">门店</div>
           </a>
@@ -52,74 +52,25 @@
 					<a class="mui-control-item" href="#store">线下门店</a>
 				</div>
 				<div id="designer" class="mui-control-content mui-active">
-					<p>
-            <span class="name">张三</span>
-            <span class="tel">18702760110</span>
-            <span class="area">华北区</span>
-          </p>
-          <p>
-            <span class="name">李四</span>
-            <span class="tel">18702760110</span>
-            <span class="area">华北区</span>
-          </p>
-          <p>
-            <span class="name">习大大</span>
-            <span class="tel">18702760110</span>
-            <span class="area">华北区</span>
-          </p>
-          <p>
-            <span class="name">马云</span>
-            <span class="tel">18702760110</span>
-            <span class="area">华北区</span>
-          </p>
-          <p>
-            <span class="name">销售员</span>
-            <span class="tel">18702760110</span>
-            <span class="area">华北区</span>
-          </p>
-          <p>
-            <span class="name">销售员</span>
-            <span class="tel">18702760110</span>
-            <span class="area">华北区</span>
+					<p v-for="sub in (detail.com_id_rel_sell_users || {}).items || []">
+            <span class="name">{{(((sub.user_poi_users || {}).user_rel_user_info || [])[0] || {}).ui_name || '未设置'}}</span>
+            <span class="tel">{{(sub.user_poi_users || {}).u_mobile || '未设置'}}</span>
+            <span class="area">{{((sub.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置'}}</span>
           </p>
 				</div>
 				<div id="store" class="mui-control-content">
-          <div class="store-item">
-            <img src="/images/shuijiao.jpg">
+          <div class="store-item" v-for="item in (detail.com_id_rel_company_stores || {}).items || []">
+            <img :src="item.st_image_url || '/images/default_null.jpg'">
             <div class="store-detail">
-              <label>体验店名称</label>
-              <p>湖北省武汉市洪山区鲁磨路388号地址大学</p>
-              <p>010-87657680</p>
-            </div>
-          </div>
-          <div class="store-item">
-            <img src="/images/shuijiao.jpg">
-            <div class="store-detail">
-              <label>体验店名称</label>
-              <p>体验店地址</p>
-              <p>010-87657680</p>
-            </div>
-          </div>
-          <div class="store-item">
-            <img src="/images/shuijiao.jpg">
-            <div class="store-detail">
-              <label>体验店名称</label>
-              <p>体验店地址体验店地址体验店地址体验店地址体验店地址</p>
-              <p>010-87657680</p>
-            </div>
-          </div>
-          <div class="store-item">
-            <img src="/images/shuijiao.jpg">
-            <div class="store-detail">
-              <label>体验店名称</label>
-              <p>体验店地址</p>
-              <p>010-87657680</p>
+              <label>{{item.st_name || '未设置'}}</label>
+              <p>{{item.st_address || '未设置'}}</p>
+              <p>{{item.st_tel || '未设置'}}</p>
             </div>
           </div>
 				</div>
 			</div>
     </div>
-    <p class="preview-share" @click="previewShare()">
+    <p class="preview-share" v-show="showShare" @click="previewShare()">
       <span class="mui-icon mui-icon-eye"></span>
       <span>预览我的分享</span>
     </p>
@@ -156,23 +107,32 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let $ = require('jquery')
 let model
+let token
 export default {
   data () {
     return {
+      showShare: false,
       basic: {
         logo: '',
         name: '',
         subname: '',
         address: '',
         tel: ''
-      }
+      },
+      detail: {}
     }
   },
   methods: {
-    init: function () {
-      model.getCompanyInfo()
+    init: async function () {
+      token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        model.showShare = false
+      }
+      await model.getCompanyInfo()
+      await model.getDetailInfo()
     },
 
     // 获取公司信息
@@ -205,6 +165,18 @@ export default {
         address: resData.com_addr,
         tel: resData.mobile
       }
+    },
+
+    // 获取其他信息
+    getDetailInfo: async function () {
+      let param = {
+        com_id: this.$store.state.comid
+      }
+      let result = await axios.get('functions/cloud/cloud_seller_detail', {
+        params: param
+      })
+      model.detail = result.data
+      model.showShare = result.data.type
     },
 
     // 预览分享

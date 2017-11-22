@@ -2,7 +2,7 @@
 <div class="mui-content-padded" style="margin: 0px;">
   <div class="p20-box">
     <div class="mui-input-row mui-search">
-      <input type="search" class="mui-input-clear" placeholder="">
+      <input type="search" class="mui-input-clear" placeholder="" v-model="searchKey">
       <span class="mui-icon mui-icon-clear mui-hidden"></span>
       <span class="mui-placeholder">
         <span class="mui-icon mui-icon-search"></span>
@@ -133,6 +133,7 @@ let tabsObj = {
 export default {
   data () {
     return {
+      searchKey: '',
       linkPath: '',
       pages: 1,
       activeTab: '',
@@ -179,6 +180,25 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
+      $(document).keyup(function (e) {
+        if (e.keyCode === 13) {
+          let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
+          history.pushState('', '', reseturl)
+          model.searchList(model.searchKey)
+          return true
+        }
+      })
+      // 如果有搜索关键字
+      if (urlObj.searchKey || model.searchKey) {
+        let key = urlObj.searchKey || model.searchKey
+        model.searchList(key)
+      } else {
+        model.getInitData(pages, urlObj)
+      }
+    },
+
+    // 初始化获取数据
+    getInitData: async function (pages, urlObj) {
       await model.getGoodsList(pages, urlObj, 'no')
       await model.getSimpleType()
       await model.getBands()
@@ -215,6 +235,11 @@ export default {
           window.location.href = $(event.target).attr('href')
         }
       })
+    },
+
+    // 搜索接口
+    searchList: function (val) {
+      console.log(val)
     },
 
     // 收藏、取消收藏商品
@@ -302,6 +327,7 @@ export default {
         model.goodsArr = []
       }
       model.is_loading = true
+      delete whereobj.searchKey
       delete whereobj.limit
       delete whereobj.skip
       let tmpurl = ''

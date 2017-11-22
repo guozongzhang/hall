@@ -1,7 +1,7 @@
 <template>
 <div class="mui-content-padded" style="margin: 5px;">
   <div class="mui-input-row mui-search">
-    <input type="search" class="mui-input-clear" placeholder="搜索商品，共5188款产品">
+    <input type="search" class="mui-input-clear" placeholder="搜索商品，共5188款产品" v-model="searchKey">
     <span class="mui-icon mui-icon-clear mui-hidden"></span>
     <span class="mui-placeholder" style="text-align: left">
       <span class="mui-icon mui-icon-search"></span>
@@ -10,22 +10,29 @@
 </div>
 </template>
 <script>
+let url = require('url')
 let $ = require('jquery')
+let model
 export default {
   data () {
     return {
+      linkPath: '',
+      searchKey: ''
     }
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       $(document).keyup(function (e) {
         if (e.keyCode === 13) {
-          window.mui.toast('回车事件!')
+          window.location.href = model.linkPath + '/goodslist?searchKey=' + model.searchKey
         }
       })
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

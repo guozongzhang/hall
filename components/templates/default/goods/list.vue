@@ -239,7 +239,27 @@ export default {
 
     // 搜索接口
     searchList: function (val) {
+      model.is_nodata = false
+      model.goodsArr = []
       console.log(val)
+      let param = {
+        where: {
+          com_id: this.$store.state.comid,
+          search: val
+        }
+      }
+      axios.get('', {
+        params: param
+      }).then(function (data) {
+        model.is_loading = false
+        if (data.data.items.length > 0) {
+          model.goodsArr = data.data.items
+        } else {
+          model.is_nodata = true
+        }
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     },
 
     // 收藏、取消收藏商品

@@ -187,7 +187,7 @@ export default {
     // 预览分享
     previewShare: function () {
       model.detail.com_id_rel_sell_users.items.forEach((item) => {
-        if (String((item.user_poi_users || {}).id || 0) === String(model.detailuser_poi_users)) {
+        if (String((item.user_poi_users || {}).id || 0) === String(model.detail.user_poi_users)) {
           model.designer = {
             name: ((item.user_poi_users.user_rel_user_info || [])[0] || {}).ui_name || '未设置',
             tel: item.user_poi_users.u_mobile || '未设置',

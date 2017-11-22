@@ -94,7 +94,7 @@
         </p>
         <ul class="items-ul">
           <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
-            <a href="javascript:;" :title="sub.com_brand_name || sub.sp_type_name || sub.style_name || sub.field_name">{{sub.com_brand_name || sub.sp_type_name || sub.style_name || sub.field_name}}</a>
+            <a href="javascript:;" :title="sub.com_brand_name || sub.norname || sub.style_name || sub.field_name">{{sub.com_brand_name || sub.norname || sub.style_name || sub.field_name}}</a>
           </li>
         </ul>
       </div>
@@ -222,7 +222,6 @@ export default {
             let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
             model.goodsArr.forEach((item) => {
               if (String(item.id) === String(objid.split('_')[0])) {
-                item.user_preference = !item.user_preference
                 let opt = {
                   skuid: objid.split('_')[1],
                   user_preference: item.user_preference
@@ -273,7 +272,7 @@ export default {
 
     // 收藏、取消收藏商品
     collectFur: async function (obj) {
-      let text = obj.user_preference ? '收藏成功！' : '取消收藏'
+      let text = !obj.user_preference ? '收藏成功！' : '取消收藏'
       if (obj.user_preference) {
         let param = {
           point: obj.skuid,
@@ -284,6 +283,7 @@ export default {
         axios.post('classes/user_preference', null, {
           data: param
         }).then(function (data) {
+          obj.user_preference = !obj.user_preference
           window.mui.toast(text)
         }).catch(function () {
           window.mui.toast('收藏失败!')
@@ -303,6 +303,7 @@ export default {
         axios.post('functions/cart/app_preference', null, {
           data: param
         }).then(function (data) {
+          obj.user_preference = !obj.user_preference
           window.mui.toast(text)
         }).catch(function () {
           window.mui.toast('操作失败!')

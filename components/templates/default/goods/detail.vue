@@ -53,11 +53,11 @@
           </li>
           <li>
             <span>毛重:</span>
-            <span>{{detail.fur_weight}}KG</span>
+            <span>{{detail.fur_weight}}Kg</span>
           </li>
           <li>
             <span>体积:</span>
-            <span>{{detail.fur_volume}}M</span>
+            <span>{{detail.fur_volume}}m³</span>
           </li>
           <li>
             <span>空间:</span>

@@ -224,9 +224,9 @@ export default {
               if (String(item.id) === String(objid.split('_')[0])) {
                 let opt = {
                   skuid: objid.split('_')[1],
-                  user_preference: item.user_preference
+                  user_preference: !item.user_preference
                 }
-                model.collectFur(opt)
+                model.collectFur(opt, item)
               }
             })
           }
@@ -271,8 +271,9 @@ export default {
     },
 
     // 收藏、取消收藏商品
-    collectFur: async function (obj) {
-      let text = !obj.user_preference ? '收藏成功！' : '取消收藏'
+    collectFur: async function (obj, objitem) {
+      let text = !objitem.user_preference ? '收藏成功！' : '取消收藏'
+      console.log(obj)
       if (obj.user_preference) {
         let param = {
           point: obj.skuid,
@@ -283,7 +284,7 @@ export default {
         axios.post('classes/user_preference', null, {
           data: param
         }).then(function (data) {
-          obj.user_preference = !obj.user_preference
+          objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
         }).catch(function () {
           window.mui.toast('收藏失败!')
@@ -303,7 +304,7 @@ export default {
         axios.post('functions/cart/app_preference', null, {
           data: param
         }).then(function (data) {
-          obj.user_preference = !obj.user_preference
+          objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
         }).catch(function () {
           window.mui.toast('操作失败!')

@@ -144,7 +144,7 @@ export default {
       changesizeObj: {},
       changeversionObj: {},
       selectSku: {},
-      ishavesku: false      
+      ishavesku: false
     }
   },
   watch: {
@@ -158,20 +158,29 @@ export default {
       obj.furniture_sku.forEach(item => {
         this.ms.push(item.color + item.size + item.version)
         this.colorarr.push({color: item.color, disabled: false})
+<<<<<<< HEAD
         this.colorarr = _.uniq(this.colorarr, item => {return item.color})
         this.sizearr.push({size: item.size, disabled: false})
         this.sizearr = _.uniq(this.sizearr, item => {return item.size})
         this.versionarr.push({version: item.version, disabled: false})
         this.versionarr = _.uniq(this.versionarr, item => {return item.version})
+=======
+        this.colorarr = _.uniq(this.colorarr, item => { return item.color })
+        this.sizearr.push({size: item.size, disabled: false})
+        this.sizearr = _.uniq(this.sizearr, item => { return item.size })
+        this.versionarr.push({ version: item.version, disabled: false })
+        this.versionarr = _.uniq(this.versionarr, item => { return item.version })
+>>>>>>> tmp
       })
 
       // 判断是或否有默认sku 1
       model.defaluteSku = obj.furniture_sku.filter(item => {
-        return obj.sku_poi_furniture_sku == item.sk_id
+        return obj.sku_poi_furniture_sku === item.sk_id
       })[0]
 
       // 如果没有就选第一条 sku
       if (_.isEmpty(model.defaluteSku)) {
+<<<<<<< HEAD
         // model.defaluteSku = model.selectSku
         model.ishavesku = obj.furniture_sku.length > 0 ? true : false
         model.changecolorObj.color = obj.furniture_sku[0].color
@@ -180,16 +189,25 @@ export default {
         model.defaluteSku = obj.furniture_sku[0]
         model.colorarr.forEach(item => {
           if (item.color == obj.furniture_sku[0].color) {
+=======
+        model.defaluteSku = model.selectSku
+        model.ishavesku = obj.furniture_sku.length > 0
+        model.changecolorObj.color = obj.furniture_sku[0].color
+        model.changesizeObj.size = obj.furniture_sku[0].size
+        model.changeversionObj.version = obj.furniture_sku[0].version
+        model.colorarr.forEach(item => {
+          if (item.color === obj.furniture_sku[0].color) {
+>>>>>>> tmp
             item.disabled = true
           }
         })
         model.sizearr.forEach(item => {
-          if (item.size == obj.furniture_sku[0].size) {
+          if (item.size === obj.furniture_sku[0].size) {
             item.disabled = true
           }
         })
         model.versionarr.forEach(item => {
-          if (item.version == obj.furniture_sku[0].version) {
+          if (item.version === obj.furniture_sku[0].version) {
             item.disabled = true
           }
         })
@@ -199,17 +217,21 @@ export default {
         model.changesizeObj.size = model.defaluteSku.size
         model.changeversionObj.version = model.defaluteSku.version
         model.colorarr.forEach(item => {
+<<<<<<< HEAD
           if (item.color == model.defaluteSku.color) {
+=======
+          if (item.color === model.defaluteSku.color) {
+>>>>>>> tmp
             item.disabled = true
           }
         })
         model.sizearr.forEach(item => {
-          if (item.size == model.defaluteSku.size) {
+          if (item.size === model.defaluteSku.size) {
             item.disabled = true
           }
         })
         model.versionarr.forEach(item => {
-          if (item.version == model.defaluteSku.version) {
+          if (item.version === model.defaluteSku.version) {
             item.disabled = true
           }
         })
@@ -223,6 +245,7 @@ export default {
       f.forEach(item => {
         item.disabled = false
       })
+<<<<<<< HEAD
       if (!_.isEmpty(a) && !_.isEmpty(b) && !_.isEmpty(c)) {
         d.forEach(item => {
           item.disabled = false
@@ -366,11 +389,161 @@ export default {
             
           }
         })
+=======
+      if (!_.isEmpty(model.changesizeObj) && !_.isEmpty(model.changeversionObj)) {
+        objitem.disabled = true
+        model.changecolorObj = objitem
+        model.versionarr = model.versionarr.filter(item => {
+          return item.version === model.changeversionObj.version
+        })
+        model.sizearr = model.sizearr.filter(item => {
+          return item.size === model.changesizeObj.size
+        })
+      }
+      if (_.isEmpty(model.changesizeObj) && !_.isEmpty(model.changeversionObj)) {
+        model.versionarr = []
+        model.sizearr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.color === objitem.color && item.version === model.changeversionObj.version) {
+            model.versionarr.push({version: item.version, disabled: false})
+            model.sizearr.push({size: item.size, disabled: false})
+          }
+        })
+        model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+        model.versionarr = _.uniq(model.versionarr, item => { return item.size })
+        model.versionarr.forEach(item => {
+          if (item.version === model.changeversionObj.version) {
+            item.disabled = true
+          }
+        })
+        objitem.disabled = true
+        model.changecolorObj = objitem
+      }
+      if (!_.isEmpty(model.changesizeObj) && _.isEmpty(model.changeversionObj)) {
+        model.versionarr = []
+        model.sizearr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.color === objitem.color && item.size === model.changesizeObj.size) {
+            model.versionarr.push({version: item.version, disabled: false})
+            model.sizearr.push({size: item.size, disabled: false})
+          }
+        })
+        model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+        model.versionarr = _.uniq(model.versionarr, item => { return item.size })
+        model.colorarr.forEach(item => {
+          if (item.version === model.changecolorObj.version) {
+            item.disabled = true
+          }
+        })
+        objitem.disabled = true
+        model.changecolorObj = objitem
+      }
+      if (_.isEmpty(model.changesizeObj) && _.isEmpty(model.changeversionObj)) {
+        model.versionarr = []
+        model.sizearr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.color === objitem.color) {
+            model.versionarr.push({version: item.version, disabled: false})
+            model.sizearr.push({size: item.size, disabled: false})
+          }
+        })
+        model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+        model.versionarr = _.uniq(model.versionarr, item => { return item.size })
+        model.changecolorObj = objitem
+        objitem.disabled = true
+      }
+    },
+
+    // 改变size
+    changesize: function (objitem) {
+      model.sizearr.forEach(item => {
+        item.disabled = false
+      })
+      if (!_.isEmpty(model.changecolorObj) && !_.isEmpty(model.changeversionObj)) {
+        objitem.disabled = true
+        model.changesizeObj = objitem
+        model.versionarr = model.versionarr.filter(item => {
+          return item.version === model.changeversionObj.version
+        })
+        model.colorarr = model.colorarr.filter(item => {
+          return item.color === model.changecolorObj.color
+        })
+      }
+      if (_.isEmpty(model.changecolorObj) && !_.isEmpty(model.changeversionObj)) {
+        model.versionarr = []
+        model.colorarr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.size === objitem.size && item.version === model.changeversionObj.version) {
+            model.versionarr.push({version: item.version, disabled: false})
+            model.colorarr.push({color: item.color, disabled: false})
+          }
+        })
+        model.colorarr = _.uniq(model.colorarr, item => { return item.size })
+        model.versionarr = _.uniq(model.versionarr, item => { return item.size })
+        model.versionarr.forEach(item => {
+          if (item.version === model.changeversionObj.version) {
+            item.disabled = true
+          }
+        })
+        objitem.disabled = true
+        model.changesizeObj = objitem
+      }
+
+      if (!_.isEmpty(model.changecolorObj) && _.isEmpty(model.changeversionObj)) {
+        model.versionarr = []
+        model.colorarr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.size === objitem.size && item.color === model.changecolorObj.color) {
+            model.versionarr.push({version: item.version, disabled: false})
+            model.colorarr.push({color: item.color, disabled: false})
+          }
+        })
+        model.colorarr = _.uniq(model.colorarr, item => { return item.size })
+        model.versionarr = _.uniq(model.versionarr, item => { return item.size })
+        model.colorarr.forEach(item => {
+          if (item.version === model.changecolorObj.version) {
+            item.disabled = true
+          }
+        })
+        objitem.disabled = true
+        model.changesizeObj = objitem
+      }
+      if (_.isEmpty(model.changecolorObj) && _.isEmpty(model.changeversionObj)) {
+        model.versionarr = []
+        model.colorarr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.size === objitem.size) {
+            model.versionarr.push({version: item.version, disabled: false})
+            model.colorarr.push({color: item.color, disabled: false})
+          }
+        })
+        model.colorarr = _.uniq(model.colorarr, item => { return item.size })
+        model.versionarr = _.uniq(model.versionarr, item => { return item.size })
+        model.changesizeObj = objitem
+        objitem.disabled = true
+      }
+    },
+    // 修改版本
+    changeversion: function (objitem) {
+      model.versionarr.forEach(item => {
+        item.disabled = false
+      })
+      if (!_.isEmpty(model.changecolorObj) && !_.isEmpty(model.changesizeObj)) {
+        objitem.disabled = true
+        model.changeversionObj = objitem
+        model.colorarr = model.colorarr.filter(item => {
+          return item.color === model.changecolorObj.color
+        })
+        model.sizearr = model.sizearr.filter(item => {
+          return item.size === model.changesizeObj.size
+        })
+>>>>>>> tmp
       }
       if (_.isEmpty(a) && _.isEmpty(b)) { 
         d = []
         e = []
         model.detail.furniture_sku.forEach(item => {
+<<<<<<< HEAD
           if (val == 'color') {
             if (item.color == objitem.color) {
               d.push({version: item.version, disabled: false})
@@ -398,9 +571,41 @@ export default {
             e = _.uniq(e, item => {return item.size})
             d = _.uniq(d, item => {return item.color})
             model.changeversionObj = objitem
+=======
+          if (item.version === objitem.version && item.size === model.changesizeObj.size) {
+            model.sizearr.push({size: item.size, disabled: false})
+            model.colorarr.push({color: item.color, disabled: false})
+          }
+        })
+        model.colorarr = _.uniq(model.colorarr, item => { return item.size })
+        model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+        model.sizearr.forEach(item => {
+          if (item.size === model.changesizeObj.size) {
+            item.disabled = true
+          }
+        })
+        model.changeversionObj = objitem
+        objitem.disabled = true
+      }
+      if (!_.isEmpty(model.changecolorObj) && _.isEmpty(model.changesizeObj)) {
+        model.sizearr = []
+        model.colorarr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.version === objitem.version && item.color === model.changecolorObj.color) {
+            model.sizearr.push({size: item.size, disabled: false})
+            model.colorarr.push({color: item.color, disabled: false})
+          }
+        })
+        model.colorarr = _.uniq(model.colorarr, item => { return item.size })
+        model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+        model.colorarr.forEach(item => {
+          if (item.color === model.changecolorObj.color) {
+            item.disabled = true
+>>>>>>> tmp
           }
         })
       }
+<<<<<<< HEAD
       objitem.disabled = true
       // 选中值
       model.selectSku[val] = objitem[val]
@@ -419,6 +624,22 @@ export default {
     // 修改版本
     changeversion: function (objitem){
       model.public('version', model.changecolorObj, model.changesizeObj,model.changeversionObj,     model.colorarr, model.sizearr, model.versionarr,    objitem)
+=======
+      if (_.isEmpty(model.changecolorObj) && _.isEmpty(model.changesizeObj)) {
+        model.sizearr = []
+        model.colorarr = []
+        model.detail.furniture_sku.forEach(item => {
+          if (item.version === objitem.version) {
+            model.sizearr.push({size: item.size, disabled: false})
+            model.colorarr.push({color: item.color, disabled: false})
+          }
+        })
+        model.colorarr = _.uniq(model.colorarr, item => { return item.size })
+        model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+        model.changeversionObj = objitem
+        objitem.disabled = true
+      }
+>>>>>>> tmp
     },
     // 重置选择
     resetBtn: function () {
@@ -429,27 +650,34 @@ export default {
       model.sizearr = []
       model.versionarr = []
       model.detail.furniture_sku.forEach(item => {
-        model.colorarr.push({color: item.color, disabled: false});
-        model.sizearr.push({size: item.size, disabled: false});
-        model.versionarr.push({version: item.version, disabled: false});
+        model.colorarr.push({color: item.color, disabled: false})
+        model.sizearr.push({size: item.size, disabled: false})
+        model.versionarr.push({version: item.version, disabled: false})
       })
+<<<<<<< HEAD
       model.colorarr = _.uniq(model.colorarr, item => {return item.color})
       model.sizearr = _.uniq(model.sizearr, item => {return item.size})
       model.versionarr = _.uniq(model.versionarr, item => {return item.version})
       model.ishavesku = false
+=======
+      model.colorarr = _.uniq(model.colorarr, item => { return item.color })
+      model.sizearr = _.uniq(model.sizearr, item => { return item.size })
+      model.versionarr = _.uniq(model.versionarr, item => { return item.version })
+>>>>>>> tmp
     },
 
     // 选择sku规格
     submit: function () {
       $('.furniture #modal').removeClass('mui-modal')
       model.selectSku = _.find(model.detail.furniture_sku, item => {
-        return item.color + item.size + item.version == model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
+        return item.color + item.size + item.version === model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
       })
       model.defaluteSku = {
         color: model.selectSku.color,
         size: model.selectSku.size,
-        version: model.selectSku.version,
+        version: model.selectSku.version
       }
+<<<<<<< HEAD
     },
 
     // 收藏sku
@@ -518,6 +746,9 @@ export default {
       }
     },
 
+=======
+    }
+>>>>>>> tmp
   },
   mounted () {
     model = this
@@ -525,6 +756,7 @@ export default {
 }
 </script>
 <style scoped>
+<<<<<<< HEAD
 
   .closespan {
     position: relative;
@@ -544,6 +776,8 @@ export default {
     line-height: 4px;
     text-align: center;
   }
+=======
+>>>>>>> tmp
   #modal {
     width: 100%;
   }

@@ -118,7 +118,8 @@ export default {
     getStore: function () {
       let param = {
         where: {
-          com_id_poi_companys: this.$store.state.comid
+          com_id_poi_companys: this.$store.state.comid,
+          st_stores_states_new: 'sales'
         },
         keys: 'id,st_name'
       }

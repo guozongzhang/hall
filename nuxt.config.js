@@ -1,3 +1,4 @@
+let ENV = require('./config/local_env.json')
 module.exports = {
   /*
   ** Headers of the page
@@ -54,6 +55,6 @@ module.exports = {
   },
   plugins: ['~plugins/common'],
   env: {
-    baseUrl: process.env.BASE_URL || 'http://192.168.1.120/openapi/api/1.0/'
+    baseUrl: ENV ? ENV.api : 'http://192.168.1.120/openapi/api/1.0/'
   }
 }

@@ -2,7 +2,7 @@
 <div class="mui-content-padded" style="margin: 0px;">
   <div class="p20-box">
     <div class="mui-input-row mui-search">
-      <input type="search" class="mui-input-clear" placeholder="">
+      <input type="search" class="mui-input-clear" placeholder="" v-model="searchKey">
       <span class="mui-icon mui-icon-clear mui-hidden"></span>
       <span class="mui-placeholder">
         <span class="mui-icon mui-icon-search"></span>
@@ -133,6 +133,7 @@ let tabsObj = {
 export default {
   data () {
     return {
+      searchKey: '',
       linkPath: '',
       pages: 1,
       activeTab: '',
@@ -179,6 +180,25 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
+      $(document).keyup(function (e) {
+        if (e.keyCode === 13) {
+          let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
+          history.pushState('', '', reseturl)
+          model.searchList(model.searchKey)
+          return true
+        }
+      })
+      // 如果有搜索关键字
+      if (urlObj.searchKey || model.searchKey) {
+        let key = urlObj.searchKey || model.searchKey
+        model.searchList(key)
+      } else {
+        model.getInitData(pages, urlObj)
+      }
+    },
+
+    // 初始化获取数据
+    getInitData: async function (pages, urlObj) {
       await model.getGoodsList(pages, urlObj, 'no')
       await model.getSimpleType()
       await model.getBands()
@@ -214,6 +234,31 @@ export default {
         if (classFlag.indexOf('fur-name') > -1) {
           window.location.href = $(event.target).attr('href')
         }
+      })
+    },
+
+    // 搜索接口
+    searchList: function (val) {
+      model.is_nodata = false
+      model.goodsArr = []
+      console.log(val)
+      let param = {
+        where: {
+          com_id: this.$store.state.comid,
+          search: val
+        }
+      }
+      axios.get('', {
+        params: param
+      }).then(function (data) {
+        model.is_loading = false
+        if (data.data.items.length > 0) {
+          model.goodsArr = data.data.items
+        } else {
+          model.is_nodata = true
+        }
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
       })
     },
 
@@ -277,9 +322,15 @@ export default {
     },
 
     matchSearch: function (type) {
+      model.is_nodata = false
       model.activeTab = type
       let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
       delete urlObj.up_time
       delete urlObj.price
       delete urlObj.comprehensive
@@ -296,6 +347,7 @@ export default {
         model.goodsArr = []
       }
       model.is_loading = true
+      delete whereobj.searchKey
       delete whereobj.limit
       delete whereobj.skip
       let tmpurl = ''
@@ -321,7 +373,7 @@ export default {
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         } else {
           model.is_nodata = true
-          window.mui('#pullfresh').pullRefresh().endPullupToRefresh(true)
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -439,6 +491,7 @@ export default {
 
     // 重置分类
     resetClassify: function () {
+      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
@@ -456,6 +509,7 @@ export default {
 
     // 确定分类
     setClassify: function () {
+      model.is_nodata = false
       let obj = {
         secondtype: model.getFilter(model.classifyActiveArr, 'secondtype'),
         brand: model.getFilter(model.classifyActiveArr, 'brand'),
@@ -491,6 +545,7 @@ export default {
 
     // 按照价格排序
     orderByPrice: function (type) {
+      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.activeTab = type
       model.priceicon = !model.priceicon

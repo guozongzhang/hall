@@ -232,6 +232,11 @@ export default {
       model.activeTab = type
       let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
       delete urlObj.up_time
       delete urlObj.price
       delete urlObj.comprehensive
@@ -486,6 +491,11 @@ export default {
       model.activeTab = type
       model.priceicon = !model.priceicon
       let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
       delete urlObj.up_time
       delete urlObj.price
       delete urlObj.comprehensive

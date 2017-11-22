@@ -59,11 +59,15 @@ export default {
     // 获取商品信息
     getFur: async function (arr) {
       let param = {
-        where: JSON.stringify({
+        where: {
           fur_id: {
             $in: arr
-          }
-        }),
+          },
+          com_id_poi_companys: this.$store.state.comid,
+          user_poi_users: '0',
+          st_id_poi_company_stores: '0',
+          dealer_id_poi_company_dealer: '0'
+        },
         keys: 'id, fur_name,fur_image,sku_poi_furniture_sku',
         include: 'sku_poi_furniture_sku'
       }

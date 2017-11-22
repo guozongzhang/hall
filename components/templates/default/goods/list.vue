@@ -277,9 +277,15 @@ export default {
     },
 
     matchSearch: function (type) {
+      model.is_nodata = false
       model.activeTab = type
       let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
       delete urlObj.up_time
       delete urlObj.price
       delete urlObj.comprehensive
@@ -321,7 +327,7 @@ export default {
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         } else {
           model.is_nodata = true
-          window.mui('#pullfresh').pullRefresh().endPullupToRefresh(true)
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -439,6 +445,7 @@ export default {
 
     // 重置分类
     resetClassify: function () {
+      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
@@ -456,6 +463,7 @@ export default {
 
     // 确定分类
     setClassify: function () {
+      model.is_nodata = false
       let obj = {
         secondtype: model.getFilter(model.classifyActiveArr, 'secondtype'),
         brand: model.getFilter(model.classifyActiveArr, 'brand'),
@@ -491,6 +499,7 @@ export default {
 
     // 按照价格排序
     orderByPrice: function (type) {
+      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.activeTab = type
       model.priceicon = !model.priceicon

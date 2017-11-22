@@ -1,7 +1,7 @@
 <template>
 <div class="mui-content-padded" style="margin: 5px;">
   <div class="mui-input-row mui-search">
-    <input type="search" class="mui-input-clear" placeholder="搜索商品" v-model="searchKey">
+    <input type="search" class="mui-input-clear" placeholder="搜索商品" v-model="searchKey" @blur="goSearch()">
     <span class="mui-icon mui-icon-clear mui-hidden"></span>
     <span class="mui-placeholder" style="text-align: left">
       <span class="mui-icon mui-icon-search"></span>

@@ -12,8 +12,8 @@ RUN npm install pm2 -g --registry=https://registry.npm.taobao.org
 
 RUN npm install --registry=https://registry.npm.taobao.org
 
-RUN npm run build && npm run deploy
+RUN npm run build
 
 EXPOSE 5008
 
-CMD ["npm", "start"] 
+CMD ["npm", "run", "deploy"]

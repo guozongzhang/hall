@@ -2,7 +2,7 @@
 <div>
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">卖家详情</h1>
+    <h1 class="mui-title">云展厅详情</h1>
   </header>
   <div class="mui-content">
     <component :is="sellerinfo"></component>

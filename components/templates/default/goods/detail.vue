@@ -19,7 +19,7 @@
     </div>
     <div class="version">
       <p class="mui-navigate-right" >
-        <a href="#modal">
+        <a href="javascript:;" v-on:click="showmodal()">
           <span>已选择:</span>
           <span>{{defaluteSku.color}}{{defaluteSku.size}}{{defaluteSku.version}}</span>
         </a>
@@ -53,11 +53,11 @@
           </li>
           <li>
             <span>毛重:</span>
-            <span>{{detail.fur_weight}}KG</span>
+            <span>{{detail.fur_weight}}Kg</span>
           </li>
           <li>
             <span>体积:</span>
-            <span>{{detail.fur_volume}}M</span>
+            <span>{{detail.fur_volume}}m³</span>
           </li>
           <li>
             <span>空间:</span>
@@ -82,31 +82,33 @@
       <p v-show="detail.fur_info" class="text" v-html="detail.fur_info"></p>
     </div>
     
-    <div id="modal" class="mui-modal">
-      <a class="mui-icon mui-icon-close mui-pull-right" href="#modal"></a>
-      <div class="header">
-        <img v-bind:src="detail.fur_image" />
-        <div class="title">
-          <p>{{detail.fur_name}}</p>
-          <div class="price"><i>专属价格：</i><i>¥{{defaluteSku.discount}}</i></div>
-          <span v-show="!ishavesku" class="huise">请选择规格属性</span>
-          <span class="closespan" v-show="ishavesku"><i>已选择：</i>{{changecolorObj.color}} {{changesizeObj.size}} {{changeversionObj.version}}<i v-on:click="resetBtn()" class="closesku">x</i></span>
+    <div class="modalbox">
+      <div id="modal" class="">
+        <a class="closemodal" href="javascript:;" v-on:click="closemodal()">+</a>
+        <div class="header">
+          <img v-bind:src="detail.fur_image" />
+          <div class="title">
+            <p>{{detail.fur_name}}</p>
+            <div class="price"><i>&nbsp;</i></div>
+            <span v-show="!ishavesku" class="huise">请选择规格属性</span>
+            <span class="closespan" v-show="ishavesku"><i>已选择：</i>{{changecolorObj.color}} {{changesizeObj.size}} {{changeversionObj.version}}<i v-on:click="resetBtn()" class="closesku">x</i></span>
+          </div>
         </div>
-      </div>
-      <div class="modelversion">
-        <p class="c05">颜色</p> 
-        <div  v-for="item in colorarr" v-on:click="changecolor(item)"  v-bind:class="item.disabled === false ? '' : 'active'">{{item.color}}</div>
-      </div>
-      <div class="modelversion">
-        <p class="c05">尺寸</p>
-        <div v-for="item in sizearr" v-bind:class="item.disabled === false ? '' : 'active'" v-on:click="changesize(item)">{{item.size}}</div>
-      </div>
-      <div class="modelversion">
-        <p class="c05">其他规格</p>
-        <div  v-for="item in versionarr" v-bind:class="item.disabled === false ? '' : 'active'" v-on:click="changeversion(item)">{{item.version}}</div>
-      </div>
-      <div class="submit">
-        <span v-on:click="submit()"></span>
+        <div class="modelversion">
+          <p class="c05">颜色</p> 
+          <div  v-for="item in colorarr" v-on:click="changecolor(item)"  v-bind:class="item.disabled === false ? '' : 'active'">{{item.color}}</div>
+        </div>
+        <div class="modelversion">
+          <p class="c05">尺寸</p>
+          <div v-for="item in sizearr" v-bind:class="item.disabled === false ? '' : 'active'" v-on:click="changesize(item)">{{item.size}}</div>
+        </div>
+        <div class="modelversion">
+          <p class="c05">其他规格</p>
+          <div  v-for="item in versionarr" v-bind:class="item.disabled === false ? '' : 'active'" v-on:click="changeversion(item)">{{item.version}}</div>
+        </div>
+        <div class="submit">
+          <span v-on:click="submit()"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -207,6 +209,16 @@ export default {
       this.detailpics = obj.furniture_intro_pics.filter(item => {
         return item.intro_type !== 'intro'
       })
+    },
+
+    // 打开模态框
+    showmodal: function () {
+      $('.modalbox').css('display', 'block')
+    },
+
+    // 关闭模态框
+    closemodal: function () {
+      $('.modalbox').css('display', 'none')
     },
 
     public: function (val, objitem) {
@@ -358,13 +370,17 @@ export default {
 
     // 选择sku规格
     submit: function () {
+      $('.modalbox').css('display', 'none')
       model.selectSku = _.find(model.detail.furniture_sku, item => {
         return item.color + item.size + item.version === model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
       })
+      console.log()
       model.defaluteSku = {
         color: model.selectSku.color,
         size: model.selectSku.size,
-        version: model.selectSku.version
+        version: model.selectSku.version,
+        discount: model.selectSku.discount,
+        price: model.selectSku.price
       }
     },
 
@@ -434,7 +450,26 @@ export default {
 }
 </script>
 <style scoped>
-
+  .closemodal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    color: #000;
+    font-size: 48px;
+    transform: rotate(45deg)
+  }
+  .modalbox {
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.41);
+    height: 100%;
+    width: 100%;
+    z-index: 5;
+    display: none;
+  }
   .closespan {
     position: relative;
     display: inline-block;
@@ -455,9 +490,11 @@ export default {
   }
   #modal {
     height: 383px;
-    position: fixed;
-    bottom: 0px;
     background: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
   #modal .header {
     overflow: hidden;

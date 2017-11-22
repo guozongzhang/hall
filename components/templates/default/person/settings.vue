@@ -1,7 +1,7 @@
 <template>
 <div>
   <ul class="mui-table-view">
-    <li class="mui-table-view-cell mui-media set-box">
+    <li class="mui-table-view-cell mui-media set-box" style="display: none">
       <a href="javascript:;">
         <div class="mui-switch mui-switch-mini" v-bind:class="isActive ? 'mui-active' : ''" @click="switchState()">
           <div class="mui-switch-handle"></div>

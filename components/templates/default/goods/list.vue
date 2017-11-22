@@ -241,7 +241,6 @@ export default {
     searchList: function (val) {
       model.is_nodata = false
       model.goodsArr = []
-      console.log(val)
       let param = {
         where: {
           com_id: this.$store.state.comid,

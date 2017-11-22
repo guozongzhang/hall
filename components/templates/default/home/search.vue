@@ -10,6 +10,7 @@
 </div>
 </template>
 <script>
+let $ = require('jquery')
 export default {
   data () {
     return {
@@ -17,6 +18,11 @@ export default {
   },
   methods: {
     init: function () {
+      $(document).keyup(function (e) {
+        if (e.keyCode === 13) {
+          window.mui.toast('回车事件!')
+        }
+      })
     }
   },
   mounted () {

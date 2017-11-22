@@ -23,7 +23,7 @@ export default {
     return {
       imgsArr: [
         {
-          pic: ''
+          pic: 'http://cimg.dpjia.com/images/b_art_img.jpg'
         }
       ]
     }

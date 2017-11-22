@@ -1,6 +1,6 @@
 <template>
   <div class="furniture">
-    <div class="down">该商品已下架,如有需要请联系卖家</div>
+    <div class="down" v-show="detail.fur_states != 'up'">该商品已下架,如有需要请联系卖家</div>
     <div class="fur_info">
       <p class="title">{{detail.fur_name}}</p>
       <span class="bqian">{{detail.fur_adv}}</span>
@@ -89,8 +89,6 @@
       <p v-show="detail.fur_info" class="text" v-html="detail.fur_info"></p>
     </div>
 
-
-
     <div id="modal" class="mui-modal">
       <a class="mui-icon mui-icon-close mui-pull-right" href="#modal"></a>
       <div class="header">
@@ -98,8 +96,8 @@
         <div class="title">
           <p>银丰科艺的非常厉害的一个产品</p>
           <div class="price"><i>专属价格：</i><i>¥{{defaluteSku.discount}}</i></div>
-          <span v-show="">请选择规格属性</span>
-          <span v-show="changecolorObj.color || changesizeObj.size || changeversionObj.version">已选择：{{changecolorObj.color}} {{changesizeObj.size}} {{changeversionObj.version}} <i v-on:click="resetBtn()">x</i></span>
+          <span v-show="!ishavesku">请选择规格属性</span>
+          <span v-show="ishavesku">已选择：{{changecolorObj.color}} {{changesizeObj.size}} {{changeversionObj.version}} <i v-on:click="resetBtn()">x</i></span>
         </div>
       </div>
       <div class="modelversion">
@@ -141,28 +139,18 @@ export default {
       changecolorObj: {},
       changesizeObj: {},
       changeversionObj: {},
-      selectSku: {}
-      
+      selectSku: {},
+      ishavesku: false      
     }
   },
   watch: {
     info: function () {
       this.detail = this.info
-      this.init(this.info)
+      model.init(this.info)
     }
   },
   methods: {
     init: function (obj) {
-
-      this.defaluteSku = obj.furniture_sku.filter(item => {
-        return obj.sku_poi_furniture_sku == item.sk_id
-      })[0]
-
-      this.detailpics = obj.furniture_intro_pics.filter(item => {
-        return item.intro_type != "intro"
-      })
-
-
       obj.furniture_sku.forEach(item => {
         this.ms.push(item.color + item.size + item.version)
         this.colorarr.push({color: item.color, disabled: false})
@@ -174,6 +162,73 @@ export default {
         this.versionarr.push({version: item.version, disabled: false})
         this.versionarr = _.uniq(this.versionarr, item => {return item.version})
       })
+
+      // 判断是或否有默认sku 1
+      model.defaluteSku = obj.furniture_sku.filter(item => {
+        return obj.sku_poi_furniture_sku == item.sk_id
+      })[0]
+
+      // 如果没有就选第一条 sku
+      if (_.isEmpty(model.defaluteSku)) {
+        model.defaluteSku = model.selectSku
+        model.ishavesku = obj.furniture_sku.length > 0 ? true : false
+
+        model.changecolorObj.color = obj.furniture_sku[0].color
+        model.changesizeObj.size = obj.furniture_sku[0].size
+        model.changeversionObj.version = obj.furniture_sku[0].version
+
+        model.colorarr.forEach(item => {
+          console.log('1111111', )
+          if (item.color == obj.furniture_sku[0].color) {
+            item.disabled = true
+          }
+        })
+        model.sizearr.forEach(item => {
+          if (item.size == obj.furniture_sku[0].size) {
+            item.disabled = true
+          }
+        })
+        model.versionarr.forEach(item => {
+          if (item.version == obj.furniture_sku[0].version) {
+            item.disabled = true
+          }
+        })
+
+
+      } else {
+        model.ishavesku = true
+        model.changecolorObj.color = model.defaluteSku.color
+        model.changesizeObj.size = model.defaluteSku.size
+        model.changeversionObj.version = model.defaluteSku.version
+
+        console.log('11111111111111111')
+        model.colorarr.forEach(item => {
+          console.log('1213450', item)
+          if (item.color == model.defaluteSku.color) {
+            item.disabled = true
+          }
+        })
+        model.sizearr.forEach(item => {
+          if (item.size == model.defaluteSku.size) {
+            item.disabled = true
+          }
+        })
+        model.versionarr.forEach(item => {
+          if (item.version == model.defaluteSku.version) {
+            item.disabled = true
+          }
+        })
+
+
+        console.log()
+      }
+
+      this.detailpics = obj.furniture_intro_pics.filter(item => {
+        return item.intro_type !== 'intro'
+      })
+
+
+      
     },
 
     changecolor: function (objitem) {
@@ -443,6 +498,8 @@ export default {
         size: model.selectSku.size,
         version: model.selectSku.version,
       }
+
+
     },
 
 

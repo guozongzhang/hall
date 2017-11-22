@@ -1,17 +1,17 @@
 <template>
 <div>
   <header class="mui-bar mui-bar-nav">
-    <h1 class="mui-title">嘉利信得云展厅</h1>
+    <h1 class="mui-title">{{comName}}云展厅</h1>
     <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
   </header>
   <div class="mui-content">
     <component :is="search"></component>
     <component :is="slider" :imgarr="swiperArr"></component>
     <component :is="classifytab"></component>
-    <div style="height: 20px;background-color: #f4f4f4;"></div>
-    <component :is="hotfur"></component>
-    <div style="height: 20px;background-color: #f4f4f4;"></div>
-    <component :is="newfur" :imgarr="imgs"></component>
+    <div style="height: 10px;background-color: #f4f4f4;"></div>
+    <component :is="hotfur" :goodsids="hotids"></component>
+    <div style="height: 10px;background-color: #f4f4f4;"></div>
+    <component :is="newfur"></component>
   </div>
 </div>
 </template>
@@ -33,12 +33,13 @@ export default {
   },
   data () {
     return {
+      comName: '',
+      hotids: [],
       swiperArr: [
         {
           pic: ''
         }
-      ],
-      imgs: []
+      ]
     }
   },
   methods: {
@@ -59,11 +60,13 @@ export default {
         params: param
       }).then(function (data) {
         Cookies.set('com-name', data.data.items[0].com_name)
+        model.comName = data.data.items[0].com_name
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })
     },
 
+    // 获取配置信息
     getInitData: function () {
       let param = {
         where: {
@@ -77,6 +80,7 @@ export default {
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
         model.swiperArr = info[0].header[0].list[1].banner
+        model.hotids = info[0].header[1].list[0].goods
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })

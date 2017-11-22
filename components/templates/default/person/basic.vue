@@ -62,7 +62,7 @@
         </a>
       </li>
       <li class="personli">
-        <a href="/about" class="mui-navigate-right">
+        <a :href="linkPath + '/about'" class="mui-navigate-right">
           <span class="about"></span>
           <div class="mui-media-body">
             <p class='mui-ellipsis'>
@@ -76,13 +76,14 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
-let $ = require('jquery')
 let _ = require('underscore')
 let model
 export default {
   data () {
     return {
+      linkPath: '',
       loginstate: false,
       info: {
         header_img: '/images/shuijiao.jpg',
@@ -98,8 +99,10 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       let token = Cookies.get('dpjia-hall-token')
-      if (!_.isEmpty($.trim(token))) {
+      if (!_.isEmpty(token)) {
         model.loginstate = true
         model.getPersonInfo(token)
       }
@@ -132,7 +135,7 @@ export default {
     // 是否要登录
     isLogin: function () {
       if (!model.loginstate) {
-        window.location.href = '/login'
+        window.location.href = model.linkPath + '/login'
       }
     },
 
@@ -140,11 +143,10 @@ export default {
     goNextPage: function (url, type) {
       if (model.loginstate) {
         if (type === 'normal') {
-          console.log(url)
-          window.location.href = url
+          window.location.href = model.linkPath + url
         } else {
           if (!model.info.identity.none) {
-            window.location.href = url
+            window.location.href = model.linkPath + url
           }
         }
       }

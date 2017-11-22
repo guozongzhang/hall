@@ -13,26 +13,51 @@
       </a>
     </li>
     <li class="mui-table-view-cell sub-item">
-      <a class="mui-navigate-right" href="/editpwd">更改密码</a>
+      <a class="mui-navigate-right" :href="linkPath + '/editpwd'">更改密码</a>
     </li>
   </ul>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
+let url = require('url')
 let model
 export default {
   data () {
     return {
+      linkPath: '',
       isActive: true
     }
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
 
     // 设置专属价
-    switchState: function () {
+    switchState: async function () {
+      let isDesigner = Cookies.get('can-upgrade')
+      if (isDesigner === 'no') {
+        model.isActive = false
+        window.mui.toast('您不属于该云展厅的销售经理，不能开启专属价!')
+        return false
+      }
       model.isActive = !model.isActive
+      let param = {
+        point: this.$store.state.comid,
+        type: 'cloud_price',
+        action: 'vip_price',
+        fur_type: model.isActive ? 'on' : 'off'
+      }
+      axios.post('classes/user_preference', null, {
+        data: param
+      }).then(function (data) {
+        window.mui.toast('设置成功!')
+      }).catch(function () {
+        window.mui.toast('收藏失败!')
+      })
     }
   },
   mounted () {

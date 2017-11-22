@@ -18,7 +18,7 @@
         <label>记住密码</label>
         <span class="remeber" v-bind:class="info.remeber ? 'active' : ''"></span>
       </div>
-      <a href="/forgetpwd" class="forget-pwd">忘记密码</a>
+      <a :href="linkPath + '/forgetpwd'" class="forget-pwd">忘记密码</a>
     </div>
   </div>
   <div v-show="type == 'phone'">
@@ -41,6 +41,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
 let $ = require('jquery')
 let _ = require('underscore')
@@ -49,6 +50,7 @@ let startTime = 60
 export default {
   data () {
     return {
+      linkPath: '',
       type: 'number',
       subBtnText: '手机验证码登录',
       verify: '获取动态密码',
@@ -65,6 +67,8 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       let rem = Cookies.get('dpjia-hall-remeber')
       model.info.remeber = rem
     },
@@ -199,7 +203,7 @@ export default {
       }
       window.mui.toast('登录成功!')
       setTimeout(function () {
-        window.location.href = '/'
+        window.location.href = model.linkPath + '/'
       }, 1000)
     }
   },

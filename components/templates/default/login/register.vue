@@ -54,6 +54,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
 let ESVal = require('es-validate')
 let $ = require('jquery')
@@ -71,6 +72,7 @@ export default {
   },
   data () {
     return {
+      linkPath: '',
       verify: '获取动态密码',
       verifyState: false,
       info: {
@@ -89,6 +91,8 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getCompany()
       model.getStore()
     },
@@ -291,7 +295,7 @@ export default {
         Cookies.set('dpjia-hall-token', data.data.token)
         window.mui.toast('注册成功!')
         setTimeout(function () {
-          window.location.href = '/'
+          window.location.href = model.linkPath + '/'
         }, 1000)
       }).catch(function () {
         window.mui.toast('注册失败!')

@@ -15,10 +15,6 @@
             <i>¥{{defaluteSku.price}}</i>
           </span>
         </div>
-        <a :href="detail.fur_id + '_' + (defaluteSku || {}).sk_id || '0'" class="collection-bth collect-flag scang" v-bind:class="defaluteSku.user_preference ? 'star-active' : 'star-normal'" v-on:click="collection()">
-          <span class="fa collect-flag" v-bind:class="defaluteSku.user_preference ? 'fa-star' : 'fa-star-o'"></span>
-          <span class="collect-flag">{{defaluteSku.user_preference ? '取消' : '收藏'}}</span>
-        </a>
       </div>
     </div>
     <div class="version">
@@ -118,6 +114,7 @@
 
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let _ = require('underscore')
 let $ = require('jquery')
 let Cookies = require('js-cookie')
@@ -126,6 +123,7 @@ export default {
   props: ['info'],
   data () {
     return {
+      linkPath: '',
       detail: {},
       defaluteSku: {},
       detailpics: [],
@@ -142,6 +140,8 @@ export default {
   },
   watch: {
     info: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       this.detail = this.info
       model.init(this.info)
     }
@@ -382,7 +382,7 @@ export default {
       } else {
         let opt = {
           skuid: model.defaluteSku.sku_id,
-          user_preference: model.defaluteSku.user_preference
+          user_preference: model.defaluteSku.user_preference === '0'
         }
         model.collectFur(opt)
       }
@@ -391,6 +391,7 @@ export default {
     // 收藏、取消收藏商品
     collectFur: async function (obj) {
       let text = obj.user_preference ? '收藏成功！' : '取消收藏'
+      model.defaluteSku.user_preference = obj.user_preference ? '0' : '1'
       if (obj.user_preference) {
         let param = {
           point: obj.skuid,

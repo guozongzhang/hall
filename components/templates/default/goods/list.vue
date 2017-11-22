@@ -184,7 +184,8 @@ export default {
         if (e.keyCode === 13) {
           let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
           history.pushState('', '', reseturl)
-          model.searchList(model.searchKey)
+          model.pages = 1
+          model.searchList(model.searchKey, 'no')
           return true
         }
       })
@@ -238,24 +239,32 @@ export default {
     },
 
     // 搜索接口
-    searchList: function (val) {
-      model.is_nodata = false
-      model.goodsArr = []
-      console.log(val)
-      let param = {
-        where: {
-          com_id: this.$store.state.comid,
-          search: val
-        }
+    searchList: function (val, type) {
+      if (type === 'no') {
+        model.goodsArr = []
       }
-      axios.get('', {
+      let param = {
+        skip: model.pages,
+        limit: pagesize,
+        where: {
+          'fur_states': 'up'
+        },
+        search: val,
+        search_fields: 'fur_name',
+        owner: 'public',
+        company_id: this.$store.state.comid
+      }
+      axios.get('functions/es/hall_es_furnitures', {
         params: param
       }).then(function (data) {
         model.is_loading = false
         if (data.data.items.length > 0) {
-          model.goodsArr = data.data.items
+          model.goodsArr = _.union(model.goodsArr, data.data.items)
+          model.pages++
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         } else {
           model.is_nodata = true
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -386,7 +395,13 @@ export default {
       model.is_loading = true
       let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
-      model.getGoodsList(model.pages, urlObj, 'getmore')
+      // 如果有搜索关键字
+      if (urlObj.searchKey || model.searchKey) {
+        let key = urlObj.searchKey || model.searchKey
+        model.searchList(key, 'yes')
+      } else {
+        model.getGoodsList(model.pages, urlObj, 'getmore')
+      }
     },
 
     // 获取分类数据（品类）

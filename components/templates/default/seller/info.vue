@@ -52,7 +52,7 @@
 					<a class="mui-control-item" href="#store">线下门店</a>
 				</div>
 				<div id="designer" class="mui-control-content mui-active">
-					<p v-for="sub in (detail.com_id_rel_sell_users || {}).items || []">
+					<p v-for="sub in (detail.com_id_rel_sell_users || {}).items || []" v-if="(((sub.user_poi_users || {}).user_rel_designer || [])[0] || {}).designer_state_new === 'signed'">
             <span class="name">{{(((sub.user_poi_users || {}).user_rel_user_info || [])[0] || {}).ui_name || '未设置'}}</span>
             <span class="tel">{{(sub.user_poi_users || {}).u_mobile || '未设置'}}</span>
             <span class="area">{{((sub.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置'}}</span>
@@ -86,19 +86,19 @@
               <img src="/images/shuijiao.jpg">
             </div>
             <div class="designer-info">
-              <label>嘉利信得云展厅官方定制销售经理</label>
+              <label>{{basic.name}}云展厅官方定制销售经理</label>
               <p>
-                <span class="designer-name">习大大</span>
+                <span class="designer-name">{{designer.name || '未设置'}}</span>
                 <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>
               </p>
-              <p>联系电话:18702760110</p>
+              <p>联系电话:{{designer.tel || '未设置'}}</p>
             </div>
           </div>
-          <div class="down-info">服务区域: 华北区(北京、天津、河北)</div>
+          <div class="down-info">服务区域: {{designer.area || '未设置'}}</div>
         </div>
       </div>
     </div>
@@ -122,7 +122,12 @@ export default {
         address: '',
         tel: ''
       },
-      detail: {}
+      detail: {},
+      designer: {
+        name: '',
+        tel: '',
+        area: ''
+      }
     }
   },
   methods: {
@@ -181,6 +186,15 @@ export default {
 
     // 预览分享
     previewShare: function () {
+      model.detail.com_id_rel_sell_users.items.forEach((item) => {
+        if (String((item.user_poi_users || {}).id || 0) === String(model.detailuser_poi_users)) {
+          model.designer = {
+            name: ((item.user_poi_users.user_rel_user_info || [])[0] || {}).ui_name || '未设置',
+            tel: item.user_poi_users.u_mobile || '未设置',
+            area: ((item.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置'
+          }
+        }
+      })
       $('.share-box').show()
       $('.share-box').addClass('bounceInUp')
       setTimeout(function () {

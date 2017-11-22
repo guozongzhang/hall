@@ -7,7 +7,6 @@
       <li><a href="#item2">详情</a></li>
     </ul>
     <a :href="linkPath + '/sellerinfo'" class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
-    <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
   </header>
   <div class="mui-content">
     <component :is="swiperdetail" :imgarr="imgs"></component>

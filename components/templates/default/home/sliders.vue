@@ -23,7 +23,7 @@ export default {
     return {
       imgsArr: [
         {
-          pic: '/images/default.png',
+          pic: '/images/banner.png',
           url: 'javascript:;'
         }
       ]

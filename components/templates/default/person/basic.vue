@@ -86,7 +86,7 @@ export default {
       linkPath: '',
       loginstate: false,
       info: {
-        header_img: '/images/shuijiao.jpg',
+        header_img: '/images/user.png',
         header_name: '点击登录',
         fur_num: 0,
         tel: '-',

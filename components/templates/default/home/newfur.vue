@@ -5,12 +5,12 @@
     <span class="right-icon">
       <span class="mui-icon mui-icon-arrowright"></span>
     </span>
-    <a :href="linkPath + '/goodslist'" class="go-more">更多</a>
+    <a :href="linkPath + '/goodslist?up_time=up_time'" class="go-more">更多</a>
   </div>
   <div class="new-box">
     <div class="fur-item" v-for="item in newlistArr" v-if="item.state_type === 'on'">
       <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
-        <img class="mui-media-object" :src="item.fur_img || '/images/default_null.jpg'">
+        <img class="mui-media-object" :src="item.fur_img || '/images/newfur.png'">
         <span class="fur-price">￥{{item.price}}</span>
       </a>
     </div>
@@ -28,7 +28,7 @@ export default {
       newlistArr: [
         {
           id: 0,
-          fur_img: '/images/default_null.jpg',
+          fur_img: '/images/newfur.png',
           price: '0'
         }
       ]

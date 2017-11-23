@@ -12,7 +12,7 @@
     <ul class="mui-table-view mui-grid-view">
       <li class="mui-table-view-cell mui-media mui-col-xs-4" v-for="item in subArr" v-if="item.state == 'on'">
         <a v-bind:href="linkPath + '/goodslist?secondtype='+ activeid + '&thirdtype=' + item.id">
-          <img class="mui-media-object" :src="item.icon_url || '/images/default.png'">
+          <img class="mui-media-object" :src="item.icon_url || '/images/square.png'">
           <div class="mui-media-body">{{item.norname ? item.norname : item.type_name}}</div>
         </a>
       </li>

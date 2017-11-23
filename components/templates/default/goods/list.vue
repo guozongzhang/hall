@@ -177,6 +177,10 @@ export default {
   },
   methods: {
     inits: async function (pages) {
+      await model.getSimpleType()
+      await model.getBands()
+      await model.getStyle()
+      await model.getField()
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
@@ -207,10 +211,6 @@ export default {
     // 初始化获取数据
     getInitData: async function (pages, urlObj) {
       await model.getGoodsList(pages, urlObj, 'no')
-      await model.getSimpleType()
-      await model.getBands()
-      await model.getStyle()
-      await model.getField()
       await model.checkUrl(urlObj)
       window.mui('#pullfresh').on('tap', 'a', function (event) {
         let classFlag = $(event.target).attr('class')

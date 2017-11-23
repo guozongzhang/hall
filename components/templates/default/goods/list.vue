@@ -202,7 +202,7 @@ export default {
               if (String(item.id) === String(objid.split('_')[0])) {
                 let opt = {
                   skuid: objid.split('_')[1],
-                  user_preference: !item.user_preference
+                  user_preference: item.user_preference
                 }
                 model.collectFur(opt, item)
               }
@@ -216,7 +216,7 @@ export default {
       $(document).keyup(function (e) {
         if (e.keyCode === 13) {
           let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
-          history.pushState('', '', reseturl)
+          history.replaceState('', '', reseturl)
           model.pages = 1
           model.searchList(model.searchKey, 'no')
           return true
@@ -285,7 +285,7 @@ export default {
     // 收藏、取消收藏商品
     collectFur: async function (obj, objitem) {
       let text = !objitem.user_preference ? '收藏成功！' : '取消收藏'
-      if (obj.user_preference) {
+      if (!obj.user_preference) {
         let param = {
           point: obj.skuid,
           type: 'sku',
@@ -378,7 +378,7 @@ export default {
       } else {
         tmpurl = myURL.pathname
       }
-      history.pushState('', '', tmpurl)
+      history.replaceState('', '', tmpurl)
       let param = {
         limit: pagesize,
         skip: pagesize * (pages - 1),
@@ -390,6 +390,9 @@ export default {
       }).then(function (data) {
         model.is_loading = false
         if (data.data.items.length > 0) {
+          data.data.items.forEach((sub) => {
+            sub.user_preference = sub.user_preference ? sub.user_preference : false
+          })
           model.goodsArr = _.union(model.goodsArr, data.data.items)
           model.pages++
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
@@ -404,8 +407,8 @@ export default {
 
     // 下拉刷新获取数据
     pulldownRefresh: function () {
-      let myURL = url.parse(window.location.href)
       model.is_loading = true
+      let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
       // 如果有搜索关键字

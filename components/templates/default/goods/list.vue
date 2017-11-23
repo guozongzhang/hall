@@ -202,7 +202,7 @@ export default {
               if (String(item.id) === String(objid.split('_')[0])) {
                 let opt = {
                   skuid: objid.split('_')[1],
-                  user_preference: !item.user_preference
+                  user_preference: item.user_preference
                 }
                 model.collectFur(opt, item)
               }
@@ -285,7 +285,7 @@ export default {
     // 收藏、取消收藏商品
     collectFur: async function (obj, objitem) {
       let text = !objitem.user_preference ? '收藏成功！' : '取消收藏'
-      if (obj.user_preference) {
+      if (!obj.user_preference) {
         let param = {
           point: obj.skuid,
           type: 'sku',
@@ -390,6 +390,9 @@ export default {
       }).then(function (data) {
         model.is_loading = false
         if (data.data.items.length > 0) {
+          data.data.items.forEach((sub) => {
+            sub.user_preference = sub.user_preference ? sub.user_preference : false
+          })
           model.goodsArr = _.union(model.goodsArr, data.data.items)
           model.pages++
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()

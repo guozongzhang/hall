@@ -216,7 +216,7 @@ export default {
       $(document).keyup(function (e) {
         if (e.keyCode === 13) {
           let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
-          history.pushState('', '', reseturl)
+          history.replaceState('', '', reseturl)
           model.pages = 1
           model.searchList(model.searchKey, 'no')
           return true
@@ -378,7 +378,7 @@ export default {
       } else {
         tmpurl = myURL.pathname
       }
-      history.pushState('', '', tmpurl)
+      history.replaceState('', '', tmpurl)
       let param = {
         limit: pagesize,
         skip: pagesize * (pages - 1),

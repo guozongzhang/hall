@@ -8,19 +8,19 @@
     <a :href="linkPath + '/goodslist'" class="go-more">更多</a>
   </div>
   <div class="new-box">
-    <div class="fur-item" v-for="item in newlistArr">
+    <div class="fur-item" v-for="item in newlistArr" v-if="item.state_type === 'on'">
       <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
-        <img class="mui-media-object" :src="item.fur_image || '/images/default_null.jpg'">
+        <img class="mui-media-object" :src="item.fur_img || '/images/default_null.jpg'">
       </a>
     </div>
   </div>
 </div>
 </template>
 <script>
-import axios from '~/plugins/axios'
 let url = require('url')
 let model
 export default {
+  props: ['newarr'],
   data () {
     return {
       linkPath: '',
@@ -28,30 +28,20 @@ export default {
         {
           id: 0,
           fur_image: '/images/default_null.jpg',
-          fur_name: '未设置',
-          sku_poi_furniture_sku: ''
+          fur_name: '未设置'
         }
       ]
+    }
+  },
+  watch: {
+    'newarr': function () {
+      model.newlistArr = this.newarr
     }
   },
   methods: {
     init: function () {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      model.getFur()
-    },
-
-    // 获取新品商品信息
-    getFur: async function () {
-      let param = {
-        limit: 5,
-        order: '-create_time',
-        keys: 'id, fur_name,fur_image'
-      }
-      let result = await axios.get('classes/furnitures', {
-        params: param
-      })
-      model.newlistArr = result.data.items
     }
   },
   mounted () {

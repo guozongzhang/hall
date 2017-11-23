@@ -175,7 +175,8 @@ export default {
     // 获取其他信息
     getDetailInfo: async function () {
       let param = {
-        com_id: this.$store.state.comid
+        com_id: this.$store.state.comid,
+        user_id: 0
       }
       let result = await axios.get('functions/cloud/cloud_seller_detail', {
         params: param

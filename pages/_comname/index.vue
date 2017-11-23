@@ -10,7 +10,7 @@
     <div style="height: 10px;background-color: #f4f4f4;"></div>
     <component :is="hotfur" :goodsids="hotids"></component>
     <div style="height: 10px;background-color: #f4f4f4;"></div>
-    <component :is="newfur" :arrInfo="newfur"></component>
+    <component :is="newfur" :newarr="newfurArr"></component>
   </div>
 </div>
 </template>
@@ -34,7 +34,7 @@ export default {
     return {
       comName: '',
       hotids: [],
-      newfur: [],
+      newfurArr: [],
       swiperArr: [
         {
           pic: ''
@@ -79,9 +79,9 @@ export default {
         params: param
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
-        model.swiperArr = info[0].header[0].list[1].banner
         model.hotids = info[0].header[1].list[0].goods
-        model.newfur = info[0].header[1].list[0].goods
+        model.swiperArr = info[0].header[0].list[1].banner
+        model.newfurArr = info[0].header[0].list[2].goods
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })

@@ -12,7 +12,7 @@
 <script>
   export default {
     head: {
-      title: '注册'
+      title: '搜索'
     },
     beforeCreate () {
       // 注册组件 component(名字, 相对路径)

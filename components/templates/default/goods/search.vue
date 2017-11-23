@@ -2,7 +2,7 @@
 <div>
   <div class="mui-input-row search-box">
     <span class="search-icon fa fa-search"></span>
-    <input type="text" class="mui-input" v-model="searchKey">
+    <input type="text" class="mui-input searchinput" v-model="searchKey">
     <span class="cancel" @click="cancelSearch()">取消</span>
   </div>
   <div class="history-search">
@@ -11,7 +11,7 @@
       <span class="fa fa-trash" id="delhistory"></span>
     </p>
     <div class="history-item">
-      <a href="javascript:;" v-for="item in historyArr" v-bind:class="hisactive == item.id ? 'active' : ''">{{item.name}}</a>
+      <a :href="linkPath + '/goodslist?searchKey=' + item" v-for="item in historyArr" >{{item}}</a>
     </div>
   </div>
   <div class="line"></div>
@@ -20,74 +20,44 @@
       <span>热门搜索</span>
     </p>
     <div class="hot-item">
-      <a href="javascript:;" v-for="item in hotArr">{{item.name}}</a>
+      <a :href="linkPath + '/goodslist?searchKey=' + item.txt" v-for="item in hotArr">{{item.txt}}</a>
     </div>
   </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
+let url = require('url')
+let $ = require('jquery')
+let querystring = require('querystring')
 let model
+let myURL
 export default {
   data () {
     return {
+      linkPath: '',
       searchKey: '',
-      hisactive: 3,
-      historyArr: [
-        {
-          id: 1,
-          name: '这里的文字可能会很长'
-        },
-        {
-          id: 2,
-          name: '柜子'
-        },
-        {
-          id: 3,
-          name: '沙发柜子'
-        },
-        {
-          id: 4,
-          name: '柜子'
-        },
-        {
-          id: 5,
-          name: '木茶几'
-        },
-        {
-          id: 6,
-          name: '柜子'
-        }
-      ],
-      hotArr: [
-        {
-          id: 1,
-          name: '这里的文字可能会很长'
-        },
-        {
-          id: 2,
-          name: '柜子'
-        },
-        {
-          id: 3,
-          name: '沙发柜子'
-        },
-        {
-          id: 4,
-          name: '柜子'
-        },
-        {
-          id: 5,
-          name: '木茶几'
-        },
-        {
-          id: 6,
-          name: '柜子'
-        }
-      ]
+      historyArr: [],
+      hotArr: []
     }
   },
   methods: {
     init: function () {
+      model.getHot()
+      myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      let urlObj = querystring.parse(myURL.query)
+      // 如果有搜索关键字
+      if (urlObj.searchKey) {
+        model.searchKey = urlObj.searchKey
+      }
+      $('.searchinput').focus()
+      $(document).keyup(function (e) {
+        if (e.keyCode === 13) {
+          window.location.href = model.linkPath + '/goodslist?searchKey=' + model.searchKey
+        }
+      })
       document.getElementById('delhistory').addEventListener('tap', function () {
         var btnArray = ['否', '是']
         if (model.historyArr.length === 0) {
@@ -105,9 +75,45 @@ export default {
       })
     },
 
+    getHot: function () {
+      model.historyArr = Cookies.get('search-history') ? (Cookies.get('search-history') || []).split(',') : []
+      console.log(model.historyArr)
+      let len = model.historyArr.length
+      if (len > 10) {
+        model.historyArr = model.historyArr.slice(0, 11)
+      }
+      let param = {
+        where: {
+          name: 'shopsearch'
+        }
+      }
+      axios.get('classes/homepage_modules', {
+        params: param
+      }).then(function (data) {
+        let keywords = JSON.parse(data.data.items[0].config)
+        model.hotArr = keywords.hotkey.split(',').map((item) => {
+          let isred = false
+          if (/^<.+>$/.test(item)) {
+            item = item.slice(1, item.length - 1)
+            isred = true
+          }
+          return {
+            txt: item,
+            isred: isred
+          }
+        })
+      }).catch(function () {
+      })
+    },
+
     // 取消搜索
     cancelSearch: function () {
-      model.searchKey = ''
+      let urlObj = querystring.parse(myURL.query)
+      if (urlObj.searchKey) {
+        window.location.href = model.linkPath + '/'
+      } else {
+        window.location.href = model.linkPath + '/goodslist'
+      }
     }
   },
   mounted () {
@@ -124,6 +130,9 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #ccc;
   background-color: #fff !important;
+}
+.searchinput{
+  font-size: 15px;
 }
 .search-icon{
   position: absolute;

@@ -2,7 +2,7 @@
 <div class="mui-content-padded" style="margin: 0px;">
   <div class="p20-box">
     <div class="mui-input-row mui-search">
-      <input type="search" class="mui-input-clear" placeholder="" v-model="searchKey">
+      <input type="search" class="mui-input-clear" @focus="goSearch()" v-model="searchKey">
       <span class="mui-icon mui-icon-clear mui-hidden"></span>
       <span class="mui-placeholder">
         <span class="mui-icon mui-icon-search"></span>
@@ -198,6 +198,11 @@ export default {
       }
     },
 
+    // 搜索
+    goSearch: function () {
+      window.location.href = model.linkPath + '/search'
+    },
+
     // 初始化获取数据
     getInitData: async function (pages, urlObj) {
       await model.getGoodsList(pages, urlObj, 'no')
@@ -239,6 +244,12 @@ export default {
 
     // 搜索接口
     searchList: function (val, type) {
+      let searchHistoryArr = Cookies.get('search-history') ? (Cookies.get('search-history') || []).split(',') : []
+      if ($.trim(val)) {
+        searchHistoryArr.splice(0, 0, $.trim(val))
+      }
+      searchHistoryArr = _.union(searchHistoryArr)
+      Cookies.set('search-history', searchHistoryArr.join(','))
       if (type === 'no') {
         model.goodsArr = []
       }
@@ -273,7 +284,6 @@ export default {
     // 收藏、取消收藏商品
     collectFur: async function (obj, objitem) {
       let text = !objitem.user_preference ? '收藏成功！' : '取消收藏'
-      console.log(obj)
       if (obj.user_preference) {
         let param = {
           point: obj.skuid,

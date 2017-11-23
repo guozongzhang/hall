@@ -2,7 +2,6 @@
 <div>
   <header class="mui-bar mui-bar-nav">
     <h1 class="mui-title">{{comName}}云展厅</h1>
-    <a class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
   </header>
   <div class="mui-content">
     <component :is="search"></component>
@@ -11,7 +10,7 @@
     <div style="height: 10px;background-color: #f4f4f4;"></div>
     <component :is="hotfur" :goodsids="hotids"></component>
     <div style="height: 10px;background-color: #f4f4f4;"></div>
-    <component :is="newfur"></component>
+    <component :is="newfur" :arrInfo="newfur"></component>
   </div>
 </div>
 </template>
@@ -35,6 +34,7 @@ export default {
     return {
       comName: '',
       hotids: [],
+      newfur: [],
       swiperArr: [
         {
           pic: ''
@@ -81,6 +81,7 @@ export default {
         let info = JSON.parse(data.data.items[0].config)
         model.swiperArr = info[0].header[0].list[1].banner
         model.hotids = info[0].header[1].list[0].goods
+        model.newfur = info[0].header[1].list[0].goods
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })

@@ -1,7 +1,7 @@
 <template>
 <div class="mui-content-padded" style="margin: 5px;">
   <div class="mui-input-row mui-search">
-    <input type="search" class="mui-input-clear" placeholder="搜索商品" v-model="searchKey" @blur="goSearch()">
+    <input type="search" class="mui-input-clear" v-model="searchKey" @focus="goSearch()">
     <span class="mui-icon mui-icon-clear mui-hidden"></span>
     <span class="mui-placeholder" style="text-align: left">
       <span class="mui-icon mui-icon-search"></span>
@@ -17,7 +17,7 @@ export default {
   data () {
     return {
       linkPath: '',
-      searchKey: ''
+      searchKey: '三人沙发'
     }
   },
   methods: {
@@ -29,6 +29,11 @@ export default {
           window.location.href = model.linkPath + '/goodslist?searchKey=' + model.searchKey
         }
       })
+    },
+
+    // 搜索
+    goSearch: function () {
+      window.location.href = model.linkPath + '/search?searchKey=' + model.searchKey
     }
   },
   mounted () {

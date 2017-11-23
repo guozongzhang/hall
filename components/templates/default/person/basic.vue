@@ -126,7 +126,9 @@ export default {
           }
         }
         let isupgrade = data.data.upgrade ? 'yes' : 'no'
+        let vipprice = data.data.type ? 'yes' : 'no'
         Cookies.set('can-upgrade', isupgrade)
+        Cookies.set('vip-price', vipprice)
       }).catch(function () {
         window.mui.toast('获取数据失败!')
       })
@@ -246,7 +248,7 @@ export default {
   .personli p{
     margin: 0px;
     height: 30px;
-    line-height: 30px;
+    line-height: 28px;
     color: #050505;
   }
   p.mui-ellipsis span, p.mui-ellipsis a{

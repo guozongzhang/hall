@@ -6,7 +6,7 @@
       <li class="active"><a href="#item1">商品</a></li>
       <li><a href="#item2">详情</a></li>
     </ul>
-    <a :href="linkPath + '/sellerinfo'" class="mui-icon mui-icon-info-filled mui-pull-right" style="color: #999;"></a>
+    <a :href="linkPath + '/sellerinfo'" class="mui-pull-right link-seller"></a>
   </header>
   <div class="mui-content">
     <component :is="swiperdetail" :imgarr="imgs"></component>
@@ -41,11 +41,10 @@ export default {
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       if (urlObj.id > 0) {
-        axios.get('functions/app_homepage/app_furnitures?id=' + urlObj.id).then(function (data) {
+        axios.get('functions/app_homepage/app_furnitures?id=' + urlObj.id + '&com_id=' + this.$store.state.comid).then(function (data) {
           model.imgs = data.data.furniture_intro_pics.filter(item => {
             return item.intro_type === 'intro'
           })
-          console.log(model.imgs)
           model.detailinfo = data.data
         }).catch(function () {
           window.mui.toast('获取数据失败!')
@@ -104,5 +103,13 @@ export default {
   .navheader li.active a{
     color: #fff;
   }
-
+  .link-seller{
+    position: relative;
+    top: 13px;
+    display: inline-block;
+    width: 18px;
+    height: 17px;
+    background: url('/images/link_seller.png') no-repeat;
+    background-size: 18px;
+  }
 </style>

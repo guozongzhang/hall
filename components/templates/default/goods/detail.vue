@@ -1,6 +1,6 @@
 <template>
   <div class="furniture">
-    <div class="down" v-show="detail.fur_states != 'up'">该商品已下架,如有需要请联系卖家</div>
+    <div class="down" v-show="isshow && detail.fur_states != 'up'">该商品已下架,如有需要请联系卖家</div>
     <div class="fur_info">
       <p class="title">{{detail.fur_name}}</p>
       <span class="bqian" v-show="detail.fur_adv">{{detail.fur_adv}}</span>
@@ -14,6 +14,10 @@
             <i>原价:</i>
             <i>¥{{defaluteSku.price}}</i>
           </span>
+          <a href="javascript:;" class="collection-bth collect-flag" v-bind:class="defaluteSku.user_preference == '0' ? 'star-active' : 'star-normal'" @click="collection(defaluteSku)">
+            <span class="fa collect-flag" v-bind:class="defaluteSku.user_preference == '0' ? 'fa-star' : 'fa-star-o'"></span>
+            <span class="collect-flag">{{defaluteSku.user_preference == '0' ? '取消' : '收藏'}}</span>
+          </a>
         </div>
       </div>
     </div>
@@ -125,6 +129,7 @@ export default {
   props: ['info'],
   data () {
     return {
+      isshow: false,
       linkPath: '',
       detail: {},
       defaluteSku: {},
@@ -145,6 +150,7 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       this.detail = this.info
+      model.isshow = true
       model.init(this.info)
     }
   },
@@ -354,8 +360,6 @@ export default {
       model.colorarr = []
       model.sizearr = []
       model.versionarr = []
-
-      console.log(model.detail)
       model.detail.furniture_sku.forEach(item => {
         model.colorarr.push({color: item.color, disabled: false})
         model.sizearr.push({size: item.size, disabled: false})
@@ -374,8 +378,8 @@ export default {
       model.selectSku = _.find(model.detail.furniture_sku, item => {
         return item.color + item.size + item.version === model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
       })
-      console.log()
       model.defaluteSku = {
+        sku_id: model.selectSku.sku_id,
         color: model.selectSku.color,
         size: model.selectSku.size,
         version: model.selectSku.version,
@@ -385,7 +389,7 @@ export default {
     },
 
     // 收藏sku
-    collection: function () {
+    collection: function (obj) {
       let token = Cookies.get('dpjia-hall-token')
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']
@@ -406,9 +410,9 @@ export default {
 
     // 收藏、取消收藏商品
     collectFur: async function (obj) {
-      let text = obj.user_preference ? '收藏成功！' : '取消收藏'
-      model.defaluteSku.user_preference = obj.user_preference ? '0' : '1'
-      if (obj.user_preference) {
+      let text = obj.user_preference ? '取消收藏' : '收藏成功！'
+      model.defaluteSku.user_preference = obj.user_preference ? '1' : '0'
+      if (!obj.user_preference) {
         let param = {
           point: obj.skuid,
           type: 'sku',
@@ -487,6 +491,39 @@ export default {
     padding: 5px;
     line-height: 4px;
     text-align: center;
+  }
+  .collection-bth{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9;
+    display: inline-block;
+    width: 90px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 15px;
+  }
+  .star-active{
+    background-color: #5075ce;
+    color: #fff;
+  }
+  .collection-bth .fa{
+    display: inline-block !important;
+    margin-right: 3px !important;
+    margin-bottom: 20px !important;
+  }
+  .fa-star{
+    color: #fcc500;
+  }
+  .fa-star-o{
+    color: #8f8f8f;
+  }
+  .star-normal{
+    background-color: #fff;
+    border: 1px solid #5075ce;
+    color: #3d3d3d;
   }
   #modal {
     height: 383px;
@@ -725,10 +762,14 @@ export default {
   }
   .fur_info .title {
     height: 45px;
-    line-height: 50px;
+    line-height: 45px;
     font-size: 16px;
     color: #050505;
     margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .bqian{
     font-size: 12px;
@@ -744,6 +785,8 @@ export default {
     height: 45px;
   }
   .titelfoot .price {
+    position: relative;
+    width: 100%;
     float:left;
   }
   .titelfoot .price span:nth-child(1){

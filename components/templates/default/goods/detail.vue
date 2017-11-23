@@ -395,7 +395,6 @@ export default {
 
     // 收藏sku
     collection: function (obj) {
-      console.log(model.defaluteSku)
       let token = Cookies.get('dpjia-hall-token')
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']
@@ -408,7 +407,7 @@ export default {
       } else {
         let opt = {
           skuid: model.defaluteSku.sk_id,
-          user_preference: model.defaluteSku.user_preference === '0'
+          user_preference: String(model.defaluteSku.user_preference) === '0'
         }
         model.collectFur(opt)
       }

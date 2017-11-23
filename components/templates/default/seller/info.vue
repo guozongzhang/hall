@@ -126,7 +126,11 @@ export default {
         address: '',
         tel: ''
       },
-      detail: {},
+      detail: {
+        sell_users: {
+          items: []
+        }
+      },
       designer: {
         name: '',
         tel: '',
@@ -200,7 +204,7 @@ export default {
 
     // 预览分享
     previewShare: function () {
-      model.detail.sell_users.items.forEach((item) => {
+      ((model.detail.sell_users || {}).items || []).forEach((item) => {
         if (String(item.user_poi_users) === String(model.userid)) {
           model.designer = {
             name: item.ui_name || '未设置',

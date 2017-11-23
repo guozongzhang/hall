@@ -465,6 +465,15 @@ export default {
     display: inline-block;
     width: 100%;
   }
+  .changesku span:nth-child(1){
+    display: inline-block;
+    float: left;
+  }
+  .changesku span:nth-child(2){
+    display: inline-block;
+    width: 75%;
+    float: left;
+  }
   .closemodal {
     position: absolute;
     right: 20px;

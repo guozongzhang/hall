@@ -83,7 +83,7 @@
         <div class="designer-box">
           <div class="up-info">
             <div class="img-circle">
-              <img src="/images/shuijiao.jpg">
+              <img src="/images/default.png">
             </div>
             <div class="designer-info">
               <label>{{basic.name}}云展厅官方定制销售经理</label>

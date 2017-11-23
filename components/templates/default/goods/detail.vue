@@ -14,6 +14,10 @@
             <i>原价:</i>
             <i>¥{{defaluteSku.price}}</i>
           </span>
+          <span v-if="detail.discount_coefficient">
+            <i>专属价:</i> 
+            <i>¥{{defaluteSku.discount * detail.discount_coefficient}}</i>
+          </span>
           <a href="javascript:;" class="collection-bth collect-flag" v-bind:class="defaluteSku.user_preference == '0' ? 'star-active' : 'star-normal'" @click="collection(defaluteSku)">
             <span class="fa collect-flag" v-bind:class="defaluteSku.user_preference == '0' ? 'fa-star' : 'fa-star-o'"></span>
             <span class="collect-flag">{{defaluteSku.user_preference == '0' ? '取消' : '收藏'}}</span>
@@ -93,7 +97,7 @@
           <img v-bind:src="detail.fur_image" />
           <div class="title">
             <p>{{detail.fur_name}}</p>
-            <div class="price"><i>&nbsp;</i></div>
+            <div class="price"><i v-show="detail.discount_coefficient">专属价</i><i v-show="detail.discount_coefficient"> ¥{{defaluteSku.discount * detail.discount_coefficient}}</i><i>&nbsp;</i></div>
             <span v-show="!ishavesku" class="huise">请选择规格属性</span>
             <span class="closespan" v-show="ishavesku"><i>已选择：</i>{{changecolorObj.color}} {{changesizeObj.size}} {{changeversionObj.version}}<i v-on:click="resetBtn()" class="closesku">x</i></span>
           </div>
@@ -378,14 +382,18 @@ export default {
       model.selectSku = _.find(model.detail.furniture_sku, item => {
         return item.color + item.size + item.version === model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
       })
+
+      console.log(model.selectSku)
       model.defaluteSku = {
-        sku_id: model.selectSku.sku_id,
+        sku_id: model.selectSku.sk_id,
         color: model.selectSku.color,
         size: model.selectSku.size,
         version: model.selectSku.version,
         discount: model.selectSku.discount,
         price: model.selectSku.price
       }
+
+      console.log(model.defaluteSku)
     },
 
     // 收藏sku
@@ -471,7 +479,7 @@ export default {
     background: rgba(0, 0, 0, 0.41);
     height: 100%;
     width: 100%;
-    z-index: 5;
+    z-index: 10;
     display: none;
   }
   .closespan {

@@ -86,7 +86,7 @@
         </p>
         <ul class="items-ul">
           <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
-            <a href="javascript:;" :title="sub.com_brand_name || sub.sp_type_name || sub.style_name || sub.field_name">{{sub.com_brand_name || sub.sp_type_name || sub.style_name || sub.field_name}}</a>
+            <a href="javascript:;" :title="sub.com_brand_name || (sub.norname || sub.sp_type_name) || sub.style_name || sub.field_name">{{sub.com_brand_name || (sub.norname || sub.sp_type_name) || sub.style_name || sub.field_name}}</a>
           </li>
         </ul>
       </div>

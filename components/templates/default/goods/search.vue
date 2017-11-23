@@ -75,10 +75,9 @@ export default {
 
     getHot: function () {
       model.historyArr = Cookies.get('search-history') ? (Cookies.get('search-history') || []).split(',') : []
-      console.log(model.historyArr)
       let len = model.historyArr.length
       if (len > 10) {
-        model.historyArr = model.historyArr.slice(0, 11)
+        model.historyArr = model.historyArr.slice(0, 5)
       }
       let param = {
         where: {

@@ -191,6 +191,7 @@ export default {
       })
       // 如果有搜索关键字
       if (urlObj.searchKey || model.searchKey) {
+        model.searchKey = urlObj.searchKey || model.searchKey
         let key = urlObj.searchKey || model.searchKey
         model.searchList(key)
       } else {
@@ -624,10 +625,12 @@ export default {
     color: #989898;
     font-size: 14px;
     margin: 0;
+    text-align: left;
   }
   .mui-icon-search{
-    position: relative;
+    position: absolute;
     left: 5px;
+    top: 8px;
   }
   .loading-icon,
   .nodata-icon{

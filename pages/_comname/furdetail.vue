@@ -2,10 +2,7 @@
 <div>
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <ul class="navheader">
-      <li class="active"><a href="#item1">商品</a></li>
-      <li><a href="#item2">详情</a></li>
-    </ul>
+    <h1 class="mui-title">商品详情</h1>
     <a :href="linkPath + '/sellerinfo'" class="mui-pull-right link-seller"></a>
   </header>
   <div class="mui-content">

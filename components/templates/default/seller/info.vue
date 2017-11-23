@@ -1,6 +1,6 @@
 <template>
 <div class="mui-content-padded">
-  <div class="top-box">
+  <div class="top-box" @click="goHome()">
     <img class="top-bg" src="/images/seller_bg.png">
     <div class="info-box">
       <div class="img-box">
@@ -116,6 +116,7 @@ let token
 export default {
   data () {
     return {
+      linkPath: '',
       userid: 0,
       showShare: false,
       basic: {
@@ -141,10 +142,16 @@ export default {
         model.showShare = false
       }
       let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       model.userid = urlObj.userid || 0
       await model.getCompanyInfo()
       await model.getDetailInfo()
+    },
+
+    // 返回首页
+    goHome: function () {
+      window.location.href = model.linkPath + '/'
     },
 
     // 获取公司信息

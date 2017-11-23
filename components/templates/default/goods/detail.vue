@@ -382,14 +382,18 @@ export default {
       model.selectSku = _.find(model.detail.furniture_sku, item => {
         return item.color + item.size + item.version === model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
       })
+
+      console.log(model.selectSku)
       model.defaluteSku = {
-        sku_id: model.selectSku.sku_id,
+        sku_id: model.selectSku.sk_id,
         color: model.selectSku.color,
         size: model.selectSku.size,
         version: model.selectSku.version,
         discount: model.selectSku.discount,
         price: model.selectSku.price
       }
+
+      console.log(model.defaluteSku)
     },
 
     // 收藏sku

@@ -28,8 +28,8 @@ export default {
       newlistArr: [
         {
           id: 0,
-          fur_image: '/images/default_null.jpg',
-          fur_name: '未设置'
+          fur_img: '/images/default_null.jpg',
+          price: '0'
         }
       ]
     }
@@ -125,7 +125,7 @@ export default {
     color: #fff;
   }
   .fur-item img{
-    width: 100%;
+    height: 100%;
   }
   .fur-item:nth-last-child(1){
     margin-right: 0;

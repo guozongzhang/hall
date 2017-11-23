@@ -67,9 +67,7 @@ export default {
         window.mui.confirm('确定要清空历史搜索记录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
             model.historyArr = []
-            console.log('是')
-          } else {
-            console.log('否')
+            Cookies.set('search-history', '')
           }
         })
       })

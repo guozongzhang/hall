@@ -35,7 +35,19 @@ export default {
         {
           id: 0,
           fur_image: '/images/default_null.jpg',
-          fur_name: '未设置',
+          fur_name: '热销',
+          sku_poi_furniture_sku: ''
+        },
+        {
+          id: 0,
+          fur_image: '/images/default_null.jpg',
+          fur_name: '热销',
+          sku_poi_furniture_sku: ''
+        },
+        {
+          id: 0,
+          fur_image: '/images/default_null.jpg',
+          fur_name: '热销',
           sku_poi_furniture_sku: ''
         }
       ]

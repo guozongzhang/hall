@@ -20,7 +20,12 @@ let Cookies = require('js-cookie')
 let model
 export default {
   head: {
-    title: '首页'
+    title: '首页',
+    meta: [
+      { itemprop: 'name', content: '搭配家logo' },
+      { itemprop: 'image', content: 'http://cdn.dpjia.com/files/uploads/images/58600feaea6c3d33e3bb87c01fba6c11.png' },
+      { name: 'description', content: '家具专业20年' }
+    ]
   },
   beforeCreate () {
     // 注册组件 component(名字, 相对路径)

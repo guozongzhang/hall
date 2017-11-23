@@ -187,7 +187,7 @@ export default {
       let result = await axios.get('functions/cloud/cloud_seller_detail', {
         params: param
       })
-      if (model.userid > 0) {
+      if (model.userid > 0 && !token) {
         result.data.com_id_rel_sell_users.items.forEach((item) => {
           if ((item.user_poi_users || {}).id !== model.userid) {
             (((item.user_poi_users || {}).user_rel_designer || [])[0] || {}).designer_state_new = 'notcheck'

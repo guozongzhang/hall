@@ -62,6 +62,10 @@ export default {
     init: function () {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+      token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
       model.comname = Cookies.get('com-name')
       token = Cookies.get('dpjia-hall-token')
       model.getStore()

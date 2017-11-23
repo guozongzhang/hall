@@ -18,10 +18,14 @@
 </template>
 <script>
 import textTips from './_texttips.vue'
+let Cookies = require('js-cookie')
+let url = require('url')
 let $ = require('jquery')
+let model
 export default {
   data () {
     return {
+      linkPath: ''
     }
   },
   components: {
@@ -29,6 +33,12 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      let token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
     },
 
     // 开云展厅
@@ -37,6 +47,7 @@ export default {
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

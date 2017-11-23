@@ -169,9 +169,12 @@ export default {
   },
   methods: {
     inits: async function (pages) {
-      token = Cookies.get('dpjia-hall-token')
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+      token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
       let urlObj = querystring.parse(myURL.query)
       await model.getGoodsList(pages, urlObj, 'no')
       await model.getSimpleType()

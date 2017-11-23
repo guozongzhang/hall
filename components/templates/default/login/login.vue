@@ -202,6 +202,7 @@ export default {
         Cookies.set('dpjia-hall-remeber', '')
       }
       window.mui.toast('登录成功!')
+      Cookies.set('designer-id', data.user_poi_users)
       setTimeout(function () {
         window.location.href = model.linkPath + '/'
       }, 1000)

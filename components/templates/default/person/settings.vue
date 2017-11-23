@@ -23,6 +23,7 @@ import axios from '~/plugins/axios'
 let Cookies = require('js-cookie')
 let url = require('url')
 let model
+let token
 export default {
   data () {
     return {
@@ -35,6 +36,10 @@ export default {
     init: function () {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+      token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
       let vipprice = Cookies.get('vip-price')
       if (vipprice === 'yes') {
         axios.get('classes/user_preference', {

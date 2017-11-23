@@ -107,6 +107,8 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
+let querystring = require('querystring')
 let Cookies = require('js-cookie')
 let $ = require('jquery')
 let model
@@ -114,6 +116,7 @@ let token
 export default {
   data () {
     return {
+      userid: 0,
       showShare: false,
       basic: {
         logo: '/images/comlogo.png',
@@ -137,6 +140,9 @@ export default {
       if (!token) {
         model.showShare = false
       }
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
+      model.userid = urlObj.userid || 0
       await model.getCompanyInfo()
       await model.getDetailInfo()
     },
@@ -153,7 +159,6 @@ export default {
         params: logo
       })
       let info = JSON.parse(logoInfo.data.items[0].config)
-
       // 详细信息
       let detail = {
         where: {
@@ -177,11 +182,18 @@ export default {
     getDetailInfo: async function () {
       let param = {
         com_id: this.$store.state.comid,
-        user_id: 0
+        user_id: model.userid
       }
       let result = await axios.get('functions/cloud/cloud_seller_detail', {
         params: param
       })
+      if (model.userid > 0) {
+        result.data.com_id_rel_sell_users.items.forEach((item) => {
+          if ((item.user_poi_users || {}).id !== model.userid) {
+            (((item.user_poi_users || {}).user_rel_designer || [])[0] || {}).designer_state_new = 'notcheck'
+          }
+        })
+      }
       model.detail = result.data
       model.showShare = result.data.type
     },

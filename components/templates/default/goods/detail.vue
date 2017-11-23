@@ -27,9 +27,9 @@
     </div>
     <div class="version">
       <p class="mui-navigate-right" >
-        <a href="javascript:;" v-on:click="showmodal()">
+        <a href="javascript:;" v-on:click="showmodal()" class="changesku">
           <span>已选择:</span>
-          <span>{{defaluteSku.color}}{{defaluteSku.size}}{{defaluteSku.version}}</span>
+          <span class="ellipsis">{{defaluteSku.color}}{{defaluteSku.size}}{{defaluteSku.version}}</span>
         </a>
       </p>
       <div class="furdetail">
@@ -461,6 +461,10 @@ export default {
 }
 </script>
 <style scoped>
+  .changesku {
+    display: inline-block;
+    width: 100%;
+  }
   .closemodal {
     position: absolute;
     right: 20px;
@@ -563,6 +567,12 @@ export default {
     white-space: nowrap;
     width: 150px;
     margin-bottom: 10px;
+  }
+  .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
   }
   #modal .header .price{
     margin-bottom: 6px;

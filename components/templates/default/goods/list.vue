@@ -255,7 +255,7 @@ export default {
         model.goodsArr = []
       }
       let param = {
-        skip: model.pages,
+        skip: (model.pages - 1) * pagesize,
         limit: pagesize,
         where: {
           'fur_states': 'up'

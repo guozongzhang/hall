@@ -4,6 +4,7 @@
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">商品详情</h1>
     <a :href="linkPath + '/sellerinfo?userid=' + userid" class="mui-pull-right link-seller"></a>
+    <a :href="linkPath + '/'" class="mui-pull-right go-home fa fa-home"></a>
   </header>
   <div class="mui-content">
     <component :is="swiperdetail" :imgarr="imgs"></component>
@@ -72,6 +73,13 @@ export default {
   .mui-bar {
     background-color: #ededed;
     box-shadow: none;
+  }
+  .go-home{
+    position: relative;
+    top: 11px;
+    right: 9px;
+    font-size: 20px;
+    color: #948f8e;
   }
   .navheader {
     overflow: hidden;

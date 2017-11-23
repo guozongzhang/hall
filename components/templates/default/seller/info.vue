@@ -194,7 +194,6 @@ export default {
       let result = await axios.get('functions/cloud/cloud_seller_detail', {
         params: param
       })
-      console.log(result.data)
       model.detail = result.data
       model.showShare = result.data.type
     },
@@ -202,7 +201,7 @@ export default {
     // 预览分享
     previewShare: function () {
       model.detail.sell_users.forEach((item) => {
-        if (String(item.id || 0) === String(model.detail.user_poi_users)) {
+        if (String(item.user_poi_users) === String(model.userid)) {
           model.designer = {
             name: item.ui_name || '未设置',
             tel: item.u_mobile || '未设置',

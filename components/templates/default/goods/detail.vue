@@ -383,7 +383,6 @@ export default {
         return item.color + item.size + item.version === model.changecolorObj.color + model.changesizeObj.size + model.changeversionObj.version
       })
 
-      console.log(model.selectSku)
       model.defaluteSku = {
         sku_id: model.selectSku.sk_id,
         color: model.selectSku.color,
@@ -392,8 +391,6 @@ export default {
         discount: model.selectSku.discount,
         price: model.selectSku.price
       }
-
-      console.log(model.defaluteSku)
     },
 
     // 收藏sku

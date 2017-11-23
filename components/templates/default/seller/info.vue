@@ -52,7 +52,7 @@
 					<a class="mui-control-item" href="#store">线下门店</a>
 				</div>
 				<div id="designer" class="mui-control-content mui-active">
-					<p v-for="sub in detail.sell_users">
+					<p v-for="sub in detail.sell_users.items">
             <span class="name">{{sub.ui_name || '未设置'}}</span>
             <span class="tel">{{sub.u_mobile || '未设置'}}</span>
             <span class="area">{{sub.company_area || '未设置'}}</span>
@@ -200,7 +200,7 @@ export default {
 
     // 预览分享
     previewShare: function () {
-      model.detail.sell_users.forEach((item) => {
+      model.detail.sell_users.items.forEach((item) => {
         if (String(item.user_poi_users) === String(model.userid)) {
           model.designer = {
             name: item.ui_name || '未设置',

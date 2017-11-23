@@ -1,7 +1,7 @@
 <template>
 <div>
   <header class="mui-bar mui-bar-nav">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <a class="gobackback mui-icon-left-nav mui-pull-left fa fa-angle-left" @click="goback()"></a>
     <h1 class="mui-title">全部商品</h1>
   </header>
   <div class="mui-content">
@@ -21,6 +21,10 @@
     methods: {
       init: function () {
         console.log()
+      },
+
+      goback: function () {
+        window.history.go(-2)
       }
     },
     mounted () {
@@ -39,5 +43,12 @@
     margin: 0;
     padding: 0;
     background-color: #fff;
+  }
+  .gobackback{
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+    top: 9px;
   }
 </style>

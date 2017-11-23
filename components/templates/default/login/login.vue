@@ -18,7 +18,7 @@
         <label>记住密码</label>
         <span class="remeber" v-bind:class="info.remeber ? 'active' : ''"></span>
       </div>
-      <a href="/forgetpwd" class="forget-pwd">忘记密码</a>
+      <a :href="linkPath + '/forgetpwd'" class="forget-pwd">忘记密码</a>
     </div>
   </div>
   <div v-show="type == 'phone'">
@@ -26,7 +26,7 @@
       <input type="text" v-model="info.phone" placeholder="手机号码">
     </div>
     <div class="mui-input-row mui-password">
-      <input type="password" v-model="info.verify" placeholder="动态密码">
+      <input type="text" v-model="info.verify" placeholder="动态密码">
       <a href="javascript:;" id="getverify" @click="getVerify()">{{verify}}</a>
     </div>
   </div>
@@ -37,13 +37,12 @@
   <div class="mui-content-padded phone-btn">
     <button type="button" class="mui-btn mui-btn-block" @click="switchLogin()">{{subBtnText}}</button>
   </div>
-  <div class="wechat-login">
-    <a href="#"></a>
-  </div>
 </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
+let Cookies = require('js-cookie')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
@@ -51,6 +50,7 @@ let startTime = 60
 export default {
   data () {
     return {
+      linkPath: '',
       type: 'number',
       subBtnText: '手机验证码登录',
       verify: '获取动态密码',
@@ -67,6 +67,10 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      let rem = Cookies.get('dpjia-hall-remeber')
+      model.info.remeber = rem
     },
 
     // 清除密码数据
@@ -81,10 +85,23 @@ export default {
 
     // 获取动态密码
     getVerify: function () {
+      if (_.isEmpty($.trim(model.info.phone))) {
+        window.mui.toast('手机号不能为空!')
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test($.trim(model.info.phone)))) {
+        window.mui.toast('手机号格式错误!')
+        return false
+      }
+      model.getSms()
+    },
+
+    // 单纯获取验证码（验证手机号已经注册过）
+    getSms: function () {
       if (!model.verifyState) {
-        axios.get('requestSmsCode/sms', {
+        axios.get('requestSmsCode/send_sms', {
           params: {
-            type: 'admin',
+            type: 'web',
             mobile: model.info.phone
           }
         }).then(function () {
@@ -125,13 +142,26 @@ export default {
 
     // 登录
     loginBtn: function () {
-      if (_.isEmpty($.trim(model.info.number))) {
-        window.mui.toast('账号不能为空!')
-        return false
-      }
-      if (_.isEmpty($.trim(model.info.pwd))) {
-        window.mui.toast('密码不能为空!')
-        return false
+      // 账号登录
+      if (model.type === 'number') {
+        if (_.isEmpty($.trim(model.info.number))) {
+          window.mui.toast('账号不能为空!')
+          return false
+        }
+        if (_.isEmpty($.trim(model.info.pwd))) {
+          window.mui.toast('密码不能为空!')
+          return false
+        }
+      } else {
+        // 手机验证码
+        if (_.isEmpty($.trim(model.info.phone))) {
+          window.mui.toast('手机号不能为空!')
+          return false
+        }
+        if (_.isEmpty($.trim(model.info.verify))) {
+          window.mui.toast('动态密码不能为空!')
+          return false
+        }
       }
       let obj
       // 账号
@@ -139,22 +169,43 @@ export default {
         obj = {
           username: model.info.number,
           password: model.info.pwd
-          // remeber: model.info.remeber
         }
+        axios.get('users/login', {
+          params: obj
+        }).then(function (data) {
+          model.hadLogin(data.data)
+        }).catch(function (msg) {
+          window.mui.toast('登录失败!')
+        })
       } else {
         // 手机号
         obj = {
-          number: model.info.phone,
-          pwd: model.info.verify
+          mobile: model.info.phone,
+          code: model.info.verify
         }
+        axios.get('users/cloud_login', {
+          params: obj
+        }).then(function (data) {
+          model.hadLogin(data.data)
+        }).catch(function (msg) {
+          window.mui.toast('登录失败!')
+        })
       }
-      axios.get('users/login', {
-        params: obj
-      }).then(function () {
-        window.mui.toast('登录成功!')
-      }).catch(function (msg) {
-        window.mui.toast('登录失败!')
-      })
+    },
+
+    // 登录成功
+    hadLogin: function (data) {
+      Cookies.set('dpjia-hall-token', data.token)
+      if (model.info.remeber) {
+        Cookies.set('dpjia-hall-remeber', true)
+      } else {
+        Cookies.set('dpjia-hall-remeber', '')
+      }
+      window.mui.toast('登录成功!')
+      Cookies.set('designer-id', data.user_poi_users)
+      setTimeout(function () {
+        window.location.href = model.linkPath + '/'
+      }, 1000)
     }
   },
   mounted () {

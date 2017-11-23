@@ -1,44 +1,31 @@
-// import axios from '~/plugins/axios'
-let mockRequest = (query, store) => {
-  let company = query.company
-  let themes = {
-    1: 'red',
-    2: 'default'
+import axios from '~/plugins/axios'
+let mockRequest = async (store, params) => {
+  let company = params.comname
+  let param = {
+    where: {
+      route_abb: company
+    }
   }
-  let theme = themes[company]
-  if (!theme) {
-    theme = 'default'
-  }
-  return new Promise(resolve => {
-    resolve(theme)
-    // axios.get('admin/current').then(function (response) {
-    //   resolve(theme)
-    //   console.log('them', response)
-    // }).catch(function (error) {
-    //   console.log(error)
-    // })
+  let response = await axios.get('classes/company_mobile_skins', {
+    params: param
   })
+  let obj = {
+    theme: 'default',
+    comid: 0
+  }
+  if (response.data.items.length > 0) {
+    obj = {
+      theme: response.data.items[0].theme,
+      comid: response.data.items[0].com_id_poi_companys
+    }
+  }
+  return obj
 }
 
-export default async function ({query, store, isServer, req, res}) {
+export default async function ({query, store, isServer, req, res, params}) {
   if (isServer) {
-    let _theme
-    let company = query.company
-    let _cookie = req.headers.cookie
-    let _themeData = {}
-    if (_cookie) {
-      try {
-        _themeData = _cookie.match(/theme=({[\w\d":,\s]+})/)[1]
-        _themeData = JSON.parse(_themeData)
-        _theme = _themeData[company]
-      } catch (ex) {
-      }
-    }
-    if (!_theme) {
-      _theme = await mockRequest(query, store)
-      _themeData[company] = _theme
-      res.setHeader('Set-Cookie', [`theme=${JSON.stringify(_themeData)}`])
-    }
+    let _theme = {}
+    _theme = await mockRequest(store, params)
     store.commit('setTheme', _theme)
   }
 }

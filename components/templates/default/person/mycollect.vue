@@ -1,19 +1,12 @@
 <template>
 <div class="mui-content-padded" style="margin: 0px;">
   <div class="p20-box">
-    <div class="mui-input-row mui-search">
-      <input type="search" class="mui-input-clear" @focus="goSearch()" v-model="searchKey">
-      <span class="mui-icon mui-icon-clear mui-hidden"></span>
-      <span class="mui-placeholder">
-        <span class="mui-icon mui-icon-search"></span>
-      </span>
-    </div>
     <div class="clasify-tabs">
       <ul class="mui-table-view mui-grid-view mui-grid-9">
-        <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
+        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;" v-bind:class="activeTab === 'comprehensive' ? 'active' : ''" @click="matchSearch('comprehensive')">
             <div class="mui-media-body">
-              <span class="tab-text">综合</span>
+              <span class="tab-text">智能</span>
             </div>
           </a>
         </li>
@@ -27,19 +20,12 @@
         <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;" v-bind:class="activeTab === 'price' ? 'active' : ''"  @click="orderByPrice('price')">
             <div class="mui-media-body">
-              <span class="tab-text">价格</span>
+              <span class="tab-text" v-bind:class="activeprice ? 'activeprice' : ''">价格</span>
               <span class="self-iocn" v-bind:class="priceicon ? 'price-down' : 'price-up'"></span>
             </div>
           </a>
         </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
-          <a href="javascript:;" v-bind:class="activeTab === 'sales_count' ? 'active' : ''"  @click="matchSearch('sales_count')">
-            <div class="mui-media-body">
-              <span class="tab-text">销量</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-2 mui-col-sm-2">
+        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
           <a href="javascript:;">
             <div class="mui-media-body" @click="showClassify()">
               <span class="tab-text">筛选</span>
@@ -50,23 +36,20 @@
       </ul>
     </div>
   </div>
-  <div class="list-item">
+  <div class="list-item" id="goodlist">
     <div class="f4-line"></div>
     <div class="goods-list mui-scroll-wrapper" id="pullfresh">
       <div class="mui-scroll">
         <ul class="mui-table-view">
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
-              <img class="mui-media-object mui-pull-left" :src="item.fur_image || 'images/square.png'">
+              <a v-bind:href="item.id" class="check-btn check-flag" v-bind:class="item.checked == item.id ? 'checked' : 'uncheck'" @click="checkOne(item)"></a>
+              <img class="mui-media-object mui-pull-left" :src="item.thumbnail || 'images/square.png'">
               <div class="mui-media-body">
-                <a class="fur-name" :href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
-                <div class="fur-price col-flag">
-                  <span class="price">￥{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
-                  <span class="sub-price">￥{{(item.sku_poi_furniture_sku || {}).price || '0'}}</span>
-                  <a :href="item.id + '_' + (item.sku_poi_furniture_sku || {}).id || '0'" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
-                    <span class="fa collect-flag" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
-                    <span class="collect-flag">{{item.user_preference ? '取消' : '收藏'}}</span>
-                  </a>
+                <a class="fur-name" v-bind:href="linkPath + '/furdetail?id=' + item.fur_id_poi_furnitures">{{item.fur_name}}{{item.name}}</a>
+                <div class="fur-price">
+                  <span class="price">￥{{item.discount}}</span>
+                  <span class="sub-price">￥{{item.price}}</span>
                 </div>
               </div>
             </div>
@@ -81,6 +64,15 @@
         </p>
       </div>
     </div>
+    <div class="opt-box">
+      <a href="javascript:;" @click="checkAllItem()">
+        <span class="check-btn" v-bind:class="checkedall ? 'checked' : 'uncheck'"></span>
+        <span>全选</span>
+      </a>
+      <a href="javascript:;" class="del-btn" @click="delMyCollect()">
+        <span>删除</span>
+      </a>
+    </div>
   </div>
   <div class="classify-box" id="classifylist">
     <div class="sub-classify">
@@ -94,7 +86,7 @@
         </p>
         <ul class="items-ul">
           <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall" v-if="sub.state == 'on'">
-            <a href="javascript:;" :title="sub.com_brand_name || sub.norname || sub.style_name || sub.field_name">{{sub.com_brand_name || sub.norname || sub.style_name || sub.field_name}}</a>
+            <a href="javascript:;" :title="sub.com_brand_name || (sub.norname || sub.sp_type_name) || sub.style_name || sub.field_name">{{sub.com_brand_name || (sub.norname || sub.sp_type_name) || sub.style_name || sub.field_name}}</a>
           </li>
         </ul>
       </div>
@@ -116,15 +108,13 @@ let $ = require('jquery')
 let _ = require('underscore')
 let model
 let pagesize = 4
+let token
 let tabsObj = {
   'comprehensive': {
     'comprehensive': 'comprehensive'
   },
   'up_time': {
     'up_time': 'up_time'
-  },
-  'sales_count': {
-    'sales_count': 'sales_count'
   },
   'price': {
     'price': 'desc'
@@ -133,14 +123,16 @@ let tabsObj = {
 export default {
   data () {
     return {
-      searchKey: '',
       linkPath: '',
-      pages: 1,
       activeTab: '',
+      checkIdAll: [],
+      checkedall: false,
+      pages: 1,
       is_loading: true,
       is_nodata: false,
       loadingText: '正在加载...',
       priceicon: true,
+      activeprice: false,
       classifyActiveArr: [],
       goodsArr: [],
       classifyArr: [
@@ -177,150 +169,48 @@ export default {
   },
   methods: {
     inits: async function (pages) {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
+      let urlObj = querystring.parse(myURL.query)
+      await model.getGoodsList(pages, urlObj, 'no')
       await model.getSimpleType()
       await model.getBands()
       await model.getStyle()
       await model.getField()
-      let myURL = url.parse(window.location.href)
-      model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let urlObj = querystring.parse(myURL.query)
+      await model.checkUrl(urlObj)
       window.mui('#pullfresh').on('tap', 'a', function (event) {
         let classFlag = $(event.target).attr('class')
-        if (classFlag.indexOf('collect-flag') > -1) {
-          let token = Cookies.get('dpjia-hall-token')
-          if (_.isEmpty($.trim(token))) {
-            var btnArray = ['否', '是']
-            window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
-              if (e.index === 1) {
-                window.location.href = model.linkPath + '/login'
-              }
-            })
-            return false
-          } else {
-            let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
+        if (classFlag.indexOf('check-flag') > -1) {
+          let objid = $(event.target).attr('href')
+          if (_.indexOf(model.checkIdAll, objid) > -1) {
             model.goodsArr.forEach((item) => {
-              if (String(item.id) === String(objid.split('_')[0])) {
-                let opt = {
-                  skuid: objid.split('_')[1],
-                  user_preference: !item.user_preference
-                }
-                model.collectFur(opt, item)
+              if (String(item.id) === String(objid)) {
+                item.checked = 0
               }
             })
+            model.checkIdAll = _.without(model.checkIdAll, objid)
+          } else {
+            model.goodsArr.forEach((item) => {
+              if (String(item.id) === String(objid)) {
+                item.checked = objid
+              }
+            })
+            model.checkIdAll.push(objid)
+          }
+          if (model.checkIdAll.length === model.goodsArr.length) {
+            model.checkedall = true
+          } else {
+            model.checkedall = false
           }
         }
         if (classFlag.indexOf('fur-name') > -1) {
           window.location.href = $(event.target).attr('href')
         }
       })
-      $(document).keyup(function (e) {
-        if (e.keyCode === 13) {
-          let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
-          history.pushState('', '', reseturl)
-          model.pages = 1
-          model.searchList(model.searchKey, 'no')
-          return true
-        }
-      })
-      // 如果有搜索关键字
-      if (urlObj.searchKey || model.searchKey) {
-        model.searchKey = urlObj.searchKey || model.searchKey
-        let key = urlObj.searchKey || model.searchKey
-        model.searchList(key)
-      } else {
-        model.getInitData(pages, urlObj)
-      }
-    },
-
-    // 搜索
-    goSearch: function () {
-      window.location.href = model.linkPath + '/search'
-    },
-
-    // 初始化获取数据
-    getInitData: async function (pages, urlObj) {
-      await model.getGoodsList(pages, urlObj, 'no')
-      await model.checkUrl(urlObj)
-    },
-
-    // 搜索接口
-    searchList: function (val, type) {
-      let searchHistoryArr = Cookies.get('search-history') ? (Cookies.get('search-history') || []).split(',') : []
-      if ($.trim(val)) {
-        searchHistoryArr.splice(0, 0, $.trim(val))
-      }
-      searchHistoryArr = _.union(searchHistoryArr)
-      Cookies.set('search-history', searchHistoryArr.join(','))
-      if (type === 'no') {
-        model.goodsArr = []
-      }
-      let param = {
-        skip: (model.pages - 1) * pagesize,
-        limit: pagesize,
-        where: {
-          'fur_states': 'up'
-        },
-        search: val,
-        search_fields: 'fur_name',
-        owner: 'public',
-        company_id: this.$store.state.comid
-      }
-      axios.get('functions/es/hall_es_furnitures', {
-        params: param
-      }).then(function (data) {
-        model.is_loading = false
-        if (data.data.items.length > 0) {
-          model.goodsArr = _.union(model.goodsArr, data.data.items)
-          model.pages++
-          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
-        } else {
-          model.is_nodata = true
-          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
-        }
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
-      })
-    },
-
-    // 收藏、取消收藏商品
-    collectFur: async function (obj, objitem) {
-      let text = !objitem.user_preference ? '收藏成功！' : '取消收藏'
-      if (obj.user_preference) {
-        let param = {
-          point: obj.skuid,
-          type: 'sku',
-          action: 'favor',
-          fur_type: 'online'
-        }
-        axios.post('classes/user_preference', null, {
-          data: param
-        }).then(function (data) {
-          objitem.user_preference = !objitem.user_preference
-          window.mui.toast(text)
-        }).catch(function () {
-          window.mui.toast('收藏失败!')
-        })
-      } else {
-        let getresult = await axios.get('classes/user_preference', {
-          params: {
-            point: obj.skuid,
-            limit: 1,
-            order: '-id'
-          }
-        })
-        let param = {
-          _method: 'DELETE',
-          ids: getresult.data.items[0].id
-        }
-        axios.post('functions/cart/app_preference', null, {
-          data: param
-        }).then(function (data) {
-          objitem.user_preference = !objitem.user_preference
-          window.mui.toast(text)
-        }).catch(function () {
-          window.mui.toast('操作失败!')
-        })
-      }
     },
 
     // 判断是否高亮
@@ -335,16 +225,13 @@ export default {
       if (urlObj.up_time) {
         model.activeTab = 'up_time'
       }
-      if (urlObj.sales_count) {
-        model.activeTab = 'sales_count'
-      }
       if (urlObj.price) {
         model.activeTab = 'price'
       }
     },
 
+    // 选择筛选条件
     matchSearch: function (type) {
-      model.is_nodata = false
       model.activeTab = type
       let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
@@ -356,7 +243,6 @@ export default {
       delete urlObj.up_time
       delete urlObj.price
       delete urlObj.comprehensive
-      delete urlObj.sales_count
       urlObj = _.extend(urlObj, tabsObj[type])
       model.pages = 1
       model.getGoodsList(model.pages, urlObj, 'no')
@@ -369,9 +255,6 @@ export default {
         model.goodsArr = []
       }
       model.is_loading = true
-      delete whereobj.searchKey
-      delete whereobj.limit
-      delete whereobj.skip
       let tmpurl = ''
       if (!_.isEmpty(whereobj)) {
         tmpurl = myURL.pathname + '?' + querystring.stringify(whereobj)
@@ -381,21 +264,26 @@ export default {
       history.pushState('', '', tmpurl)
       let param = {
         limit: pagesize,
-        skip: pagesize * (pages - 1),
-        com_id: this.$store.state.comid
+        skip: pagesize * (pages - 1)
       }
       param = _.extend(param, whereobj)
-      axios.get('functions/cloud/cloud_furnitures', {
+      axios.get('functions/cloud/cloud_collect', {
+        headers: {
+          'X-DP-Token': token
+        },
         params: param
       }).then(function (data) {
         model.is_loading = false
         if (data.data.items.length > 0) {
+          data.data.items.forEach((tmp) => {
+            tmp.checked = 0
+          })
           model.goodsArr = _.union(model.goodsArr, data.data.items)
           model.pages++
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         } else {
           model.is_nodata = true
-          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh(true)
         }
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -404,17 +292,51 @@ export default {
 
     // 下拉刷新获取数据
     pulldownRefresh: function () {
-      let myURL = url.parse(window.location.href)
       model.is_loading = true
-      let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
-      // 如果有搜索关键字
-      if (urlObj.searchKey || model.searchKey) {
-        let key = urlObj.searchKey || model.searchKey
-        model.searchList(key, 'yes')
+      model.getGoodsList(model.pages, null)
+    },
+
+    // 全选
+    checkAllItem: function () {
+      model.checkIdAll = []
+      model.checkedall = !model.checkedall
+      if (model.checkedall) {
+        model.goodsArr.forEach((item) => {
+          item.checked = item.id
+          model.checkIdAll.push(item.id)
+        })
       } else {
-        model.getGoodsList(model.pages, urlObj, 'getmore')
+        model.goodsArr.forEach((item) => {
+          item.checked = 0
+        })
+        model.checkIdAll = []
       }
+    },
+
+    // 删除收藏
+    delMyCollect: function () {
+      var btnArray = ['否', '是']
+      window.mui.confirm('确认删除收藏？', '友情提示', btnArray, function (e) {
+        if (e.index === 1) {
+          let param = {
+            _method: 'DELETE',
+            ids: model.checkIdAll.join(',')
+          }
+          axios.post('functions/cart/app_preference', null, {
+            data: param
+          }).then(function (data) {
+            model.goodsArr.forEach((item) => {
+              if (_.indexOf(model.checkIdAll, item.id) > -1) {
+                model.goodsArr = _.without(model.goodsArr, item)
+              }
+            })
+            window.mui.toast('取消收藏成功!')
+          }).catch(function () {
+            window.mui.toast('获取数据失败!')
+          })
+        }
+      })
     },
 
     // 获取分类数据（品类）
@@ -503,9 +425,6 @@ export default {
 
     // 点击筛选
     showClassify: function () {
-      let myURL = url.parse(window.location.href)
-      let urlObj = querystring.parse(myURL.query)
-      model.checkUrl(urlObj)
       $('#classifylist').show()
       $('#classifylist').addClass('animated bounceInRight')
       setTimeout(function () {
@@ -528,7 +447,6 @@ export default {
 
     // 重置分类
     resetClassify: function () {
-      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
@@ -546,7 +464,6 @@ export default {
 
     // 确定分类
     setClassify: function () {
-      model.is_nodata = false
       let obj = {
         secondtype: model.getFilter(model.classifyActiveArr, 'secondtype'),
         brand: model.getFilter(model.classifyActiveArr, 'brand'),
@@ -582,15 +499,18 @@ export default {
 
     // 按照价格排序
     orderByPrice: function (type) {
-      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.activeTab = type
       model.priceicon = !model.priceicon
       let urlObj = querystring.parse(myURL.query)
+      delete urlObj.secondtype
+      delete urlObj.thirdtype
+      delete urlObj.brand
+      delete urlObj.style
+      delete urlObj.field
       delete urlObj.up_time
       delete urlObj.price
       delete urlObj.comprehensive
-      delete urlObj.sales_count
       urlObj = _.extend(urlObj, tabsObj[type])
       urlObj.price = model.priceicon ? 'desc' : 'asc'
       model.pages = 1
@@ -614,32 +534,16 @@ export default {
 </script>
 
 <style>
-  .mui-search.mui-active:before{
-    top: 26px !important;
-  }
   .p20-box{
     position: fixed;
     top: 44px;
     width: 100%;
     padding: 0 10px;
     z-index: 10;
+    background-color: #fff;
   }
   .list-item{
-    margin-top: 74px;
-  }
-  .mui-content .mui-input-clear {
-    background-color: #fff;
-    border-bottom: 1px solid #8f8f8f;
-    border-radius: 0;
-    color: #989898;
-    font-size: 14px;
-    margin: 0;
-    text-align: left;
-  }
-  .mui-icon-search{
-    position: absolute;
-    left: 5px;
-    top: 8px;
+    margin-top: 40px;
   }
   .loading-icon,
   .nodata-icon{
@@ -656,6 +560,7 @@ export default {
   }
   .clasify-tabs{
     height: 40px;
+    padding: 0 30px;
   }
   .clasify-tabs .mui-grid-9{
     background-color: #fff !important;
@@ -718,23 +623,40 @@ export default {
     background-color: #f4f4f4;
   }
   .goods-list{
-    top: 128px !important;
+    top: 94px !important;
   }
   .goods-list .mui-media {
-    height: 110px;
+    height: 100px;
     padding: 10px;
     border-bottom: 1px solid #cccccc;
   }
   .goods-list .mui-media .info-box{
-    height: 90px;
+    height: 80px;
     padding: 0;
     margin: 0;
   }
+  .goods-list .mui-media .info-box .check-btn{
+    position: relative;
+    top: 25px;
+    margin-right: 5px;
+    display: inline-block;
+    float: left;
+    width: 30px;
+    height: 30px;
+    background: url('/images/person.png') no-repeat;
+    background-size: 498px;
+  }
+  .goods-list .mui-media .info-box .checked{
+    background-position: -293px -62px;
+  }
+  .goods-list .mui-media .info-box .uncheck{
+    background-position: -323px -62px;
+  }
   .goods-list .mui-media .info-box img{
-    width: 90px;
-    height: 90px;
-    max-width: 90px;
-    max-height: 90px;
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
   }
   .goods-list .mui-media .fur-name{
     height: 42px;
@@ -748,16 +670,55 @@ export default {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
+  .opt-box{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    border-top: 1px solid #ababab;
+    background-color: #fff;
+    z-index: 1000;
+  }
+  .opt-box a {
+    display: inline-block;
+    width: 50%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #3d3d3d;
+    font-size: 15px;
+  }
+  .opt-box a .check-btn{
+    position: relative;
+    top: 10px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: url('/images/person.png') no-repeat;
+    background-size: 498px;
+  }
+  .opt-box a .checked{
+    background-position: -293px -62px;
+  }
+  .opt-box a .uncheck{
+    background-position: -323px -62px;
+  }
+  .opt-box a.del-btn{
+    background-color: #5075ce;
+    color: #fff;
+  }
   .mui-media-body{
-    height: 90px;
+    height: 80px;
+    padding: 2px 0;
   }
   .fur-price{
-    height: 48px;
+    height: 32px;
   }
   .fur-price > span{
     display: inline-block;
     position: relative;
-    top: 26px;
+    top: 12px;
     font-weight: 600;
   }
   .fur-price .price{
@@ -769,38 +730,6 @@ export default {
     font-size: 12px;
     color: #b0b0b0;
     text-decoration:line-through;
-  }
-  .goods-list .mui-media .collection-bth{
-    position: relative;
-    top: 10px;
-    z-index: 100;
-    float: right;
-    display: inline-block;
-    width: 70px;
-    height: 36px;
-    line-height: 36px;
-    text-align: center;
-    border-radius: 3px;
-    font-size: 15px;
-  }
-  .star-active{
-    background-color: #5075ce;
-    color: #fff;
-  }
-  .collection-bth .fa{
-    display: inline-block;
-    margin-right: 3px;
-  }
-  .fa-star{
-    color: #fcc500;
-  }
-  .fa-star-o{
-    color: #8f8f8f;
-  }
-  .star-normal{
-    background-color: #fff;
-    border: 1px solid #5075ce;
-    color: #3d3d3d;
   }
   .goods-list .mui-media:after{
     background-color: #fff;

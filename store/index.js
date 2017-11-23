@@ -6,7 +6,8 @@ const store = () => {
   return new Vuex.Store({
     state: {
       theme: 'default',
-      authUser: null
+      comid: 0,
+      comname: ''
     },
     mutations
   })

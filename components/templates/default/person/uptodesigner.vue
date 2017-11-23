@@ -2,17 +2,17 @@
 <div class="login-box">
   <div class="mui-input-row label-input">
     <label>真实姓名：</label>
-    <input type="text" placeholder="">
+    <input type="text" placeholder="" v-model="info.relname">
   </div>
   <div class="mui-input-row label-input">
     <label>服务公司：</label>
-    <span class="label-text">习大大</span>
+    <span class="label-text">{{comname}}</span>
   </div>
   <div class="mui-input-row label-input">
     <label>服务门店：</label>
-    <select class="mui-btn mui-btn-block">
+    <select class="mui-btn mui-btn-block" v-model="info.store">
       <option value="-1">请选择</option>
-      <option value="item.id" v-for="item in storesArr">{{item.name}}</option>
+      <option value="item.id" v-for="item in storesArr">{{item.st_name}}</option>
     </select>
   </div>
   <div class="mui-input-row label-input" style="height: 110px;">
@@ -25,12 +25,18 @@
     </span>
   </div>
   <div class="mui-content-padded login-btn">
-    <button type="button" class="mui-btn mui-btn-primary mui-btn-block">提交</button>
+    <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="upDesignBtn()">提交</button>
   </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let url = require('url')
+let Cookies = require('js-cookie')
+let ESVal = require('es-validate')
 let $ = require('jquery')
+let model
+let token
 export default {
   head () {
     return {
@@ -42,29 +48,50 @@ export default {
   },
   data () {
     return {
-      storesArr: [
-        {
-          id: 1,
-          name: '大红门店'
-        },
-        {
-          id: 2,
-          name: '学院路店'
-        },
-        {
-          id: 3,
-          name: '展厅店'
-        }
-      ]
+      linkPath: '',
+      storesArr: [],
+      comname: '',
+      info: {
+        relname: '',
+        store: -1,
+        img: ''
+      }
     }
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
+      model.comname = Cookies.get('com-name')
+      token = Cookies.get('dpjia-hall-token')
+      model.getStore()
+    },
+
+    // 获取当前公司下门店列表
+    getStore: function () {
+      let param = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid,
+          st_stores_states_new: 'sales'
+        },
+        keys: 'id,st_name'
+      }
+      axios.get('classes/company_stores', {
+        params: param
+      }).then(function (data) {
+        model.storesArr = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
     },
 
     // 上传图片
     upload_com: function () {
-      var url = 'http://192.168.1.120/openapi/api/1.0/upload'
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
       var $input = $('#upload_com').find('input')
       $input.unbind().click()
       $input.unbind().change(function () {
@@ -82,24 +109,76 @@ export default {
           },
           crossDomain: true,
           headers: {
-            'X-DP-Key': '222',
-            'X-DP-ID': '111',
-            'X-DP-Token': 'd9cf5249ed675b1ee387397ec853e86f'
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
           },
           success: function (data) {
             $input.unwrap()
             var img = '<img src="' + data.url + '">'
             $('#upload_com').find('img').remove()
             $('#upload_com').append(img)
+            model.info.img = data.url
           },
           error: function (error) {
             console.log(error)
           }
         })
       })
+    },
+
+    // 提交升级成设计师信息
+    upDesignBtn: function () {
+      let upgrade = Cookies.get('can-upgrade')
+      if (upgrade === 'no') {
+        window.mui.toast('您已经是销售设计师了，暂时不能同时成为两家销售设计师!')
+        return false
+      }
+      if (!model.validateForm(model.info)) {
+        return false
+      }
+      let param = {
+        per_img: model.info.img,
+        com_id: this.$store.state.comid,
+        realname: model.info.relname
+      }
+      axios.put('users/users_to_designer', param, {
+        headers: {
+          'X-DP-Token': token
+        }
+      }).then(function () {
+        window.mui.toast('升级成功!')
+        setTimeout(function () {
+          window.location.href = model.linkPath + '/person'
+        }, 1000)
+      }).catch(function () {
+        window.mui.toast('升级失败!')
+      })
+    },
+
+    // 信息验证
+    validateForm (data) {
+      let result = ESVal.validate(data, {
+        relname: {
+          required: true,
+          msg: '真实姓名不能为空!'
+        },
+        store: {
+          notEqualTo: -1,
+          msg: '请选择服务门店!'
+        },
+        img: {
+          required: true,
+          msg: '请上传个人名片!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }

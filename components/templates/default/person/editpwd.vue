@@ -2,17 +2,17 @@
 <div class="login-box">
   <p>
     您正在为账号
-    <a>18702760110</a>
+    <a>{{mobile}}</a>
     修改密码
   </p>
   <div class="mui-input-row number-box">
-    <input type="text" placeholder="原密码" v-model="info.oldpwd">
+    <input type="password" placeholder="原密码" v-model="info.oldpwd">
   </div>
   <div class="mui-input-row number-box">
-    <input type="text" placeholder="新密码" v-model="info.newpwd">
+    <input type="password" class="newpwd" placeholder="新密码" v-model="info.newpwd" @blur="verLength()">
   </div>
   <div class="mui-input-row number-box">
-    <input type="text" placeholder="确认新密码" v-model="info.conpwd">
+    <input type="password" placeholder="确认新密码" v-model="info.conpwd">
   </div>
   <div class="mui-content-padded login-btn">
     <button type="button" class="mui-btn mui-btn-primary mui-btn-block" @click="editPwd()">确认修改</button>
@@ -20,10 +20,19 @@
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let url = require('url')
+let Cookies = require('js-cookie')
+let $ = require('jquery')
+let _ = require('underscore')
+let ESVal = require('es-validate')
 let model
+let token
 export default {
   data () {
     return {
+      linkPath: '',
+      mobile: '',
       info: {
         oldpwd: '',
         newpwd: '',
@@ -33,11 +42,87 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      token = Cookies.get('dpjia-hall-token')
+      if (!_.isEmpty($.trim(token))) {
+        model.loginstate = true
+        model.getPersonInfo(token)
+      } else {
+        window.location.href = model.linkPath + '/login'
+      }
+    },
+
+    // 获取个人信息
+    getPersonInfo: function (token) {
+      axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+        headers: {
+          'X-DP-Token': token
+        }
+      }).then(function (data) {
+        model.mobile = data.data.mobile
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 检验密码长度
+    verLength: function () {
+      if (($.trim(model.info.newpwd)).length < 6) {
+        window.mui.toast('密码长度必须大于6个字符!')
+        $('.newpwd').focus()
+        return false
+      }
     },
 
     // 确认修改密码
     editPwd: function () {
-      console.log(model.info)
+      if (!model.validateForm(model.info)) {
+        return false
+      }
+      if (String($.trim(model.info.newpwd)) !== String($.trim(model.info.conpwd))) {
+        window.mui.toast('确认密码错误!')
+        $('.newpwd').focus()
+        return
+      }
+      let param = {
+        old_password: model.info.oldpwd,
+        new_password: model.info.newpwd
+      }
+      axios.put('users/resetPassword', param, {
+        headers: {
+          'X-DP-Token': token
+        }
+      }).then(function () {
+        window.mui.toast('修改密码成功!')
+        setTimeout(function () {
+          window.location.href = model.linkPath + '/person'
+        }, 1000)
+      }).catch(function () {
+        window.mui.toast('原密码输入错误!')
+      })
+    },
+
+    // 信息验证
+    validateForm (data) {
+      let result = ESVal.validate(data, {
+        oldpwd: {
+          required: true,
+          msg: '原密码不能为空!'
+        },
+        newpwd: {
+          required: true,
+          msg: '密码不能为空!'
+        },
+        conpwd: {
+          required: true,
+          msg: '确认密码不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
     }
   },
   mounted () {

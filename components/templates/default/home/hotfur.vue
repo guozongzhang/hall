@@ -5,208 +5,100 @@
     <span class="right-icon">
       <span class="mui-icon mui-icon-arrowright"></span>
     </span>
-    <a href="/goodslist" class="go-more">更多</a>
+    <a :href="linkPath + '/goodslist?sales_count=sales_count'" class="go-more">更多</a>
   </div>
-  <div class="mui-slider-group mui-slider-loop">
-    <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一个图文表格) -->
-    <div class="mui-slider-item mui-slider-item-duplicate">
-      <ul class="mui-table-view mui-grid-view">
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
-            <span class="new-item">新品</span>
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>301</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>302</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>303</span>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="mui-slider-item">
-      <ul class="mui-table-view mui-grid-view">
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
-            <span class="new-item">新品</span>
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>101</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>102</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>103</span>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="mui-slider-item">
-      <ul class="mui-table-view mui-grid-view">
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>201</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
-            <span class="new-item">新品</span>
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>202</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>203</span>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="mui-slider-item">
-      <ul class="mui-table-view mui-grid-view">
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
-            <span class="new-item">新品</span>
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>301</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>302</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>303</span>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="mui-slider-item mui-slider-item-duplicate">
-      <ul class="mui-table-view mui-grid-view">
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/57137408d500db5578b48d94354a5585.jpg">
-            <span class="new-item">新品</span>
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>101</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/9478b77dbe799b62a2a06bb9c42e8e8c.jpg">
-            <div class="mui-media-body">静静看这世界</div>
-            <div class="money">
-              <span>￥</span>
-              <span>102</span>
-            </div>
-          </a>
-        </li>
-        <li class="mui-table-view-cell mui-media mui-col-xs-4">
-          <a href="#">
-            <img class="mui-media-object" src="http://cdn.dpjia.com/files/uploads/images/fe4405fa30a0c39ab5ddc29f784b27ea.jpg">
-            <div class="mui-media-body">Color of SIP CBD</div>
-            <div class="money">
-              <span>￥</span>
-              <span>103</span>
-            </div>
-          </a>
-        </li>
-      </ul>
+  <div class="new-box">
+    <div class="fur-item" v-for="item in hotlistArr">
+      <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
+        <img class="mui-media-object" :src="item.fur_image || '/images/square.png'">
+        <span class="new-item" v-show="false">新品</span>
+        <div class="fur-name">{{item.fur_name}}</div>
+        <div class="money">
+          <span>￥</span>
+          <span>{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
+        </div>
+      </a>
     </div>
   </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
+let url = require('url')
+let model
 export default {
+  props: ['goodsids'],
   data () {
     return {
+      linkPath: '',
+      hotlistArr: [
+        {
+          id: 0,
+          fur_image: '/images/square.png',
+          fur_name: '热销',
+          sku_poi_furniture_sku: ''
+        },
+        {
+          id: 0,
+          fur_image: '/images/square.png',
+          fur_name: '热销',
+          sku_poi_furniture_sku: ''
+        },
+        {
+          id: 0,
+          fur_image: '/images/square.png',
+          fur_name: '热销',
+          sku_poi_furniture_sku: ''
+        }
+      ]
+    }
+  },
+  watch: {
+    goodsids: function () {
+      let idsArr = []
+      model.goodsids.forEach((item) => {
+        idsArr.push(item.id)
+      })
+      model.getFur(idsArr)
     }
   },
   methods: {
     init: function () {
-      window.mui.init()
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+    },
+
+    // 获取商品信息
+    getFur: async function (arr) {
+      let param = {
+        where: {
+          fur_id: {
+            $in: arr
+          },
+          com_id_poi_companys: this.$store.state.comid,
+          user_poi_users: '0',
+          st_id_poi_company_stores: '0',
+          dealer_id_poi_company_dealer: '0'
+        },
+        keys: 'id, fur_name,fur_image,sku_poi_furniture_sku',
+        include: 'sku_poi_furniture_sku'
+      }
+      let result = await axios.get('classes/furnitures', {
+        params: param
+      })
+      model.hotlistArr = result.data.items
     }
   },
   mounted () {
+    model = this
     this.init()
   }
 }
 </script>
 
-<style>
+<style scoped>
   .title-box{
-    padding: 8px 14px 0 14px;
+    padding: 8px 14px;
     font-size: 15px;
     color: #000;
   }
@@ -228,8 +120,47 @@ export default {
     font-size: 15px;
     color: #989898;
   }
-  .mui-table-view-cell{
+  .new-box {
+    width: 100%;
+    padding: 0 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    overflow-x: scroll; /* 1 */
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -webkit-overflow-scrolling: touch; /* 2 */
+    text-align: justify; /* 3 */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .fur-item {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 35%;
     position: relative;
+    margin-right: 6px;
+  }
+  .fur-item .link-box{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+  }
+  .fur-item img{
+    width: 100%;
+  }
+  .fur-name{
+    width: 100%;
+    font-size: 15px;
+    color: #3d3d3d;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fur-item:nth-last-child(1){
+    margin-right: 0;
   }
   .new-item{
     position:absolute;
@@ -247,5 +178,6 @@ export default {
     text-align: left;
     color: #4e73cd;
     margin-top: 3px;
+    height: 30px;
   }
 </style>

@@ -54,7 +54,7 @@ export default {
         where: {
           com_id: this.$store.state.comid
         },
-        keys: 'id,com_name'
+        keys: 'id,com_name,full_name'
       }
       axios.get('classes/companys', {
         params: param
@@ -99,7 +99,7 @@ export default {
   }
   .mui-content{
     background-color: #fff;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
   }
   .mui-bar{
     background-color: #ededed;

@@ -7,8 +7,8 @@
         <img :src="basic.logo">
       </div>
       <div class="info-detail">
-        <label>{{basic.subname}}云展厅</label>
-        <p>{{basic.name}}</p>
+        <label>{{basic.name}}云展厅</label>
+        <p>{{basic.fullname}}</p>
         <p>{{basic.address}}</p>
         <p>{{basic.tel}}</p>
       </div>
@@ -118,7 +118,7 @@ export default {
       basic: {
         logo: '',
         name: '',
-        subname: '',
+        fullname: '',
         address: '',
         tel: ''
       },
@@ -166,7 +166,7 @@ export default {
       model.basic = {
         logo: info[0].header[0].list[0].page,
         name: resData.com_name,
-        subname: resData.com_name,
+        fullname: resData.full_name,
         address: resData.com_addr,
         tel: resData.mobile
       }
@@ -260,6 +260,9 @@ html,body{
   padding-bottom: 4px;
   border-bottom: 1px solid #a1c4e1;
   margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .info-detail p{
   margin: 0;

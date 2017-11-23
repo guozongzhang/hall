@@ -11,6 +11,7 @@
     <div class="fur-item" v-for="item in newlistArr" v-if="item.state_type === 'on'">
       <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
         <img class="mui-media-object" :src="item.fur_img || '/images/default_null.jpg'">
+        <span class="fur-price">￥{{item.price}}</span>
       </a>
     </div>
   </div>
@@ -78,7 +79,7 @@ export default {
   .new-box {
     width: 100%;
     padding: 0 14px;
-    height: 180px;
+    height: 120px;
     white-space: nowrap;
     overflow: hidden;
     overflow-x: scroll; /* 1 */
@@ -96,14 +97,32 @@ export default {
     margin: 0;
     padding: 0;
     width: 96%;
-    height: 180px;
+    height: 120px;
     position: relative;
     margin-right: 6px;
   }
   .fur-item .link-box{
+    position: relative;
     display: inline-block;
     width: 100%;
     height: 100%;
+  }
+  .link-box .fur-price{
+    position: absolute;
+    left: 50%;
+    bottom: 1px;
+    -webkit-transform: translate(-50%, 0);
+    -moz-transform: translate(-50%, 0);
+    -o-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    display: inline-block;
+    min-width: 80px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    padding: 0px 8px;
+    background-color: #4c6ab3;
+    color: #fff;
   }
   .fur-item img{
     width: 100%;

@@ -389,12 +389,14 @@ export default {
         size: model.selectSku.size,
         version: model.selectSku.version,
         discount: model.selectSku.discount,
-        price: model.selectSku.price
+        price: model.selectSku.price,
+        user_preference: model.selectSku.user_preference
       }
     },
 
     // 收藏sku
     collection: function (obj) {
+      console.log(model.defaluteSku)
       let token = Cookies.get('dpjia-hall-token')
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']

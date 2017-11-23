@@ -12,7 +12,46 @@
         </p>
       </div>
     </div>
-    <ul class="mui-table-view">
+    <ul class="ulbox">
+      <li>
+        <a href="javascript:;" >
+          <span class="bgicon phone"></span>
+          <span class="info">手机号码:</span>
+          <span class="text">{{info.tel}}</span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;" v-bind:class="(loginstate && !info.identity.none) ? 'mui-navigate-right' : ''" @click="goNextPage('/uptodesigner', 'identify')">
+          <span class="bgicon head"></span>
+          <span class="info" v-show="info.identity.none">当前身份:</span>
+          <span class="text" v-show="info.identity.none">{{info.identity.txt}}</span>
+          <span class="havesf" v-show="!info.identity.none">
+            <i>当前身份: {{info.identity.txt}}</i>
+            <i>升级为销售设计师,享受更多特权</i>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/mycollect', 'normal')">
+          <span class="bgicon start"></span>
+          <span class="info">我的收藏:</span>
+          <span class="text">共{{info.fur_num}}个</span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/settings', 'normal')">
+          <span class="bgicon set"></span>
+          <span class="info">设置:</span>
+        </a>
+      </li>
+      <li>
+        <a :href="linkPath + '/about'" class="mui-navigate-right" >
+          <span class="bgicon about"></span>
+          <span class="info">关于:</span>
+        </a>
+      </li>
+    </ul>
+    <ul class="mui-table-view" style="display: none">
       <li class="personli">
         <a href="javascript:;">
           <span class="phone"></span>
@@ -74,6 +113,90 @@
     </ul>
   </div>
 </template>
+<style>
+li {
+  list-style-type: none
+}
+.ulbox li{
+  height: 50px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc
+}
+.ulbox li:last-child{
+}
+.ulbox {
+  padding: 0;
+  background: #fff;
+}
+.ulbox li a {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+.ulbox li a span{
+  display: block;
+  float: left;
+  font-size: 14px;
+  color: #000;
+  height: 30px;
+  line-height: 30px;
+}
+.ulbox li a span:nth-child(1) {
+  background: url("/images/person.png") no-repeat;
+  display: inline-block;
+  background-size: 490px;
+  margin-right: 10px;
+  width: 30px;
+}
+.ulbox li a span:nth-child(2) {
+  margin-right: 10px;
+}
+.ulbox li a span:last-child {
+}
+
+.ulbox li a span.havesf i:nth-child(1){
+  display: block;
+  height: 26px;
+  margin-top: -8px;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 30px;
+}
+
+.ulbox li a span.havesf i:nth-child(2){
+  display: block;
+  height: 26px;
+  margin-top: -8px;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 30px;
+  color: #4E73CD
+}
+
+.ulbox li span.phone{
+  background-position:  -212px -24px
+}
+.ulbox li span.wechet{
+  background-position: -250px -24px;
+}
+.ulbox li span.wechet{
+  background-position: -250px -24px;
+}
+.ulbox li span.head{
+  background-position: -289px -24px;
+}
+.ulbox li span.start{
+  background-position: -330px -24px;
+}
+.ulbox li span.set{
+  background-position: -369px -24px;
+}
+.ulbox li span.about{
+  background-position: -409px -24px;
+}
+
+
+</style>
 <script>
 import axios from '~/plugins/axios'
 let url = require('url')
@@ -214,27 +337,29 @@ export default {
     background-size: 490px;
     margin-right: 10px;
   }
-  .personli span.phone{
-     background-position:  -212px -24px
-  }
-  .personli span.wechet{
-     background-position: -250px -24px;
-  }
-  .personli span.wechet{
-     background-position: -250px -24px;
-  }
-  .personli span.head{
-     background-position: -289px -24px;
-  }
-  .personli span.start{
-     background-position: -330px -24px;
-  }
- .personli span.set{
-     background-position: -369px -24px;
-  }
-   .personli span.about{
-     background-position: -409px -24px;
-  }
+
+  .ulbox li span.phone{
+  background-position:  -212px -24px
+}
+.ulbox li span.wechet{
+  background-position: -250px -24px;
+}
+.ulbox li span.wechet{
+  background-position: -250px -24px;
+}
+.ulbox li span.head{
+  background-position: -289px -24px;
+}
+.ulbox li span.start{
+  background-position: -330px -24px;
+}
+.ulbox li span.set{
+  background-position: -369px -24px;
+}
+.ulbox li span.about{
+  background-position: -409px -24px;
+}
+  
   
   .personli {
     padding: 10px;

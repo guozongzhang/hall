@@ -232,6 +232,7 @@ export default {
 
     // 选择筛选条件
     matchSearch: function (type) {
+      model.is_nodata = false
       model.activeTab = type
       let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
@@ -261,7 +262,7 @@ export default {
       } else {
         tmpurl = myURL.pathname
       }
-      history.pushState('', '', tmpurl)
+      history.replaceState('', '', tmpurl)
       let param = {
         limit: pagesize,
         skip: pagesize * (pages - 1)
@@ -283,7 +284,7 @@ export default {
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         } else {
           model.is_nodata = true
-          window.mui('#pullfresh').pullRefresh().endPullupToRefresh(true)
+          window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -293,8 +294,10 @@ export default {
     // 下拉刷新获取数据
     pulldownRefresh: function () {
       model.is_loading = true
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
-      model.getGoodsList(model.pages, null)
+      model.getGoodsList(model.pages, urlObj, 'getmore')
     },
 
     // 全选
@@ -447,6 +450,7 @@ export default {
 
     // 重置分类
     resetClassify: function () {
+      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
@@ -464,6 +468,7 @@ export default {
 
     // 确定分类
     setClassify: function () {
+      model.is_nodata = false
       let obj = {
         secondtype: model.getFilter(model.classifyActiveArr, 'secondtype'),
         brand: model.getFilter(model.classifyActiveArr, 'brand'),
@@ -499,6 +504,7 @@ export default {
 
     // 按照价格排序
     orderByPrice: function (type) {
+      model.is_nodata = false
       let myURL = url.parse(window.location.href)
       model.activeTab = type
       model.priceicon = !model.priceicon

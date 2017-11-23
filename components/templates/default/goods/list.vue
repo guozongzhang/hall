@@ -184,34 +184,6 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
-      $(document).keyup(function (e) {
-        if (e.keyCode === 13) {
-          let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
-          history.pushState('', '', reseturl)
-          model.pages = 1
-          model.searchList(model.searchKey, 'no')
-          return true
-        }
-      })
-      // 如果有搜索关键字
-      if (urlObj.searchKey || model.searchKey) {
-        model.searchKey = urlObj.searchKey || model.searchKey
-        let key = urlObj.searchKey || model.searchKey
-        model.searchList(key)
-      } else {
-        model.getInitData(pages, urlObj)
-      }
-    },
-
-    // 搜索
-    goSearch: function () {
-      window.location.href = model.linkPath + '/search'
-    },
-
-    // 初始化获取数据
-    getInitData: async function (pages, urlObj) {
-      await model.getGoodsList(pages, urlObj, 'no')
-      await model.checkUrl(urlObj)
       window.mui('#pullfresh').on('tap', 'a', function (event) {
         let classFlag = $(event.target).attr('class')
         if (classFlag.indexOf('collect-flag') > -1) {
@@ -241,6 +213,34 @@ export default {
           window.location.href = $(event.target).attr('href')
         }
       })
+      $(document).keyup(function (e) {
+        if (e.keyCode === 13) {
+          let reseturl = myURL.pathname + '?' + querystring.stringify({searchKey: model.searchKey})
+          history.pushState('', '', reseturl)
+          model.pages = 1
+          model.searchList(model.searchKey, 'no')
+          return true
+        }
+      })
+      // 如果有搜索关键字
+      if (urlObj.searchKey || model.searchKey) {
+        model.searchKey = urlObj.searchKey || model.searchKey
+        let key = urlObj.searchKey || model.searchKey
+        model.searchList(key)
+      } else {
+        model.getInitData(pages, urlObj)
+      }
+    },
+
+    // 搜索
+    goSearch: function () {
+      window.location.href = model.linkPath + '/search'
+    },
+
+    // 初始化获取数据
+    getInitData: async function (pages, urlObj) {
+      await model.getGoodsList(pages, urlObj, 'no')
+      await model.checkUrl(urlObj)
     },
 
     // 搜索接口

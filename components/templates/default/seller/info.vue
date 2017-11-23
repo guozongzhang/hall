@@ -1,8 +1,8 @@
 <template>
 <div class="mui-content-padded">
-  <div class="top-box" @click="goHome()">
+  <div class="top-box">
     <img class="top-bg" src="/images/seller_bg.png">
-    <div class="info-box">
+    <div class="info-box" @click="goHome()">
       <div class="img-box">
         <img :src="basic.logo">
       </div>
@@ -52,10 +52,10 @@
 					<a class="mui-control-item" href="#store">线下门店</a>
 				</div>
 				<div id="designer" class="mui-control-content mui-active">
-					<p v-for="sub in (detail.com_id_rel_sell_users || {}).items || []" v-if="(((sub.user_poi_users || {}).user_rel_designer || [])[0] || {}).designer_state_new === 'signed'">
-            <span class="name">{{(((sub.user_poi_users || {}).user_rel_user_info || [])[0] || {}).ui_name || '未设置'}}</span>
-            <span class="tel">{{(sub.user_poi_users || {}).u_mobile || '未设置'}}</span>
-            <span class="area">{{((sub.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置'}}</span>
+					<p v-for="sub in detail.sell_users">
+            <span class="name">{{sub.ui_name || '未设置'}}</span>
+            <span class="tel">{{sub.u_mobile || '未设置'}}</span>
+            <span class="area">{{sub.company_area || '未设置'}}</span>
           </p>
 				</div>
 				<div id="store" class="mui-control-content">
@@ -194,26 +194,20 @@ export default {
       let result = await axios.get('functions/cloud/cloud_seller_detail', {
         params: param
       })
-      if (model.userid > 0 && !token) {
-        result.data.com_id_rel_sell_users.items.forEach((item) => {
-          if ((item.user_poi_users || {}).id !== model.userid) {
-            (((item.user_poi_users || {}).user_rel_designer || [])[0] || {}).designer_state_new = 'notcheck'
-          }
-        })
-      }
+      console.log(result.data)
       model.detail = result.data
       model.showShare = result.data.type
     },
 
     // 预览分享
     previewShare: function () {
-      model.detail.com_id_rel_sell_users.items.forEach((item) => {
-        if (String((item.user_poi_users || {}).id || 0) === String(model.detail.user_poi_users)) {
+      model.detail.sell_users.forEach((item) => {
+        if (String(item.id || 0) === String(model.detail.user_poi_users)) {
           model.designer = {
-            name: ((item.user_poi_users.user_rel_user_info || [])[0] || {}).ui_name || '未设置',
-            tel: item.user_poi_users.u_mobile || '未设置',
-            area: ((item.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置',
-            ui_head: ((item.user_poi_users.user_rel_user_info || [])[0] || {}).ui_head || '/images/user.png'
+            name: item.ui_name || '未设置',
+            tel: item.u_mobile || '未设置',
+            area: item.company_area || '未设置',
+            ui_head: item.ui_head || '/images/user.png'
           }
         }
       })

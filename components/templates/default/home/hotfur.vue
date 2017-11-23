@@ -123,7 +123,6 @@ export default {
   .new-box {
     width: 100%;
     padding: 0 14px;
-    height: 180px;
     white-space: nowrap;
     overflow: hidden;
     overflow-x: scroll; /* 1 */
@@ -141,7 +140,6 @@ export default {
     margin: 0;
     padding: 0;
     width: 35%;
-    height: 180px;
     position: relative;
     margin-right: 6px;
   }
@@ -180,5 +178,6 @@ export default {
     text-align: left;
     color: #4e73cd;
     margin-top: 3px;
+    height: 30px;
   }
 </style>

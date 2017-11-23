@@ -294,8 +294,10 @@ export default {
     // 下拉刷新获取数据
     pulldownRefresh: function () {
       model.is_loading = true
+      let myURL = url.parse(window.location.href)
+      let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
-      model.getGoodsList(model.pages, null)
+      model.getGoodsList(model.pages, urlObj, 'getmore')
     },
 
     // 全选

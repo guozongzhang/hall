@@ -407,8 +407,8 @@ export default {
 
     // 下拉刷新获取数据
     pulldownRefresh: function () {
-      let myURL = url.parse(window.location.href)
       model.is_loading = true
+      let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
       // 如果有搜索关键字

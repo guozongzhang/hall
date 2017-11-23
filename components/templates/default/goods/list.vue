@@ -93,7 +93,7 @@
           </a>
         </p>
         <ul class="items-ul">
-          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
+          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall" v-if="sub.state == 'on'">
             <a href="javascript:;" :title="sub.com_brand_name || sub.norname || sub.style_name || sub.field_name">{{sub.com_brand_name || sub.norname || sub.style_name || sub.field_name}}</a>
           </li>
         </ul>
@@ -447,6 +447,9 @@ export default {
       axios.get('classes/furniture_styles', {
         params: param
       }).then(function (data) {
+        data.data.items.forEach((item) => {
+          item.state = 'on'
+        })
         model.classifyArr[2].list = data.data.items
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -464,6 +467,9 @@ export default {
       axios.get('classes/companys_brand', {
         params: param
       }).then(function (data) {
+        data.data.items.forEach((item) => {
+          item.state = 'on'
+        })
         model.classifyArr[1].list = data.data.items
       }).catch(function () {
         window.mui.toast('获取数据失败!')
@@ -481,6 +487,9 @@ export default {
       axios.get('classes/furniture_field_types', {
         params: param
       }).then(function (data) {
+        data.data.items.forEach((item) => {
+          item.state = 'on'
+        })
         model.classifyArr[3].list = data.data.items
       }).catch(function () {
         window.mui.toast('获取数据失败!')

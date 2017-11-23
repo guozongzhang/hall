@@ -68,6 +68,8 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
+let url = require('url')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
@@ -75,6 +77,7 @@ let startTime = 60
 export default {
   data () {
     return {
+      linkPath: '',
       step: 'inputmobile',
       verify: '获取动态密码',
       verifyState: false,
@@ -88,6 +91,12 @@ export default {
   },
   methods: {
     init: function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
+      let token = Cookies.get('dpjia-hall-token')
+      if (!token) {
+        window.location.href = model.linkPath + '/login'
+      }
     },
 
     // 获取动态密码

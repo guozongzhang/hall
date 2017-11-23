@@ -3,7 +3,7 @@
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">商品详情</h1>
-    <a :href="linkPath + '/sellerinfo'" class="mui-pull-right link-seller"></a>
+    <a :href="linkPath + '/sellerinfo?userid=' + userid" class="mui-pull-right link-seller"></a>
   </header>
   <div class="mui-content">
     <component :is="swiperdetail" :imgarr="imgs"></component>
@@ -13,6 +13,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let url = require('url')
 let querystring = require('querystring')
 let model
@@ -28,12 +29,14 @@ export default {
   data () {
     return {
       linkPath: '',
+      userid: 0,
       imgs: [],
       detailinfo: {}
     }
   },
   methods: {
     init: function () {
+      model.userid = Cookies.get('designer-id') || '0'
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)

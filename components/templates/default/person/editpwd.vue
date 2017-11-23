@@ -48,6 +48,8 @@ export default {
       if (!_.isEmpty($.trim(token))) {
         model.loginstate = true
         model.getPersonInfo(token)
+      } else {
+        window.location.href = model.linkPath + '/login'
       }
     },
 

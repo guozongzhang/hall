@@ -44,7 +44,7 @@
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
               <a v-bind:href="item.id" class="check-btn check-flag" v-bind:class="item.checked == item.id ? 'checked' : 'uncheck'" @click="checkOne(item)"></a>
-              <img class="mui-media-object mui-pull-left" :src="item.thumbnail">
+              <img class="mui-media-object mui-pull-left" :src="item.thumbnail || 'images/square.png'">
               <div class="mui-media-body">
                 <a class="fur-name" v-bind:href="linkPath + '/furdetail?id=' + item.fur_id_poi_furnitures">{{item.fur_name}}{{item.name}}</a>
                 <div class="fur-price">

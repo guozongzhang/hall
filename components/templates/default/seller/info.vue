@@ -60,7 +60,7 @@
 				</div>
 				<div id="store" class="mui-control-content">
           <div class="store-item" v-for="item in (detail.com_id_rel_company_stores || {}).items || []">
-            <img :src="item.st_image_url || '/images/default_null.jpg'">
+            <img :src="item.st_image_url || '/images/comlogo.png'">
             <div class="store-detail">
               <label>{{item.st_name || '未设置'}}</label>
               <p>{{item.st_address || '未设置'}}</p>
@@ -83,7 +83,7 @@
         <div class="designer-box">
           <div class="up-info">
             <div class="img-circle">
-              <img src="/images/default.png">
+              <img :src="designer.ui_head">
             </div>
             <div class="designer-info">
               <label>{{basic.name}}云展厅官方定制销售经理</label>
@@ -116,7 +116,7 @@ export default {
     return {
       showShare: false,
       basic: {
-        logo: '',
+        logo: '/images/comlogo.png',
         name: '',
         fullname: '',
         address: '',
@@ -126,7 +126,8 @@ export default {
       designer: {
         name: '',
         tel: '',
-        area: ''
+        area: '',
+        ui_head: '/images/user.png'
       }
     }
   },
@@ -192,7 +193,8 @@ export default {
           model.designer = {
             name: ((item.user_poi_users.user_rel_user_info || [])[0] || {}).ui_name || '未设置',
             tel: item.user_poi_users.u_mobile || '未设置',
-            area: ((item.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置'
+            area: ((item.st_id_poi_company_stores || {}).st_area_id_poi_company_area || {}).com_area_name || '未设置',
+            ui_head: ((item.user_poi_users.user_rel_user_info || [])[0] || {}).ui_head || '/images/user.png'
           }
         }
       })

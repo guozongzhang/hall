@@ -6,7 +6,7 @@
     <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img :src="imgsArr[0].fip_url" /></a></div>
 
     <div class="mui-slider-item" v-for="tmp in imgsArr">
-      <a href="#"><img :src="tmp.fip_url" /></a>
+      <a href="#"><img :src="tmp.fip_url || '/images/square.png'" /></a>
     </div>
     <!--支持循环，需要重复图片节点-->
     <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img :src="imgsArr[imgsArr.length-1].fip_url" /></a></div>
@@ -23,7 +23,7 @@ export default {
     return {
       imgsArr: [
         {
-          fip_url: ''
+          fip_url: '/images/square.png'
         }
       ]
     }

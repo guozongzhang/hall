@@ -57,7 +57,7 @@
         <ul class="mui-table-view">
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
             <div class="info-box">
-              <img class="mui-media-object mui-pull-left" :src="item.fur_image || 'images/default_null.jpg'">
+              <img class="mui-media-object mui-pull-left" :src="item.fur_image || 'images/square.png'">
               <div class="mui-media-body">
                 <a class="fur-name" :href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price col-flag">

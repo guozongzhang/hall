@@ -5,12 +5,12 @@
     <span class="right-icon">
       <span class="mui-icon mui-icon-arrowright"></span>
     </span>
-    <a :href="linkPath + '/goodslist'" class="go-more">更多</a>
+    <a :href="linkPath + '/goodslist?sales_count=sales_count'" class="go-more">更多</a>
   </div>
   <div class="new-box">
     <div class="fur-item" v-for="item in hotlistArr">
       <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
-        <img class="mui-media-object" :src="item.fur_image || '/images/default_null.jpg'">
+        <img class="mui-media-object" :src="item.fur_image || '/images/square.png'">
         <span class="new-item" v-show="false">新品</span>
         <div class="fur-name">{{item.fur_name}}</div>
         <div class="money">
@@ -34,19 +34,19 @@ export default {
       hotlistArr: [
         {
           id: 0,
-          fur_image: '/images/default_null.jpg',
+          fur_image: '/images/square.png',
           fur_name: '热销',
           sku_poi_furniture_sku: ''
         },
         {
           id: 0,
-          fur_image: '/images/default_null.jpg',
+          fur_image: '/images/square.png',
           fur_name: '热销',
           sku_poi_furniture_sku: ''
         },
         {
           id: 0,
-          fur_image: '/images/default_null.jpg',
+          fur_image: '/images/square.png',
           fur_name: '热销',
           sku_poi_furniture_sku: ''
         }

@@ -1,7 +1,7 @@
 <template>
 <div class="login-box">
   <div class="mui-content-padded">
-    <h3>登录搭配家云商城</h3>
+    <h3>{{comName}}云展厅</h3>
   </div>
   <div v-show="type == 'number'">
     <div class="mui-input-row number-box">
@@ -50,6 +50,7 @@ let startTime = 60
 export default {
   data () {
     return {
+      comName: '',
       linkPath: '',
       type: 'number',
       subBtnText: '手机验证码登录',
@@ -71,6 +72,31 @@ export default {
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let rem = Cookies.get('dpjia-hall-remeber')
       model.info.remeber = rem
+      model.getCompany()
+    },
+
+    // 获取公司名称
+    getCompany: function () {
+      let param = {
+        where: {
+          com_id: this.$store.state.comid
+        },
+        keys: 'id,com_name,full_name'
+      }
+      axios.get('classes/companys', {
+        params: param
+      }).then(function (data) {
+        Cookies.set('com-name', data.data.items[0].com_name)
+        model.comName = data.data.items[0].com_name
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
     },
 
     // 清除密码数据

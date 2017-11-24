@@ -3,26 +3,26 @@
   <ul class="mui-table-view mui-grid-view mui-grid-9">
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
       <a :href="linkPath + '/furclassify'">
-        <span class="mui-icon mui-icon-home"></span>
-        <div class="mui-media-body">分类查询</div>
+        <span class="mui-icon self-icon classify-icon"></span>
+        <div class="mui-media-body label-text">分类查询</div>
       </a>
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
       <a :href="linkPath + '/goodslist'">
-        <span class="mui-icon mui-icon-email"></span>
-        <div class="mui-media-body">全部商品</div>
+        <span class="mui-icon self-icon goods-icon"></span>
+        <div class="mui-media-body label-text">全部商品</div>
       </a>
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3" @click="toMyCollect()">
       <a href="javascript:;">
-        <span class="mui-icon mui-icon-chatbubble"></span>
-        <div class="mui-media-body">我的收藏</div>
+        <span class="mui-icon self-icon collect-icon"></span>
+        <div class="mui-media-body label-text">我的收藏</div>
       </a>
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
       <a :href="linkPath + '/person'">
-        <span class="mui-icon mui-icon-location"></span>
-        <div class="mui-media-body">个人中心</div>
+        <span class="mui-icon self-icon per-icon"></span>
+        <div class="mui-media-body label-text">个人中心</div>
       </a>
     </li>
   </ul>
@@ -80,5 +80,28 @@ export default {
   }
   .tabs .mui-table-view .mui-table-view-cell a {
     padding: 0 !important;
+  }
+  .self-icon{
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: url('/images/home.png') no-repeat;
+    background-size: 164px;
+    
+  }
+  .classify-icon{
+    background-position: -1px -2px;
+  }
+  .goods-icon{
+    background-position: -43px -2px;
+  }
+  .collect-icon{
+    background-position: -84px -2px;
+  }
+  .per-icon{
+    background-position: -125px -2px;
+  }
+  .label-text{
+    font-size: 14px;
   }
 </style>

@@ -85,7 +85,7 @@
           </a>
         </p>
         <ul class="items-ul">
-          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, index) in item.list" @click="choiceType(item, sub)" v-show="index < 3 || item.showall" v-if="sub.state == 'on'">
+          <li v-bind:class="item.active == sub.id ? 'active' : ''" v-for="(sub, indexs) in item.list" @click="choiceType(item, sub)" v-show="indexs < 3 || item.showall" v-if="sub.state == 'on'">
             <a href="javascript:;" :title="sub.com_brand_name || (sub.norname || sub.sp_type_name) || sub.style_name || sub.field_name">{{sub.com_brand_name || (sub.norname || sub.sp_type_name) || sub.style_name || sub.field_name}}</a>
           </li>
         </ul>
@@ -179,8 +179,7 @@ export default {
       await model.getGoodsList(pages, urlObj, 'no')
       await model.getSimpleType()
       await model.getBands()
-      await model.getStyle()
-      await model.getField()
+      await model.getStyleField()
       await model.checkUrl(urlObj)
       window.mui('#pullfresh').on('tap', 'a', function (event) {
         let classFlag = $(event.target).attr('class')
@@ -369,26 +368,6 @@ export default {
           com_id_poi_companys: this.$store.state.comid
         }
       }
-      axios.get('classes/furniture_styles', {
-        params: param
-      }).then(function (data) {
-        data.data.items.forEach((item) => {
-          item.state = 'on'
-        })
-        model.classifyArr[2].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
-      })
-    },
-
-    // 获取分类数据（风格）
-    getStyle: function () {
-      let param = {
-        limit: 100,
-        where: {
-          com_id_poi_companys: this.$store.state.comid
-        }
-      }
       axios.get('classes/companys_brand', {
         params: param
       }).then(function (data) {
@@ -401,13 +380,49 @@ export default {
       })
     },
 
-    // 获取分类数据（空间）
-    getField: function () {
+    // 获取公司开启的风格、空间
+    getStyleField: function () {
       let param = {
-        limit: 100,
         where: {
           com_id_poi_companys: this.$store.state.comid
         }
+      }
+      axios.get('classes/companys_self_type', {
+        params: param
+      }).then(function (data) {
+        let styleids = data.data.items[0].companys_self_type_styleid
+        let fielsids = data.data.items[0].companys_self_type_fieldid
+        model.getStyle(styleids)
+        model.getField(fielsids)
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 获取分类数据（风格）
+    getStyle: function (str) {
+      let styleids = str.split(',') || []
+      let param = {
+        limit: 100,
+        where: JSON.stringify(['style_id in ?', styleids])
+      }
+      axios.get('classes/furniture_styles', {
+        params: param
+      }).then(function (data) {
+        data.data.items.forEach((item) => {
+          item.state = 'on'
+        })
+        model.classifyArr[2].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 获取分类数据（空间）
+    getField: function (str) {
+      let fieldids = str.split(',') || []
+      let param = {
+        where: JSON.stringify(['field_id in ?', fieldids])
       }
       axios.get('classes/furniture_field_types', {
         params: param

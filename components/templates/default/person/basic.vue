@@ -194,6 +194,9 @@ li {
 .ulbox li span.about{
   background-position: -409px -24px;
 }
+.mui-navigate-right:after{
+  right: 0px !important;
+}
 
 
 </style>

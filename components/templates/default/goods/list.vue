@@ -179,8 +179,7 @@ export default {
     inits: async function (pages) {
       await model.getSimpleType()
       await model.getBands()
-      await model.getStyle()
-      await model.getField()
+      await model.getStyleField()
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
@@ -447,26 +446,6 @@ export default {
           com_id_poi_companys: this.$store.state.comid
         }
       }
-      axios.get('classes/furniture_styles', {
-        params: param
-      }).then(function (data) {
-        data.data.items.forEach((item) => {
-          item.state = 'on'
-        })
-        model.classifyArr[2].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
-      })
-    },
-
-    // 获取分类数据（风格）
-    getStyle: function () {
-      let param = {
-        limit: 100,
-        where: {
-          com_id_poi_companys: this.$store.state.comid
-        }
-      }
       axios.get('classes/companys_brand', {
         params: param
       }).then(function (data) {
@@ -479,13 +458,49 @@ export default {
       })
     },
 
-    // 获取分类数据（空间）
-    getField: function () {
+    // 获取公司开启的风格、空间
+    getStyleField: function () {
       let param = {
-        limit: 100,
         where: {
           com_id_poi_companys: this.$store.state.comid
         }
+      }
+      axios.get('classes/companys_self_type', {
+        params: param
+      }).then(function (data) {
+        let styleids = data.data.items[0].companys_self_type_styleid
+        let fielsids = data.data.items[0].companys_self_type_fieldid
+        model.getStyle(styleids)
+        model.getField(fielsids)
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 获取分类数据（风格）
+    getStyle: function (str) {
+      let styleids = str.split(',') || []
+      let param = {
+        limit: 100,
+        where: JSON.stringify(['style_id in ?', styleids])
+      }
+      axios.get('classes/furniture_styles', {
+        params: param
+      }).then(function (data) {
+        data.data.items.forEach((item) => {
+          item.state = 'on'
+        })
+        model.classifyArr[2].list = data.data.items
+      }).catch(function () {
+        window.mui.toast('获取数据失败!')
+      })
+    },
+
+    // 获取分类数据（空间）
+    getField: function (str) {
+      let fieldids = str.split(',') || []
+      let param = {
+        where: JSON.stringify(['field_id in ?', fieldids])
       }
       axios.get('classes/furniture_field_types', {
         params: param

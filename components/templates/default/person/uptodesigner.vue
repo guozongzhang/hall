@@ -17,8 +17,8 @@
   </div>
   <div class="mui-input-row label-input" style="height: 110px;">
     <label>上传名片：</label>
-    <span class="upload-box" id="upload_com">
-      <span class="add-btn" @click="upload_com()">
+    <span class="upload-box" id="upload_com" @click="upload_com()">
+      <span class="add-btn">
         <i class="fa fa-plus add-icon"></i>
       </span>
       <input class="hidden" type="file" name="files">

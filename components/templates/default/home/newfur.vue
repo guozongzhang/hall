@@ -110,7 +110,7 @@ export default {
   .link-box .fur-price{
     position: absolute;
     left: 50%;
-    bottom: 1px;
+    bottom: 10px;
     -webkit-transform: translate(-50%, 0);
     -moz-transform: translate(-50%, 0);
     -o-transform: translate(-50%, 0);

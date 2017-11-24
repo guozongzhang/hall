@@ -19,9 +19,7 @@
       this.component('settings', 'person/settings.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

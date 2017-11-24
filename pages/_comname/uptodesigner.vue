@@ -19,9 +19,7 @@
       this.component('uptodesigner', 'person/uptodesigner.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

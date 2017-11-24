@@ -19,9 +19,7 @@
       this.component('mycollect', 'person/mycollect.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

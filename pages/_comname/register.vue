@@ -19,9 +19,7 @@
       this.component('register', 'login/register.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

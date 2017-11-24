@@ -179,8 +179,7 @@ export default {
     inits: async function (pages) {
       await model.getSimpleType()
       await model.getBands()
-      await model.getStyle()
-      await model.getField()
+      await model.getStyleField()
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
@@ -277,8 +276,14 @@ export default {
           model.is_nodata = true
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -297,8 +302,14 @@ export default {
         }).then(function (data) {
           objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
-        }).catch(function () {
-          window.mui.toast('收藏失败!')
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       } else {
         let getresult = await axios.get('classes/user_preference', {
@@ -317,8 +328,14 @@ export default {
         }).then(function (data) {
           objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
-        }).catch(function () {
-          window.mui.toast('操作失败!')
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       }
     },
@@ -400,8 +417,14 @@ export default {
           model.is_nodata = true
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -433,34 +456,24 @@ export default {
         params: param
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
-        model.classifyArr[0].list = info[0].header[2].nav
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+        info[0].header[2].nav.forEach((sub) => {
+          if (sub.state === 'on') {
+            model.classifyArr[0].list.push(sub)
+          }
+        })
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
     // 获取分类数据（品牌）
     getBands: function () {
-      let param = {
-        limit: 100,
-        where: {
-          com_id_poi_companys: this.$store.state.comid
-        }
-      }
-      axios.get('classes/furniture_styles', {
-        params: param
-      }).then(function (data) {
-        data.data.items.forEach((item) => {
-          item.state = 'on'
-        })
-        model.classifyArr[2].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
-      })
-    },
-
-    // 获取分类数据（风格）
-    getStyle: function () {
       let param = {
         limit: 100,
         where: {
@@ -474,18 +487,72 @@ export default {
           item.state = 'on'
         })
         model.classifyArr[1].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 获取公司开启的风格、空间
+    getStyleField: function () {
+      let param = {
+        where: {
+          com_id_poi_companys: this.$store.state.comid
+        }
+      }
+      axios.get('classes/companys_self_type', {
+        params: param
+      }).then(function (data) {
+        let styleids = data.data.items[0].companys_self_type_styleid
+        let fielsids = data.data.items[0].companys_self_type_fieldid
+        model.getStyle(styleids)
+        model.getField(fielsids)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 获取分类数据（风格）
+    getStyle: function (str) {
+      let styleids = str.split(',') || []
+      let param = {
+        limit: 100,
+        where: JSON.stringify(['style_id in ?', styleids])
+      }
+      axios.get('classes/furniture_styles', {
+        params: param
+      }).then(function (data) {
+        data.data.items.forEach((item) => {
+          item.state = 'on'
+        })
+        model.classifyArr[2].list = data.data.items
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
     // 获取分类数据（空间）
-    getField: function () {
+    getField: function (str) {
+      let fieldids = str.split(',') || []
       let param = {
-        limit: 100,
-        where: {
-          com_id_poi_companys: this.$store.state.comid
-        }
+        where: JSON.stringify(['field_id in ?', fieldids])
       }
       axios.get('classes/furniture_field_types', {
         params: param
@@ -494,8 +561,14 @@ export default {
           item.state = 'on'
         })
         model.classifyArr[3].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 

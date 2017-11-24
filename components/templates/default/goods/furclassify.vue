@@ -22,6 +22,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let Cookies = require('js-cookie')
 let url = require('url')
 let model
 export default {
@@ -54,8 +55,14 @@ export default {
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
         model.leftArr = info[0].header[2].nav
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 

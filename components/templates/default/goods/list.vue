@@ -456,7 +456,11 @@ export default {
         params: param
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
-        model.classifyArr[0].list = info[0].header[2].nav
+        info[0].header[2].nav.forEach((sub) => {
+          if (sub.state === 'on') {
+            model.classifyArr[0].list.push(sub)
+          }
+        })
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')

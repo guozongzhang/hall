@@ -396,7 +396,6 @@ export default {
 
     // 收藏sku
     collection: function (obj) {
-      console.log(model.defaluteSku)
       let token = Cookies.get('dpjia-hall-token')
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']

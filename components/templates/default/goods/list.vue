@@ -276,8 +276,14 @@ export default {
           model.is_nodata = true
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -296,8 +302,14 @@ export default {
         }).then(function (data) {
           objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
-        }).catch(function () {
-          window.mui.toast('收藏失败!')
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       } else {
         let getresult = await axios.get('classes/user_preference', {
@@ -316,8 +328,14 @@ export default {
         }).then(function (data) {
           objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
-        }).catch(function () {
-          window.mui.toast('操作失败!')
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       }
     },
@@ -399,8 +417,14 @@ export default {
           model.is_nodata = true
           window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
         }
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -433,8 +457,14 @@ export default {
       }).then(function (data) {
         let info = JSON.parse(data.data.items[0].config)
         model.classifyArr[0].list = info[0].header[2].nav
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -453,8 +483,14 @@ export default {
           item.state = 'on'
         })
         model.classifyArr[1].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -472,8 +508,14 @@ export default {
         let fielsids = data.data.items[0].companys_self_type_fieldid
         model.getStyle(styleids)
         model.getField(fielsids)
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -491,8 +533,14 @@ export default {
           item.state = 'on'
         })
         model.classifyArr[2].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 
@@ -509,8 +557,14 @@ export default {
           item.state = 'on'
         })
         model.classifyArr[3].list = data.data.items
-      }).catch(function () {
-        window.mui.toast('获取数据失败!')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
       })
     },
 

@@ -19,9 +19,7 @@
       this.component('forgetpwd', 'login/forgetpwd.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

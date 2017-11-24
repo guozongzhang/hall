@@ -19,9 +19,7 @@
       this.component('bindmobile', 'person/bindmobile.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

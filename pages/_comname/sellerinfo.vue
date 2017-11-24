@@ -19,9 +19,7 @@
       this.component('sellerinfo', 'seller/info.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

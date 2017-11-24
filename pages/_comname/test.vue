@@ -15,9 +15,7 @@
       this.component('test', 'dev/test.vue')
     },
     methods: {
-      init: function () {
-        console.log()
-      }
+      init: function () {}
     },
     mounted () {
       this.init()

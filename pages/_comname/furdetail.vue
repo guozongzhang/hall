@@ -47,8 +47,14 @@ export default {
             return item.intro_type === 'intro'
           })
           model.detailinfo = data.data
-        }).catch(function () {
-          window.mui.toast('获取数据失败!')
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       } else {
         window.mui.toast('没有指定商品!')

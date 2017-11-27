@@ -86,7 +86,7 @@ export default {
       let result = await axios.get('classes/furnitures', {
         params: param
       })
-      model.hotlistArr = model.goodsids.map(el_a=>(result.data.items.find(el_b => el_b.id == el_a.id)))
+      model.hotlistArr = model.goodsids.map((ela) => (result.data.items.find((elb) => elb.id === ela.id)))
     }
   },
   mounted () {
@@ -104,16 +104,18 @@ export default {
   }
   .right-icon{
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     text-align: center;
-    line-height: 20px;
+    line-height: 14px;
     border-radius: 100%;
     background-color: #ffc700;color: #fff;
     margin-left: 5px;
   }
   .mui-icon-arrowright{
-    font-size: 16px;
+    position: relative;
+    top: -2px;
+    font-size: 10px;
   }
   .go-more{
     float: right;

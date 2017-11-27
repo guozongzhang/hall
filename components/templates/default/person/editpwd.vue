@@ -149,6 +149,7 @@ export default {
   text-align: center;
   color: #7e7e7e;
   margin: 0;
+  font-size: 12px;
 }
 .number-box{
   margin-bottom: 20px;
@@ -158,7 +159,7 @@ export default {
   line-height: 44px;
   border-color: #e3e4e8;
   border-radius: 3px;
-  font-size: 16px;
+  font-size: 14px;
   color: #a3a3a3;
   margin: 0;
 }
@@ -168,7 +169,7 @@ export default {
 .mui-content-padded button{
   height: 44px;
   line-height: 12px;
-  font-size: 16px;
+  font-size: 14px;
 }
 .login-btn button{
   background-color: #4e73cd;

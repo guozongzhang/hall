@@ -5,7 +5,9 @@
   </header>
   <div class="mui-content">
     <component :is="search"></component>
-    <component :is="slider" :imgarr="swiperArr"></component>
+    <div style="margin: 0 5px;">
+      <component :is="slider" :imgarr="swiperArr"></component>
+    </div>
     <component :is="classifytab"></component>
     <div style="height: 10px;background-color: #f4f4f4;"></div>
     <component :is="hotfur" :goodsids="hotids"></component>

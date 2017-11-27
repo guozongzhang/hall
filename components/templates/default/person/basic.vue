@@ -6,7 +6,7 @@
       <div class="name">
         <p>
           <span>
-            <a href="javascript:;" @click="isLogin()">{{info.header_name}}
+            <a href="javascript:;" @click="isLogin()"  v-bind:class="!info.identity.none ? 'loginend' : ''">{{info.header_name}}
             </a>
           </span>
         </p>
@@ -41,13 +41,13 @@
       <li>
         <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/settings', 'normal')">
           <span class="bgicon set"></span>
-          <span class="info">设置:</span>
+          <span class="info">设置</span>
         </a>
       </li>
       <li>
         <a :href="linkPath + '/about'" class="mui-navigate-right" >
           <span class="bgicon about"></span>
-          <span class="info">关于:</span>
+          <span class="info">关于</span>
         </a>
       </li>
     </ul>
@@ -114,6 +114,11 @@
   </div>
 </template>
 <style>
+.loginend {
+  font-size: 15px;
+  color: #000;
+  font-weight: bold;
+}
 li {
   list-style-type: none
 }

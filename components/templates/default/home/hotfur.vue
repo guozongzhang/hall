@@ -86,7 +86,7 @@ export default {
       let result = await axios.get('classes/furnitures', {
         params: param
       })
-      model.hotlistArr = result.data.items
+      model.hotlistArr = model.goodsids.map(el_a=>(result.data.items.find(el_b => el_b.id == el_a.id)))
     }
   },
   mounted () {
@@ -117,7 +117,7 @@ export default {
   }
   .go-more{
     float: right;
-    font-size: 15px;
+    font-size: 14px;
     color: #989898;
   }
   .new-box {
@@ -149,11 +149,12 @@ export default {
     height: 100%;
   }
   .fur-item img{
+    border: 1px solid #ccc;
     width: 100%;
   }
   .fur-name{
     width: 100%;
-    font-size: 15px;
+    font-size: 14px;
     color: #3d3d3d;
     overflow: hidden;
     text-overflow: ellipsis;

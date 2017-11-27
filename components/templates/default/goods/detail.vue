@@ -346,14 +346,17 @@ export default {
 
     // 改变color
     changecolor: function (objitem) {
+      model.ishavesku = true
       model.public('color', objitem)
     },
     // 改变size
     changesize: function (objitem) {
+      model.ishavesku = true
       model.public('size', objitem)
     },
     // 修改版本
     changeversion: function (objitem) {
+      model.ishavesku = true
       model.public('version', objitem)
     },
     // 重置选择
@@ -517,7 +520,7 @@ export default {
     right: 0;
     z-index: 9;
     display: inline-block;
-    width: 90px;
+    width: 70px;
     height: 36px;
     line-height: 36px;
     text-align: center;
@@ -788,7 +791,7 @@ export default {
   .fur_info .title {
     height: 45px;
     line-height: 45px;
-    font-size: 16px;
+    font-size: 14px;
     color: #050505;
     margin: 0;
     width: 100%;

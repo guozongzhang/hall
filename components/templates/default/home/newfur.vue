@@ -60,11 +60,11 @@ export default {
   }
   .right-icon{
     position: relative;
+    top: 2px;
     display: inline-block;
     width: 16px;
     height: 16px;
     text-align: center;
-    line-height: 14px;
     border-radius: 100%;
     background-color: #ffc700;color: #fff;
     margin-left: 5px;

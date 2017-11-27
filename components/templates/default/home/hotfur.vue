@@ -86,7 +86,7 @@ export default {
       let result = await axios.get('classes/furnitures', {
         params: param
       })
-      model.hotlistArr = result.data.items
+      model.hotlistArr = model.goodsids.map(el_a=>(result.data.items.find(el_b => el_b.id == el_a.id)))
     }
   },
   mounted () {

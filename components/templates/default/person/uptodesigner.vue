@@ -224,7 +224,7 @@ export default {
   position: relative;
   top: 5px;
   font-size: 16px;
-  width: 24% !important;
+  width: 28% !important;
   padding: 10px 0 !important;
 }
 .label-text{
@@ -233,14 +233,14 @@ export default {
 }
 .label-input input{
   border: 1px solid #e3e4e8 !important;
-  width: 76% !important;
+  width: 72% !important;
   padding: 0 15px !important;
   border-radius: 3px !important;
   height: 44px !important;
 }
 .label-input .mui-btn-block{
   border: 1px solid #e3e4e8 !important;
-  width: 76% !important;
+  width: 72% !important;
   height: 44px !important;
 }
 .label-input img{

@@ -6,7 +6,7 @@
   </div>
   <div class="mui-input-row label-input">
     <label>服务公司：</label>
-    <span class="label-text" style="top:-10px;">{{comname}}</span>
+    <span class="label-text" style="top:10px;">{{comname}}</span>
   </div>
   <div class="mui-input-row label-input">
     <label>服务门店：</label>

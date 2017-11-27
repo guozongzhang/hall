@@ -655,6 +655,7 @@ export default {
   .clasify-tabs .tab-text{
     display: inline-block;
     height: 16px;
+    font-size: 12px;
   }
   .activeprice{
     color: #5075ce;
@@ -727,7 +728,7 @@ export default {
   }
   .goods-list .mui-media .fur-name{
     height: 42px;
-    font-size: 16px;
+    font-size: 14px;
     color: #050505;
     font-weight: 600;
     white-space: pre-wrap;
@@ -789,7 +790,7 @@ export default {
     font-weight: 600;
   }
   .fur-price .price{
-    font-size: 16px;
+    font-size: 14px;
     color: #4e73cd;
   }
   .fur-price .sub-price{

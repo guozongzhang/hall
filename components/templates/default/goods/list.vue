@@ -690,6 +690,9 @@ export default {
 </script>
 
 <style>
+  .collect-flag{
+    font-size: 14px;
+  }
   .mui-search.mui-active:before{
     top: 26px !important;
   }
@@ -759,6 +762,7 @@ export default {
   .clasify-tabs .tab-text{
     display: inline-block;
     height: 16px;
+    font-size: 12px;
   }
   .activeprice{
     color: #5075ce;
@@ -837,7 +841,7 @@ export default {
     font-weight: 600;
   }
   .fur-price .price{
-    font-size: 16px;
+    font-size: 14px;
     color: #4e73cd;
   }
   .fur-price .sub-price{

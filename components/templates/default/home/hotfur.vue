@@ -117,7 +117,7 @@ export default {
   }
   .go-more{
     float: right;
-    font-size: 15px;
+    font-size: 14px;
     color: #989898;
   }
   .new-box {
@@ -153,7 +153,7 @@ export default {
   }
   .fur-name{
     width: 100%;
-    font-size: 15px;
+    font-size: 14px;
     color: #3d3d3d;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -16,7 +16,8 @@ module.exports = {
       { src: '/js/mui.previewimage.js' },
       { src: '/js/mui.picker.min.js' },
       { src: '/js/jquery.min.js' },
-      { src: '/js/jquery.form.js' }
+      { src: '/js/jquery.form.js' },
+      {src: 'https://hm.baidu.com/hm.js?f68e430ad04f189c825f4842107a1bdd'}
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },
@@ -53,7 +54,7 @@ module.exports = {
   router: {
     middleware: 'theme'
   },
-  plugins: ['~plugins/common'],
+  plugins: ['~plugins/common', '~plugins/ga.js'],
   env: {
     baseUrl: ENV ? ENV.api : 'http://192.168.1.120/openapi/api/1.0/'
   }

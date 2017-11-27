@@ -67,10 +67,10 @@
     <div class="opt-box">
       <a href="javascript:;" @click="checkAllItem()">
         <span class="check-btn" v-bind:class="checkedall ? 'checked' : 'uncheck'"></span>
-        <span>全选</span>
+        <span class="ftsz14">全选</span>
       </a>
       <a href="javascript:;" class="del-btn" @click="delMyCollect()">
-        <span>删除</span>
+        <span class="ftsz14">删除</span>
       </a>
     </div>
   </div>
@@ -601,6 +601,9 @@ export default {
 </script>
 
 <style>
+  .ftsz14 {
+    font-size: 14px;
+  }
   .p20-box{
     position: fixed;
     top: 44px;

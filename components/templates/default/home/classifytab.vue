@@ -102,6 +102,7 @@ export default {
     background-position: -125px -2px;
   }
   .label-text{
-    font-size: 14px;
+    font-size: 12px !important;
+    color: #989898 !important;
   }
 </style>

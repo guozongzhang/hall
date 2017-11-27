@@ -126,6 +126,9 @@ export default {
 .left-classify a.active .active-icon{
   display: inline-block;
 }
+.left-classify a.active{
+  color: #5075ce;
+}
 .right-box .mui-table-view:before,
 .right-box .mui-table-view:after{
   background-color: #fff;

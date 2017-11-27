@@ -507,4 +507,7 @@ html,body{
   background-color: #e9e9ea;
   color: #4f4f50;
 }
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body {
+  font-size: 14px;
+}
 </style>

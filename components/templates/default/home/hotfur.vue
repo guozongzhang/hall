@@ -103,6 +103,7 @@ export default {
     color: #000;
   }
   .right-icon{
+    position: relative;
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -113,8 +114,9 @@ export default {
     margin-left: 5px;
   }
   .mui-icon-arrowright{
-    position: relative;
-    top: -2px;
+    position: absolute;
+    left: 4px;
+    top: 3px;
     font-size: 10px;
   }
   .go-more{

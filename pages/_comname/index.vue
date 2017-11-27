@@ -1,7 +1,7 @@
 <template>
 <div>
   <header class="mui-bar mui-bar-nav">
-    <h1 class="mui-title">{{comName}}云展厅</h1>
+    <h1 class="mui-title"><span>{{comName}}</span>云展厅</h1>
   </header>
   <div class="mui-content">
     <component :is="search"></component>
@@ -123,5 +123,11 @@ export default {
   .mui-bar{
     background-color: #ededed;
     box-shadow: none;
+  }
+  .mui-bar h1{
+    font-weight: 400 !important;
+  }
+  .mui-bar h1 span{
+    font-weight: 600 !important;
   }
 </style>

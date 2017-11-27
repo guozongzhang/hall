@@ -149,6 +149,7 @@ export default {
     height: 100%;
   }
   .fur-item img{
+    border: 1px solid #ccc;
     width: 100%;
   }
   .fur-name{

@@ -234,6 +234,9 @@ export default {
 </script>
 
 <style>
+.mui-media-body{
+  font-size: 14px;
+}
 html,body{
   background-color: #ededed !important;
 }
@@ -317,6 +320,7 @@ html,body{
 }
 .tab-box .mui-segmented-control a{
   color: #040404;
+  font-size: 14px;
 }
 .mui-segmented-control .mui-control-item{
   border-bottom: 1px solid #7f7f7f;
@@ -389,7 +393,7 @@ html,body{
 .store-item .store-detail p{
   margin: 0;
   padding: 0;
-  font-size: 13px;
+  font-size: 12px;
   max-width: 200px;
   color: #3d3d3d;
   overflow: hidden;

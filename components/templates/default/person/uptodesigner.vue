@@ -200,7 +200,7 @@ export default {
   line-height: 44px;
   border-color: #e3e4e8;
   border-radius: 3px;
-  font-size: 16px;
+  font-size: 14px;
   color: #a3a3a3;
   margin: 0;
 }

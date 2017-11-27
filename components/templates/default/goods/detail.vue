@@ -231,6 +231,7 @@ export default {
       $('.modalbox').css('display', 'none')
     },
 
+    // 选择sku的公共方法
     public: function (val, objitem) {
       if (val === 'size') {
         model.sizearr.forEach(item => {

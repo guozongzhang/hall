@@ -102,6 +102,9 @@ export default {
     font-size: 15px;
     color: #000;
   }
+  .title-box label{
+    float: left;
+  }
   .right-icon{
     position: relative;
     top: 2px;

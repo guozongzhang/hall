@@ -12,7 +12,7 @@
     <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img :src="imgsArr[imgsArr.length-1].pic" /></a></div>
   </div>
   <div class="mui-slider-indicator">
-    <div class="mui-indicato" v-bind:class="index == 1 ? 'mui-active' : ''" v-for="(item, index) in imgsArr"></div>
+    <div class="mui-indicator" v-bind:class="index == 0 ? 'mui-active' : ''" v-for="(item, index) in imgsArr"></div>
   </div>
 </div>
 </template>
@@ -53,5 +53,18 @@ export default {
     position: absolute;
     height: 1px;
     top: -44px;
+  }
+  .mui-slider-indicator .mui-active.mui-indicator {
+    background: hsla(34,78%,91%,0);
+    width: 0;
+    height: 0;
+    border: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #5075ce;
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    top: 1px;
   }
 </style>

@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <div class="furpic" >
+    <div class="furpic" v-show="detailpics.length > 0">
       <div class="maodian" id="item2"></div>
       <p class="c05">图文详情</p>
       <ul class="desc">

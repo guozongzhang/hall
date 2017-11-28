@@ -81,7 +81,7 @@
 
     <div class="furpic" >
       <div class="maodian" id="item2"></div>
-      <p class="c05">图文详情</p>
+      <p class="c05" v-show="detailpics.length > 0">图文详情</p>
       <ul class="desc">
         <li v-for="item in detailpics">
           <img v-bind:src="item.fip_url" />

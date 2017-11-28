@@ -67,10 +67,10 @@
     <div class="opt-box">
       <a href="javascript:;" @click="checkAllItem()">
         <span class="check-btn" v-bind:class="checkedall ? 'checked' : 'uncheck'"></span>
-        <span>全选</span>
+        <span class="ftsz14">全选</span>
       </a>
       <a href="javascript:;" class="del-btn" @click="delMyCollect()">
-        <span>删除</span>
+        <span class="ftsz14">删除</span>
       </a>
     </div>
   </div>
@@ -601,6 +601,9 @@ export default {
 </script>
 
 <style>
+  .ftsz14 {
+    font-size: 14px;
+  }
   .p20-box{
     position: fixed;
     top: 44px;
@@ -655,6 +658,7 @@ export default {
   .clasify-tabs .tab-text{
     display: inline-block;
     height: 16px;
+    font-size: 12px;
   }
   .activeprice{
     color: #5075ce;
@@ -727,7 +731,7 @@ export default {
   }
   .goods-list .mui-media .fur-name{
     height: 42px;
-    font-size: 16px;
+    font-size: 14px;
     color: #050505;
     font-weight: 600;
     white-space: pre-wrap;
@@ -789,7 +793,7 @@ export default {
     font-weight: 600;
   }
   .fur-price .price{
-    font-size: 16px;
+    font-size: 14px;
     color: #4e73cd;
   }
   .fur-price .sub-price{

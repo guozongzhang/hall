@@ -70,7 +70,7 @@ export default {
 }
 .version-box p{
   color: #030303;
-  font-size: 16px;
+  font-size: 14px;
   margin: 12px 0;
 }
 .start-btn{
@@ -81,7 +81,7 @@ export default {
   line-height: 12px;
   border-color: #4e73cd;
   color: #5175ce;
-  font-size: 16px;
+  font-size: 14px;
 }
 .tips{
   display: none;

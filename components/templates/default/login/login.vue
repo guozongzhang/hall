@@ -37,6 +37,9 @@
   <div class="mui-content-padded phone-btn">
     <button type="button" class="mui-btn mui-btn-block" @click="switchLogin()">{{subBtnText}}</button>
   </div>
+  <div class="wechat-login" style="display:none">
+    <a href="javascript:;"></a>
+  </div>
 </div>
 </template>
 <script>

@@ -6,7 +6,7 @@
   </div>
   <div class="mui-input-row label-input">
     <label>服务公司：</label>
-    <span class="label-text">{{comname}}</span>
+    <span class="label-text" style="top:10px;">{{comname}}</span>
   </div>
   <div class="mui-input-row label-input">
     <label>服务门店：</label>
@@ -200,7 +200,7 @@ export default {
   line-height: 44px;
   border-color: #e3e4e8;
   border-radius: 3px;
-  font-size: 16px;
+  font-size: 14px;
   color: #a3a3a3;
   margin: 0;
 }
@@ -210,7 +210,7 @@ export default {
 .mui-content-padded button{
   height: 44px;
   line-height: 12px;
-  font-size: 16px;
+  font-size: 14px;
 }
 .login-btn button{
   background-color: #4e73cd;
@@ -223,13 +223,14 @@ export default {
 .label-input label{
   position: relative;
   top: 5px;
-  font-size: 16px;
+  font-size: 14px;
   width: 24% !important;
   padding: 10px 0 !important;
 }
 .label-text{
   position: relative;
   top: 14px;
+  font-size: 14px;
 }
 .label-input input{
   border: 1px solid #e3e4e8 !important;
@@ -242,6 +243,7 @@ export default {
   border: 1px solid #e3e4e8 !important;
   width: 76% !important;
   height: 44px !important;
+  font-size: 14px;
 }
 .label-input img{
   position: relative;

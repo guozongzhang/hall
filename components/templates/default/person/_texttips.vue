@@ -66,12 +66,12 @@ export default {
 }
 .self-body label{
   display: block;
-  font-size: 15px;
+  font-size: 12px;
   color: #616161;
   margin-bottom: 5px;
 }
 .self-body p{
-  font-size: 15px;
+  font-size: 14px;
   color: #050505;
   margin: 0;
   padding: 0;

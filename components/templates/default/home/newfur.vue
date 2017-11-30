@@ -7,12 +7,14 @@
     </span>
     <a :href="linkPath + '/goodslist?up_time=up_time'" class="go-more">更多</a>
   </div>
-  <div class="new-box">
-    <div class="fur-item" v-for="item in newlistArr" v-if="item.state_type === 'on'">
-      <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
-        <img class="mui-media-object" :src="item.fur_img || '/images/newfur.png'">
-        <span class="fur-price">￥{{item.price}}</span>
-      </a>
+  <div class="mui-slider new-box">
+    <div class="mui-slider-group">
+      <div class="mui-slider-item fur-item" v-for="(tmp, index) in newlistArr"  v-bind:class="index == 0 ? 'mui-active' : ''">
+        <a class="mui-media-object" :href="linkPath + '/furdetail?id=' + tmp.id">
+          <img :src="tmp.fur_img || '/images/square.png'" />
+          <span class="fur-price">￥{{tmp.price}}{{index}}</span>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -53,6 +55,21 @@ export default {
 </script>
 
 <style scoped>
+  .mui-slider-item {
+    transform: scale(0.8)
+  }
+  .mui-active {
+    transform: scale(1)
+  }
+  .mui-slider-item-duplicate {
+    margin-right: 6px;
+  }
+  .noactive{
+    transform: scale(0.8,0.8);
+  }
+  .active {
+    transform: scale(1,1);
+  }
   .title-box{
     padding: 8px 14px;
     font-size: 15px;
@@ -106,7 +123,6 @@ export default {
     width: 96%;
     height: 120px;
     position: relative;
-    margin-right: 6px;
   }
   .fur-item .link-box{
     position: relative;
@@ -114,7 +130,7 @@ export default {
     width: 100%;
     height: 100%;
   }
-  .link-box .fur-price{
+  .fur-price{
     position: absolute;
     left: 50%;
     bottom: 10px;

@@ -113,10 +113,12 @@ export default {
     display: inline-block;
     width: 100%;
     height: 100%;
+    overflow:hidden;
+    border: 1px solid #ddd;
   }
   .link-box .fur-price{
     position: absolute;
-    left: 48%;
+    left: 50%;
     bottom: 10px;
     -webkit-transform: translate(-50%, 0);
     -moz-transform: translate(-50%, 0);
@@ -133,7 +135,6 @@ export default {
   }
   .fur-item img{
     height: 100%;
-    margin-left: -23px;
   }
   .fur-item:nth-last-child(1){
     margin-right: 0;

@@ -14,7 +14,8 @@ module.exports = {
       { src: '/js/mui.min.js' },
       { src: '/js/mui.zoom.js' },
       { src: '/js/mui.previewimage.js' },
-      { src: '/js/mui.picker.min.js' },
+      { src: '/js/mui.picker.js' },
+      { src: '/js/mui.poppicker.js' },
       { src: '/js/jquery.min.js' },
       { src: '/js/jquery.form.js' },
       {src: 'https://hm.baidu.com/hm.js?f68e430ad04f189c825f4842107a1bdd'}
@@ -22,7 +23,8 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/dpjia.ico' },
       { rel: 'stylesheet', href: '/css/mui.min.css' },
-      { rel: 'stylesheet', href: '/css/mui.picker.min.css' },
+      { rel: 'stylesheet', href: '/css/mui.picker.css' },
+      { rel: 'stylesheet', href: '/css/mui.poppicker.css' },
       { rel: 'stylesheet', href: '/css/font-awesome.css' },
       { rel: 'stylesheet', href: '/css/animate.css' },
       { rel: 'stylesheet', href: '/css/layout.css' }

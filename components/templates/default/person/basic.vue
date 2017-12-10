@@ -113,98 +113,6 @@
     </ul>
   </div>
 </template>
-<style>
-.loginend {
-  font-size: 15px;
-  color: #000;
-  font-weight: bold;
-}
-li {
-  list-style-type: none
-}
-.ulbox li{
-  height: 50px;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ccc
-}
-.ulbox li:last-child{
-}
-.ulbox {
-  padding: 0;
-  background: #fff;
-}
-.ulbox li a {
-  display: block;
-  overflow: hidden;
-  position: relative;
-}
-.ulbox li a span{
-  display: block;
-  float: left;
-  font-size: 14px;
-  color: #000;
-  height: 30px;
-  line-height: 30px;
-}
-.ulbox li a span:nth-child(1) {
-  background: url("/images/person.png") no-repeat;
-  display: inline-block;
-  background-size: 490px;
-  margin-right: 10px;
-  width: 30px;
-}
-.ulbox li a span:nth-child(2) {
-  margin-right: 10px;
-}
-.ulbox li a span:last-child {
-}
-
-.ulbox li a span.havesf i:nth-child(1){
-  display: block;
-  height: 26px;
-  margin-top: -8px;
-  font-size: 14px;
-  font-style: normal;
-  line-height: 32px;
-}
-
-.ulbox li a span.havesf i:nth-child(2){
-  display: block;
-  height: 26px;
-  margin-top: -8px;
-  font-size: 12px;
-  font-style: normal;
-  line-height: 30px;
-  color: #4E73CD
-}
-
-.ulbox li span.phone{
-  background-position:  -212px -24px
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.head{
-  background-position: -289px -24px;
-}
-.ulbox li span.start{
-  background-position: -330px -24px;
-}
-.ulbox li span.set{
-  background-position: -369px -24px;
-}
-.ulbox li span.about{
-  background-position: -409px -24px;
-}
-.mui-navigate-right:after{
-  right: 0px !important;
-}
-
-
-</style>
 <script>
 import axios from '~/plugins/axios'
 let url = require('url')
@@ -297,7 +205,95 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
+  .loginend {
+    font-size: 15px;
+    color: #000;
+    font-weight: bold;
+  }
+  li {
+    list-style-type: none
+  }
+  .ulbox li{
+    height: 50px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc
+  }
+  .ulbox li:last-child{
+  }
+  .ulbox {
+    padding: 0;
+    background: #fff;
+  }
+  .ulbox li a {
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+  .ulbox li a span{
+    display: block;
+    float: left;
+    font-size: 14px;
+    color: #000;
+    height: 30px;
+    line-height: 30px;
+  }
+  .ulbox li a span:nth-child(1) {
+    background: url("/images/person.png") no-repeat;
+    display: inline-block;
+    background-size: 490px;
+    margin-right: 10px;
+    width: 30px;
+  }
+  .ulbox li a span:nth-child(2) {
+    margin-right: 10px;
+  }
+  .ulbox li a span:last-child {
+  }
+
+  .ulbox li a span.havesf i:nth-child(1){
+    display: block;
+    height: 26px;
+    margin-top: -8px;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 32px;
+  }
+
+  .ulbox li a span.havesf i:nth-child(2){
+    display: block;
+    height: 26px;
+    margin-top: -8px;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 30px;
+    color: #4E73CD
+  }
+
+  .ulbox li span.phone{
+    background-position:  -212px -24px
+  }
+  .ulbox li span.wechet{
+    background-position: -250px -24px;
+  }
+  .ulbox li span.wechet{
+    background-position: -250px -24px;
+  }
+  .ulbox li span.head{
+    background-position: -289px -24px;
+  }
+  .ulbox li span.start{
+    background-position: -330px -24px;
+  }
+  .ulbox li span.set{
+    background-position: -369px -24px;
+  }
+  .ulbox li span.about{
+    background-position: -409px -24px;
+  }
+  .mui-navigate-right:after{
+    right: 0px !important;
+  }
   .sjdesign {
     position: absolute;
     top: 23px;

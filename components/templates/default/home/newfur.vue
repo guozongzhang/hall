@@ -111,8 +111,10 @@ export default {
   .fur-item .link-box{
     position: relative;
     display: inline-block;
-    width: 100%;
+    max-width: 100%;
     height: 100%;
+    overflow:hidden;
+    border: 1px solid #ddd;
   }
   .link-box .fur-price{
     position: absolute;

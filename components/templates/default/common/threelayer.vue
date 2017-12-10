@@ -8,7 +8,7 @@
 let procitydis = require('~/static/js/area.json')
 let model
 export default {
-  props: ['areaobj'],
+  props: ['areaobj', 'arr'],
   data () {
     return {
     }
@@ -21,8 +21,9 @@ export default {
   methods: {
     // 获取数据
     getThreeInit: async function () {
+      let arrs = model.arr.length > 0 ? model.arr : procitydis
       var picker = new window.mui.PopPicker({layer: 3})
-      picker.setData(procitydis)
+      picker.setData(arrs)
       picker.show(function (selectItems) {
         model.$emit('getLayerThree', selectItems)
       })

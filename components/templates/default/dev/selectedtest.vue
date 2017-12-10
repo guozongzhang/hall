@@ -21,7 +21,7 @@
       </li>
     </ul>
     <div v-show="false">
-      <vue-area :areaobj="area" @getLayerThree="change"></vue-area>
+      <vue-area :areaobj="area" :arr="arr" @getLayerThree="change"></vue-area>
       <vue-two :twoobj="twoobj" :twoarr="twoarr" @getLayerTwo="change"></vue-two>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
     </div>
@@ -36,6 +36,7 @@ let model
 export default {
   data () {
     return {
+      arr: [],
       area: {
         state: 0,
         province: -1,
@@ -58,10 +59,59 @@ export default {
     'vue-area': Area,
     'vue-two': Two,
     'vue-one': One
+
   },
   methods: {
     // 测试省市区
-    testarea: function () {
+    testarea: async function () {
+      // 省
+      let paramp = {
+        limit: 100
+      }
+      let prodata = await axios.get('classes/province', {
+        params: paramp
+      })
+      // 市
+      let paramc = {
+        limit: 500
+      }
+      let citydata = await axios.get('classes/city', {
+        params: paramc
+      })
+      // 区
+      let paramd = {
+        limit: 3000
+      }
+      let disdata = await axios.get('classes/district', {
+        params: paramd
+      })
+      prodata.data.items.forEach((p) => {
+        let tp = {
+          'value': p.id,
+          'text': p.ProvinceName,
+          'children': []
+        }
+        citydata.data.items.forEach((c) => {
+          if (c.ProvinceID === p.id) {
+            let cp = {
+              'value': c.id,
+              'text': c.CityName,
+              'children': []
+            }
+            disdata.data.items.forEach((d) => {
+              if (d.CityID === c.id) {
+                let dp = {
+                  'value': d.id,
+                  'text': d.DistrictName
+                }
+                cp.children.push(dp)
+              }
+            })
+            tp.children.push(cp)
+          }
+        })
+        model.arr.push(tp)
+      })
       model.area.state = Math.random()
     },
 

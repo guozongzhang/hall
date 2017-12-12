@@ -28,7 +28,7 @@
 <script>
   import axios from '~/plugins/axios'
   export default {
-    props: ['obj'],
+    // props: ['obj'],
     data () {
       return {
         state: '',
@@ -39,7 +39,7 @@
       getlist: function (val) {
         this.active = val
         let param = {}
-        if (this.active != 'all') {
+        if (this.active !== 'all') {
           param = {
              state: val
           }
@@ -49,7 +49,6 @@
         }).then(function (data) {
           console.log(data)
         }).catch(function (error) {
-          
         })
       }
     },

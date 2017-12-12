@@ -39,7 +39,7 @@
         </a>
       </li>
       <li>
-        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/report', 'project')">
+        <a href="javascript:;" class="mui-navigate-right" @click="goNextPage('/report', 'project')">
           <span class="bgicon start"></span>
           <span class="info">我的项目:</span>
           <span class="text">共{{info.fur_num}}个</span>
@@ -195,10 +195,10 @@ export default {
 
     // 跳转页面
     goNextPage: function (url, type) {
+      if (type === 'project') {
+        window.location.href = model.linkPath + url
+      }
       if (model.loginstate) {
-        if (type === 'project') {
-          window.location.href = model.linkPath + url
-        }
         if (type === 'normal') {
           window.location.href = model.linkPath + url
         } else {

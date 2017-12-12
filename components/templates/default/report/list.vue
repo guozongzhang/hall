@@ -258,7 +258,6 @@
     width: 100%;
     color: #9B9B9B
   }
-  
   .navul li .bglan {
     width: 27%;
     margin: 0 auto;

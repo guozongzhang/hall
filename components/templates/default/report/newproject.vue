@@ -3,26 +3,26 @@
     <ul class="mui-table-view mui-table-view-chevron nav">
       <li class="mui-table-view-cell">
         <div class="mui-input-row">
-          <label>项目名称<i>*</i></label>
-          <input type="text"  class="mui-input-clear" placeholder="请输入项目名称" v-model="name">
+          <label @click="submit()">项目名称<i>*</i></label>
+          <input type="text"  class="mui-input-clear" placeholder="请输入项目名称" v-model="thisdata.name">
         </div>
       </li>
       <li class="mui-table-view-cell">
         <div class="mui-input-row">
           <label>公司名称<i>*</i></label>
-          <input type="text"  class="mui-input-clear" placeholder="请输入公司名称" v-model="first_party_name">
+          <input type="text"  class="mui-input-clear" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
         </div>
       </li>
       <li class="mui-table-view-cell">
         <div class="mui-input-row">
           <label>预计金额<i>*</i></label>
-          <input type="text"  class="mui-input-clear" placeholder="万元" v-model="amount">
+          <input type="text"  class="mui-input-clear" placeholder="万元" v-model="thisdata.amount">
         </div>
       </li>
       <li class="mui-table-view-cell">
         <div class="mui-input-row">
           <label>简单描述<i>*</i></label>
-          <input type="text"  class="mui-input-clear" placeholder="" v-model="sketch">
+          <input type="text"  class="mui-input-clear" placeholder="" v-model="thisdata.sketch">
         </div>
       </li>
       <li class="mui-table-view-cell">
@@ -30,33 +30,34 @@
           <label>项目可行性<i>*</i></label>
           <ul class="start">
             <li v-for="(index,item) in 5" @click="changeStart(index)">
-              <i v-bind:class="feasibility - index >= 0 ? 'fa-star' : 'fa-star-o'" class="fa mui-icon mui-icon-left-nav mui-pull-right"></i>
+              <i v-bind:class="thisdata.feasibility - index >= 0 ? 'fa-star' : 'fa-star-o'" class="fa mui-icon mui-icon-left-nav mui-pull-right"></i>
             </li>
           </ul>
         </div>
       </li>
       <li class="mui-table-view-cell">
-        <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{validity}}</span></a>
+        <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{thisdata.validity}}</span></a>
       </li>
 
       <li class="mui-table-view-cell">
-        <a href="" class="mui-navigate-right">报备人姓名</a>
+        <a href="javascript:;" class="mui-navigate-right">报备人姓名</a>
       </li>
+
 
       <li class="mui-table-view-cell"> 
         <div class="mui-radio cssradiodiv">
           <label>自己</label>
-          <input type="radio" name="style" value="left-none"/> 
+          <input type="radio" name="style" value="left-none" /> 
         </div>
         <div class="mui-radio cssradiodiv">
           <label>其他人</label>
-          <input type="radio" name="style" value="left-none"/> 
+          <input type="radio" name="style" value="left-none" /> 
         </div>
       </li>
       
       <li class="mui-table-view-cell">
         <div class="mui-input-row">
-          <input type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="first_party_name">
+          <input type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name">
         </div>
       </li>
 
@@ -95,7 +96,7 @@
         <a href="" class="mui-navigate-right">产品分类<span>500字</span></a>
       </li>
       <li class="mui-table-view-cell">
-        <a href="" class="mui-navigate-right">项目类型<span>500字</span></a>
+        <a href="javascript:;" class="mui-navigate-right">项目类型<span>500字</span></a>
       </li>
 
 
@@ -103,7 +104,7 @@
         <a href="" class="mui-navigate-right">更多甲方信息</a>
       </li>
       <li class="mui-table-view-cell">
-        <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">所属区域<span>{{first_party_province_poi_province.text}}</span><span>{{first_party_city_poi_city.text}}</span><span>{{ first_party_district_poi_district.text}}</span></a>
+        <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">所属区域<span>{{thisdata.first_party_province_poi_province.text}}</span><span>{{thisdata.first_party_city_poi_city.text}}</span><span>{{thisdata.first_party_district_poi_district.text}}</span></a>
       </li>
       <li class="mui-table-view-cell">
         <div class="mui-input-row">
@@ -123,7 +124,6 @@
           <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话">
         </div>
       </li>
-
 
       <li class="mui-table-view-cell right0">
         <a href="" class="mui-navigate-right ">更多报备信息</a>
@@ -183,7 +183,6 @@
     </ul>
     <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
     <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
-
   </div>
 
     
@@ -194,6 +193,7 @@
   import Area from '../common/threelayer.vue'
   import Two from '../common/twolayer.vue'
   import axios from '~/plugins/axios'
+  let _ = require('underscore')
   let model
   export default {
     head: {
@@ -201,84 +201,75 @@
     },
     data () {
       return {
-        name: '项目名称',
-        first_party_name: '甲方名称',  
-        amount: '项目金额',
-        intro: '项目介绍', 
-        feasibility: 4, //'可行性'
-        validity: '项目有效期',
-        remark: '备注', 
-        project_attachment: [ //附件信息
-          {
-            file_url: '',
-            id: 0,
-            delete: 'no'
+        thisdata: {
+          name: '项目名称',
+          first_party_name: '甲方名称',
+          amount: '项目金额',
+          intro: '项目介绍',
+          feasibility: 4, // '可行性'
+          validity: '项目有效期',
+          remark: '备注',
+          project_attachment: [ // 附件信息
+            {
+              file_url: '',
+              id: 0,
+              delete: 'no'
+            },
+            {
+              file_url: '',
+              id: 0,
+              delete: 'no'
+            }
+          ],
+          sketch: '简单描述',
+          risk_analysis: '风险',
+          invitation_time: '招标时间',
+          delivery_time: '交付时间',
+          project_furniture_types: [
+            {
+              type_poi_furniture_types: 0,
+              name: ''
+            }
+          ],
+          category: '项目类型',
+          number: '项目编号',
+          first_party_province_poi_province: {
+            value: '',
+            text: ''
           },
-          {
-            file_url: '',
-            id: 0 ,
-            delete: 'no'
-          }
-        ],
-        // sketch: '简单描述',
-        // risk_analysis: '风险',
-        // invitation_time: '招标时间',
-        // delivery_time: '交付时间',
-        // project_furniture_types: [
-        //   {
-        //     type_poi_furniture_types: id,
-        //   }
-        // ],
-        // category: '项目类型',
-        // number: '项目编号',
-        first_party_province_poi_province: {
-          value: '',
-          text: ''
+          first_party_city_poi_city: {
+            value: '',
+            text: ''
+          },
+          first_party_district_poi_district: {
+            value: '',
+            text: ''
+          },
+          first_party_linkman: '甲方联系人',
+          first_party_tel: '甲方联系电话',
+          // first_party_tel: '甲方联系电话',
+          // first_party_tel: '甲方联系电话',
+          project_reportman: [ // 报备人信息
+            {
+              name: '',
+              project_relation: '项目关系',
+              royalties_expectation: '期望提成',
+              strengths: '优势',
+              tel: '',
+              email: ''
+            }
+          ],
+          second_party_competitor: '己方竞争对手',
+          competitor: '竞争对手',
+          competitor_strengths: '竞争对手-亮点',
+          competitor_projections: '竞争对手-形势预测',
+          state: 'wait'
         },
-        first_party_city_poi_city: {
-          value: '',
-          text: ''
-        },
-        first_party_district_poi_district: {
-          value: '',
-          text: ''
-        },
-        // first_party_linkman: '甲方联系人',
-        // first_party_tel: '甲方联系电话',
-        // first_party_tel: '甲方联系电话',
-        // first_party_tel: '甲方联系电话',
-        // project_reportman: [ // 报备人信息
-        //   {
-        //     name: "",
-        //     project_relation: "项目关系",
-        //     royalties_expectation: "期望提成",
-        //     strengths: "优势",
-        //     tel: "",
-        //     email: "",
-        //   }
-        // ],
-        // second_party_competitor: '己方竞争对手',
-        // competitor: '竞争对手',
-        // competitor_strengths: '己方竞争对手',
-        // competitor_projections: '己方竞争对手',
-
-
-        // feasibility: 4,
-        // validity: '三个月',
-        district: '',
-        province: '', 
-        city: '',
-
-
-
 
         onearr: [
         ],
         oneobj: {
           state: 'three_month'
-        },
-        area: {
-          state: ''
         },
         arr: [],
         area: {
@@ -286,7 +277,7 @@
           province: -1,
           city: -1,
           districts: -1
-        },
+        }
       }
     },
     methods: {
@@ -307,13 +298,33 @@
         })
       },
 
+      submit: function () {
+        let ssdata = _.extend(model.thisdata, {
+          first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
+          first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
+          first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
+          project_attachment: JSON.stringify(model.thisdata.project_attachment),
+          project_reportman: JSON.stringify(model.thisdata.project_reportman),
+          project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types)
+        })
+        console.log(ssdata)
+        axios.post('functions/report/project', null, {
+          data: ssdata
+        }).then(function (data) {
+          // window.mui.toast()
+        }).catch(function () {
+          window.mui.toast('失败!')
+        })
+      },
+
       // 提交新建项目
       postReport: function () {
+        console.log(model.thisdata)
       },
 
       // 改变可行性
       changeStart: function (index) {
-        this.feasibility = index
+        this.thisdata.feasibility = index
       },
 
       // 月份选择
@@ -324,26 +335,26 @@
       // 改变月份
       change: function (val) {
         console.log(val)
-        model.validity = val[0].text
+        model.thisdata.validity = val[0].text
       },
 
       // 选择省市区
       changearea: function (val) {
-        model.first_party_province_poi_province = {
+        model.thisdata.first_party_province_poi_province = {
           value: val[0].value,
           text: val[0].text
         }
-        model.first_party_city_poi_city = {
+        model.thisdata.first_party_city_poi_city = {
           value: val[1].value,
           text: val[1].text
         }
-        model.first_party_district_poi_district = {
+        model.thisdata.first_party_district_poi_district = {
           value: val[2].value,
           text: val[2].text
         }
       },
 
-      //省市区三级联动
+      // 省市区三级联动
       testarea: async function () {
         // 省
         let paramp = {
@@ -394,7 +405,7 @@
           model.arr.push(tp)
         })
         model.area.state = Math.random()
-      },
+      }
     },
     components: {
       'vue-area': Area,

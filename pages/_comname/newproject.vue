@@ -48,31 +48,123 @@
       <a href="" class="mui-navigate-right">添加附件</a>
     </li>
     <li style="height: 15px; background: #EEEEEE"></li>
+
     <li class="mui-table-view-cell right0" @click="show($event)">
       <a href="javascript:;" class="mui-navigate-right ">更多项目信息</a>
-      <ul class="liul">
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>项目编号<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目编号">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <a href="" class="mui-navigate-right">项目介绍<span>500字</span></a>
-          </div>
-        </li>
-      </ul>
     </li>
+
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>项目编号<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入项目编号">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">项目介绍<span>500字</span></a>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">风险分析<span>500字</span></a>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">招标时间<span>500字</span></a>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">交付时间<span>500字</span></a>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">产品分类<span>500字</span></a>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">项目类型<span>500字</span></a>
+    </li>
+
+
     <li class="mui-table-view-cell right0">
       <a href="" class="mui-navigate-right">更多甲方信息</a>
     </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right">所属区域</a>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>联系人姓名<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入项目编号">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>联系人职务<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入联系人职务">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>联系人电话<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话">
+      </div>
+    </li>
+
+
     <li class="mui-table-view-cell right0">
       <a href="" class="mui-navigate-right ">更多报备信息</a>
     </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>与项目关系<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入项目编号">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>期望提成<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入联系人职务">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>项目优势<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>联系电话<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>联系邮箱<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话">
+      </div>
+    </li>
+
+
+
+
     <li class="mui-table-view-cell right0">
       <a href="" class="mui-navigate-right ">更多竞争优势</a>
     </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right ">己方竞争对手</a>
+    </li>
+    <li class="mui-table-view-cell">
+      <a href="" class="mui-navigate-right ">报备人对手</a>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>项目亮点<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入项目亮点">
+      </div>
+    </li>
+    <li class="mui-table-view-cell">
+      <div class="mui-input-row">
+        <label>项目形式预测<i>*</i></label>
+        <input type="text"  class="mui-input-clear" placeholder="请输入项目形式预测">
+      </div>
+    </li>
+
+
   </ul>
 </div>
 </template>
@@ -168,6 +260,6 @@
   }
   .liul{
     padding: 0;
-    
+
   }
 </style>

@@ -59,7 +59,6 @@ export default {
     'vue-area': Area,
     'vue-two': Two,
     'vue-one': One
-
   },
   methods: {
     // 测试省市区

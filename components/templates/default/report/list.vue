@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-  import axios from '~/plugins/axios'
+  // import axios from '~/plugins/axios'
   export default {
     // props: ['obj'],
     data () {
@@ -36,21 +36,21 @@
       }
     },
     methods: {
-      getlist: function (val) {
-        this.active = val
-        let param = {}
-        if (this.active !== 'all') {
-          param = {
-             state: val
-          }
-        }
-        axios.get('classes/projects', {
-          params: param
-        }).then(function (data) {
-          console.log(data)
-        }).catch(function (error) {
-        })
-      }
+      // getlist: function (val) {
+      //   this.active = val
+      //   let param = {}
+      //   if (this.active !== 'all') {
+      //     param = {
+      //        state: val
+      //     }
+      //   }
+      //   axios.get('classes/projects', {
+      //     params: param
+      //   }).then(function (data) {
+      //     console.log(data)
+      //   }).catch(function (error) {
+      //   })
+      // }
     },
     mounted () {
       this.getlist()

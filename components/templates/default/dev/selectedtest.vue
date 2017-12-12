@@ -24,6 +24,7 @@
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="change"></vue-area>
       <vue-two :twoobj="twoobj" :twoarr="twoarr" @getLayerTwo="change"></vue-two>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
+      <vue-dub></vue-dub>
     </div>
   </div>
 </template>
@@ -59,7 +60,6 @@ export default {
     'vue-area': Area,
     'vue-two': Two,
     'vue-one': One
-
   },
   methods: {
     // 测试省市区

@@ -144,26 +144,12 @@
         <li class="mui-table-view-cell right0">
           <a href="" class="mui-navigate-right ">更多竞争优势</a>
         </li>
-        <li class="mui-table-view-cell">
+        <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
           <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
         </li>
 
-        <li class="mui-table-view-cell">
-          <!-- <div>第一竞争人</div> -->
-          <div class="mui-input-row">
-            <label style="width:1%"></label>
-            <input style="width:49%!important;float:left;" type="text"  class="mui-input-clear" placeholder="请输入联系邮箱" v-model="thisdata.project_reportman[0].email">
-            <a href="javascript:void(0)" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add"></a>
-            <!-- <button type="button" class="mui-btn">
-              Button
-            </button> -->
-          </div>
-        </li>
-        
-
-
-        <li class="mui-table-view-cell">
-          <a href="" class="mui-navigate-right ">报备人对手</a>
+        <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
+          <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
@@ -223,7 +209,7 @@
         </li>
       </ul>
     </div>
-    <!-- <div class="otherRemark">
+    <div class="otherCompete">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
         <h1 class="mui-title othertitle"></h1>
@@ -237,7 +223,7 @@
           </div>
         </li>
       </ul>
-    </div> -->
+    </div>
   </div>
 </template>  
 <script>
@@ -397,6 +383,20 @@
         model.thisdata[typeStr] = $('.othertextarea').val()
       },
 
+      enterOtherCompete: function (type, text) {
+        $('.othertitle').text(text)
+        typeStr = type
+        $('.more').hide()
+        $('.otherRemark').show()
+        $('.othertextarea').val(model.thisdata[type])
+      },
+
+      endOtherCompete: function () {
+        $('.more').show()
+        $('.otherRemark').hide()
+        model.thisdata[typeStr] = $('.othertextarea').val()
+      },
+
       // 提交新建项目
       postReport: function () {
         console.log(model.thisdata)
@@ -499,7 +499,7 @@
   }
 </script>
 <style lang="">
-  .other, .otherRemark,.reporter{
+  .other, .otherRemark,.reporter,.otherCompete{
     display: none;
   }
   .nav li.show{

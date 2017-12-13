@@ -1,249 +1,277 @@
 
 <template>
-<div>
-  <header class="mui-bar mui-bar-nav">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">项目详情</h1>
-    <a href="javascript:;" class="mui-pull-right register-link">...</a>
-  </header>
-  <div class="detail-box">
-    <div class="basic-info">
-      <label>
-        <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
-      </label>
-      <div class="stars-style">
-        <span class="star-box">
-          <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
-        </span>
-      </div>
-      <div class="fz14">{{basicinfo.first_party_name}}</div>
-      <div class="fz14 intro-style">{{basicinfo.intro}}</div>
-      <div class="fz12">
-        <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
-        <span>创建时间:{{forMatTime(basicinfo.create_time)}}</span>
-      </div>
-      <div class="go-report">
-        <a href="javascript:;">去报备</a>
-      </div>
-    </div>
-    <div class="sub-detail">
-      <div class="mui-segmented-control detail-tab">
-        <a class="mui-control-item" href="#projectdetail">
-          <span>项目介绍</span>
-          <span class="active-icon"></span>
-        </a>
-        <a class="mui-control-item" href="#reportrecord">
-          <span>报备记录</span>
-          <span class="active-icon"></span>
-        </a>
-        <a class="mui-control-item mui-active" href="#reportlog">
-          <span>进度跟踪</span>
-          <span class="active-icon"></span>
-        </a>
-      </div>
-      <div class="mui-content">
-        <div class="detail-body">
-          <div id="projectdetail" class="mui-control-content">
-            <div class="basic-box">
-              <div class="sub-detail-box">
-                <label>项目信息</label>
-                <span class="edit-icon">
-                  <span class="fa fa-edit"></span>
-                  <span>编辑</span>
-                </span>
-              </div>
-              <div class="project-sublist">
-                <ul class="ul-list">
-                  <li class="mui-table-view-cell">
-                    <span>项目编号：</span>
-                    <span class="list-text">{{basicinfo.number}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>招标时间：</span>
-                    <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY-MM-DD')}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>交付时间：</span>
-                    <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY-MM-DD')}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>项目类型：</span>
-                    <span class="list-text">{{basicinfo.category}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>产品品类：</span>
-                    <span class="list-text">{{basicinfo.invitation_time}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>项目介绍：</span>
-                    <span class="list-text">{{basicinfo.intro}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>风险分析：</span>
-                    <span class="list-text">{{basicinfo.risk_analysis}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>上传附件：</span>
-                    <p class="attach-list">
-                      <img :src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
-                    </p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="line-box"></div>
-            <div class="basic-box">
-              <div class="sub-detail-box">
-                <label>甲方信息</label>
-                <span class="edit-icon">
-                  <span class="fa fa-edit"></span>
-                  <span>编辑</span>
-                </span>
-              </div>
-              <div class="project-sublist">
-                <ul class="ul-list">
-                  <li class="mui-table-view-cell">
-                    <span>所属区域：</span>
-                    <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>联系人姓名：</span>
-                    <span class="alist-text">{{basicinfo.first_party_linkman}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>联系人职务：</span>
-                    <span class="alist-text">{{basicinfo.first_party_job}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>联系人电话：</span>
-                    <span class="alist-text">{{basicinfo.first_party_tel}}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="line-box"></div>
-            <div class="basic-box">
-              <div class="sub-detail-box">
-                <label>报备人信息</label>
-                <span class="edit-icon">
-                  <span class="fa fa-edit"></span>
-                  <span>编辑</span>
-                </span>
-              </div>
-              <div class="project-sublist">
-                <ul class="ul-list">
-                  <li class="mui-table-view-cell">
-                    <span>姓名：</span>
-                    <span class="alist-text">{{(reportman.user_poi_reportman || {}).name}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>项目关系：</span>
-                    <span class="alist-text">{{reportman.project_relation}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>期望提成：</span>
-                    <span class="alist-text">{{reportman.royalties_expectation ? reportman.royalties_expectation + '%' : ''}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>项目优势：</span>
-                    <span class="alist-text">{{reportman.strengths}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>联系电话：</span>
-                    <span class="alist-text">{{(reportman.user_poi_reportman || {}).tel}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>联系邮箱：</span>
-                    <span class="alist-text">{{(reportman.user_poi_reportman || {}).email}}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="line-box"></div>
-            <div class="basic-box">
-              <div class="sub-detail-box">
-                <label>竞争信息</label>
-                <span class="edit-icon">
-                  <span class="fa fa-edit"></span>
-                  <span>编辑</span>
-                </span>
-              </div>
-              <div class="project-sublist">
-                <ul class="ul-list">
-                  <li class="mui-table-view-cell">
-                    <span>乙方对手：</span>
-                    <span class="alist-text">{{basicinfo.second_party_competitor}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>竞争对手：</span>
-                    <span class="alist-text">{{basicinfo.competitor}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>项目亮点：</span>
-                    <span class="alist-text">{{basicinfo.competitor_strengths}}</span>
-                  </li>
-                  <li class="mui-table-view-cell">
-                    <span>形式预测：</span>
-                    <span class="alist-text">{{basicinfo.competitor_projections}}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
+  <div>
+    <div v-show="activeTab == 'home'">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">项目详情</h1>
+        <a href="javascript:;" class="mui-pull-right register-link">...</a>
+      </header>
+      <div class="detail-box">
+        <div class="basic-info">
+          <label>
+            <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
+          </label>
+          <div class="stars-style">
+            <span class="star-box">
+              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+            </span>
           </div>
-          <div id="reportrecord" class="mui-control-content">
-            <div class="record-box">
-              <ul>
-                <li v-for="(sub, num) in reportLoglist">
-                  <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
-                    <p>
-                      <span class="pointer"></span>
-                      <span>{{sub.name}}</span>
-                      <span>{{sub.state}}</span>
-                      <span>了项目</span>
-                      <span>[备注]{{sub.remark}}</span>
-                    </p>
-                    <p>{{forMatTime(sub.time)}}</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <p class="no-data" v-show="reportLoglist.length == 0">您还没有报备项目,暂无报备日志哦~</p>
+          <div class="fz14">{{basicinfo.first_party_name}}</div>
+          <div class="fz14 intro-style">{{basicinfo.intro}}</div>
+          <div class="fz12">
+            <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
+            <span>创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
-          <div id="reportlog" class="mui-control-content mui-active">
-            <div class="record-box">
-              <ul>
-                <li>
-                  <div class="li-box add-item">
-                    <p>
-                      <span class="white-line"></span>
-                      <span class="pointer"></span>
-                      <span class="dashed-line"></span>
-                      <span class="add-btn">
-                        <span class="icon">+</span>
-                        <span>进度跟踪</span>
-                      </span>
-                    </p>
-                  </div>
-                </li>
-                <li v-for="(sub, num) in recordLoglist">
-                  <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
-                    <p>
-                      <span class="pointer"></span>
-                      <span>{{sub.remark}}</span>
-                    </p>
-                    <p>{{forMatTime(sub.create_time)}}</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <p class="no-data" v-show="recordLoglist.length == 0">您还没有添加任务项目跟踪记录~</p>
+          <div class="go-report">
+            <a href="javascript:;">去报备</a>
           </div>
+        </div>
+        <div class="sub-detail">
+          <div class="mui-segmented-control detail-tab">
+            <a class="mui-control-item mui-active" href="#projectdetail">
+              <span>项目介绍</span>
+              <span class="active-icon"></span>
+            </a>
+            <a class="mui-control-item" href="#reportrecord">
+              <span>报备记录</span>
+              <span class="active-icon"></span>
+            </a>
+            <a class="mui-control-item" href="#reportlog">
+              <span>进度跟踪</span>
+              <span class="active-icon"></span>
+            </a>
+          </div>
+          <div class="mui-content">
+            <div class="detail-body">
+              <div id="projectdetail" class="mui-control-content mui-active">
+                <div class="basic-box">
+                  <div class="sub-detail-box">
+                    <label>项目信息</label>
+                    <span class="edit-icon">
+                      <span class="fa fa-edit"></span>
+                      <span>编辑</span>
+                    </span>
+                  </div>
+                  <div class="project-sublist">
+                    <ul class="ul-list">
+                      <li class="mui-table-view-cell">
+                        <span>项目编号：</span>
+                        <span class="list-text">{{basicinfo.number}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>招标时间：</span>
+                        <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY-MM-DD')}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>交付时间：</span>
+                        <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY-MM-DD')}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>项目类型：</span>
+                        <span class="list-text">{{basicinfo.category}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>产品品类：</span>
+                        <span class="list-text">{{basicinfo.invitation_time}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>项目介绍：</span>
+                        <span class="list-text">{{basicinfo.intro}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>风险分析：</span>
+                        <span class="list-text">{{basicinfo.risk_analysis}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>上传附件：</span>
+                        <p class="attach-list">
+                          <img :src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="line-box"></div>
+                <div class="basic-box">
+                  <div class="sub-detail-box">
+                    <label>甲方信息</label>
+                    <span class="edit-icon">
+                      <span class="fa fa-edit"></span>
+                      <span>编辑</span>
+                    </span>
+                  </div>
+                  <div class="project-sublist">
+                    <ul class="ul-list">
+                      <li class="mui-table-view-cell">
+                        <span>所属区域：</span>
+                        <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>联系人姓名：</span>
+                        <span class="alist-text">{{basicinfo.first_party_linkman}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>联系人职务：</span>
+                        <span class="alist-text">{{basicinfo.first_party_job}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>联系人电话：</span>
+                        <span class="alist-text">{{basicinfo.first_party_tel}}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="line-box"></div>
+                <div class="basic-box">
+                  <div class="sub-detail-box">
+                    <label>报备人信息</label>
+                    <span class="edit-icon">
+                      <span class="fa fa-edit"></span>
+                      <span>编辑</span>
+                    </span>
+                  </div>
+                  <div class="project-sublist">
+                    <ul class="ul-list">
+                      <li class="mui-table-view-cell">
+                        <span>姓名：</span>
+                        <span class="alist-text">{{(reportman.user_poi_reportman || {}).name}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>项目关系：</span>
+                        <span class="alist-text">{{reportman.project_relation}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>期望提成：</span>
+                        <span class="alist-text">{{reportman.royalties_expectation ? reportman.royalties_expectation + '%' : ''}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>项目优势：</span>
+                        <span class="alist-text">{{reportman.strengths}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>联系电话：</span>
+                        <span class="alist-text">{{(reportman.user_poi_reportman || {}).tel}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>联系邮箱：</span>
+                        <span class="alist-text">{{(reportman.user_poi_reportman || {}).email}}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="line-box"></div>
+                <div class="basic-box">
+                  <div class="sub-detail-box">
+                    <label>竞争信息</label>
+                    <span class="edit-icon">
+                      <span class="fa fa-edit"></span>
+                      <span>编辑</span>
+                    </span>
+                  </div>
+                  <div class="project-sublist">
+                    <ul class="ul-list">
+                      <li class="mui-table-view-cell">
+                        <span>乙方对手：</span>
+                        <span class="alist-text">{{basicinfo.second_party_competitor}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>竞争对手：</span>
+                        <span class="alist-text">{{basicinfo.competitor}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>项目亮点：</span>
+                        <span class="alist-text">{{basicinfo.competitor_strengths}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>形式预测：</span>
+                        <span class="alist-text">{{basicinfo.competitor_projections}}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div id="reportrecord" class="mui-control-content">
+                <div class="record-box">
+                  <ul>
+                    <li v-for="(sub, num) in reportLoglist">
+                      <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
+                        <p>
+                          <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
+                          <span class="pointer"></span>
+                          <span>{{sub.name}}</span>
+                          <span>{{sub.state}}</span>
+                          <span>了项目</span>
+                          <span>[备注]{{sub.remark}}</span>
+                        </p>
+                        <p>{{forMatTime(sub.time)}}</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <p class="no-data" v-show="reportLoglist.length == 0">您还没有报备项目,暂无报备日志哦~</p>
+              </div>
+              <div id="reportlog" class="mui-control-content">
+                <div class="record-box">
+                  <ul>
+                    <li>
+                      <div class="li-box add-item">
+                        <p>
+                          <span class="white-line"></span>
+                          <span class="pointer"></span>
+                          <span class="dashed-line"></span>
+                          <span class="add-btn" @click="addRecord(basicinfo.id)">
+                            <span class="icon">+</span>
+                            <span>进度跟踪</span>
+                          </span>
+                        </p>
+                      </div>
+                    </li>
+                    <li v-for="(sub, num) in recordLoglist">
+                      <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
+                        <p>
+                          <span class="last-white-line" v-show="num == (recordLoglist.length - 1)"></span>
+                          <span class="pointer"></span>
+                          <span>{{sub.remark}}</span>
+                        </p>
+                        <p>{{forMatTime(sub.create_time)}}</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <p class="no-data" v-show="recordLoglist.length == 0">您还没有添加任务项目跟踪记录~</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <div v-show="activeTab == 'record'" class="record-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">进度跟踪</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confAddRecord()">提交</a>
+      </header>
+      <div class="textarea-box">
+        <div class="line-box"></div>
+        <div class="text-input">
+          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="输入项目的跟着记录"></textarea>
+        </div>
+      </div>
+    </div>
+    <div v-show="activeTab == 'editproject'">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">进度跟踪</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confAddRecord()">提交</a>
+      </header>
+      <div class="textarea-box">
+        <div class="line-box"></div>
+      </div>
+    </div>
   </div>
-</div>
 </template>
 <script>
 import axios from '~/plugins/axios'
@@ -253,13 +281,16 @@ let _ = require('underscore')
 let Cookies = require('js-cookie')
 let moment = require('moment')
 let model
+let proId
 export default {
   data () {
     return {
+      activeTab: 'home',
       basicinfo: {},
       reportman: {},
       linkPath: '',
       stars: [5, 4, 3, 2, 1],
+      recordtext: '',
       reportLoglist: [
         {
           id: '1',
@@ -300,6 +331,7 @@ export default {
   methods: {
     init: async function () {
       let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       let rel = {
         relation: [
@@ -368,6 +400,52 @@ export default {
       model.recordLoglist = result.data.items
     },
 
+    // 添加跟踪记录页面的返回
+    goBack: function () {
+      model.recordtext = ''
+      model.activeTab = 'home'
+    },
+
+    // 返回首页(云展厅)
+    goHome: function () {
+      window.location.href = model.linkPath + '/'
+    },
+
+    // 添加跟踪记录
+    addRecord: async function (id) {
+      model.activeTab = 'record'
+      proId = id
+    },
+
+    // 确定添加跟踪记录
+    confAddRecord: function () {
+      if (!model.recordtext) {
+        window.mui.toast('跟踪记录为空！')
+        return
+      }
+      let param = {
+        project_poi_projects: proId,
+        remark: model.recordtext
+      }
+      axios.post('functions/report/project_track', null, {
+        data: param
+      }).then(function (data) {
+        model.recordLoglist.unshift(data.data)
+        window.mui.toast('添加跟踪记录成功！')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
     // 时间格式化
     forMatTime: function (value, type) {
       if (_.isEmpty(value) || parseInt(value) === 0) { return '' }
@@ -412,7 +490,52 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
+.close-icon{
+  position: absolute;
+  top: 10px;
+  left: 66px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #666;
+  z-index: 9999;
+}
+.record-show {
+  position: relative;
+}
+.record-show .go-back{
+  position: relative;
+  top: 5px;
+  color: #666;
+  font-size: 14px;
+}
+.record-show .save-btn{
+  position: relative;
+  top: 6px;
+  color: #666;
+  font-size: 14px;
+}
+.textarea-box{
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 100%;
+}
+.text-input{
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+}
+.text-input textarea{
+  display: block;
+  width: 100%;
+  border: none;
+  min-height: 60px;
+  margin: 0;
+  padding: 10px;
+  font-size: 14px;
+}
 .record-box{
   padding: 10px 20px;
 }
@@ -443,6 +566,15 @@ export default {
   height: 14px;
   border-left: 1px solid #fff;
 }
+.last-white-line{
+  position: absolute;
+  left: -21px;
+  top: 9px;
+  display: inline-block;
+  width: 3px;
+  height: 44px;
+  border-left: 1px solid #fff;
+}
 .record-box .add-item .pointer{
   background-color: #5278e5;
   z-index: 100;
@@ -456,7 +588,7 @@ export default {
   width: 14px;
   height: 14px;
   text-align: center;
-  line-height: 14px;
+  line-height: 12px;
   border-radius: 100%;
   background-color: #5278e5;
   margin-right: 5px;

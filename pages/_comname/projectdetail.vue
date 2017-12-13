@@ -1,8 +1,6 @@
 <template>
-<div>
-  <div class="mui-content">
-    <component :is="detail"></component>
-  </div>
+<div class="mui-content">
+  <component :is="detail"></component>
 </div>
 </template>
 <script>

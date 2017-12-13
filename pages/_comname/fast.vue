@@ -1,9 +1,5 @@
 <template>
 <div class="box">
-  <header class="mui-bar mui-bar-nav">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">快速报备</h1>
-  </header>
   <component :is="fastvue"></component>
 </div>
 </template>

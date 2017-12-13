@@ -4,7 +4,7 @@
       <header class="mui-bar mui-bar-nav">
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
         <h1 class="mui-title">我的项目</h1>
-        <a class="mui-icon mui-pull-right"  @click="submit()">提交</a>
+        <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell">
@@ -148,7 +148,7 @@
           <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
         </li>
 
-        <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
+        <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
           <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
         </li>
         <li class="mui-table-view-cell">
@@ -212,17 +212,21 @@
     <div class="otherCompete">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-        <h1 class="mui-title othertitle"></h1>
-        <a class="mui-icon mui-pull-right complete" @click="postRremork()">完成</a>
+        <h1 class="mui-title otherCompetetitle"></h1>
+        <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">完成</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
-        <li class="mui-table-view-cell textareaclass">
-          <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
+        <li class="mui-table-view-cell textareaclass jzzli" v-for="(item,index) in jzds">
+          <div class="jzztitele">第{{index+1}}竞争者</div>
+          <div class="mui-input-row" style="width:60%;float:left;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" type="text"  class="mui-input-clear othertextarea" placeholder="请输入备注"></textarea>
+            <input style="width:99%!important" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
+          <div class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
         </li>
       </ul>
+      <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+
     </div>
   </div>
 </template>  
@@ -274,15 +278,15 @@
           category: '项目类型',
           number: '项目编号',
           first_party_province_poi_province: {
-            value: '',
+            value: '1',
             text: '北京市'
           },
           first_party_city_poi_city: {
-            value: '',
+            value: '1',
             text: '北京市'
           },
           first_party_district_poi_district: {
-            value: '',
+            value: '1',
             text: '海淀区'
           },
           first_party_linkman: '甲方联系人',
@@ -290,13 +294,16 @@
           first_party_job: '甲方联系人职务',
           project_reportman: [ // 报备人信息
             {
-              user_poi_reportman: 41,
+              user_poi_reportman: 0,
+              name: '',
+              tel: '',
+              email: '',
               project_relation: '项目关系',
               royalties_expectation: '期望提成',
               strengths: '优势'
             }
           ],
-          second_party_competitor: '己方竞争对手',
+          second_party_competitor: '己方竞争对手,明天',
           competitor: '竞争对手',
           competitor_strengths: '竞争对手-亮点',
           competitor_projections: '竞争对手-形势预测',
@@ -314,7 +321,8 @@
           province: -1,
           city: -1,
           districts: -1
-        }
+        },
+        jzds: [] // 竞争对手长度
       }
     },
     methods: {
@@ -354,6 +362,15 @@
         })
       },
 
+      deletejzz: function (item, index) {
+        model.jzds.splice(index, 1)
+      },
+
+      // 添加竞争人
+      addjjz: function () {
+        model.jzds.push({})
+      },
+
       // 获取报备人
       getreport: function () {
         $('.more').hide()
@@ -383,18 +400,29 @@
         model.thisdata[typeStr] = $('.othertextarea').val()
       },
 
+      // 开始竞争对手
       enterOtherCompete: function (type, text) {
-        $('.othertitle').text(text)
+        let ms = model.thisdata[type].split(',')
+        console.log(ms)
+        model.jzds = []
+        ms.forEach(item => {
+          model.jzds.push({value: item})
+        })
+        $('.otherCompetetitle').text(text)
         typeStr = type
         $('.more').hide()
-        $('.otherRemark').show()
+        $('.otherCompete').show()
         $('.othertextarea').val(model.thisdata[type])
       },
-
+      // 结束竞争对手
       endOtherCompete: function () {
         $('.more').show()
-        $('.otherRemark').hide()
-        model.thisdata[typeStr] = $('.othertextarea').val()
+        $('.otherCompete').hide()
+        let ms = []
+        model.jzds.forEach(item => {
+          ms.push(item.value)
+        })
+        model.thisdata[typeStr] = ms.join(',')
       },
 
       // 提交新建项目
@@ -501,6 +529,15 @@
 <style lang="">
   .other, .otherRemark,.reporter,.otherCompete{
     display: none;
+  }
+  .jzztitele {
+    margin: 0 -15px;
+    font-size: 12px;
+    background: #eee;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 15px;
+    color: #969696;
   }
   .nav li.show{
     height: auto;
@@ -634,5 +671,17 @@
   }
   .mui-ellipsis{
     max-width: 70%;
+  }
+  .nav li.jzzli{
+    height: 74px;
+  }
+  .jzzli input {
+    text-align: left;
+  }
+  .addjjz {
+    font-size: 12px;
+    float: right;
+    margin-top: 5px;
+    margin-right: 15px;
   }
 </style>

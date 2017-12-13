@@ -282,7 +282,7 @@
     margin: 0 auto;
   }
   .fa-star {
-    color: #FEB000;
+    color: #ffb400;
     font-size: 20px;
   }
   .fa-star-o {

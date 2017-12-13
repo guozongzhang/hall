@@ -14,13 +14,18 @@
         <span class="bglan"></span>
       </li>
     </ul>
-    <div class="">
+    <div>
       <div class="mui-scroll-wrapper" id="pullfresh">
         <div class="mui-scroll">
           <div v-for="item in datalist" class="listdiv">
             <h4>
               <i>{{item.amount}}万元</i>·<span>{{item.name}}</span>
             </h4>
+            <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
+              <span class="sub" v-bind:class="item.state"></span>
+              <span class="white-sub"></span>
+              <span>{{stateFilter(item.state)}}</span>
+            </span>
             <div class="stars-style">
               <span class="star-box">
                 <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -46,6 +51,7 @@
 </template>
 <script>
   import axios from '~/plugins/axios'
+  let Cookies = require('js-cookie')
   let url = require('url')
   let $ = require('jquery')
   let _ = require('underscore')
@@ -117,10 +123,39 @@
 
       // 切换tabs
       switchTab: function (str) {
+        model.is_nodata = false
         model.datalist = []
         model.pages = 1
         model.active = str
         model.init()
+      },
+
+      // 状态过滤
+      stateFilter: function (str) {
+        let result = ''
+        let stateData = Cookies.get('report-state')
+        let stateObj = JSON.parse(stateData)
+        if (stateObj.length > 0) {
+          stateObj.forEach((item) => {
+            if (item.name === str) {
+              result = item.alias
+            }
+          })
+        } else {
+          let param = {
+            where: {
+              state_types: 'report_state'
+            }
+          }
+          let res = axios.get('classes/selectable_states', {params: param})
+          Cookies.set('report-state', res.data.items)
+          res.data.items.forEach((item) => {
+            if (item.name === str) {
+              result = item.alias
+            }
+          })
+        }
+        return result
       }
     },
     mounted () {
@@ -156,6 +191,7 @@
     padding-top: 0px!important;
   }
   .listdiv {
+    position: relative;
     margin: 15px;
     height: 174px;
     background: #fff;
@@ -177,6 +213,56 @@
   h4 span {
     color: #000;
   }
+  .report-state{
+    position: absolute;
+    right: 0;
+    top: -6px;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 0 0 5px 5px; 
+  }
+  .wait_handle {
+    background-color: #5278e5;
+  }
+  .had_handle{
+    border-bottom: 6px solid #5278e5;
+  }
+  .had_handle {
+    background-color: #5278e5;
+  }
+  .reject {
+    background-color: #f14F4F;
+  }
+  .adopt {
+    background-color: #5278e5;
+  }
+  .had_reset {
+    background-color: #f14F4F;
+  }
+  .report-state .sub{
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    left: -6px;
+    top: 0;
+    display: inline-block;
+  }
+  .report-state .white-sub{
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    left: -6px;
+    top: 0;
+    display: inline-block;
+    border-top: 6px solid #efeff4;
+    border-right: 6px solid transparent;
+  }
+  
   .stars-style{
     height: 24px;
     line-height: 24px;
@@ -196,7 +282,7 @@
     margin: 0 auto;
   }
   .fa-star {
-    color: #FEB000;
+    color: #ffb400;
     font-size: 20px;
   }
   .fa-star-o {

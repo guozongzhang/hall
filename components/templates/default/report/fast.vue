@@ -104,7 +104,10 @@
           remark: '备注',
           project_reportman: [ // 报备人信息
             {
-              user_poi_reportman: 41,
+              user_poi_reportman: 0,
+              name: '',
+              tel: '',
+              email: '',
               project_relation: '项目关系',
               royalties_expectation: '期望提成',
               strengths: '优势'

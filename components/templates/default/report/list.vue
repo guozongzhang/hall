@@ -73,14 +73,14 @@
     },
     methods: {
       // 初始化数据
-      init: function () {
+      init: async function () {
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
         window.mui('#pullfresh').on('tap', 'a', function (event) {
           let classFlag = $(event.target).attr('href')
           window.location.href = model.linkPath + classFlag
         })
-        model.getData()
+        await model.getData()
       },
 
       // 下拉刷新获取数据
@@ -106,9 +106,9 @@
         }
         axios.get('classes/projects', {
           params: param
-        }).then(function (data) {
-          if (data.data.items.length > 0) {
-            model.datalist = _.union(model.datalist, data.data.items)
+        }).then(function (msg) {
+          if (msg.data.items.length > 0) {
+            model.datalist = _.union(model.datalist, msg.data.items)
             model.pages++
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
           } else {
@@ -133,8 +133,11 @@
       // 状态过滤
       stateFilter: function (str) {
         let result = ''
-        let stateData = Cookies.get('report-state')
-        let stateObj = JSON.parse(stateData)
+        let stateData = Cookies.get('report-state') || '[]'
+        let stateObj
+        if (stateData) {
+          stateObj = JSON.parse(stateData)
+        }
         if (stateObj.length > 0) {
           stateObj.forEach((item) => {
             if (item.name === str) {
@@ -147,12 +150,15 @@
               state_types: 'report_state'
             }
           }
-          let res = axios.get('classes/selectable_states', {params: param})
-          Cookies.set('report-state', res.data.items)
-          res.data.items.forEach((item) => {
-            if (item.name === str) {
-              result = item.alias
-            }
+          axios.get('classes/selectable_states', {params: param}).then((res) => {
+            Cookies.set('report-state', res.data.items)
+            res.data.items.forEach((item) => {
+              if (item.name === str) {
+                result = item.alias
+              }
+            })
+          }).catch(function (error) {
+            console.log(error)
           })
         }
         return result

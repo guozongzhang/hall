@@ -30,7 +30,7 @@
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="change"></vue-area>
       <vue-two :twoobj="twoobj" :twoarr="twoarr" @getLayerTwo="change"></vue-two>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
-      <vue-date :dateobj="dateobj"></vue-date>
+      <vue-date :dateobj="dateobj" :arr="[]"></vue-date>
     </div>
   </div>
 </template>

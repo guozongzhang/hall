@@ -8,7 +8,7 @@
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell bbnameli">
-          报备人姓名：{{}}
+          报备人姓名：{{thisdata.project_reportman[0].name}}
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
@@ -50,14 +50,26 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>与项目关系</label>
-            <input type="text"  class="mui-input-clear" placeholder="" v-model="thisdata.sketch">
+            <input type="text"  class="mui-input-clear" placeholder="" v-model="thisdata.project_reportman[0].project_relation">
           </div>
         </li>
         <li class="mui-table-view-cell" @click="starshow($event)">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
         </li>
-        <li class="mui-table-view-cell">
-          <a href="" class="mui-navigate-right">添加附件</a>
+        <li class="mui-table-view-cell" style="min-height: 43px">
+          <span class="upload-box" id="upload_com"  @click="upload_com()">
+            <a href="javascript:;">添加附件</a>
+            <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
+            <span class="add-btn" style="float: right">
+              <i class="fa fa-plus add-icon"></i>
+            </span>
+          </span>
+        </li>
+        <li class="mui-table-view-cell" v-if="thisdata.project_attachment.length > 0">
+          <span v-for="(imgitem,imgIndex) in thisdata.project_attachment" class="posir">
+            <img :src="imgitem.file_url" alt=""  class="fjimg">
+            <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
+          </span>
         </li>
         <li style="height: 15px; background: #EEEEEE"></li>
       </ul>
@@ -84,6 +96,9 @@
 <script>
   import One from '../common/onelayer.vue'
   import axios from '~/plugins/axios'
+  let url = require('url')
+  let Cookies = require('js-cookie')
+  let ESVal = require('es-validate')
   let $ = require('jquery')
   let _ = require('underscore')
   let model
@@ -94,39 +109,29 @@
     data () {
       return {
         thisdata: {
-          name: '这里是快速报备',
-          first_party_name: '甲方名称',
-          amount: '240万',
-          intro: '项目介绍',
-          category: 'tender', // 项目类型
-          feasibility: 4, // '可行性'
+          name: '',
+          first_party_name: '',
+          amount: '',
+          intro: '',
+          feasibility: 3, // '可行性'
           validity: 'three_month',
-          remark: '备注',
+          remark: '',
           project_reportman: [ // 报备人信息
             {
               user_poi_reportman: 0,
               name: '',
+              is_self: 'yes',
               tel: '',
               email: '',
-              project_relation: '项目关系',
-              royalties_expectation: '期望提成',
-              strengths: '优势'
+              project_relation: '',
+              royalties_expectation: '',
+              strengths: ''
             }
           ],
-          project_attachment: [ // 附件信息
-            {
-              file_url: '',
-              id: 0,
-              delete: 'no'
-            },
-            {
-              file_url: '',
-              id: 0,
-              delete: 'no'
-            }
-          ],
-          sketch: '简单描述'
+          project_attachment: [],
+          sketch: ''
         },
+        linkPath: '',
         onearr: [],
         oneobj: {
           state: 'three_month'
@@ -136,6 +141,28 @@
     },
     methods: {
       init: function () {
+        let myURL = url.parse(window.location.href)
+        model.linkPath = '/' + myURL.pathname.split('/')[1]
+        let token = Cookies.get('dpjia-hall-token')
+        axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+          headers: {
+            'X-DP-Token': token
+          }
+        }).then(function (data) {
+          // model.info = data.data
+          model.thisdata.project_reportman[0].name = data.data.ui_name || '未设置'
+          model.thisdata.project_reportman[0].tel = data.data.mobile || ''
+          model.thisdata.project_reportman[0].email = data.data.u_email || ''
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
+        })
+
         // 获取月份
         let param = {
           where: {
@@ -154,7 +181,6 @@
 
       // 控制样式开合
       starshow: function (e) {
-        // $(e.currentTarget).nextsbiling()
         $('.allshow').hide()
         $('.allhide').show()
       },
@@ -163,6 +189,44 @@
       endall: function () {
         $('.allshow').show()
         $('.allhide').hide()
+      },
+
+      // 上传图片
+      upload_com: function () {
+        var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+        var $input = $('#upload_com').find('input')
+        $input.unbind().click()
+        $input.unbind().change(function () {
+          if ($input.val() === '') {
+            return false
+          }
+          var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+          $input.wrap(form)
+          window.$('#upload_com').find('form').ajaxSubmit({
+            type: 'post',
+            url: url,
+            data: {
+              mode: 'image',
+              mutiple: '0'
+            },
+            crossDomain: true,
+            headers: {
+              'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+              'X-DP-ID': '7748955b16d6f1a0'
+            },
+            success: function (data) {
+              $input.unwrap()
+              model.thisdata.project_attachment.push({
+                file_url: data.url,
+                id: 0,
+                delete: 'no'
+              })
+            },
+            error: function (error) {
+              console.log(error)
+            }
+          })
+        })
       },
 
       // 项目期限转换
@@ -174,16 +238,52 @@
 
       // 提价数据
       submit: function () {
-        let ssdata = _.extend(model.thisdata, {
-          project_attachment: JSON.stringify(model.thisdata.project_attachment),
-          project_reportman: JSON.stringify(model.thisdata.project_reportman)
-        })
+        if (!model.ValidateForm(model.thisdata)) {
+          return false
+        }
+        let ssdata
+        if (model.thisdata.project_attachment.length < 1) {
+          delete model.thisdata.project_attachment
+        } else {
+          ssdata = _.extend(model.thisdata, {
+            project_attachment: JSON.stringify(model.thisdata.project_attachment),
+            project_reportman: JSON.stringify(model.thisdata.project_reportman)
+          })
+        }
         axios.post('functions/report/fast_record', null, {
           data: ssdata
         }).then(function (data) {
+          window.mui.toast('快速报备项目成功')
+          window.location.href = model.linkPath + '/report'
         }).catch(function () {
           window.mui.toast('失败!')
         })
+      },
+
+      // 验证
+      ValidateForm: function (data) {
+        let result = ESVal.validate(data, {
+          name: {
+            required: true,
+            msg: '项目名称不能为空!'
+          },
+          first_party_name: {
+            required: true,
+            msg: '公司名称不能为空!'
+          },
+          amount: {
+            required: true,
+            msg: '预计金额不能为空!'
+          },
+          sketch: {
+            required: true,
+            msg: '简单描述不能为空!'
+          }
+        })
+        if (!result.status) {
+          window.mui.toast(result.msg)
+        }
+        return result.status
       },
 
       // 提交新建项目
@@ -358,5 +458,22 @@
   }
   .mui-ellipsis{
     max-width: 70%;
+  }
+  .fjimg{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-top: 6px;
+    margin-right: 6px;
+  }
+  .deleteimg{
+    position: absolute;
+    left: -4px;
+    top: 2px;
+  }
+  .posir{
+    position: relative;
+    display: inline-block;
+    height:44px;
   }
 </style>

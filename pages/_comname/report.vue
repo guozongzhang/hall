@@ -3,7 +3,7 @@
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">我的项目</h1>
-    <a href="javascript:void(0)" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add"></a>
+    <a href="javascript:void(0)" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add"></a>
   </header>
   
   <div class="mui-content">

@@ -19,12 +19,18 @@
           <span class="info">测试一级</span>
         </a>
       </li>
+      <li>
+        <a class="mui-navigate-right" @click="testDate()">
+          <span class="bgicon about"></span>
+          <span class="info">选择日期</span>
+        </a>
+      </li>
     </ul>
     <div v-show="false">
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="change"></vue-area>
       <vue-two :twoobj="twoobj" :twoarr="twoarr" @getLayerTwo="change"></vue-two>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
-      <vue-dub></vue-dub>
+      <vue-date :dateobj="dateobj" :arr="[]"></vue-date>
     </div>
   </div>
 </template>
@@ -33,6 +39,7 @@ import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import Two from '../common/twolayer.vue'
 import One from '../common/onelayer.vue'
+import Date from '../common/date.vue'
 let model
 export default {
   data () {
@@ -53,15 +60,24 @@ export default {
         state: 0,
         id: 0
       },
-      twoarr: []
+      twoarr: [],
+      dateobj: {
+        state: ''
+      }
     }
   },
   components: {
     'vue-area': Area,
     'vue-two': Two,
-    'vue-one': One
+    'vue-one': One,
+    'vue-date': Date
   },
   methods: {
+    // 测试日期选择
+    testDate: function () {
+      model.dateobj.state = Math.random()
+    },
+
     // 测试省市区
     testarea: async function () {
       // 省

@@ -42,7 +42,7 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{thisdata.validity}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
           <a href="javascript:;" class="mui-navigate-right">报备人姓名<span class="mui-ellipsis">{{thisdata.project_reportman[0].name}}</span></a>
@@ -79,7 +79,7 @@
           <a href="" class="mui-navigate-right">产品分类</a>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right"  @click="testone()">项目类型</a>
+          <a href="javascript:;" class="mui-navigate-right"  @click="testone('type')">项目类型<span>{{cloneCategory}}</span></a>
         </li>
 
         <li class="mui-table-view-cell right0">
@@ -178,7 +178,7 @@
           <li class="mui-table-view-cell"> 
             <div class="mui-radio cssradiodiv">
               <input type="radio" name="style" value="self" v-model="thisdata.project_reportman[0].type"/> 
-              <label>自己</label>
+              <label>自己</label> {{thisdata.project_reportman[0].type}}
             </div>
             <div class="mui-radio cssradiodiv">
               <input type="radio" name="style" value="other" v-model="thisdata.project_reportman[0].type"/> 
@@ -188,7 +188,8 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" />
+              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].clonename"/>
             </div>
           </li>
         </div>
@@ -226,7 +227,6 @@
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
-
     </div>
   </div>
 </template>  
@@ -235,10 +235,12 @@
   import Area from '../common/threelayer.vue'
   import Two from '../common/twolayer.vue'
   import axios from '~/plugins/axios'
+  let Cookies = require('js-cookie')
   let $ = require('jquery')
   let _ = require('underscore')
   let model
   let typeStr
+  let changeOneType
   export default {
     head: {
       title: '我的项目'
@@ -251,7 +253,7 @@
           amount: '项目金额',
           intro: '项目介绍',
           feasibility: 4, // '可行性'
-          validity: '三个月',
+          validity: 'three_month',
           remark: '备注',
           project_attachment: [ // 附件信息
             {
@@ -272,10 +274,12 @@
           project_furniture_types: [
             {
               type_poi_furniture_types: 0,
-              name: ''
+              name: '',
+              id: 0,
+              delete: 'no'
             }
           ],
-          category: '项目类型',
+          category: 'tender',
           number: '项目编号',
           first_party_province_poi_province: {
             value: '1',
@@ -294,7 +298,9 @@
           first_party_job: '甲方联系人职务',
           project_reportman: [ // 报备人信息
             {
+              type: 'self',
               user_poi_reportman: 0,
+              clonename: '',
               name: '',
               tel: '',
               email: '',
@@ -322,28 +328,35 @@
           city: -1,
           districts: -1
         },
+        cloneValidity: '3个月', // 临时的时间
+        cloneCategory: '招标采办', // 临时的项目类型
         jzds: [] // 竞争对手长度
       }
     },
     methods: {
       init: function () {
-        // 获取月份
-        let param = {
-          where: {
-            state_types: 'report_valtime'
+        let token = Cookies.get('dpjia-hall-token')
+        axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+          headers: {
+            'X-DP-Token': token
           }
-        }
-        axios.get('classes/selectable_states', {
-          params: param
         }).then(function (data) {
-          data.data.items.forEach((item) => {
-            model.onearr.push({'value': item.name, 'text': item.alias})
-          })
-          model.oneobj.state = Math.random()
+          model.thisdata.project_reportman[0].name = data.data.ui_name || '未设置'
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       },
 
       submit: function () {
+        if (model.thisdata.project_reportman[0].type === 'other') {
+          model.thisdata.project_reportman[0].name = model.thisdata.project_reportman[0].clonename
+        }
         let ssdata = _.extend(model.thisdata, {
           first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
           first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
@@ -352,11 +365,10 @@
           project_reportman: JSON.stringify(model.thisdata.project_reportman),
           project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types)
         })
-        console.log(ssdata)
+        // console.log(ssdata)
         axios.post('functions/report/project', null, {
           data: ssdata
         }).then(function (data) {
-          // window.mui.toast()
         }).catch(function () {
           window.mui.toast('失败!')
         })
@@ -435,15 +447,43 @@
         this.thisdata.feasibility = index
       },
 
-      // 月份选择
-      testone: function () {
-        model.oneobj.state = Math.random()
+      // 获取项目类型/月份
+      testone: function (type) {
+        changeOneType = type
+        let param = {}
+        model.onearr = []
+        if (type === 'time') {
+          param = {
+            where: {
+              state_types: 'report_valtime'
+            }
+          }
+        } else {
+          param = {
+            where: {
+              state_types: 'report_projecttype'
+            }
+          }
+        }
+        axios.get('classes/selectable_states', {
+          params: param
+        }).then(function (data) {
+          data.data.items.forEach((item) => {
+            model.onearr.push({'value': item.name, 'text': item.alias})
+          })
+          model.oneobj.state = Math.random()
+        })
       },
 
       // 改变月份
       change: function (val) {
-        console.log(val)
-        model.thisdata.validity = val[0].text
+        if (changeOneType === 'time') {
+          model.cloneValidity = val[0].text
+          model.thisdata.validity = val[0].value
+        } else {
+          model.cloneCategory = val[0].text
+          model.thisdata.category = val[0].value
+        }
       },
 
       // 选择省市区

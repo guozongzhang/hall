@@ -154,7 +154,6 @@
 
       // 控制样式开合
       starshow: function (e) {
-        // $(e.currentTarget).nextsbiling()
         $('.allshow').hide()
         $('.allhide').show()
       },

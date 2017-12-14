@@ -3,11 +3,15 @@
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">我的项目</h1>
-    <a href="javascript:void(0)" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add"></a>
+    <a href="/newproject" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
   </header>
   
   <div class="mui-content">
     <component :is="report"></component>
+  </div>
+
+  <div class="footer">
+    <a :href="'/fast'"><div>快速报备</div></a>
   </div>
 </div>
 </template>
@@ -47,6 +51,23 @@
   }
   .mui-bar{
     box-shadow: none;
+  }
+  .footer{
+    height: 73px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #EEEEEE;
+    z-index: 10;
+    padding: 6px 15px; 
+  }
+  .footer div{
+    font-size: 16px;
+    line-height: 50px;
+    border-radius: 20px;
+    background: #5278e5;
+    text-align: center;
+    color: #fff;
   }
   .register-link{
     position: relative;

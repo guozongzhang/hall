@@ -113,7 +113,7 @@
           first_party_name: '',
           amount: '',
           intro: '',
-          feasibility: 4, // '可行性'
+          feasibility: 3, // '可行性'
           validity: 'three_month',
           remark: '',
           project_reportman: [ // 报备人信息

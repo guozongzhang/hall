@@ -22,7 +22,7 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="万元" v-model="thisdata.amount">
+            <input type="number"  class="mui-input-clear" placeholder="万元" v-model="thisdata.amount">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -42,127 +42,151 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{thisdata.validity}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
-          <a href="javascript:;" class="mui-navigate-right">报备人姓名<span class="mui-ellipsis">{{thisdata.project_reportman[0].name}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
         </li>
-        <li class="mui-table-view-cell">
-          <a href="" class="mui-navigate-right">添加附件</a>
+        <li class="mui-table-view-cell" style="min-height: 43px">
+          <span class="upload-box" id="upload_com"  @click="upload_com()">
+            <a href="javascript:;">添加附件</a>
+            <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
+            <span class="add-btn" style="float: right">
+              <i class="fa fa-plus add-icon"></i>
+            </span>
+          </span>
+        </li>
+        <li class="mui-table-view-cell" v-if="thisdata.project_attachment.length > 0">
+          <span v-for="(imgitem,imgIndex) in thisdata.project_attachment" class="posir">
+            <img :src="imgitem.file_url" alt=""  class="fjimg">
+            <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
+          </span>
         </li>
         <li style="height: 15px; background: #EEEEEE"></li>
-        <li class="mui-table-view-cell right0" @click="show($event)">
+        <li class="mui-table-view-cell right0" @click="showmore('.projectInfo')">
           <a href="javascript:;" class="mui-navigate-right ">更多项目信息</a>
         </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>项目编号<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目编号" v-model="thisdata.number">
-          </div>
-        </li>
-        <li class="mui-table-view-cell"  @click="enterremork('intro', '项目介绍')">
-          <a href="javascript:;" class="mui-navigate-right">项目介绍<span>500字</span></a>
-        </li>
-        <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析')">
-          <a href="javascript:;" class="mui-navigate-right">风险分析<span>500字</span></a>
-        </li>
-        <li class="mui-table-view-cell">
-          <a href="" class="mui-navigate-right">招标时间</a>
-        </li>
-        <li class="mui-table-view-cell">
-          <a href="" class="mui-navigate-right">交付时间</a>
-        </li>
-        <li class="mui-table-view-cell">
-          <a href="" class="mui-navigate-right">产品分类</a>
-        </li>
-        <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right"  @click="testone()">项目类型</a>
+
+        <div class="projectInfo">
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目编号</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入项目编号" v-model="thisdata.number">
+            </div>
+          </li>
+          <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
+            <a href="javascript:;" class="mui-navigate-right">项目介绍<span>500字</span></a>
+          </li>
+          <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析')">
+            <a href="javascript:;" class="mui-navigate-right">风险分析<span>500字</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="" class="mui-navigate-right">招标时间</a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="" class="mui-navigate-right">交付时间</a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right" @click="showClassify()">产品分类</a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right"  @click="testone('type')">项目类型<span>{{cloneCategory}}</span></a>
+          </li>
+        </div>
+
+        <li class="mui-table-view-cell right0"  @click="showmore('.comInfo')">
+          <a href="javascript:;" class="mui-navigate-right">更多甲方信息</a>
         </li>
 
-        <li class="mui-table-view-cell right0">
-          <a href="" class="mui-navigate-right">更多甲方信息</a>
-        </li>
-        <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">所属区域<span>{{thisdata.first_party_province_poi_province.text}}</span><span>{{thisdata.first_party_city_poi_city.text}}</span><span>{{thisdata.first_party_district_poi_district.text}}</span></a>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>联系人姓名<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目编号" v-model="thisdata.first_party_linkman">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>联系人职务<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>联系人电话<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
-          </div>
+        <div class="comInfo">
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">所属区域<span>{{thisdata.first_party_district_poi_district.text}}</span><span>{{thisdata.first_party_city_poi_city.text}}</span><span>{{thisdata.first_party_province_poi_province.text}}</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系人姓名</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入项目编号" v-model="thisdata.first_party_linkman">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系人职务</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系人电话</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
+            </div>
+          </li>
+        </div>
+
+        <li class="mui-table-view-cell right0" @click="showmore('.reportInfo')">
+          <a href="javascript:;" class="mui-navigate-right ">更多报备信息</a>
         </li>
 
-        <li class="mui-table-view-cell right0">
-          <a href="" class="mui-navigate-right ">更多报备信息</a>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>与项目关系<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入与项目关系" v-model="thisdata.project_reportman[0].project_relation">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>期望提成<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>项目优势<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>联系电话<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].tel">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>联系邮箱<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入联系邮箱" v-model="thisdata.project_reportman[0].email">
-          </div>
-        </li>
-
-        <li class="mui-table-view-cell right0">
-          <a href="" class="mui-navigate-right ">更多竞争优势</a>
-        </li>
-        <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
-          <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
+        <div class="reportInfo">
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>与项目关系</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入与项目关系" v-model="thisdata.project_reportman[0].project_relation">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>期望提成</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目优势</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系电话</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系邮箱</label>
+              <input type="text" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email" class="mui-input-clear" placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
+            </div>
+          </li>
+        </div>
+        
+        <li class="mui-table-view-cell right0" @click="showmore('.jzInfo')">
+          <a href="javascript:;" class="mui-navigate-right ">更多竞争优势</a>
         </li>
 
-        <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
-          <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>项目亮点<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
-          </div>
-        </li>
-        <li class="mui-table-view-cell">
-          <div class="mui-input-row">
-            <label>项目形式预测<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
-          </div>
-        </li>
+        <div class="jzInfo">
+          <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
+            <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
+          </li>
+
+          <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
+            <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目亮点</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目形式预测</label>
+              <input type="text"  class="mui-input-clear" placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
+            </div>
+          </li>
+        </div>
       </ul>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
@@ -177,18 +201,19 @@
         <div class="reporter">
           <li class="mui-table-view-cell"> 
             <div class="mui-radio cssradiodiv">
-              <input type="radio" name="style" value="self" v-model="thisdata.project_reportman[0].type"/> 
-              <label>自己</label>
+              <input type="radio" name="style" value="self" v-model="thisdata.project_reportman[0].type" @change="changeradio('self')"/> 
+              <label>自己</label> {{thisdata.project_reportman[0].type}}
             </div>
             <div class="mui-radio cssradiodiv">
-              <input type="radio" name="style" value="other" v-model="thisdata.project_reportman[0].type"/> 
+              <input type="radio" name="style" value="other" v-model="thisdata.project_reportman[0].type" @change="changeradio('other')"/> 
               <label>其他人</label>
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" />
+              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
             </div>
           </li>
         </div>
@@ -226,7 +251,28 @@
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
-
+    </div>
+    <div class="classify-box" id="classifylist">
+      <div class="sub-classify">
+        <div class="clasify-item" v-for="item in classifyArr">
+          <p class="title">
+            <label>{{item.sp_type_name}}</label>
+            <a href="javascript:;" @click="showAllTypes(item)">
+              <span>{{item.showall ? '收起' : '全部'}}</span>
+              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
+            </a>
+          </p>
+          <ul class="items-ul">
+            <li v-bind:class="item.active.indexOf(sub.id) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
+              <a href="javascript:;">{{sub.type_name}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="clasify-btn">
+          <a href="javascript:;" @click="resetClassify()">重置</a>
+          <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>  
@@ -235,10 +281,14 @@
   import Area from '../common/threelayer.vue'
   import Two from '../common/twolayer.vue'
   import axios from '~/plugins/axios'
+  let url = require('url')
+  let ESVal = require('es-validate')
+  let Cookies = require('js-cookie')
   let $ = require('jquery')
   let _ = require('underscore')
   let model
   let typeStr
+  let changeOneType
   export default {
     head: {
       title: '我的项目'
@@ -246,37 +296,21 @@
     data () {
       return {
         thisdata: {
-          name: '项目名称',
-          first_party_name: '甲方名称',
-          amount: '项目金额',
-          intro: '项目介绍',
-          feasibility: 4, // '可行性'
-          validity: '三个月',
-          remark: '备注',
-          project_attachment: [ // 附件信息
-            {
-              file_url: '',
-              id: 0,
-              delete: 'no'
-            },
-            {
-              file_url: '',
-              id: 0,
-              delete: 'no'
-            }
-          ],
-          sketch: '简单描述',
-          risk_analysis: '风险',
-          invitation_time: '招标时间',
-          delivery_time: '交付时间',
-          project_furniture_types: [
-            {
-              type_poi_furniture_types: 0,
-              name: ''
-            }
-          ],
-          category: '项目类型',
-          number: '项目编号',
+          name: '',
+          first_party_name: '',
+          amount: '',
+          intro: '',
+          feasibility: 3, // '可行性'
+          validity: 'three_month',
+          remark: '',
+          project_attachment: [], // 附件信息
+          sketch: '',
+          risk_analysis: '',
+          invitation_time: '',
+          delivery_time: '',
+          project_furniture_types: [], // 商品分类
+          category: 'tender',
+          number: '',
           first_party_province_poi_province: {
             value: '1',
             text: '北京市'
@@ -287,31 +321,32 @@
           },
           first_party_district_poi_district: {
             value: '1',
-            text: '海淀区'
+            text: '东城区'
           },
-          first_party_linkman: '甲方联系人',
-          first_party_tel: '甲方联系电话',
-          first_party_job: '甲方联系人职务',
+          first_party_linkman: '',
+          first_party_tel: '',
+          first_party_job: '',
           project_reportman: [ // 报备人信息
             {
+              type: 'self',
               user_poi_reportman: 0,
+              // clonename: '',
               name: '',
               tel: '',
+              // clonetel: '',
               email: '',
-              project_relation: '项目关系',
-              royalties_expectation: '期望提成',
-              strengths: '优势'
+              // cloneemail: '',
+              project_relation: '',
+              royalties_expectation: '',
+              strengths: ''
             }
           ],
-          second_party_competitor: '己方竞争对手,明天',
-          competitor: '竞争对手',
-          competitor_strengths: '竞争对手-亮点',
-          competitor_projections: '竞争对手-形势预测',
-          state: 'wait'
+          second_party_competitor: '',
+          competitor: '',
+          competitor_strengths: '',
+          competitor_projections: ''
         },
-
-        onearr: [
-        ],
+        onearr: [],
         oneobj: {
           state: 'three_month'
         },
@@ -322,48 +357,225 @@
           city: -1,
           districts: -1
         },
-        jzds: [] // 竞争对手长度
+        cloneValidity: '3个月', // 临时的时间
+        cloneCategory: '招标采办', // 临时的项目类型
+        classifyArr: [], // 产品分类
+        classifyActiveArr: [],
+        jzds: [], // 竞争对手长度
+        info: {},
+        linkPath: '',
+        cloneInfo: {
+          name: '',
+          email: '',
+          tel: ''
+        } // 临时其他报备人信息
       }
     },
     methods: {
       init: function () {
-        // 获取月份
-        let param = {
-          where: {
-            state_types: 'report_valtime'
+        let myURL = url.parse(window.location.href)
+        model.linkPath = '/' + myURL.pathname.split('/')[1]
+        let token = Cookies.get('dpjia-hall-token')
+        axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+          headers: {
+            'X-DP-Token': token
           }
-        }
-        axios.get('classes/selectable_states', {
-          params: param
         }).then(function (data) {
-          data.data.items.forEach((item) => {
-            model.onearr.push({'value': item.name, 'text': item.alias})
+          model.info = data.data
+          model.thisdata.project_reportman[0].name = data.data.ui_name || '未设置'
+          model.thisdata.project_reportman[0].tel = data.data.mobile || ''
+          model.thisdata.project_reportman[0].email = data.data.u_email || ''
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
+        })
+
+        axios.get('/functions/furnitures/furniture_types', {
+        }).then(function (data) {
+          data.data.forEach(item => {
+            item.active = ''
+            item.showall = false
           })
-          model.oneobj.state = Math.random()
+          model.classifyArr = data.data
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
         })
       },
 
+      changeradio: function (value) {
+        if (value === 'self') {
+          model.thisdata.project_reportman[0].name = model.info.ui_name || '未设置'
+          model.thisdata.project_reportman[0].tel = model.info.mobile || ''
+          model.thisdata.project_reportman[0].email = model.info.u_email || ''
+        } else {
+          model.thisdata.project_reportman[0].name = model.cloneInfo.name
+          model.thisdata.project_reportman[0].tel = model.cloneInfo.tel
+          model.thisdata.project_reportman[0].email = model.cloneInfo.email
+        }
+      },
+
+      // 提交代码
       submit: function () {
-        let ssdata = _.extend(model.thisdata, {
-          first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
-          first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
-          first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
-          project_attachment: JSON.stringify(model.thisdata.project_attachment),
-          project_reportman: JSON.stringify(model.thisdata.project_reportman),
-          project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types)
-        })
-        console.log(ssdata)
+        // 下一步验证
+        if (model.thisdata.project_reportman[0].type === 'other') {
+          model.thisdata.project_reportman[0].name = model.cloneInfo.name
+          model.thisdata.project_reportman[0].tel = model.cloneInfo.tel
+          model.thisdata.project_reportman[0].is_self = 'no'
+          model.thisdata.project_reportman[0].email = model.cloneInfo.email
+        } else {
+          model.thisdata.project_reportman[0].is_self = 'yes'
+        }
+        if (!model.ValidateForm(model.thisdata)) {
+          return false
+        }
+        if (model.thisdata.project_reportman[0].name === '') {
+          window.mui.toast('报备人姓名不能为空!')
+          return false
+        }
+        let ssdata
+        if (model.thisdata.project_attachment.length < 1) {
+          delete model.thisdata.project_attachment
+        } else {
+          ssdata = _.extend(model.thisdata, {
+            first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
+            first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
+            first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
+            project_attachment: JSON.stringify(model.thisdata.project_attachment),
+            project_reportman: JSON.stringify(model.thisdata.project_reportman),
+            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types)
+          })
+        }
         axios.post('functions/report/project', null, {
           data: ssdata
         }).then(function (data) {
-          // window.mui.toast()
+          window.mui.toast('创建项目成功')
+          window.location.href = model.linkPath + '/report'
         }).catch(function () {
           window.mui.toast('失败!')
         })
       },
 
+      ValidateForm: function (data) {
+        let result = ESVal.validate(data, {
+          name: {
+            required: true,
+            msg: '项目名称不能为空!'
+          },
+          first_party_name: {
+            required: true,
+            msg: '公司名称不能为空!'
+          },
+          amount: {
+            required: true,
+            msg: '预计金额不能为空!'
+          },
+          sketch: {
+            required: true,
+            msg: '简单描述不能为空!'
+          }
+        })
+        if (!result.status) {
+          window.mui.toast(result.msg)
+        }
+        return result.status
+      },
+
       deletejzz: function (item, index) {
         model.jzds.splice(index, 1)
+      },
+
+      // 显示各分类全部（收起）
+      showAllTypes: function (obj) {
+        obj.showall = !obj.showall
+      },
+
+      // 选择分类
+      choiceType: function (item, sub) {
+        if (item.active.indexOf(sub.id) < 0) {
+          let obj = {
+            type_poi_furniture_types: sub.id,
+            name: sub.type_name,
+            id: 0,
+            delete: 'no'
+          }
+          item.active = item.active + ',' + sub.id
+          model.classifyActiveArr.push(obj)
+        }
+      },
+
+      // 确定分类
+      setClassify: function () {
+        model.thisdata.project_furniture_types = model.classifyActiveArr
+        console.log(model.thisdata.project_furniture_types)
+        $('#classifylist').hide()
+      },
+
+      // 重置分类
+      resetClassify: function () {
+        model.classifyArr.forEach(item => {
+          item.active = ''
+        })
+        model.classifyActiveArr = []
+        $('#classifylist').hide()
+      },
+
+      // 上传图片
+      upload_com: function () {
+        var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+        var $input = $('#upload_com').find('input')
+        $input.unbind().click()
+        $input.unbind().change(function () {
+          if ($input.val() === '') {
+            return false
+          }
+          var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+          $input.wrap(form)
+          window.$('#upload_com').find('form').ajaxSubmit({
+            type: 'post',
+            url: url,
+            data: {
+              mode: 'image',
+              mutiple: '0'
+            },
+            crossDomain: true,
+            headers: {
+              'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+              'X-DP-ID': '7748955b16d6f1a0'
+            },
+            success: function (data) {
+              $input.unwrap()
+              model.thisdata.project_attachment.push({
+                file_url: data.url,
+                id: 0,
+                delete: 'no'
+              })
+            },
+            error: function (error) {
+              console.log(error)
+            }
+          })
+        })
+      },
+
+      // 点击筛选
+      showClassify: function () {
+        // model.checkUrl(urlObj)
+        $('#classifylist').show()
+        $('#classifylist').addClass('animated bounceInRight')
+        setTimeout(function () {
+          $('#classifylist').removeClass('bounceInRight')
+        }, 1000)
       },
 
       // 添加竞争人
@@ -382,6 +594,19 @@
         $('.more').show()
         $('.other').hide()
         $('.reporter').hide()
+      },
+
+      showmore: function (value) {
+        if ($(value).hasClass('active')) {
+          $(value).removeClass('active')
+        } else {
+          $(value).addClass('active')
+        }
+      },
+
+      // 删除附件图片
+      deleteimg: function (index) {
+        model.thisdata.project_attachment.splice(index, 1)
       },
 
       // 进入textarea
@@ -435,15 +660,43 @@
         this.thisdata.feasibility = index
       },
 
-      // 月份选择
-      testone: function () {
-        model.oneobj.state = Math.random()
+      // 获取项目类型/月份
+      testone: function (type) {
+        changeOneType = type
+        let param = {}
+        model.onearr = []
+        if (type === 'time') {
+          param = {
+            where: {
+              state_types: 'report_valtime'
+            }
+          }
+        } else {
+          param = {
+            where: {
+              state_types: 'report_projecttype'
+            }
+          }
+        }
+        axios.get('classes/selectable_states', {
+          params: param
+        }).then(function (data) {
+          data.data.items.forEach((item) => {
+            model.onearr.push({'value': item.name, 'text': item.alias})
+          })
+          model.oneobj.state = Math.random()
+        })
       },
 
       // 改变月份
       change: function (val) {
-        console.log(val)
-        model.thisdata.validity = val[0].text
+        if (changeOneType === 'time') {
+          model.cloneValidity = val[0].text
+          model.thisdata.validity = val[0].value
+        } else {
+          model.cloneCategory = val[0].text
+          model.thisdata.category = val[0].value
+        }
       },
 
       // 选择省市区
@@ -527,8 +780,11 @@
   }
 </script>
 <style lang="">
-  .other, .otherRemark,.reporter,.otherCompete{
+  .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
     display: none;
+  }
+  .jzInfo.active,.reportInfo.active,.comInfo.active,.projectInfo.active{
+    display: block
   }
   .jzztitele {
     margin: 0 -15px;
@@ -683,5 +939,120 @@
     float: right;
     margin-top: 5px;
     margin-right: 15px;
+  }
+  .fjimg{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-top: 6px;
+    margin-right: 6px;
+  }
+  .deleteimg{
+    position: absolute;
+    left: -4px;
+    top: 2px;
+  }
+  .posir{
+    position: relative;
+    display: inline-block;
+    height:44px;
+  }
+   .classify-box{
+    display: none;
+    position: fixed;
+    top: 44px;
+    z-index: 1000;
+    width: 100%;
+    height: calc(100% - 44px);
+    background-color: rgba(0, 0, 0, 0.6);
+    overflow-y: auto;
+  }
+   .sub-classify{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 280px;
+    min-height: calc(100% - 44px);
+    padding: 10px;
+    background-color: #fff;
+    padding-bottom: 50px;
+  }
+  .clasify-item{
+    margin-bottom: 20px;
+  }
+  .clasify-item .title{
+    margin: 0;
+    padding: 0;
+    height: 22px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+  .title > label {
+    color: #050505;
+  }
+  .title > a{
+    float: right;
+  }
+  .clasify-item .items-ul{
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+  }
+  .clasify-item .items-ul li{
+    display: inline-block;
+    list-style: none;
+    width: 74px;
+    height: 30px;
+    margin-right: 12px;
+    margin-bottom: 6px;
+  }
+  .clasify-item .items-ul li:nth-child(3n){
+    margin-right: 0;
+  }
+  .clasify-item .items-ul li a{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    padding: 0 5px;
+    text-align: center;
+    line-height: 28px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3d3d3d;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clasify-item .items-ul .active a{
+    background-color: #5075ce;
+    border: 1px solid #5075ce;
+    color: #fff;
+  }
+  .clasify-btn{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    height: 50px;
+    z-index: 100;
+    background-color: #fff;
+  }
+  .clasify-btn > a{
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    color: #3d3d3d;
+    font-size: 15px;
+    border-top: 1px solid #ababab;
+    cursor: pointer;
+  }
+  .clasify-btn .submit-btn{
+    background-color: #5075ce;
+    border-top: 1px solid #5075ce;
+    color: #fff;
   }
 </style>

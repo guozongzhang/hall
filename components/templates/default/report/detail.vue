@@ -21,7 +21,7 @@
           <div class="fz14 intro-style">{{basicinfo.intro}}</div>
           <div class="fz12">
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
-            <span>创建时间:{{forMatTime(basicinfo.create_time)}}</span>
+            <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report">
             <a href="javascript:;">去报备</a>
@@ -69,7 +69,7 @@
                       </li>
                       <li class="mui-table-view-cell">
                         <span>项目类型：</span>
-                        <span class="list-text">{{basicinfo.category}}</span>
+                        <span class="list-text">{{filterProType(basicinfo.category)}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>产品品类：</span>
@@ -126,7 +126,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>报备人信息</label>
-                    <span class="edit-icon" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editReport(reportman.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -135,7 +135,7 @@
                     <ul class="ul-list">
                       <li class="mui-table-view-cell">
                         <span>姓名：</span>
-                        <span class="alist-text">{{(reportman.user_poi_reportman || {}).name}}</span>
+                        <span class="alist-text">{{reportman.name}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>项目关系：</span>
@@ -151,11 +151,11 @@
                       </li>
                       <li class="mui-table-view-cell">
                         <span>联系电话：</span>
-                        <span class="alist-text">{{(reportman.user_poi_reportman || {}).tel}}</span>
+                        <span class="alist-text">{{reportman.tel}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>联系邮箱：</span>
-                        <span class="alist-text">{{(reportman.user_poi_reportman || {}).email}}</span>
+                        <span class="alist-text">{{reportman.email}}</span>
                       </li>
                     </ul>
                   </div>
@@ -272,35 +272,46 @@
         <div>
           <div class="mui-input-row sub-input-box">
 						<label>项目编号</label>
-						<input type="text" placeholder="输入项目编号" v-model="editpro.name">
+						<input type="text" placeholder="输入项目编号" v-model="editpro.number">
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>招标时间</label>
-						<input type="text" placeholder="输入招标时间" v-model="editpro.name">
+            <span class="area-text" @click="changeTime('invitation')">{{editpro.invitation_time}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>交付时间</label>
-						<input type="text" placeholder="输入交付时间" v-model="editpro.name">
+            <span class="area-text" @click="changeTime('delivery')">{{editpro.delivery_time}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>产品品类</label>
-						<input type="text" placeholder="输入产品品类" v-model="editpro.name">
+            <span class="area-text" @click="changeGoodsType()">{{editpro.type}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>项目类型</label>
-						<input type="text" placeholder="输入项目类型" v-model="editpro.name">
+            <span class="area-text" @click="changeProType()">{{editpro.category}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>项目介绍</label>
-						<input type="text" placeholder="输入项目介绍" v-model="editpro.name">
+						<input type="text" placeholder="输入项目介绍" v-model="editpro.intro">
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>风险分析</label>
-						<input type="text" placeholder="输入风险分析" v-model="editpro.name">
+						<input type="text" placeholder="输入风险分析" v-model="editpro.risk_analysis">
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
-						<input type="text" placeholder="普通输入框" v-model="editpro.name">
+            <div class="attach-img-box">
+              <div class="img-box" v-for="img in editproImg" v-show="img.show">
+                <span class="delete-img" @click="deleteImg(img)">×</span>
+                <img :src="img.file_url"/>
+              </div>
+              <span class="upload-box" id="upload_com" @click="upload_com()">
+                <span class="add-btn">
+                  <i class="fa fa-plus add-icon"></i>
+                </span>
+                <input class="hidden" type="file" name="files">
+              </span>
+            </div>
 					</div>
         </div>
       </div>
@@ -334,7 +345,42 @@
         </div>
       </div>
     </div>
-    <div v-show="activeTab == 'editreport'">
+    <div v-show="activeTab == 'editreport'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">编辑报备人信息</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confEditReport()">提交</a>
+      </header>
+      <div class="textarea-box">
+        <div class="line-box"></div>
+        <div>
+          <div class="mui-input-row sub-input-box">
+						<label>姓名</label>
+						<input type="text" placeholder="输入姓名" v-model="reporter.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目关系</label>
+						<input type="text" placeholder="输入项目关系务" v-model="reporter.relationship">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>期望提成</label>
+						<input type="number" placeholder="输入期望提成" v-model="reporter.commission">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目优势</label>
+						<input type="text" placeholder="输入项目优势" v-model="reporter.ascendancy">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>联系电话</label>
+						<input type="text" placeholder="输入联系电话" v-model="reporter.tel">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>联系邮箱</label>
+						<input type="text" placeholder="输入联系邮箱" v-model="reporter.email">
+					</div>
+        </div>
+      </div>
     </div>
     <div v-show="activeTab == 'editcompetitors'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
@@ -367,26 +413,61 @@
     </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
+      <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getProType"></vue-one>
     </div>
+    <div class="classify-box" id="classifylist">
+      <div class="sub-classify">
+        <div class="clasify-item" v-for="item in classifyArr">
+          <p class="title">
+            <label>{{item.sp_type_name}}</label>
+            <a href="javascript:;" @click="showAllTypes(item)">
+              <span>{{item.showall ? '收起' : '全部'}}</span>
+              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
+            </a>
+          </p>
+          <ul class="items-ul">
+            <li v-bind:class="sub.active ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(sub)" v-show="index < 3 || item.showall">
+              <a href="javascript:;" :title="sub.type_name">{{sub.type_name}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="clasify-btn">
+          <a href="javascript:;" @click="resetClassify()">重置</a>
+          <a href="javascript:;" class="submit-btn" @click="setClassify()">完成</a>
+        </div>
+      </div>
+  </div>
   </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
+import proType from '../common/onelayer.vue'
+let dateJson = require('~/static/js/date.json')
 let url = require('url')
 let querystring = require('querystring')
+let $ = require('jquery')
 let _ = require('underscore')
 let Cookies = require('js-cookie')
 let moment = require('moment')
 let model
 let proId
+let proTypeArr = [] // 项目类型
+let proValTime = [] // 项目有效期
+let activeTypeIds = [] // 产品品类
+let updateTypeArr = [] // 提交的项目类型数组
 export default {
   data () {
     return {
+      layer: 'area',
       areaarr: [],
       areaobj: {
         state: 0
       },
+      oneobj: {
+        state: 0
+      },
+      protypearrs: [],
       activeTab: 'home',
       basicinfo: {},
       reportman: {},
@@ -429,12 +510,16 @@ export default {
       ],
       recordLoglist: [],
       editpro: {},
+      editproImg: [],
+      reporter: {},
       buyer: {},
-      competitors: {}
+      competitors: {},
+      classifyArr: []
     }
   },
   components: {
-    'vue-area': Area
+    'vue-area': Area,
+    'vue-one': proType
   },
   methods: {
     init: async function () {
@@ -458,13 +543,7 @@ export default {
           },
           {
             table: 'project_furniture_types',
-            key: 'project_poi_projects',
-            include: [
-              {
-                table: 'type_poi_furniture_types',
-                keys: 'id,type_name'
-              }
-            ]
+            key: 'project_poi_projects'
           }
         ],
         include: [
@@ -562,40 +641,238 @@ export default {
       return moment(parseInt(value)).format(timetype)
     },
 
-    // 有效期过滤
-    valtimeFilter: async function (str) {
+    // 项目类型过滤
+    filterProType: function (str) {
       let res = ''
-      let stateData = Cookies.get('report-valtime') || '[]'
-      let stateObj
-      if (stateData) {
-        stateObj = JSON.parse(stateData)
+      proTypeArr.forEach((item) => {
+        if (str === item.value) {
+          res = item.text
+        }
+      })
+      return res
+    },
+
+    // 获取项目常量信息
+    getPorState: async function () {
+      let param = {
+        where: JSON.stringify({
+          state_types: {
+            $in: ['report_projecttype', 'report_valtime']
+          }
+        })
       }
-      if (stateObj.length > 0) {
-        stateObj.forEach((item) => {
-          if (item.name === str) {
-            res = item.alias
+      let res = await axios.get('classes/selectable_states', {params: param})
+      res.data.items.forEach((item) => {
+        // 项目类型
+        if (item.state_types === 'report_projecttype') {
+          let tmp = {
+            'text': item.alias,
+            'value': item.name
+          }
+          proTypeArr.push(tmp)
+        }
+        // 项目有效期
+        if (item.state_types === 'report_valtime') {
+          let tmp = {
+            'text': item.alias,
+            'value': item.name
+          }
+          proValTime.push(tmp)
+        }
+      })
+    },
+
+    // 有效期过滤
+    valtimeFilter: function (str) {
+      let res = ''
+      proValTime.forEach((item) => {
+        if (item.value === str) {
+          res = item.text
+        }
+      })
+      return res
+    },
+
+    // 编辑产品品类
+    filterGoodsType: function (arr) {
+      let res = ''
+      let subarr = []
+      arr.forEach((item) => {
+        let tmp = {
+          id: item.id,
+          delete: 'no',
+          name: item.name,
+          type_poi_furniture_types: item.type_poi_furniture_types
+        }
+        updateTypeArr.push(tmp)
+        activeTypeIds.push(item.type_poi_furniture_types)
+        subarr.push(item.name)
+      })
+      res = subarr.join('-')
+      return res
+    },
+
+    // 显示各分类全部（收起）
+    showAllTypes: function (obj) {
+      obj.showall = !obj.showall
+    },
+
+    // 选择三级分类
+    choiceType: function (obj) {
+      if (obj.active) {
+        obj.active = false
+        activeTypeIds = _.without(activeTypeIds, obj.id)
+        updateTypeArr.forEach((item) => {
+          if (obj.id === item.type_poi_furniture_types) {
+            item.delete = 'yes'
           }
         })
       } else {
-        let param = {
-          where: {
-            state_types: 'report_valtime'
-          }
+        obj.active = true
+        activeTypeIds.unshift(obj.id)
+        let tmp = {
+          id: 0,
+          delete: 'no',
+          name: obj.type_name,
+          type_poi_furniture_types: obj.id
         }
-        let res = await axios.get('classes/selectable_states', {params: param})
-        res.data.items.forEach((item) => {
-          if (item.name === str) {
-            res = item.alias
+        updateTypeArr.unshift(tmp)
+      }
+    },
+
+    // 重置
+    resetClassify: function () {
+      model.classifyArr.forEach((p) => {
+        p.furniture_types.forEach((sub) => {
+          sub.active = false
+        })
+      })
+      updateTypeArr.forEach((item) => {
+        item.delete = 'yes'
+      })
+      activeTypeIds = []
+    },
+
+    // 完成三级分类
+    setClassify: function () {
+      let tmp = []
+      model.classifyArr.forEach((p) => {
+        p.furniture_types.forEach((sub) => {
+          if (activeTypeIds.indexOf(sub.id) > -1) {
+            tmp.push(sub.type_name)
           }
         })
-      }
-      return res
+      })
+      model.editpro.type = tmp.join('-')
+      $('#classifylist').hide()
     },
 
     // 编辑项目信息
     editProject: function (id) {
+      model.editpro = {
+        number: model.basicinfo.number,
+        invitation_time: model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
+        delivery_time: model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
+        type: model.filterGoodsType(model.basicinfo.project_rel_project_furniture_types.items),
+        category: model.filterProType(model.basicinfo.category),
+        category_str: model.basicinfo.category,
+        intro: model.basicinfo.intro,
+        risk_analysis: model.basicinfo.risk_analysis
+      }
+      let tmparr = []
+      if (model.basicinfo.project_rel_project_attachment.count > 0) {
+        model.basicinfo.project_rel_project_attachment.items.forEach((item) => {
+          let tmp = {
+            id: item.id,
+            delete: 'no',
+            file_url: item.file_url,
+            show: true
+          }
+          tmparr.push(tmp)
+        })
+      }
+      model.editproImg = tmparr
       model.activeTab = 'editproject'
       proId = id
+    },
+
+    // 保存项目信息
+    confEditPro: function () {
+      let param = {
+        id: proId,
+        number: model.editpro.number,
+        invitation_time: Date.parse(new Date(model.editpro.invitation_time || 0)),
+        delivery_time: Date.parse(new Date(model.editpro.delivery_time || 0)),
+        project_furniture_types: JSON.stringify(updateTypeArr),
+        category: model.editpro.category_str,
+        intro: model.editpro.intro,
+        risk_analysis: model.editpro.risk_analysis,
+        project_attachment: JSON.stringify(model.editproImg)
+      }
+      axios.put('functions/report/project', null, {
+        data: param
+      }).then(function (data) {
+        model.init()
+        window.mui.toast('编辑项目信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 招标时间
+    changeTime: function (str) {
+      model.layer = str
+      model.areaarr = dateJson
+      model.areaobj.state = Math.random()
+    },
+
+    // 项目类型
+    changeProType: function () {
+      model.protypearrs = proTypeArr
+      model.oneobj.state = Math.random()
+    },
+
+    // get项目类型
+    getProType: function (str) {
+      model.editpro.category_str = str[0].value
+      model.editpro.category = str[0].text
+    },
+
+    // 删除项目附件图片
+    deleteImg: function (obj) {
+      if (obj.id > 0) {
+        obj.delete = 'yes'
+        obj.show = false
+      } else {
+        model.editproImg = _.without(model.editproImg, obj)
+      }
+    },
+
+    // 产品品类
+    changeGoodsType: async function () {
+      let res = await axios.get('functions/furnitures/furniture_types', {params: ''})
+      res.data.forEach((item) => {
+        item.showall = false
+        item.furniture_types.forEach((sub) => {
+          if (activeTypeIds.indexOf(sub.id) > -1) {
+            sub.active = true
+          } else {
+            sub.active = false
+          }
+        })
+      })
+      model.classifyArr = res.data
+      $('#classifylist').show()
+      $('#classifylist').addClass('animated bounceInRight')
     },
 
     // 编辑甲方信息
@@ -615,15 +892,28 @@ export default {
 
     // 选择地区
     changeAre: function () {
+      model.layer = 'area'
+      model.areaarr = []
       model.areaobj.state = Math.random()
     },
 
     // 获取选择地区信息
     getArea: function (str) {
-      model.buyer.area = str[0].text + '-' + str[1].text + '-' + str[2].text
-      model.buyer.pro_id = str[0].value || 1
-      model.buyer.city_id = str[1].value || 1
-      model.buyer.dis_id = str[2].value || 1
+      // 省市区
+      if (model.layer === 'area') {
+        model.buyer.area = str[0].text + '-' + str[1].text + '-' + str[2].text
+        model.buyer.pro_id = str[0].value || 1
+        model.buyer.city_id = str[1].value || 1
+        model.buyer.dis_id = str[2].value || 1
+      }
+      // 招标时间
+      if (model.layer === 'invitation') {
+        model.editpro.invitation_time = str[0].text + '-' + str[1].text + '-' + str[2].text
+      }
+      // 交付时间
+      if (model.layer === 'delivery') {
+        model.editpro.delivery_time = str[0].text + '-' + str[1].text + '-' + str[2].text
+      }
     },
 
     // 确认保存甲方信息
@@ -656,6 +946,59 @@ export default {
         model.basicinfo.first_party_job = model.buyer.first_party_job
         model.basicinfo.first_party_tel = model.buyer.first_party_tel
         window.mui.toast('编辑甲方信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 编辑报备人信息
+    editReport: function (id) {
+      model.reporter = {
+        name: model.reportman.name,
+        relationship: model.reportman.project_relation,
+        commission: model.reportman.royalties_expectation,
+        ascendancy: model.reportman.strengths,
+        tel: model.reportman.tel,
+        email: model.reportman.email
+      }
+      model.activeTab = 'editreport'
+      proId = id
+    },
+
+    // 确定提交报备人信息
+    confEditReport: function () {
+      let param = {
+        id: proId,
+        name: model.reporter.name || '',
+        project_relation: model.reporter.relationship || '',
+        royalties_expectation: model.reporter.commission || '',
+        strengths: model.reporter.ascendancy || '',
+        tel: model.reporter.tel,
+        email: model.reporter.email,
+        is_self: 'yes'
+      }
+      axios.put('functions/report/project_reportman', null, {
+        data: param
+      }).then(function (data) {
+        model.reportman = {
+          id: proId,
+          name: model.reporter.name,
+          project_relation: model.reporter.relationship,
+          royalties_expectation: model.reporter.commission,
+          strengths: model.reporter.ascendancy,
+          tel: model.reporter.tel,
+          email: model.reporter.email
+        }
+        window.mui.toast('编辑报备人信息成功')
         setTimeout(function () {
           model.activeTab = 'home'
         }, 1000)
@@ -711,16 +1054,111 @@ export default {
           }, 2000)
         }
       })
-      console.log(model.competitors)
+    },
+
+    // 上传图片
+    upload_com: function () {
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+      var $input = $('#upload_com').find('input')
+      $input.unbind().click()
+      $input.unbind().change(function () {
+        if ($input.val() === '') {
+          return false
+        }
+        var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+        $input.wrap(form)
+        window.$('#upload_com').find('form').ajaxSubmit({
+          type: 'post',
+          url: url,
+          data: {
+            mode: 'image',
+            mutiple: '0'
+          },
+          crossDomain: true,
+          headers: {
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
+          },
+          success: function (data) {
+            $input.unwrap()
+            let imgtmp = {
+              id: 0,
+              delete: 'no',
+              file_url: data.url,
+              show: true
+            }
+            model.editproImg.push(imgtmp)
+          },
+          error: function (error) {
+            console.log(error)
+          }
+        })
+      })
     }
   },
-  mounted () {
+  async mounted () {
     model = this
-    model.init()
+    await model.getPorState()
+    await model.init()
   }
 }
 </script>
 <style>
+.attach-img-box {
+  padding-bottom: 10px;
+  display: inline-block;
+  width: 70%;
+  float: right;
+}
+.upload-box{
+  float: left;
+  margin-right: 10px;
+  margin-top: 10px;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+.upload-box .add-icon{
+  position: relative;
+  top: 10px;
+  font-size: 22px;
+  color: #bebebe;
+}
+.hidden{
+  display: none;
+}
+.attach-box img {
+  width: 40px;
+  height: 40px;
+}
+.attach-box .img-box{
+  position: relative;
+  display: inline-block;
+  float: left;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+.delete-img{
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  border-radius: 100%;
+  text-align: center;
+  background-color: #c63e40;
+  color: #fff;
+  z-index: 999;
+  font-size: 14px;
+  cursor: pointer;
+}
 .sub-input-box {
   font-size: 14px;
   border-bottom: 1px solid #ccc;
@@ -738,6 +1176,9 @@ export default {
   padding-right: 10px;
   width: 70%;
   text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .sub-input-box input{
   font-size: 14px;
@@ -1085,5 +1526,103 @@ export default {
   background-color: #5278e5;
   color: #fff;
   border-radius: 50px;
+}
+.classify-box{
+  display: none;
+  position: fixed;
+  top: 44px;
+  z-index: 1000;
+  width: 100%;
+  height: calc(100% - 44px);
+  background-color: rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+}
+.sub-classify{
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 280px;
+  min-height: calc(100% - 44px);
+  padding: 10px;
+  background-color: #fff;
+  padding-bottom: 50px;
+}
+.clasify-item{
+  margin-bottom: 20px;
+}
+.clasify-item .title{
+  margin: 0;
+  padding: 0;
+  height: 22px;
+  line-height: 22px;
+  margin-bottom: 10px;
+}
+.title > label {
+  color: #050505;
+}
+.title > a{
+  float: right;
+}
+.clasify-item .items-ul{
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+}
+.clasify-item .items-ul li{
+  display: inline-block;
+  list-style: none;
+  width: 74px;
+  height: 30px;
+  margin-right: 12px;
+  margin-bottom: 6px;
+}
+.clasify-item .items-ul li:nth-child(3n){
+  margin-right: 0;
+}
+.clasify-item .items-ul li a{
+  display: inline-block;
+  width: 80px;
+  height: 30px;
+  padding: 0 5px;
+  text-align: center;
+  line-height: 28px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #3d3d3d;
+  border: 1px solid #737373;
+  border-radius: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.clasify-item .items-ul .active a{
+  background-color: #5075ce;
+  border: 1px solid #5075ce;
+  color: #fff;
+}
+.clasify-btn{
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  height: 50px;
+  z-index: 100;
+  background-color: #fff;
+}
+.clasify-btn > a{
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+  height: 50px;
+  line-height: 50px;
+  color: #3d3d3d;
+  font-size: 15px;
+  border-top: 1px solid #ababab;
+  cursor: pointer;
+}
+.clasify-btn .submit-btn{
+  background-color: #5075ce;
+  border-top: 1px solid #5075ce;
+  color: #fff;
 }
 </style>

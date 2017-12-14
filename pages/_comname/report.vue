@@ -3,7 +3,7 @@
   <header class="mui-bar mui-bar-nav">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">我的项目</h1>
-    <a href="/newproject" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
+    <a :href="linkPath + '/newproject'" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
   </header>
   
   <div class="mui-content">
@@ -11,18 +11,20 @@
   </div>
 
   <div class="footer">
-    <a :href="'/fast'"><div>快速报备</div></a>
+    <a :href="linkPath + '/fast'"><div>快速报备</div></a>
   </div>
 </div>
 </template>
 <script>
+  let url = require('url')
   export default {
     head: {
       title: '我的项目'
     },
     data () {
       return {
-        active: 'all'
+        active: 'all',
+        linkPath: ''
       }
     },
     beforeCreate () {
@@ -31,6 +33,8 @@
     },
     methods: {
       init: function () {
+        let myURL = url.parse(window.location.href)
+        this.linkPath = '/' + myURL.pathname.split('/')[1]
       },
       getlist: function (state) {
         this.active = state

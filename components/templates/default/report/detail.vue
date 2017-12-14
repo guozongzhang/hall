@@ -48,7 +48,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>项目信息</label>
-                    <span class="edit-icon">
+                    <span class="edit-icon" @click="editProject(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -96,7 +96,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>甲方信息</label>
-                    <span class="edit-icon">
+                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -126,7 +126,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>报备人信息</label>
-                    <span class="edit-icon">
+                    <span class="edit-icon" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -164,7 +164,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>竞争信息</label>
-                    <span class="edit-icon">
+                    <span class="edit-icon" @click="editCompetitors(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -246,7 +246,7 @@
         </div>
       </div>
     </div>
-    <div v-show="activeTab == 'record'" class="record-show">
+    <div v-show="activeTab == 'record'" class="subbox-show record-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
@@ -260,21 +260,119 @@
         </div>
       </div>
     </div>
-    <div v-show="activeTab == 'editproject'">
+    <div v-show="activeTab == 'editproject'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">进度跟踪</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confAddRecord()">提交</a>
+        <h1 class="mui-title othertitle">编辑项目信息</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confEditPro()">提交</a>
       </header>
       <div class="textarea-box">
         <div class="line-box"></div>
+        <div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目编号</label>
+						<input type="text" placeholder="输入项目编号" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>招标时间</label>
+						<input type="text" placeholder="输入招标时间" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>交付时间</label>
+						<input type="text" placeholder="输入交付时间" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>产品品类</label>
+						<input type="text" placeholder="输入产品品类" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目类型</label>
+						<input type="text" placeholder="输入项目类型" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目介绍</label>
+						<input type="text" placeholder="输入项目介绍" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>风险分析</label>
+						<input type="text" placeholder="输入风险分析" v-model="editpro.name">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>附件信息</label>
+						<input type="text" placeholder="普通输入框" v-model="editpro.name">
+					</div>
+        </div>
       </div>
+    </div>
+    <div v-show="activeTab == 'editbuyer'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">编辑甲方信息</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confEditBuyer()">提交</a>
+      </header>
+      <div class="textarea-box">
+        <div class="line-box"></div>
+        <div>
+          <div class="mui-input-row sub-input-box">
+						<label>所属区域</label>
+            <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>联系人姓名</label>
+						<input type="text" placeholder="输入联系人姓名" v-model="buyer.first_party_linkman">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>联系人职务</label>
+						<input type="text" placeholder="输入联系人职务" v-model="buyer.first_party_job">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>联系人电话</label>
+						<input type="text" placeholder="输入联系人电话" v-model="buyer.first_party_tel">
+					</div>
+        </div>
+      </div>
+    </div>
+    <div v-show="activeTab == 'editreport'">
+    </div>
+    <div v-show="activeTab == 'editcompetitors'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">编辑竞争信息</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confEditComp()">提交</a>
+      </header>
+      <div class="textarea-box">
+        <div class="line-box"></div>
+        <div>
+          <div class="mui-input-row sub-input-box">
+						<label>乙方对手</label>
+						<input type="text" placeholder="输入乙方对手" v-model="competitors.second_party_competitor">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>竞争对手</label>
+						<input type="text" placeholder="输入竞争对手" v-model="competitors.competitor">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目亮点</label>
+						<input type="text" placeholder="输入项目亮点" v-model="competitors.competitor_strengths">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>形式预测</label>
+						<input type="text" placeholder="输入形式预测" v-model="competitors.competitor_projections">
+					</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
     </div>
   </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
+import Area from '../common/threelayer.vue'
 let url = require('url')
 let querystring = require('querystring')
 let _ = require('underscore')
@@ -285,6 +383,10 @@ let proId
 export default {
   data () {
     return {
+      areaarr: [],
+      areaobj: {
+        state: 0
+      },
       activeTab: 'home',
       basicinfo: {},
       reportman: {},
@@ -325,8 +427,14 @@ export default {
           time: '1484816933435'
         }
       ],
-      recordLoglist: []
+      recordLoglist: [],
+      editpro: {},
+      buyer: {},
+      competitors: {}
     }
+  },
+  components: {
+    'vue-area': Area
   },
   methods: {
     init: async function () {
@@ -377,7 +485,7 @@ export default {
         }
       })
       model.basicinfo = getresult.data
-      model.reportman = (getresult.data.project_rel_project_reportman || {}).items[0]
+      model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
     },
@@ -482,6 +590,128 @@ export default {
         })
       }
       return res
+    },
+
+    // 编辑项目信息
+    editProject: function (id) {
+      model.activeTab = 'editproject'
+      proId = id
+    },
+
+    // 编辑甲方信息
+    editBuyer: function (id) {
+      model.buyer = {
+        area: (model.basicinfo.first_party_province_poi_province || {}).ProvinceName + '-' + (model.basicinfo.first_party_city_poi_city || {}).CityName + '-' + (model.basicinfo.first_party_district_poi_district || {}).DistrictName,
+        pro_id: (model.basicinfo.first_party_province_poi_province || {}).id,
+        city_id: (model.basicinfo.first_party_city_poi_city || {}).id,
+        dis_id: (model.basicinfo.first_party_district_poi_district || {}).id,
+        first_party_linkman: model.basicinfo.first_party_linkman,
+        first_party_job: model.basicinfo.first_party_job,
+        first_party_tel: model.basicinfo.first_party_tel
+      }
+      model.activeTab = 'editbuyer'
+      proId = id
+    },
+
+    // 选择地区
+    changeAre: function () {
+      model.areaobj.state = Math.random()
+    },
+
+    // 获取选择地区信息
+    getArea: function (str) {
+      model.buyer.area = str[0].text + '-' + str[1].text + '-' + str[2].text
+      model.buyer.pro_id = str[0].value || 1
+      model.buyer.city_id = str[1].value || 1
+      model.buyer.dis_id = str[2].value || 1
+    },
+
+    // 确认保存甲方信息
+    confEditBuyer: function () {
+      let param = {
+        id: proId,
+        first_party_province_poi_province: model.buyer.pro_id,
+        first_party_city_poi_city: model.buyer.city_id,
+        first_party_district_poi_district: model.buyer.dis_id,
+        first_party_linkman: model.buyer.first_party_linkman || '',
+        first_party_job: model.buyer.first_party_job || '',
+        first_party_tel: model.buyer.first_party_tel || ''
+      }
+      axios.put('functions/report/project', null, {
+        data: param
+      }).then(function (data) {
+        model.basicinfo.first_party_province_poi_province = {
+          id: model.buyer.pro_id,
+          ProvinceName: model.buyer.area.split('-')[0]
+        }
+        model.basicinfo.first_party_city_poi_city = {
+          id: model.buyer.city_id,
+          CityName: model.buyer.area.split('-')[1]
+        }
+        model.basicinfo.first_party_district_poi_district = {
+          id: model.buyer.dis_id,
+          DistrictName: model.buyer.area.split('-')[2]
+        }
+        model.basicinfo.first_party_linkman = model.buyer.first_party_linkman
+        model.basicinfo.first_party_job = model.buyer.first_party_job
+        model.basicinfo.first_party_tel = model.buyer.first_party_tel
+        window.mui.toast('编辑甲方信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 编辑竞争信息
+    editCompetitors: function (id) {
+      model.competitors = {
+        second_party_competitor: model.basicinfo.second_party_competitor,
+        competitor: model.basicinfo.competitor,
+        competitor_strengths: model.basicinfo.competitor_strengths,
+        competitor_projections: model.basicinfo.competitor_projections
+      }
+      model.activeTab = 'editcompetitors'
+      proId = id
+    },
+
+    // 确定提交竞争信息
+    confEditComp: function () {
+      let param = {
+        id: proId,
+        second_party_competitor: model.competitors.second_party_competitor || '',
+        competitor: model.competitors.competitor || '',
+        competitor_strengths: model.competitors.competitor_strengths || '',
+        competitor_projections: model.competitors.competitor_projections || ''
+      }
+      axios.put('functions/report/project', null, {
+        data: param
+      }).then(function (data) {
+        model.basicinfo.second_party_competitor = model.competitors.second_party_competitor
+        model.basicinfo.competitor = model.competitors.competitor
+        model.basicinfo.competitor_strengths = model.competitors.competitor_strengths
+        model.basicinfo.competitor_projections = model.competitors.competitor_projections
+        window.mui.toast('编辑竞争信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+      console.log(model.competitors)
     }
   },
   mounted () {
@@ -491,6 +721,29 @@ export default {
 }
 </script>
 <style>
+.sub-input-box {
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+  color: #999;
+}
+.sub-input-box label{
+  line-height: 18px;
+  width: 30%;
+}
+.sub-input-box .area-text{
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  padding-right: 10px;
+  width: 70%;
+  text-align: right;
+}
+.sub-input-box input{
+  font-size: 14px;
+  width: 70%;
+  text-align: right;
+}
 .close-icon{
   position: absolute;
   top: 10px;
@@ -505,13 +758,13 @@ export default {
 .record-show {
   position: relative;
 }
-.record-show .go-back{
+.subbox-show .go-back{
   position: relative;
   top: 5px;
   color: #666;
   font-size: 14px;
 }
-.record-show .save-btn{
+.subbox-show .save-btn{
   position: relative;
   top: 6px;
   color: #666;

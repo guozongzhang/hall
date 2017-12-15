@@ -193,7 +193,7 @@
     </div>
     <div class="other">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
         <h1 class="mui-title">我的项目</h1>
         <a class="mui-icon mui-pull-right complete" @click="postReporter()">完成</a>
       </header>
@@ -221,7 +221,7 @@
     </div>
     <div class="otherRemark">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
         <h1 class="mui-title othertitle"></h1>
         <a class="mui-icon mui-pull-right complete" @click="postRremork()">完成</a>
       </header>
@@ -236,7 +236,7 @@
     </div>
     <div class="otherCompete">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
         <h1 class="mui-title otherCompetetitle"></h1>
         <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">完成</a>
       </header>
@@ -415,6 +415,14 @@
             }, 2000)
           }
         })
+      },
+
+      // 添加跟踪记录页面的返回
+      goBack: function () {
+        $('.more').show()
+        $('.other').hide()
+        $('.otherRemark').hide()
+        $('.otherCompete').hide()
       },
 
       changeradio: function (value) {
@@ -809,6 +817,12 @@
   }
 </script>
 <style lang="">
+  .sub-go-back{
+    position: relative;
+    top: 5px;
+    color: #666;
+    font-size: 14px !important;
+  }
   .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
     display: none;
   }

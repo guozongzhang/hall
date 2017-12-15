@@ -18,7 +18,7 @@
       <div class="mui-scroll-wrapper" id="pullfresh">
         <div class="mui-scroll">
           <div v-for="item in datalist" class="listdiv">
-            <a :href="'/projectdetail?id=' + item.id">
+            <a :href="'/projectdetail?id=' + item.id" class="flagdetail">
               <h4>
                 <i>{{item.amount}}万元</i>·<span>{{item.name}}</span>
               </h4>
@@ -81,7 +81,7 @@
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
         window.mui('#pullfresh').on('tap', 'a', function (event) {
-          let classFlag = $(event.target).attr('href')
+          let classFlag = $('#pullfresh').find('.flagdetail').attr('href')
           window.location.href = model.linkPath + classFlag
         })
         await model.getData()

@@ -580,7 +580,7 @@ export default {
         data: {id: model.basicinfo.id}
       }).then(function (data) {
         window.mui.toast('报备成功')
-        model.basicinfo.state === 'wait_handle'
+        model.basicinfo.state = 'wait_handle'
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')

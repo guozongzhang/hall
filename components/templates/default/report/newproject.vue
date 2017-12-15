@@ -10,25 +10,25 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>项目名称<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入项目名称" v-model="thisdata.name">
+            <input type="text" maxlength="20" placeholder="请输入项目名称" v-model="thisdata.name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>公司名称<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <input type="text" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number"  class="mui-input-clear" placeholder="万元" v-model="thisdata.amount">
+            <input type="number"   placeholder="万元" v-model="thisdata.amount">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text"  class="mui-input-clear" placeholder="" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -59,8 +59,8 @@
             </span>
           </span>
         </li>
-        <li class="mui-table-view-cell" v-if="thisdata.project_attachment.length > 0">
-          <span v-for="(imgitem,imgIndex) in thisdata.project_attachment" class="posir">
+        <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
+          <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
             <img :src="imgitem.file_url" alt=""  class="fjimg">
             <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
           </span>
@@ -74,7 +74,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目编号</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入项目编号" v-model="thisdata.number">
+              <input type="text"   placeholder="请输入项目编号" v-model="thisdata.number">
             </div>
           </li>
           <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
@@ -108,19 +108,19 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人姓名</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入项目编号" v-model="thisdata.first_party_linkman">
+              <input type="text"   placeholder="请输入项目编号" v-model="thisdata.first_party_linkman">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人职务</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
+              <input type="text"   placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人电话</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
+              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
             </div>
           </li>
         </div>
@@ -133,31 +133,31 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>与项目关系</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入与项目关系" v-model="thisdata.project_reportman[0].project_relation">
+              <input type="text" maxlength="20" placeholder="请输入与项目关系" v-model="thisdata.project_reportman[0].project_relation">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>期望提成</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
+              <input type="text"   placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目优势</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
+              <input type="text"   placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系邮箱</label>
-              <input type="text" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email" class="mui-input-clear" placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
+              <input type="text" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email"  placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
             </div>
           </li>
         </div>
@@ -177,13 +177,13 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目亮点</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
+              <input type="text"   placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目形式预测</label>
-              <input type="text"  class="mui-input-clear" placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
+              <input type="text"   placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
             </div>
           </li>
         </div>
@@ -212,8 +212,8 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
-              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"  class="mui-input-clear" placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
+              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
             </div>
           </li>
         </div>
@@ -229,7 +229,7 @@
         <li class="mui-table-view-cell textareaclass">
           <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" type="text"  class="mui-input-clear othertextarea" placeholder="请输入备注"></textarea>
+            <textarea style="width:99%!important" type="text" maxlength="50" class="mui-input-clear othertextarea" placeholder="请输入备注"></textarea>
           </div>
         </li>
       </ul>
@@ -305,7 +305,7 @@
           feasibility: 3, // '可行性'
           validity: 'three_month',
           remark: '',
-          project_attachment: [], // 附件信息
+          projectAttachment: [], // 附件信息
           sketch: '',
           risk_analysis: '',
           invitation_time: '',
@@ -448,14 +448,14 @@
           return false
         }
         let ssdata
-        if (model.thisdata.project_attachment.length < 1) {
-          delete model.thisdata.project_attachment
+        if (model.thisdata.projectAttachment.length < 1) {
+          delete model.thisdata.projectAttachment
         } else {
           ssdata = _.extend(model.thisdata, {
             first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
             first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
             first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
-            project_attachment: JSON.stringify(model.thisdata.project_attachment),
+            project_attachment: JSON.stringify(model.thisdata.projectAttachment),
             project_reportman: JSON.stringify(model.thisdata.project_reportman),
             project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
             invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
@@ -570,7 +570,7 @@
             },
             success: function (data) {
               $input.unwrap()
-              model.thisdata.project_attachment.push({
+              model.thisdata.projectAttachment.push({
                 file_url: data.url,
                 id: 0,
                 delete: 'no'
@@ -621,7 +621,7 @@
 
       // 删除附件图片
       deleteimg: function (index) {
-        model.thisdata.project_attachment.splice(index, 1)
+        model.thisdata.projectAttachment.splice(index, 1)
       },
 
       // 进入textarea

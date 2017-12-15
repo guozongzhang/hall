@@ -30,8 +30,8 @@
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
             <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
-          <div class="go-report">
-            <a href="javascript:;">去报备</a>
+          <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
+            <a href="javascript:;" @click="gotoReport()">去报备</a>
           </div>
         </div>
         <div class="sub-detail">
@@ -80,7 +80,7 @@
                       </li>
                       <li class="mui-table-view-cell">
                         <span>产品品类：</span>
-                        <span class="list-text">{{progoodstypestr}}</span>
+                        <span class="list-text">{{basicinfo.invitation_time}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>项目介绍：</span>
@@ -519,8 +519,7 @@ export default {
       reporter: {},
       buyer: {},
       competitors: {},
-      classifyArr: [],
-      progoodstypestr: ''
+      classifyArr: []
     }
   },
   components: {
@@ -570,14 +569,27 @@ export default {
         }
       })
       model.basicinfo = getresult.data
-      let arr = []
-      getresult.data.project_rel_project_furniture_types.items.forEach((item) => {
-        arr.push(item.name)
-      })
-      model.progoodstypestr = arr.join('-')
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 去报备
+    gotoReport: function () {
+      axios.post('functions/report/record', null, {
+        data: {id: model.basicinfo.id}
+      }).then(function (data) {
+        window.mui.toast('报备成功')
+        model.basicinfo.state = 'wait_handle'
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
     },
 
     // 右上角更多操作

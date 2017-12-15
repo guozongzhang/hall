@@ -23,8 +23,8 @@
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
             <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
-          <div class="go-report">
-            <a href="javascript:;">去报备</a>
+          <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'"> 
+            <a href="javascript:;" @click="gotoReport()">去报备</a>
           </div>
         </div>
         <div class="sub-detail">
@@ -817,6 +817,24 @@ export default {
         setTimeout(function () {
           model.activeTab = 'home'
         }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 去报备
+    gotoReport: function () {
+      axios.post('functions/report/record', null, {
+        data: {id: model.basicinfo.id}
+      }).then(function (data) {
+        console.log(data)
+        window.mui.toast('12')
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')

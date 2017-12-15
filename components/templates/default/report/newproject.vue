@@ -819,6 +819,9 @@
   .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
     display: none;
   }
+  .jzInfo, .reportInfo, .comInfo, .projectInfo{
+    border-bottom: 1px solid #DBDBDD;
+  }
   .jzInfo.active,.reportInfo.active,.comInfo.active,.projectInfo.active{
     display: block
   }

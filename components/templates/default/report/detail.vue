@@ -1538,6 +1538,7 @@ export default {
   padding-bottom: 20px;
 }
 .project-sublist .ul-list li{
+  display: flex;
   font-size: 14px;
   color: #999;
   padding: 5px 0 0 0;
@@ -1546,8 +1547,6 @@ export default {
   background-color: #fff;
 }
 .list-text{
-  position: relative;
-  top: 6px;
   display: inline-block;
   width: calc(100% - 74px);
   overflow: hidden;
@@ -1555,8 +1554,7 @@ export default {
   white-space: nowrap;
 }
 .alist-text{
-  position: relative;
-  top: 6px;
+  flex-grow: 1;
   display: inline-block;
   width: calc(100% - 90px);
   overflow: hidden;
@@ -1564,9 +1562,6 @@ export default {
   white-space: nowrap;
 }
 .attach-list{
-  padding-left: 70px;
-  position: relative;
-  top: -14px;
 }
 .attach-list img{
   width: 40px;

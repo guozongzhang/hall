@@ -58,66 +58,6 @@
         </a>
       </li>
     </ul>
-    <ul class="mui-table-view" style="display: none">
-      <li class="personli">
-        <a href="javascript:;">
-          <span class="phone"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              手机号<i style="font-style: normal;">:</i>
-              <span>{{info.tel}}</span>
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;" v-bind:class="(loginstate && !info.identity.none) ? 'mui-navigate-right' : ''" @click="goNextPage('/uptodesigner', 'identify')">
-          <span class="head"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis' v-bind:class="!info.identity.none ? 'h16' : ''">
-              当前身份<i style="font-style: normal;">:</i>
-              <span>{{info.identity.txt}}</span>
-            </p>
-            <i class="sjdesign" v-if="!info.identity.none">升级为销售设计师,享受更多特权</i>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/mycollect', 'normal')">
-          <span class="start"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              我的收藏<i style="font-style: normal;">:</i>
-              <span v-show="loginstate">
-                共
-                <i style="font-style: normal;color: #5075ce">{{info.fur_num}}</i>
-                个
-              </span>
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/settings', 'normal')">
-          <span class="set"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              设置
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a :href="linkPath + '/about'" class="mui-navigate-right">
-          <span class="about"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              关于
-            </p>
-          </div>
-        </a>
-      </li>
-    </ul>
   </div>
 </template>
 <script>
@@ -249,7 +189,6 @@ export default {
     line-height: 30px;
   }
   .ulbox li a span:nth-child(1) {
-    background: url("/images/person.png") no-repeat;
     display: inline-block;
     background-size: 490px;
     margin-right: 10px;
@@ -281,24 +220,31 @@ export default {
   }
 
   .ulbox li span.phone{
+    background: url("/images/person.png") no-repeat;
     background-position:  -212px -24px
   }
   .ulbox li span.wechet{
+    background: url("/images/person.png") no-repeat;
     background-position: -250px -24px;
   }
   .ulbox li span.wechet{
+    background: url("/images/person.png") no-repeat;
     background-position: -250px -24px;
   }
   .ulbox li span.head{
+    background: url("/images/person.png") no-repeat;
     background-position: -289px -24px;
   }
   .ulbox li span.start{
+    background: url("/images/person.png") no-repeat;
     background-position: -330px -24px;
   }
   .ulbox li span.set{
+    background: url("/images/person.png") no-repeat;
     background-position: -369px -24px;
   }
   .ulbox li span.about{
+    background: url("/images/person.png") no-repeat;
     background-position: -409px -24px;
   }
   .mui-navigate-right:after{

@@ -78,10 +78,10 @@
             </div>
           </li>
           <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
-            <a href="javascript:;" class="mui-navigate-right">项目介绍<span>500字</span></a>
+            <a href="javascript:;" class="mui-navigate-right">项目介绍<span class="mui-ellipsis">{{thisdata.intro}}</span></a>
           </li>
           <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析')">
-            <a href="javascript:;" class="mui-navigate-right">风险分析<span>500字</span></a>
+            <a href="javascript:;" class="mui-navigate-right">风险分析<span class="mui-ellipsis">{{thisdata.risk_analysis}}</span></a>
           </li>
           <li class="mui-table-view-cell">
             <a href="javascript:;" class="mui-navigate-right"  @click="changeTime('invitation')">招标时间<span>{{thisdata.invitation_time}}</span></a>
@@ -108,7 +108,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人姓名</label>
-              <input type="text"   placeholder="请输入项目编号" v-model="thisdata.first_party_linkman">
+              <input type="text"   placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
             </div>
           </li>
           <li class="mui-table-view-cell">
@@ -229,7 +229,7 @@
         <li class="mui-table-view-cell textareaclass">
           <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" type="text" maxlength="50" class="mui-input-clear othertextarea" placeholder="请输入备注"></textarea>
+            <textarea style="width:99%!important" type="text" maxlength="50" class="mui-input-clear othertextarea"></textarea>
           </div>
         </li>
       </ul>
@@ -461,25 +461,17 @@
             invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
             delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
           })
+          console.log(submitData)
+          axios.post('functions/report/project', null, {
+            data: submitData
+          }).then(function (data) {
+            window.mui.toast('创建项目成功')
+            window.location.href = model.linkPath + '/report'
+          }).catch(function () {
+            window.mui.toast('失败!')
+          })
         }
-        console.log(submitData)
-        axios.post('functions/report/project', null, {
-          data: submitData
-        }).then(function (data) {
-          window.mui.toast('创建项目成功')
-          window.location.href = model.linkPath + '/report'
-        }).catch(function () {
-          window.mui.toast('失败!')
-        })
       },
-
-      // 时间格式化
-      // forMatTime: function (value, type) {
-      //   if (_.isEmpty(value) || parseInt(value) === 0) { return '' }
-      //   moment.locale('Chinese (Simplified)')
-      //   let timetype = type || 'YYYY-MM-DD HH:mm:ss'
-      //   return moment(parseInt(value)).format(timetype)
-      // },
 
       ValidateForm: function (data) {
         let result = ESVal.validate(data, {

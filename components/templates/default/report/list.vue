@@ -18,24 +18,28 @@
       <div class="mui-scroll-wrapper" id="pullfresh">
         <div class="mui-scroll">
           <div v-for="item in datalist" class="listdiv">
-            <h4>
-              <i>{{item.amount}}万元</i>·<span>{{item.name}}</span>
-            </h4>
-            <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
-              <span class="sub" v-bind:class="item.state"></span>
-              <span class="white-sub"></span>
-              <span>{{proStateFilter(item.state)}}</span>
-            </span>
-            <div class="stars-style">
-              <span class="star-box">
-                <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
-              </span>
-            </div>
-            <div class="fz12">{{item.first_party_name}}</div>
-            <div class="fz12 intro-style">{{item.intro}}</div>
-            <div class="detail">
-              <a :href="'/projectdetail?id=' + item.id">查看详情</a>
-            </div>
+            <a :href="'/projectdetail?id=' + item.id">
+              <h4>
+                <i>{{item.amount}}万元</i>·<span>{{item.name}}</span>
+              </h4>
+              <div>
+                <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
+                  <span class="sub" v-bind:class="item.state"></span>
+                  <span class="white-sub"></span>
+                  <span>{{proStateFilter(item.state)}}</span>
+                </span>
+                <div class="stars-style">
+                  <span class="star-box">
+                    <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+                  </span>
+                </div>
+                <div class="fz12">{{item.first_party_name}}</div>
+                <div class="fz12 intro-style">{{item.intro}}</div>
+              </div>
+              <div class="detail">
+                <a href="javascript:;">查看详情</a>
+              </div>
+            </a>
           </div>
           <p class="loading-icon" v-show="is_loading">
             <span class="mui-spinner"></span>

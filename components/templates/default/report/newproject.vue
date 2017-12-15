@@ -332,12 +332,9 @@
             {
               type: 'self',
               user_poi_reportman: 0,
-              // clonename: '',
               name: '',
               tel: '',
-              // clonetel: '',
               email: '',
-              // cloneemail: '',
               project_relation: '',
               royalties_expectation: '',
               strengths: ''
@@ -586,7 +583,6 @@
 
       // 点击筛选
       showClassify: function () {
-        // model.checkUrl(urlObj)
         $('#classifylist').show()
         $('#classifylist').addClass('animated bounceInRight')
         setTimeout(function () {

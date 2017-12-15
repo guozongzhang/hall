@@ -528,7 +528,6 @@ export default {
   },
   methods: {
     init: async function () {
-      model.activeTab = 'home'
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
@@ -911,8 +910,11 @@ export default {
       axios.put('functions/report/project', null, {
         data: param
       }).then(function (data) {
-        model.init()
         window.mui.toast('编辑项目信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+        model.init()
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')

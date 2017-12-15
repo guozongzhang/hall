@@ -1,0 +1,1100 @@
+<template>
+  <div>
+    <div class="more">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">我的项目</h1>
+        <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>项目名称<i>*</i></label>
+            <input type="text" maxlength="20" placeholder="请输入项目名称" v-model="thisdata.name">
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>公司名称<i>*</i></label>
+            <input type="text" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>预计金额<i>*</i></label>
+            <input type="number"   placeholder="万元" v-model="thisdata.amount">
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>简单描述<i>*</i></label>
+            <input type="text" maxlength="20" placeholder="" v-model="thisdata.sketch">
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>项目可行性<i>*</i></label>
+            <ul class="start">
+              <li v-for="(index,item) in 5" @click="changeStart(index)">
+                <i v-bind:class="thisdata.feasibility - index >= 0 ? 'fa-star' : 'fa-star-o'" class="fa mui-icon mui-icon-left-nav mui-pull-right"></i>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<span>{{cloneValidity}}</span></a>
+        </li>
+        <li class="mui-table-view-cell" @click="getreport()">
+          <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
+        </li>
+        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注')">
+          <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
+        </li>
+        <li class="mui-table-view-cell" style="min-height: 43px">
+          <span class="upload-box" id="upload_com"  @click="upload_com()">
+            <a href="javascript:;">添加附件</a>
+            <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
+            <span class="add-btn" style="float: right">
+              <i class="fa fa-plus add-icon"></i>
+            </span>
+          </span>
+        </li>
+        <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
+          <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
+            <img :src="imgitem.file_url" alt=""  class="fjimg">
+            <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
+          </span>
+        </li>
+        <li style="height: 15px; background: #EEEEEE"></li>
+        <li class="mui-table-view-cell right0" @click="showmore('.projectInfo')">
+          <a href="javascript:;" class="mui-navigate-right ">更多项目信息</a>
+        </li>
+
+        <div class="projectInfo">
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目编号</label>
+              <input type="text"   placeholder="请输入项目编号" v-model="thisdata.number">
+            </div>
+          </li>
+          <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
+            <a href="javascript:;" class="mui-navigate-right">项目介绍<span class="mui-ellipsis">{{thisdata.intro}}</span></a>
+          </li>
+          <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析')">
+            <a href="javascript:;" class="mui-navigate-right">风险分析<span class="mui-ellipsis">{{thisdata.risk_analysis}}</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right"  @click="changeTime('invitation')">招标时间<span>{{thisdata.invitation_time}}</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right" @click="changeTime('delivery')">交付时间<span>{{thisdata.delivery_time}}</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right" @click="showClassify()">产品分类<span class="mui-ellipsis">{{furtypeStr}}</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right"  @click="testone('type')">项目类型<span>{{cloneCategory}}</span></a>
+          </li>
+        </div>
+
+        <li class="mui-table-view-cell right0"  @click="showmore('.comInfo')">
+          <a href="javascript:;" class="mui-navigate-right">更多甲方信息</a>
+        </li>
+
+        <div class="comInfo">
+          <li class="mui-table-view-cell">
+            <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">所属区域<span>{{thisdata.first_party_district_poi_district.text}}</span><span>{{thisdata.first_party_city_poi_city.text}}</span><span>{{thisdata.first_party_province_poi_province.text}}</span></a>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系人姓名</label>
+              <input type="text"   placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系人职务</label>
+              <input type="text"   placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系人电话</label>
+              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
+            </div>
+          </li>
+        </div>
+
+        <li class="mui-table-view-cell right0" @click="showmore('.reportInfo')">
+          <a href="javascript:;" class="mui-navigate-right ">更多报备信息</a>
+        </li>
+
+        <div class="reportInfo">
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>与项目关系</label>
+              <input type="text" maxlength="20" placeholder="请输入与项目关系" v-model="thisdata.project_reportman[0].project_relation">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>期望提成</label>
+              <input type="text"   placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目优势</label>
+              <input type="text"   placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系电话</label>
+              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>联系邮箱</label>
+              <input type="text" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email"  placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
+            </div>
+          </li>
+        </div>
+        
+        <li class="mui-table-view-cell right0" @click="showmore('.jzInfo')">
+          <a href="javascript:;" class="mui-navigate-right ">更多竞争优势</a>
+        </li>
+
+        <div class="jzInfo">
+          <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
+            <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
+          </li>
+
+          <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
+            <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目亮点</label>
+              <input type="text"   placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>项目形式预测</label>
+              <input type="text"   placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
+            </div>
+          </li>
+        </div>
+      </ul>
+      <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
+      <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
+    </div>
+    <div class="other">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <h1 class="mui-title">我的项目</h1>
+        <a class="mui-icon mui-pull-right complete" @click="postReporter()">完成</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <div class="reporter">
+          <li class="mui-table-view-cell"> 
+            <div class="mui-radio cssradiodiv">
+              <input type="radio" name="style" value="self" v-model="thisdata.project_reportman[0].type" @change="changeradio('self')"/> 
+              <label>自己</label> {{thisdata.project_reportman[0].type}}
+            </div>
+            <div class="mui-radio cssradiodiv">
+              <input type="radio" name="style" value="other" v-model="thisdata.project_reportman[0].type" @change="changeradio('other')"/> 
+              <label>其他人</label>
+            </div>
+          </li>
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label style="width:1%"><i></i></label>
+              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
+            </div>
+          </li>
+        </div>
+      </ul>
+    </div>
+    <div class="otherRemark">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <h1 class="mui-title othertitle"></h1>
+        <a class="mui-icon mui-pull-right complete" @click="postRremork()">完成</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell textareaclass">
+          <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
+            <label style="width:1%"><i></i></label>
+            <textarea style="width:99%!important" type="text" maxlength="50" class="mui-input-clear othertextarea"></textarea>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="otherCompete">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <h1 class="mui-title otherCompetetitle"></h1>
+        <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">完成</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell textareaclass jzzli" v-for="(item,index) in jzds">
+          <div class="jzztitele">第{{index+1}}竞争者</div>
+          <div class="mui-input-row" style="width:60%;float:left;">
+            <label style="width:1%"><i></i></label>
+            <input style="width:99%!important" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
+          </div>
+          <div class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
+        </li>
+      </ul>
+      <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+    </div>
+    <div class="classify-box" id="classifylist">
+      <div class="sub-classify">
+        <div class="clasify-item" v-for="item in classifyArr">
+          <p class="title">
+            <label>{{item.sp_type_name}}</label>
+            <a href="javascript:;" @click="showAllTypes(item)">
+              <span>{{item.showall ? '收起' : '全部'}}</span>
+              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
+            </a>
+          </p>
+          <ul class="items-ul">
+            <li v-bind:class="item.active.indexOf(sub.id) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
+              <a href="javascript:;">{{sub.type_name}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="clasify-btn">
+          <a href="javascript:;" @click="resetClassify()">重置</a>
+          <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>  
+<script>
+  import One from '../common/onelayer.vue'
+  import Area from '../common/threelayer.vue'
+  import Two from '../common/twolayer.vue'
+  import axios from '~/plugins/axios'
+  let dateJson = require('~/static/js/date.json')
+  // let moment = require('moment')
+  let url = require('url')
+  let ESVal = require('es-validate')
+  let Cookies = require('js-cookie')
+  let $ = require('jquery')
+  let _ = require('underscore')
+  let model
+  let typeStr
+  let changeOneType
+  export default {
+    head: {
+      title: '我的项目'
+    },
+    data () {
+      return {
+        thisdata: {
+          name: '',
+          first_party_name: '',
+          amount: '',
+          intro: '',
+          feasibility: 3, // '可行性'
+          validity: 'three_month',
+          remark: '',
+          projectAttachment: [], // 附件信息
+          sketch: '',
+          risk_analysis: '',
+          invitation_time: '',
+          delivery_time: '',
+          project_furniture_types: [], // 商品分类
+          category: 'tender',
+          number: '',
+          first_party_province_poi_province: {
+            value: '1',
+            text: '北京市'
+          },
+          first_party_city_poi_city: {
+            value: '1',
+            text: '北京市'
+          },
+          first_party_district_poi_district: {
+            value: '1',
+            text: '东城区'
+          },
+          first_party_linkman: '',
+          first_party_tel: '',
+          first_party_job: '',
+          project_reportman: [ // 报备人信息
+            {
+              type: 'self',
+              user_poi_reportman: 0,
+              name: '',
+              tel: '',
+              email: '',
+              project_relation: '',
+              royalties_expectation: '',
+              strengths: ''
+            }
+          ],
+          second_party_competitor: '',
+          competitor: '',
+          competitor_strengths: '',
+          competitor_projections: ''
+        },
+        onearr: [],
+        oneobj: {
+          state: 'three_month'
+        },
+        arr: [],
+        area: {
+          state: 0,
+          province: -1,
+          city: -1,
+          districts: -1
+        },
+        cloneValidity: '3个月', // 临时的时间
+        cloneCategory: '招标采办', // 临时的项目类型
+        classifyArr: [], // 产品分类
+        classifyActiveArr: [],
+        furtypeStr: '',
+        jzds: [], // 竞争对手长度
+        info: {},
+        linkPath: '',
+        layer: '',
+        cloneInfo: {
+          name: '',
+          email: '',
+          tel: ''
+        } // 临时其他报备人信息
+      }
+    },
+    methods: {
+      init: function () {
+        let myURL = url.parse(window.location.href)
+        model.linkPath = '/' + myURL.pathname.split('/')[1]
+        let token = Cookies.get('dpjia-hall-token')
+        axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+          headers: {
+            'X-DP-Token': token
+          }
+        }).then(function (data) {
+          model.info = data.data
+          model.thisdata.project_reportman[0].name = data.data.ui_name || '未设置'
+          model.thisdata.project_reportman[0].tel = data.data.mobile || ''
+          model.thisdata.project_reportman[0].email = data.data.u_email || ''
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
+        })
+
+        axios.get('/functions/furnitures/furniture_types', {
+        }).then(function (data) {
+          data.data.forEach(item => {
+            item.active = ''
+            item.showall = false
+          })
+          model.classifyArr = data.data
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          }
+        })
+      },
+
+      // 添加跟踪记录页面的返回
+      goBack: function () {
+        $('.more').show()
+        $('.other').hide()
+        $('.otherRemark').hide()
+        $('.otherCompete').hide()
+      },
+
+      changeradio: function (value) {
+        if (value === 'self') {
+          model.thisdata.project_reportman[0].name = model.info.ui_name || '未设置'
+          model.thisdata.project_reportman[0].tel = model.info.mobile || ''
+          model.thisdata.project_reportman[0].email = model.info.u_email || ''
+        } else {
+          model.thisdata.project_reportman[0].name = model.cloneInfo.name
+          model.thisdata.project_reportman[0].tel = model.cloneInfo.tel
+          model.thisdata.project_reportman[0].email = model.cloneInfo.email
+        }
+      },
+
+      // 提交代码
+      submit: function () {
+        // 下一步验证
+        if (model.thisdata.project_reportman[0].type === 'other') {
+          model.thisdata.project_reportman[0].name = model.cloneInfo.name
+          model.thisdata.project_reportman[0].tel = model.cloneInfo.tel
+          model.thisdata.project_reportman[0].is_self = 'no'
+          model.thisdata.project_reportman[0].email = model.cloneInfo.email
+        } else {
+          model.thisdata.project_reportman[0].is_self = 'yes'
+        }
+        if (!model.ValidateForm(model.thisdata)) {
+          return false
+        }
+        if (model.thisdata.project_reportman[0].name === '') {
+          window.mui.toast('报备人姓名不能为空!')
+          return false
+        }
+        let submitData
+        if (model.thisdata.projectAttachment.length < 1) {
+          delete model.thisdata.projectAttachment
+        } else {
+          submitData = _.extend(model.thisdata, {
+            first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
+            first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
+            first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
+            project_attachment: JSON.stringify(model.thisdata.projectAttachment),
+            project_reportman: JSON.stringify(model.thisdata.project_reportman),
+            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
+            invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
+            delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
+          })
+          console.log(submitData)
+          axios.post('functions/report/project', null, {
+            data: submitData
+          }).then(function (data) {
+            window.mui.toast('创建项目成功')
+            window.location.href = model.linkPath + '/report'
+          }).catch(function () {
+            window.mui.toast('失败!')
+          })
+        }
+      },
+
+      ValidateForm: function (data) {
+        let result = ESVal.validate(data, {
+          name: {
+            required: true,
+            msg: '项目名称不能为空!'
+          },
+          first_party_name: {
+            required: true,
+            msg: '公司名称不能为空!'
+          },
+          amount: {
+            required: true,
+            msg: '预计金额不能为空!'
+          },
+          sketch: {
+            required: true,
+            msg: '简单描述不能为空!'
+          }
+        })
+        if (!result.status) {
+          window.mui.toast(result.msg)
+        }
+        return result.status
+      },
+
+      deletejzz: function (item, index) {
+        model.jzds.splice(index, 1)
+      },
+
+      // 显示各分类全部（收起）
+      showAllTypes: function (obj) {
+        obj.showall = !obj.showall
+      },
+
+      // 选择分类
+      choiceType: function (item, sub) {
+        if (item.active.indexOf(sub.id) < 0) {
+          let obj = {
+            type_poi_furniture_types: sub.id,
+            name: sub.type_name,
+            id: 0,
+            delete: 'no'
+          }
+          item.active = item.active + ',' + sub.id
+          model.classifyActiveArr.push(obj)
+          model.furtypeStr = model.furtypeStr + ',' + sub.type_name
+        }
+      },
+
+      // 确定分类
+      setClassify: function () {
+        model.thisdata.project_furniture_types = model.classifyActiveArr
+        model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
+        $('#classifylist').hide()
+      },
+
+      // 重置分类
+      resetClassify: function () {
+        model.classifyArr.forEach(item => {
+          item.active = ''
+        })
+        model.classifyActiveArr = []
+        $('#classifylist').hide()
+      },
+
+      // 上传图片
+      upload_com: function () {
+        var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+        var $input = $('#upload_com').find('input')
+        $input.unbind().click()
+        $input.unbind().change(function () {
+          if ($input.val() === '') {
+            return false
+          }
+          var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+          $input.wrap(form)
+          window.$('#upload_com').find('form').ajaxSubmit({
+            type: 'post',
+            url: url,
+            data: {
+              mode: 'image',
+              mutiple: '0'
+            },
+            crossDomain: true,
+            headers: {
+              'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+              'X-DP-ID': '7748955b16d6f1a0'
+            },
+            success: function (data) {
+              $input.unwrap()
+              model.thisdata.projectAttachment.push({
+                file_url: data.url,
+                id: 0,
+                delete: 'no'
+              })
+            },
+            error: function (error) {
+              console.log(error)
+            }
+          })
+        })
+      },
+
+      // 点击筛选
+      showClassify: function () {
+        $('#classifylist').show()
+        $('#classifylist').addClass('animated bounceInRight')
+        setTimeout(function () {
+          $('#classifylist').removeClass('bounceInRight')
+        }, 1000)
+      },
+
+      // 添加竞争人
+      addjjz: function () {
+        model.jzds.push({})
+      },
+
+      // 获取报备人
+      getreport: function () {
+        $('.more').hide()
+        $('.other').show()
+        $('.reporter').show()
+      },
+
+      postReporter: function () {
+        $('.more').show()
+        $('.other').hide()
+        $('.reporter').hide()
+      },
+
+      showmore: function (value) {
+        if ($(value).hasClass('active')) {
+          $(value).removeClass('active')
+        } else {
+          $(value).addClass('active')
+        }
+      },
+
+      // 删除附件图片
+      deleteimg: function (index) {
+        model.thisdata.projectAttachment.splice(index, 1)
+      },
+
+      // 进入textarea
+      enterremork: function (type, text) {
+        $('.othertitle').text(text)
+        typeStr = type
+        $('.more').hide()
+        $('.otherRemark').show()
+        $('.othertextarea').val(model.thisdata[type])
+      },
+
+      // 结束textarea
+      postRremork: function () {
+        $('.more').show()
+        $('.otherRemark').hide()
+        model.thisdata[typeStr] = $('.othertextarea').val()
+      },
+
+      // 开始竞争对手
+      enterOtherCompete: function (type, text) {
+        let ms = model.thisdata[type].split(',')
+        console.log(ms)
+        model.jzds = []
+        ms.forEach(item => {
+          model.jzds.push({value: item})
+        })
+        $('.otherCompetetitle').text(text)
+        typeStr = type
+        $('.more').hide()
+        $('.otherCompete').show()
+        $('.othertextarea').val(model.thisdata[type])
+      },
+      // 结束竞争对手
+      endOtherCompete: function () {
+        $('.more').show()
+        $('.otherCompete').hide()
+        let ms = []
+        model.jzds.forEach(item => {
+          ms.push(item.value)
+        })
+        model.thisdata[typeStr] = ms.join(',')
+      },
+
+      // 提交新建项目
+      postReport: function () {
+        console.log(model.thisdata)
+      },
+
+      // 改变可行性
+      changeStart: function (index) {
+        this.thisdata.feasibility = index
+      },
+
+      // 获取项目类型/月份
+      testone: function (type) {
+        changeOneType = type
+        let param = {}
+        model.onearr = []
+        if (type === 'time') {
+          param = {
+            where: {
+              state_types: 'report_valtime'
+            }
+          }
+        } else {
+          param = {
+            where: {
+              state_types: 'report_projecttype'
+            }
+          }
+        }
+        axios.get('classes/selectable_states', {
+          params: param
+        }).then(function (data) {
+          data.data.items.forEach((item) => {
+            model.onearr.push({'value': item.name, 'text': item.alias})
+          })
+          model.oneobj.state = Math.random()
+        })
+      },
+
+      // 改变月份
+      change: function (val) {
+        if (changeOneType === 'time') {
+          model.cloneValidity = val[0].text
+          model.thisdata.validity = val[0].value
+        } else {
+          model.cloneCategory = val[0].text
+          model.thisdata.category = val[0].value
+        }
+      },
+
+      // 选择省市区
+      changearea: function (val) {
+        // 省市区
+        if (model.layer === 'area') {
+          model.thisdata.first_party_province_poi_province = {
+            value: val[0].value,
+            text: val[0].text
+          }
+          model.thisdata.first_party_city_poi_city = {
+            value: val[1].value,
+            text: val[1].text
+          }
+          model.thisdata.first_party_district_poi_district = {
+            value: val[2].value,
+            text: val[2].text
+          }
+        }
+        // 招标时间
+        if (model.layer === 'invitation') {
+          model.thisdata.invitation_time = val[0].text + '-' + val[1].text + '-' + val[2].text
+        }
+        // 交付时间
+        if (model.layer === 'delivery') {
+          model.thisdata.delivery_time = val[0].text + '-' + val[1].text + '-' + val[2].text
+        }
+      },
+
+      // 招标时间
+      changeTime: function (str) {
+        model.layer = str
+        model.arr = dateJson
+        model.area.state = Math.random()
+      },
+
+      // 省市区三级联动
+      testarea: async function () {
+        model.layer = 'area'
+        model.arr = []
+
+        // 省
+        let paramp = {
+          limit: 100
+        }
+        let prodata = await axios.get('classes/province', {
+          params: paramp
+        })
+        // 市
+        let paramc = {
+          limit: 500
+        }
+        let citydata = await axios.get('classes/city', {
+          params: paramc
+        })
+        // 区
+        let paramd = {
+          limit: 3000
+        }
+        let disdata = await axios.get('classes/district', {
+          params: paramd
+        })
+        prodata.data.items.forEach((p) => {
+          let tp = {
+            'value': p.id,
+            'text': p.ProvinceName,
+            'children': []
+          }
+          citydata.data.items.forEach((c) => {
+            if (c.ProvinceID === p.id) {
+              let cp = {
+                'value': c.id,
+                'text': c.CityName,
+                'children': []
+              }
+              disdata.data.items.forEach((d) => {
+                if (d.CityID === c.id) {
+                  let dp = {
+                    'value': d.id,
+                    'text': d.DistrictName
+                  }
+                  cp.children.push(dp)
+                }
+              })
+              tp.children.push(cp)
+            }
+          })
+          model.arr.push(tp)
+        })
+        model.area.state = Math.random()
+      }
+    },
+    components: {
+      'vue-area': Area,
+      'vue-two': Two,
+      'vue-one': One
+    },
+    mounted () {
+      model = this
+      model.init()
+    }
+  }
+</script>
+<style lang="">
+  .sub-go-back{
+    position: relative;
+    top: 5px;
+    color: #666;
+    font-size: 14px !important;
+  }
+  .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
+    display: none;
+  }
+  .jzInfo, .reportInfo, .comInfo, .projectInfo{
+    border-bottom: 1px solid #DBDBDD;
+  }
+  .jzInfo.active,.reportInfo.active,.comInfo.active,.projectInfo.active{
+    display: block
+  }
+  .jzztitele {
+    margin: 0 -15px;
+    font-size: 12px;
+    background: #eee;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 15px;
+    color: #969696;
+  }
+  .nav li.show{
+    height: auto;
+  }
+  .mb15 {
+    margin-bottom: 15px;
+  }
+  .right0 .mui-navigate-right:after{
+    right: auto;
+    top: 37%;
+    transform:rotate(90deg);
+    margin-left: 5px;
+  }
+  .right0 .mui-navigate-right {
+    text-align: center;
+    color: #9D9D9D;
+    margin-right: 5px;
+  }
+  
+  .mui-input-row {
+    height: 43px;
+  }
+  .mui-input-row label {
+    height: 43px;
+    padding: 0;
+    line-height: 43px;
+    font-size: 12px;
+    /*padding-left: 10px;*/
+    width: 25%;
+  }
+  .mui-input-row input{
+    font-size: 12px;
+    padding: 0;
+    line-height: 43px;
+    height: 43px;
+    width: 75%!important;
+    text-align: right;
+  }
+  .nav {
+    margin-top: 50px;
+  }
+
+  .nav li {
+    height: 43px;
+    line-height: 43px;
+    padding: 0;
+  }
+  .nav li a {
+    font-size: 13px;
+    color: #3A3A3A;
+  }
+  .nav li i {
+    color: red;
+    font-style: normal;
+    margin-left: 4px;
+  }
+  .nav li i.fa-star{
+    color: #FFBE00;
+  }
+  .nav li i.fa-star-o{
+    color: #FFBE00;
+  }
+  .mui-table-view-cell{
+    padding: 0 15px!important;
+  }
+  .mui-table-view-cell>a:not(.mui-btn){
+    margin: 0;
+    padding: 0px;
+  }
+  .mui-table-view-cell:after {
+    left: 0
+  }
+
+  .liul{
+    padding: 0;
+  }
+  .mui-navigate-right:after, .mui-push-right:after {
+    right: 0px;
+  }
+  .start{
+    padding:0;
+    float: right;
+    margin-top: 12px;
+  }
+  .start li{
+    float: left;
+    width: 20px; 
+    height: 20px;
+    list-style-type: none
+  }
+  .mui-table-view-cell a span{
+    float: right;
+    color: #969696;
+    font-size: 12px;
+    margin-right: 20px;
+  }
+  .mui-table-view-chevron .mui-table-view-cell>a:not(.mui-btn) {
+    margin: 0;
+  }
+  .baobdiv{
+    float: left;
+  }
+  .cssradiodiv {
+    float: left;
+  }
+  .cssradiodiv label{
+    font-size: 12px;
+    margin-left: 27px;
+    padding-right: 20px;
+  }
+  .mui-radio input[type=radio]:before {
+    font-size: 20px;
+  }
+  .mui-radio input[type=radio] {
+    /*margin-top: 10px;*/
+    top: 13px;
+    left: 0px;
+  }
+  .nav li.textareaclass{
+    height: 80px;
+  }
+  .nav li.textareaclass textarea{
+    height: 80px;
+    font-size: 12px;
+    padding:10px 0;
+  }
+  .complete{
+    font-size: 12px!important;
+    line-height: 44px;
+    padding: 0 10px!important;
+  }
+  .mui-ellipsis{
+    max-width: 70%;
+  }
+  .nav li.jzzli{
+    height: 74px;
+  }
+  .jzzli input {
+    text-align: left;
+  }
+  .addjjz {
+    font-size: 12px;
+    float: right;
+    margin-top: 5px;
+    margin-right: 15px;
+  }
+  .fjimg{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-top: 6px;
+    margin-right: 6px;
+  }
+  .deleteimg{
+    position: absolute;
+    left: -4px;
+    top: 2px;
+  }
+  .posir{
+    position: relative;
+    display: inline-block;
+    height:44px;
+  }
+   .classify-box{
+    display: none;
+    position: fixed;
+    top: 44px;
+    z-index: 1000;
+    width: 100%;
+    height: calc(100% - 44px);
+    background-color: rgba(0, 0, 0, 0.6);
+    overflow-y: auto;
+  }
+   .sub-classify{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 280px;
+    min-height: calc(100% - 44px);
+    padding: 10px;
+    background-color: #fff;
+    padding-bottom: 50px;
+  }
+  .clasify-item{
+    margin-bottom: 20px;
+  }
+  .clasify-item .title{
+    margin: 0;
+    padding: 0;
+    height: 22px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+  .title > label {
+    color: #050505;
+  }
+  .title > a{
+    float: right;
+  }
+  .clasify-item .items-ul{
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+  }
+  .clasify-item .items-ul li{
+    display: inline-block;
+    list-style: none;
+    width: 74px;
+    height: 30px;
+    margin-right: 12px;
+    margin-bottom: 6px;
+  }
+  .clasify-item .items-ul li:nth-child(3n){
+    margin-right: 0;
+  }
+  .clasify-item .items-ul li a{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    padding: 0 5px;
+    text-align: center;
+    line-height: 28px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3d3d3d;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clasify-item .items-ul .active a{
+    background-color: #5075ce;
+    border: 1px solid #5075ce;
+    color: #fff;
+  }
+  .clasify-btn{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    height: 50px;
+    z-index: 100;
+    background-color: #fff;
+  }
+  .clasify-btn > a{
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    color: #3d3d3d;
+    font-size: 15px;
+    border-top: 1px solid #ababab;
+    cursor: pointer;
+  }
+  .clasify-btn .submit-btn{
+    background-color: #5075ce;
+    border-top: 1px solid #5075ce;
+    color: #fff;
+  }
+</style>

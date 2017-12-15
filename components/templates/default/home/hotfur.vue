@@ -148,7 +148,7 @@ export default {
     padding: 0;
     width: 35%;
     position: relative;
-    margin-right: 6px;
+    margin-right: 14px;
   }
   .fur-item .link-box{
     display: inline-block;

@@ -38,6 +38,13 @@
           <span class="text">共{{info.fur_num}}个</span>
         </a>
       </li>
+      <li v-show="info.identity.none && projectstate">
+        <a href="javascript:;" class="mui-navigate-right" @click="goNextPage('/report', 'project')">
+          <span class="bgicon myproject"></span>
+          <span class="info">我的项目:</span>
+          <span class="text">共{{info.projects_count}}个</span>
+        </a>
+      </li>
       <li>
         <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/settings', 'normal')">
           <span class="bgicon set"></span>
@@ -51,160 +58,8 @@
         </a>
       </li>
     </ul>
-    <ul class="mui-table-view" style="display: none">
-      <li class="personli">
-        <a href="javascript:;">
-          <span class="phone"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              手机号<i style="font-style: normal;">:</i>
-              <span>{{info.tel}}</span>
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;" v-bind:class="(loginstate && !info.identity.none) ? 'mui-navigate-right' : ''" @click="goNextPage('/uptodesigner', 'identify')">
-          <span class="head"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis' v-bind:class="!info.identity.none ? 'h16' : ''">
-              当前身份<i style="font-style: normal;">:</i>
-              <span>{{info.identity.txt}}</span>
-            </p>
-            <i class="sjdesign" v-if="!info.identity.none">升级为销售设计师,享受更多特权</i>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/mycollect', 'normal')">
-          <span class="start"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              我的收藏<i style="font-style: normal;">:</i>
-              <span v-show="loginstate">
-                共
-                <i style="font-style: normal;color: #5075ce">{{info.fur_num}}</i>
-                个
-              </span>
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a href="javascript:;" v-bind:class="loginstate ? 'mui-navigate-right' : ''" @click="goNextPage('/settings', 'normal')">
-          <span class="set"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              设置
-            </p>
-          </div>
-        </a>
-      </li>
-      <li class="personli">
-        <a :href="linkPath + '/about'" class="mui-navigate-right">
-          <span class="about"></span>
-          <div class="mui-media-body">
-            <p class='mui-ellipsis'>
-              关于
-            </p>
-          </div>
-        </a>
-      </li>
-    </ul>
   </div>
 </template>
-<style>
-.loginend {
-  font-size: 15px;
-  color: #000;
-  font-weight: bold;
-}
-li {
-  list-style-type: none
-}
-.ulbox li{
-  height: 50px;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ccc
-}
-.ulbox li:last-child{
-}
-.ulbox {
-  padding: 0;
-  background: #fff;
-}
-.ulbox li a {
-  display: block;
-  overflow: hidden;
-  position: relative;
-}
-.ulbox li a span{
-  display: block;
-  float: left;
-  font-size: 14px;
-  color: #000;
-  height: 30px;
-  line-height: 30px;
-}
-.ulbox li a span:nth-child(1) {
-  background: url("/images/person.png") no-repeat;
-  display: inline-block;
-  background-size: 490px;
-  margin-right: 10px;
-  width: 30px;
-}
-.ulbox li a span:nth-child(2) {
-  margin-right: 10px;
-}
-.ulbox li a span:last-child {
-}
-
-.ulbox li a span.havesf i:nth-child(1){
-  display: block;
-  height: 26px;
-  margin-top: -8px;
-  font-size: 14px;
-  font-style: normal;
-  line-height: 32px;
-}
-
-.ulbox li a span.havesf i:nth-child(2){
-  display: block;
-  height: 26px;
-  margin-top: -8px;
-  font-size: 12px;
-  font-style: normal;
-  line-height: 30px;
-  color: #4E73CD
-}
-
-.ulbox li span.phone{
-  background-position:  -212px -24px
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.head{
-  background-position: -289px -24px;
-}
-.ulbox li span.start{
-  background-position: -330px -24px;
-}
-.ulbox li span.set{
-  background-position: -369px -24px;
-}
-.ulbox li span.about{
-  background-position: -409px -24px;
-}
-.mui-navigate-right:after{
-  right: 0px !important;
-}
-
-
-</style>
 <script>
 import axios from '~/plugins/axios'
 let url = require('url')
@@ -216,10 +71,12 @@ export default {
     return {
       linkPath: '',
       loginstate: false,
+      projectstate: false,
       info: {
         header_img: '/images/user.png',
         header_name: '点击登录',
         fur_num: 0,
+        projects_count: 0,
         tel: '-',
         identity: {
           txt: '游客',
@@ -246,11 +103,13 @@ export default {
           'X-DP-Token': token
         }
       }).then(function (data) {
+        model.projectstate = true
         model.info = {
           header_img: data.data.ui_head,
           header_name: data.data.ui_name || '未设置',
           tel: data.data.mobile,
           fur_num: data.data.count,
+          projects_count: data.data.projects_count,
           identity: {
             txt: data.data.user_type,
             none: data.data.type
@@ -280,6 +139,9 @@ export default {
 
     // 跳转页面
     goNextPage: function (url, type) {
+      if (type === 'project') {
+        window.location.href = model.linkPath + url
+      }
       if (model.loginstate) {
         if (type === 'normal') {
           window.location.href = model.linkPath + url
@@ -297,7 +159,105 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
+  .loginend {
+    font-size: 15px;
+    color: #000;
+    font-weight: bold;
+  }
+  li {
+    list-style-type: none
+  }
+  .ulbox li{
+    height: 50px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc
+  }
+  .ulbox li:last-child{
+  }
+  .ulbox {
+    padding: 0;
+    background: #fff;
+  }
+  .ulbox li a {
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+  .ulbox li a span{
+    display: block;
+    float: left;
+    font-size: 14px;
+    color: #000;
+    height: 30px;
+    line-height: 30px;
+  }
+  .ulbox li a span:nth-child(1) {
+    display: inline-block;
+    background-size: 490px;
+    margin-right: 10px;
+    width: 30px;
+  }
+  .ulbox li a span:nth-child(2) {
+    margin-right: 10px;
+  }
+  .ulbox li a span:last-child {
+  }
+
+  .ulbox li a span.havesf i:nth-child(1){
+    display: block;
+    height: 26px;
+    margin-top: -8px;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 32px;
+  }
+
+  .ulbox li a span.havesf i:nth-child(2){
+    display: block;
+    height: 26px;
+    margin-top: -8px;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 30px;
+    color: #4E73CD
+  }
+
+  .ulbox li span.phone{
+    background: url("/images/person.png") no-repeat;
+    background-position:  -212px -24px
+  }
+  .ulbox li span.wechet{
+    background: url("/images/person.png") no-repeat;
+    background-position: -250px -24px;
+  }
+  .ulbox li span.wechet{
+    background: url("/images/person.png") no-repeat;
+    background-position: -250px -24px;
+  }
+  .ulbox li span.head{
+    background: url("/images/person.png") no-repeat;
+    background-position: -289px -24px;
+  }
+  .ulbox li span.start{
+    background: url("/images/person.png") no-repeat;
+    background-position: -330px -24px;
+  }
+  .ulbox li span.myproject{
+    background: url("/images/person.png") no-repeat;
+    background-position: -409px -62px;
+  }
+  .ulbox li span.set{
+    background: url("/images/person.png") no-repeat;
+    background-position: -369px -24px;
+  }
+  .ulbox li span.about{
+    background: url("/images/person.png") no-repeat;
+    background-position: -409px -24px;
+  }
+  .mui-navigate-right:after{
+    right: 0px !important;
+  }
   .sjdesign {
     position: absolute;
     top: 23px;
@@ -344,37 +304,13 @@ export default {
     font-size: 16px;
   }
   .personli span{
-    background: url("/images/person.png") no-repeat;
+    background: url('/images/person.png') no-repeat;
     display: inline-block;
     height: 30px;
     width: 30px;
     background-size: 490px;
     margin-right: 10px;
   }
-
-  .ulbox li span.phone{
-  background-position:  -212px -24px
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.head{
-  background-position: -289px -24px;
-}
-.ulbox li span.start{
-  background-position: -330px -24px;
-}
-.ulbox li span.set{
-  background-position: -369px -24px;
-}
-.ulbox li span.about{
-  background-position: -409px -24px;
-}
-  
-  
   .personli {
     padding: 10px;
     height: 50px;

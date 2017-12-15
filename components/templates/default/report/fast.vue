@@ -45,7 +45,7 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{strToCn(thisdata.validity)}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
@@ -65,8 +65,8 @@
             </span>
           </span>
         </li>
-        <li class="mui-table-view-cell" v-if="thisdata.project_attachment.length > 0">
-          <span v-for="(imgitem,imgIndex) in thisdata.project_attachment" class="posir">
+        <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
+          <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
             <img :src="imgitem.file_url" alt=""  class="fjimg">
             <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
           </span>
@@ -128,13 +128,14 @@
               strengths: ''
             }
           ],
-          project_attachment: [],
+          projectAttachment: [],
           sketch: ''
         },
+        cloneValidity: '3个月', // 临时的时间
         linkPath: '',
         onearr: [],
         oneobj: {
-          state: 'three_month'
+          state: '0'
         },
         clonetitel: '报备备注'
       }
@@ -175,7 +176,6 @@
           data.data.items.forEach((item) => {
             model.onearr.push({'value': item.name, 'text': item.alias})
           })
-          model.oneobj.state = Math.random()
         })
       },
 
@@ -216,7 +216,7 @@
             },
             success: function (data) {
               $input.unwrap()
-              model.thisdata.project_attachment.push({
+              model.thisdata.projectAttachment.push({
                 file_url: data.url,
                 id: 0,
                 delete: 'no'
@@ -229,35 +229,29 @@
         })
       },
 
-      // 项目期限转换
-      strToCn: function (value) {
-        return _.find(this.onearr, item => {
-          return item.value === value
-        }).text
-      },
-
       // 提价数据
       submit: function () {
         if (!model.ValidateForm(model.thisdata)) {
           return false
         }
         let ssdata
-        if (model.thisdata.project_attachment.length < 1) {
-          delete model.thisdata.project_attachment
+        if (model.thisdata.projectAttachment.length < 1) {
+          delete model.thisdata.projectAttachment
         } else {
           ssdata = _.extend(model.thisdata, {
-            project_attachment: JSON.stringify(model.thisdata.project_attachment),
+            project_attachment: JSON.stringify(model.thisdata.projectAttachment),
             project_reportman: JSON.stringify(model.thisdata.project_reportman)
           })
+
+          axios.post('functions/report/fast_record', null, {
+            data: ssdata
+          }).then(function (data) {
+            window.mui.toast('快速报备项目成功')
+            window.location.href = model.linkPath + '/report'
+          }).catch(function () {
+            window.mui.toast('失败!')
+          })
         }
-        axios.post('functions/report/fast_record', null, {
-          data: ssdata
-        }).then(function (data) {
-          window.mui.toast('快速报备项目成功')
-          window.location.href = model.linkPath + '/report'
-        }).catch(function () {
-          window.mui.toast('失败!')
-        })
       },
 
       // 验证
@@ -303,7 +297,8 @@
 
       // 改变月份
       change: function (val) {
-        model.thisdata.validity = val[0].text
+        model.cloneValidity = val[0].text
+        model.thisdata.validity = val[0].value
       }
     },
     components: {

@@ -33,8 +33,8 @@
                     <i class="fa mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
                   </span>
                 </div>
-                <div class="fz12">{{item.first_party_name}}</div>
-                <div class="fz12 intro-style">{{item.intro}}</div>
+                <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
+                <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
               </div>
               <div class="detail">
                 <a href="javascript:;">查看详情</a>

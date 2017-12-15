@@ -80,7 +80,7 @@
                       </li>
                       <li class="mui-table-view-cell">
                         <span>产品品类：</span>
-                        <span class="list-text">{{basicinfo.invitation_time}}</span>
+                        <span class="list-text">{{progoodstyepstr}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>项目介绍：</span>
@@ -519,7 +519,8 @@ export default {
       reporter: {},
       buyer: {},
       competitors: {},
-      classifyArr: []
+      classifyArr: [],
+      progoodstyepstr: ''
     }
   },
   components: {
@@ -568,6 +569,11 @@ export default {
           with: rel
         }
       })
+      let arr = []
+      getresult.data.project_rel_project_furniture_types.items.forEach((item) => {
+        arr.push(item.name)
+      })
+      model.progoodstyepstr = arr.join('-')
       model.basicinfo = getresult.data
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
@@ -912,7 +918,7 @@ export default {
       }).then(function (data) {
         window.mui.toast('编辑项目信息成功')
         setTimeout(function () {
-          model.activeTab = 'home'
+          location.reload()
         }, 1000)
         model.init()
       }).catch(function (error) {

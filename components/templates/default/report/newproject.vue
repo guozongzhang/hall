@@ -282,6 +282,7 @@
   import Two from '../common/twolayer.vue'
   import axios from '~/plugins/axios'
   let dateJson = require('~/static/js/date.json')
+  // let moment = require('moment')
   let url = require('url')
   let ESVal = require('es-validate')
   let Cookies = require('js-cookie')
@@ -456,7 +457,9 @@
             first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
             project_attachment: JSON.stringify(model.thisdata.project_attachment),
             project_reportman: JSON.stringify(model.thisdata.project_reportman),
-            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types)
+            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
+            invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
+            delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
           })
         }
         axios.post('functions/report/project', null, {
@@ -468,6 +471,14 @@
           window.mui.toast('失败!')
         })
       },
+
+      // 时间格式化
+      // forMatTime: function (value, type) {
+      //   if (_.isEmpty(value) || parseInt(value) === 0) { return '' }
+      //   moment.locale('Chinese (Simplified)')
+      //   let timetype = type || 'YYYY-MM-DD HH:mm:ss'
+      //   return moment(parseInt(value)).format(timetype)
+      // },
 
       ValidateForm: function (data) {
         let result = ESVal.validate(data, {

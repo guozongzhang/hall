@@ -447,11 +447,11 @@
           window.mui.toast('报备人姓名不能为空!')
           return false
         }
-        let ssdata
+        let submitData
         if (model.thisdata.projectAttachment.length < 1) {
           delete model.thisdata.projectAttachment
         } else {
-          ssdata = _.extend(model.thisdata, {
+          submitData = _.extend(model.thisdata, {
             first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
             first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
             first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
@@ -462,8 +462,9 @@
             delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
           })
         }
+        console.log(submitData)
         axios.post('functions/report/project', null, {
-          data: ssdata
+          data: submitData
         }).then(function (data) {
           window.mui.toast('创建项目成功')
           window.location.href = model.linkPath + '/report'

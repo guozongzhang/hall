@@ -38,7 +38,7 @@
           <span class="text">共{{info.fur_num}}个</span>
         </a>
       </li>
-      <li>
+      <li v-show="info.identity.none">
         <a href="javascript:;" class="mui-navigate-right" @click="goNextPage('/report', 'project')">
           <span class="bgicon start"></span>
           <span class="info">我的项目:</span>
@@ -249,7 +249,7 @@ export default {
     line-height: 30px;
   }
   .ulbox li a span:nth-child(1) {
-    background: url("/images/person.png") no-repeat;
+    background: url('/images/person.png') no-repeat;
     display: inline-block;
     background-size: 490px;
     margin-right: 10px;
@@ -280,25 +280,25 @@ export default {
     color: #4E73CD
   }
 
-  .ulbox li span.phone{
+  .ulbox li .bgicon.phone{
     background-position:  -212px -24px
   }
-  .ulbox li span.wechet{
+  .ulbox li .bgicon.wechet{
     background-position: -250px -24px;
   }
-  .ulbox li span.wechet{
+  .ulbox li .bgicon.wechet{
     background-position: -250px -24px;
   }
-  .ulbox li span.head{
+  .ulbox li .bgicon.head{
     background-position: -289px -24px;
   }
-  .ulbox li span.start{
+  .ulbox li .bgicon.start{
     background-position: -330px -24px;
   }
-  .ulbox li span.set{
+  .ulbox li .bgicon.set{
     background-position: -369px -24px;
   }
-  .ulbox li span.about{
+  .ulbox li .bgicon.about{
     background-position: -409px -24px;
   }
   .mui-navigate-right:after{
@@ -350,37 +350,13 @@ export default {
     font-size: 16px;
   }
   .personli span{
-    background: url("/images/person.png") no-repeat;
+    background: url('/images/person.png') no-repeat;
     display: inline-block;
     height: 30px;
     width: 30px;
     background-size: 490px;
     margin-right: 10px;
   }
-
-  .ulbox li span.phone{
-  background-position:  -212px -24px
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.head{
-  background-position: -289px -24px;
-}
-.ulbox li span.start{
-  background-position: -330px -24px;
-}
-.ulbox li span.set{
-  background-position: -369px -24px;
-}
-.ulbox li span.about{
-  background-position: -409px -24px;
-}
-  
-  
   .personli {
     padding: 10px;
     height: 50px;

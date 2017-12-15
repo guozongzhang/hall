@@ -452,30 +452,24 @@
           window.mui.toast('报备人姓名不能为空!')
           return false
         }
-        let submitData
-        if (model.thisdata.projectAttachment.length < 1) {
-          delete model.thisdata.projectAttachment
-        } else {
-          submitData = _.extend(model.thisdata, {
-            first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
-            first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
-            first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
-            project_attachment: JSON.stringify(model.thisdata.projectAttachment),
-            project_reportman: JSON.stringify(model.thisdata.project_reportman),
-            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
-            invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
-            delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
-          })
-          console.log(submitData)
-          axios.post('functions/report/project', null, {
-            data: submitData
-          }).then(function (data) {
-            window.mui.toast('创建项目成功')
-            window.location.href = model.linkPath + '/report'
-          }).catch(function () {
-            window.mui.toast('失败!')
-          })
-        }
+        let submitData = _.extend(model.thisdata, {
+          first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
+          first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
+          first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
+          project_attachment: JSON.stringify(model.thisdata.projectAttachment),
+          project_reportman: JSON.stringify(model.thisdata.project_reportman),
+          project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
+          invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
+          delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
+        })
+        axios.post('functions/report/project', null, {
+          data: submitData
+        }).then(function (data) {
+          window.mui.toast('创建项目成功')
+          window.location.href = model.linkPath + '/report'
+        }).catch(function () {
+          window.mui.toast('失败!')
+        })
       },
 
       ValidateForm: function (data) {

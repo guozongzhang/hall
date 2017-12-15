@@ -65,8 +65,8 @@
             </span>
           </span>
         </li>
-        <li class="mui-table-view-cell" v-if="thisdata.project_attachment.length > 0">
-          <span v-for="(imgitem,imgIndex) in thisdata.project_attachment" class="posir">
+        <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
+          <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
             <img :src="imgitem.file_url" alt=""  class="fjimg">
             <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
           </span>
@@ -128,7 +128,7 @@
               strengths: ''
             }
           ],
-          project_attachment: [],
+          projectAttachment: [],
           sketch: ''
         },
         linkPath: '',
@@ -216,7 +216,7 @@
             },
             success: function (data) {
               $input.unwrap()
-              model.thisdata.project_attachment.push({
+              model.thisdata.projectAttachment.push({
                 file_url: data.url,
                 id: 0,
                 delete: 'no'
@@ -242,11 +242,11 @@
           return false
         }
         let ssdata
-        if (model.thisdata.project_attachment.length < 1) {
-          delete model.thisdata.project_attachment
+        if (model.thisdata.projectAttachment.length < 1) {
+          delete model.thisdata.projectAttachment
         } else {
           ssdata = _.extend(model.thisdata, {
-            project_attachment: JSON.stringify(model.thisdata.project_attachment),
+            project_attachment: JSON.stringify(model.thisdata.projectAttachment),
             project_reportman: JSON.stringify(model.thisdata.project_reportman)
           })
         }

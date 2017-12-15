@@ -30,7 +30,7 @@
                 </span>
                 <div class="stars-style">
                   <span class="star-box">
-                    <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+                    <i class="fa mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
                   </span>
                 </div>
                 <div class="fz12">{{item.first_party_name}}</div>

@@ -704,6 +704,7 @@ export default {
 
     // 添加跟踪记录
     addRecord: async function (id) {
+      model.recordtext = ''
       model.activeTab = 'record'
       proId = id
     },

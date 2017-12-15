@@ -1,9 +1,10 @@
 
 <template>
   <div>
-    <div v-show="activeTab == 'home'">
+    <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
         <a href="javascript:;" class="mui-pull-right register-link">...</a>
       </header>
@@ -48,7 +49,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>项目信息</label>
-                    <span class="edit-icon" @click="editProject(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editProject(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -96,7 +97,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>甲方信息</label>
-                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -126,7 +127,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>报备人信息</label>
-                    <span class="edit-icon" @click="editReport(reportman.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editReport(reportman.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -164,7 +165,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>竞争信息</label>
-                    <span class="edit-icon" @click="editCompetitors(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editCompetitors(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -199,12 +200,12 @@
                         <p>
                           <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                           <span class="pointer"></span>
-                          <span>{{sub.name}}</span>
-                          <span>{{sub.state}}</span>
+                          <span>{{sub.operator}}</span>
+                          <span>{{sub.text}}</span>
                           <span>了项目</span>
-                          <span>[备注]{{sub.remark}}</span>
+                          <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.time)}}</p>
+                        <p>{{forMatTime(sub.create_time)}}</p>
                       </div>
                     </li>
                   </ul>
@@ -456,6 +457,36 @@ let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let activeTypeIds = [] // 产品品类
 let updateTypeArr = [] // 提交的项目类型数组
+let reportState = [
+  {
+    key: 'had_reset',
+    value: '驳回'
+  },
+  {
+    key: 'adopt',
+    value: '采纳'
+  },
+  {
+    key: 'reject',
+    value: '拒绝'
+  },
+  {
+    key: 'had_handle',
+    value: '受理'
+  },
+  {
+    key: 'wait_handle',
+    value: '报备'
+  },
+  {
+    key: 'wait',
+    value: '新建'
+  },
+  {
+    key: 'rescinded',
+    value: '撤销'
+  }
+]
 export default {
   data () {
     return {
@@ -474,40 +505,7 @@ export default {
       linkPath: '',
       stars: [5, 4, 3, 2, 1],
       recordtext: '',
-      reportLoglist: [
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        },
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        },
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        },
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        }
-      ],
+      reportLoglist: [],
       recordLoglist: [],
       editpro: {},
       editproImg: [],
@@ -570,7 +568,23 @@ export default {
     },
 
     // 获取报备记录
-    getReportLog: function (id) {
+    getReportLog: async function (id) {
+      let param = {
+        flow_id: 36,
+        id: id,
+        report_name: model.basicinfo.name
+      }
+      let result = await axios.get('functions/report/record', {
+        params: param
+      })
+      result.data.items.forEach((item) => {
+        reportState.forEach((sub) => {
+          if (item.flow_state === sub.key) {
+            item.text = sub.value
+          }
+        })
+      })
+      model.reportLoglist = result.data.items
     },
 
     // 获取项目跟踪记录
@@ -657,7 +671,7 @@ export default {
       let param = {
         where: JSON.stringify({
           state_types: {
-            $in: ['report_projecttype', 'report_valtime']
+            $in: ['report_projecttype', 'report_valtime', 'report_state']
           }
         })
       }
@@ -1199,7 +1213,8 @@ export default {
 .record-show {
   position: relative;
 }
-.subbox-show .go-back{
+.subbox-show .go-back,
+.subbox-show .sub-go-back{
   position: relative;
   top: 5px;
   color: #666;

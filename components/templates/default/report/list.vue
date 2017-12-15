@@ -24,7 +24,7 @@
             <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
               <span class="sub" v-bind:class="item.state"></span>
               <span class="white-sub"></span>
-              <span>{{stateFilter(item.state)}}</span>
+              <span>{{proStateFilter(item.state)}}</span>
             </span>
             <div class="stars-style">
               <span class="star-box">
@@ -51,12 +51,12 @@
 </template>
 <script>
   import axios from '~/plugins/axios'
-  let Cookies = require('js-cookie')
   let url = require('url')
   let $ = require('jquery')
   let _ = require('underscore')
   let model
   let pagesize = 2
+  let flowState = [] // 项目状态
   export default {
     data () {
       return {
@@ -130,43 +130,43 @@
         model.init()
       },
 
-      // 状态过滤
-      stateFilter: function (str) {
-        let result = ''
-        let stateData = Cookies.get('report-state') || '[]'
-        let stateObj
-        if (stateData) {
-          stateObj = JSON.parse(stateData)
-        }
-        if (stateObj.length > 0) {
-          stateObj.forEach((item) => {
-            if (item.name === str) {
-              result = item.alias
+      // 获取项目常量信息
+      getPorState: async function () {
+        let param = {
+          where: JSON.stringify({
+            state_types: {
+              $in: ['report_state']
             }
           })
-        } else {
-          let param = {
-            where: {
-              state_types: 'report_state'
+        }
+        let res = await axios.get('classes/selectable_states', {params: param})
+        res.data.items.forEach((item) => {
+          // 项目流程状态
+          if (item.state_types === 'report_state') {
+            let tmp = {
+              'text': item.alias,
+              'value': item.name
             }
+            flowState.push(tmp)
           }
-          axios.get('classes/selectable_states', {params: param}).then((res) => {
-            Cookies.set('report-state', res.data.items)
-            res.data.items.forEach((item) => {
-              if (item.name === str) {
-                result = item.alias
-              }
-            })
-          }).catch(function (error) {
-            console.log(error)
-          })
-        }
-        return result
+        })
+      },
+
+      // 项目状态过滤
+      proStateFilter: function (str) {
+        let res = ''
+        flowState.forEach((item) => {
+          if (item.value === str) {
+            res = item.text
+          }
+        })
+        return res
       }
     },
-    mounted () {
+    async mounted () {
       model = this
-      this.init()
+      await model.getPorState()
+      await this.init()
       window.mui.init({
         pullRefresh: {
           container: '#pullfresh',
@@ -235,17 +235,20 @@
   .wait_handle {
     background-color: #5278e5;
   }
-  .had_handle{
-    border-bottom: 6px solid #5278e5;
-  }
   .had_handle {
     background-color: #5278e5;
   }
-  .reject {
-    background-color: #f14F4F;
-  }
   .adopt {
     background-color: #5278e5;
+  }
+  .rescinded {
+    background-color: #ccc;
+  }
+  .had_handle{
+    border-bottom: 6px solid #5278e5;
+  }
+  .reject {
+    background-color: #f14F4F;
   }
   .had_reset {
     background-color: #f14F4F;

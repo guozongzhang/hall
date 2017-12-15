@@ -1,11 +1,18 @@
 
 <template>
   <div>
-    <div v-show="activeTab == 'home'">
+    <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
-        <a href="javascript:;" class="mui-pull-right register-link">...</a>
+        <a href="javascript:;" class="mui-pull-right more-opt" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded'">
+          <span class="point" @click="preMoreOpt()">●●●</span>
+          <span class="sub-opt-box" v-show="getmoreopt" @click="optFunc(basicinfo.state)">
+            <span class="triangle"></span>
+            <span>{{(basicinfo.state == 'wait' || basicinfo.state == 'rescinded') ? '删除报备' : '撤回报备'}}</span>
+          </span>
+        </a>
       </header>
       <div class="detail-box">
         <div class="basic-info">
@@ -48,7 +55,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>项目信息</label>
-                    <span class="edit-icon" @click="editProject(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editProject(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -96,7 +103,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>甲方信息</label>
-                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -126,7 +133,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>报备人信息</label>
-                    <span class="edit-icon" @click="editReport(reportman.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editReport(reportman.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -164,7 +171,7 @@
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>竞争信息</label>
-                    <span class="edit-icon" @click="editCompetitors(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'had_reset'">
+                    <span class="edit-icon" @click="editCompetitors(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
                       <span>编辑</span>
                     </span>
@@ -199,12 +206,12 @@
                         <p>
                           <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                           <span class="pointer"></span>
-                          <span>{{sub.name}}</span>
-                          <span>{{sub.state}}</span>
+                          <span>{{sub.operator}}</span>
+                          <span>{{sub.text}}</span>
                           <span>了项目</span>
-                          <span>[备注]{{sub.remark}}</span>
+                          <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.time)}}</p>
+                        <p>{{forMatTime(sub.create_time)}}</p>
                       </div>
                     </li>
                   </ul>
@@ -456,9 +463,40 @@ let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let activeTypeIds = [] // 产品品类
 let updateTypeArr = [] // 提交的项目类型数组
+let reportState = [
+  {
+    key: 'had_reset',
+    value: '驳回'
+  },
+  {
+    key: 'adopt',
+    value: '采纳'
+  },
+  {
+    key: 'reject',
+    value: '拒绝'
+  },
+  {
+    key: 'had_handle',
+    value: '受理'
+  },
+  {
+    key: 'wait_handle',
+    value: '报备'
+  },
+  {
+    key: 'wait',
+    value: '新建'
+  },
+  {
+    key: 'rescinded',
+    value: '撤回'
+  }
+]
 export default {
   data () {
     return {
+      getmoreopt: false,
       layer: 'area',
       areaarr: [],
       areaobj: {
@@ -474,40 +512,7 @@ export default {
       linkPath: '',
       stars: [5, 4, 3, 2, 1],
       recordtext: '',
-      reportLoglist: [
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        },
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        },
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        },
-        {
-          id: '1',
-          name: '张三',
-          pro: '京乐科技办公楼改造',
-          state: '已驳回',
-          remark: '这个项目还不错',
-          time: '1484816933435'
-        }
-      ],
+      reportLoglist: [],
       recordLoglist: [],
       editpro: {},
       editproImg: [],
@@ -569,8 +574,83 @@ export default {
       await model.getRecordLog(urlObj.id)
     },
 
+    // 右上角更多操作
+    preMoreOpt: function () {
+      model.getmoreopt = !model.getmoreopt
+    },
+
+    // 右上角操作函数（撤销、删除）
+    optFunc: function (state) {
+      let text = (state === 'wait' || state === 'rescinded') ? '删除项目' : '撤回项目'
+      var btnArray = ['否', '是']
+      window.mui.confirm('确定' + text + '?', '友情提示', btnArray, function (e) {
+        if (e.index === 1) {
+          if (state === 'wait' || state === 'rescinded') {
+            let param = {
+              _method: 'DELETE',
+              id: model.basicinfo.id
+            }
+            axios.post('functions/report/project', null, {
+              data: param
+            }).then(function (data) {
+              window.mui.toast(text + '成功!')
+              setTimeout(function () {
+                window.location.href = model.linkPath + '/report'
+              }, 1000)
+            }).catch(function (error) {
+              if (error.response.data.message === 'token is invalid') {
+                window.mui.toast('登录信息过期!')
+                setTimeout(function () {
+                  Cookies.set('dpjia-hall-token', '')
+                  window.location.reload()
+                }, 2000)
+              }
+            })
+          } else {
+            let param = {
+              id: model.basicinfo.id
+            }
+            axios.post('functions/report/revoke', null, {
+              data: param
+            }).then(function (data) {
+              window.mui.toast(text + '成功!')
+              setTimeout(function () {
+                model.init()
+              }, 1000)
+            }).catch(function (error) {
+              if (error.response.data.message === 'token is invalid') {
+                window.mui.toast('登录信息过期!')
+                setTimeout(function () {
+                  Cookies.set('dpjia-hall-token', '')
+                  window.location.reload()
+                }, 2000)
+              }
+            })
+          }
+        }
+        model.getmoreopt = false
+        return false
+      })
+    },
+
     // 获取报备记录
-    getReportLog: function (id) {
+    getReportLog: async function (id) {
+      let param = {
+        flow_id: 36,
+        id: id,
+        report_name: model.basicinfo.name
+      }
+      let result = await axios.get('functions/report/record', {
+        params: param
+      })
+      result.data.items.forEach((item) => {
+        reportState.forEach((sub) => {
+          if (item.flow_state === sub.key) {
+            item.text = sub.value
+          }
+        })
+      })
+      model.reportLoglist = result.data.items
     },
 
     // 获取项目跟踪记录
@@ -657,7 +737,7 @@ export default {
       let param = {
         where: JSON.stringify({
           state_types: {
-            $in: ['report_projecttype', 'report_valtime']
+            $in: ['report_projecttype', 'report_valtime', 'report_state']
           }
         })
       }
@@ -1104,6 +1184,39 @@ export default {
 }
 </script>
 <style>
+.more-opt {
+  position: relative;
+  top: 8px;
+  cursor: pointer;
+}
+.more-opt .point{
+  font-size: 10px;
+  color: #666;
+}
+.sub-opt-box{
+  display: inline-block;
+  position: absolute;
+  right: -5px;
+  top: 28px;
+  width: 64px;
+  text-align: center;
+  height: 26px;
+  line-height: 26px;
+  font-size: 12px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+.sub-opt-box .triangle {
+  position: absolute;
+  top: -6px;
+  left: 44px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 6px solid rgba(0, 0, 0, 0.6);
+}
 .attach-img-box {
   padding-bottom: 10px;
   display: inline-block;
@@ -1199,7 +1312,8 @@ export default {
 .record-show {
   position: relative;
 }
-.subbox-show .go-back{
+.subbox-show .go-back,
+.subbox-show .sub-go-back{
   position: relative;
   top: 5px;
   color: #666;

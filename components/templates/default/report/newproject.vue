@@ -84,13 +84,13 @@
             <a href="javascript:;" class="mui-navigate-right">风险分析<span>500字</span></a>
           </li>
           <li class="mui-table-view-cell">
-            <a href="" class="mui-navigate-right">招标时间</a>
+            <a href="javascript:;" class="mui-navigate-right"  @click="changeTime('invitation')">招标时间<span>{{thisdata.invitation_time}}</span></a>
           </li>
           <li class="mui-table-view-cell">
-            <a href="" class="mui-navigate-right">交付时间</a>
+            <a href="javascript:;" class="mui-navigate-right" @click="changeTime('delivery')">交付时间<span>{{thisdata.delivery_time}}</span></a>
           </li>
           <li class="mui-table-view-cell">
-            <a href="javascript:;" class="mui-navigate-right" @click="showClassify()">产品分类</a>
+            <a href="javascript:;" class="mui-navigate-right" @click="showClassify()">产品分类<span class="mui-ellipsis">{{furtypeStr}}</span></a>
           </li>
           <li class="mui-table-view-cell">
             <a href="javascript:;" class="mui-navigate-right"  @click="testone('type')">项目类型<span>{{cloneCategory}}</span></a>
@@ -281,6 +281,8 @@
   import Area from '../common/threelayer.vue'
   import Two from '../common/twolayer.vue'
   import axios from '~/plugins/axios'
+  let dateJson = require('~/static/js/date.json')
+  // let moment = require('moment')
   let url = require('url')
   let ESVal = require('es-validate')
   let Cookies = require('js-cookie')
@@ -361,9 +363,11 @@
         cloneCategory: '招标采办', // 临时的项目类型
         classifyArr: [], // 产品分类
         classifyActiveArr: [],
+        furtypeStr: '',
         jzds: [], // 竞争对手长度
         info: {},
         linkPath: '',
+        layer: '',
         cloneInfo: {
           name: '',
           email: '',
@@ -453,7 +457,9 @@
             first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
             project_attachment: JSON.stringify(model.thisdata.project_attachment),
             project_reportman: JSON.stringify(model.thisdata.project_reportman),
-            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types)
+            project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
+            invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
+            delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
           })
         }
         axios.post('functions/report/project', null, {
@@ -465,6 +471,14 @@
           window.mui.toast('失败!')
         })
       },
+
+      // 时间格式化
+      // forMatTime: function (value, type) {
+      //   if (_.isEmpty(value) || parseInt(value) === 0) { return '' }
+      //   moment.locale('Chinese (Simplified)')
+      //   let timetype = type || 'YYYY-MM-DD HH:mm:ss'
+      //   return moment(parseInt(value)).format(timetype)
+      // },
 
       ValidateForm: function (data) {
         let result = ESVal.validate(data, {
@@ -511,13 +525,14 @@
           }
           item.active = item.active + ',' + sub.id
           model.classifyActiveArr.push(obj)
+          model.furtypeStr = model.furtypeStr + ',' + sub.type_name
         }
       },
 
       // 确定分类
       setClassify: function () {
         model.thisdata.project_furniture_types = model.classifyActiveArr
-        console.log(model.thisdata.project_furniture_types)
+        model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
         $('#classifylist').hide()
       },
 
@@ -701,22 +716,43 @@
 
       // 选择省市区
       changearea: function (val) {
-        model.thisdata.first_party_province_poi_province = {
-          value: val[0].value,
-          text: val[0].text
+        // 省市区
+        if (model.layer === 'area') {
+          model.thisdata.first_party_province_poi_province = {
+            value: val[0].value,
+            text: val[0].text
+          }
+          model.thisdata.first_party_city_poi_city = {
+            value: val[1].value,
+            text: val[1].text
+          }
+          model.thisdata.first_party_district_poi_district = {
+            value: val[2].value,
+            text: val[2].text
+          }
         }
-        model.thisdata.first_party_city_poi_city = {
-          value: val[1].value,
-          text: val[1].text
+        // 招标时间
+        if (model.layer === 'invitation') {
+          model.thisdata.invitation_time = val[0].text + '-' + val[1].text + '-' + val[2].text
         }
-        model.thisdata.first_party_district_poi_district = {
-          value: val[2].value,
-          text: val[2].text
+        // 交付时间
+        if (model.layer === 'delivery') {
+          model.thisdata.delivery_time = val[0].text + '-' + val[1].text + '-' + val[2].text
         }
+      },
+
+      // 招标时间
+      changeTime: function (str) {
+        model.layer = str
+        model.arr = dateJson
+        model.area.state = Math.random()
       },
 
       // 省市区三级联动
       testarea: async function () {
+        model.layer = 'area'
+        model.arr = []
+
         // 省
         let paramp = {
           limit: 100

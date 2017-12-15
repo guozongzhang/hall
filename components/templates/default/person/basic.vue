@@ -38,11 +38,11 @@
           <span class="text">共{{info.fur_num}}个</span>
         </a>
       </li>
-      <li>
+      <li v-show="info.identity.none && projectstate">
         <a href="javascript:;" class="mui-navigate-right" @click="goNextPage('/report', 'project')">
-          <span class="bgicon start"></span>
+          <span class="bgicon myproject"></span>
           <span class="info">我的项目:</span>
-          <span class="text">共{{info.fur_num}}个</span>
+          <span class="text">共{{info.projects_count}}个</span>
         </a>
       </li>
       <li>
@@ -71,10 +71,12 @@ export default {
     return {
       linkPath: '',
       loginstate: false,
+      projectstate: false,
       info: {
         header_img: '/images/user.png',
         header_name: '点击登录',
         fur_num: 0,
+        projects_count: 0,
         tel: '-',
         identity: {
           txt: '游客',
@@ -101,11 +103,13 @@ export default {
           'X-DP-Token': token
         }
       }).then(function (data) {
+        model.projectstate = true
         model.info = {
           header_img: data.data.ui_head,
           header_name: data.data.ui_name || '未设置',
           tel: data.data.mobile,
           fur_num: data.data.count,
+          projects_count: data.data.projects_count,
           identity: {
             txt: data.data.user_type,
             none: data.data.type
@@ -239,6 +243,10 @@ export default {
     background: url("/images/person.png") no-repeat;
     background-position: -330px -24px;
   }
+  .ulbox li span.myproject{
+    background: url("/images/person.png") no-repeat;
+    background-position: -409px -62px;
+  }
   .ulbox li span.set{
     background: url("/images/person.png") no-repeat;
     background-position: -369px -24px;
@@ -296,37 +304,13 @@ export default {
     font-size: 16px;
   }
   .personli span{
-    background: url("/images/person.png") no-repeat;
+    background: url('/images/person.png') no-repeat;
     display: inline-block;
     height: 30px;
     width: 30px;
     background-size: 490px;
     margin-right: 10px;
   }
-
-  .ulbox li span.phone{
-  background-position:  -212px -24px
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.wechet{
-  background-position: -250px -24px;
-}
-.ulbox li span.head{
-  background-position: -289px -24px;
-}
-.ulbox li span.start{
-  background-position: -330px -24px;
-}
-.ulbox li span.set{
-  background-position: -369px -24px;
-}
-.ulbox li span.about{
-  background-position: -409px -24px;
-}
-  
-  
   .personli {
     padding: 10px;
     height: 50px;

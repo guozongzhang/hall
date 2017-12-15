@@ -6,7 +6,13 @@
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
-        <a href="javascript:;" class="mui-pull-right register-link">...</a>
+        <a href="javascript:;" class="mui-pull-right more-opt" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded'">
+          <span class="point" @click="preMoreOpt()">●●●</span>
+          <span class="sub-opt-box" v-show="getmoreopt" @click="optFunc(basicinfo.state)">
+            <span class="triangle"></span>
+            <span>{{(basicinfo.state == 'wait' || basicinfo.state == 'rescinded') ? '删除报备' : '撤回报备'}}</span>
+          </span>
+        </a>
       </header>
       <div class="detail-box">
         <div class="basic-info">
@@ -24,8 +30,8 @@
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
             <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
-          <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'"> 
-            <a href="javascript:;" @click="gotoReport()">去报备</a>
+          <div class="go-report">
+            <a href="javascript:;">去报备</a>
           </div>
         </div>
         <div class="sub-detail">
@@ -484,12 +490,13 @@ let reportState = [
   },
   {
     key: 'rescinded',
-    value: '撤销'
+    value: '撤回'
   }
 ]
 export default {
   data () {
     return {
+      getmoreopt: false,
       layer: 'area',
       areaarr: [],
       areaobj: {
@@ -565,6 +572,65 @@ export default {
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 右上角更多操作
+    preMoreOpt: function () {
+      model.getmoreopt = !model.getmoreopt
+    },
+
+    // 右上角操作函数（撤销、删除）
+    optFunc: function (state) {
+      let text = (state === 'wait' || state === 'rescinded') ? '删除项目' : '撤回项目'
+      var btnArray = ['否', '是']
+      window.mui.confirm('确定' + text + '?', '友情提示', btnArray, function (e) {
+        if (e.index === 1) {
+          if (state === 'wait' || state === 'rescinded') {
+            let param = {
+              _method: 'DELETE',
+              id: model.basicinfo.id
+            }
+            axios.post('functions/report/project', null, {
+              data: param
+            }).then(function (data) {
+              window.mui.toast(text + '成功!')
+              setTimeout(function () {
+                window.location.href = model.linkPath + '/report'
+              }, 1000)
+            }).catch(function (error) {
+              if (error.response.data.message === 'token is invalid') {
+                window.mui.toast('登录信息过期!')
+                setTimeout(function () {
+                  Cookies.set('dpjia-hall-token', '')
+                  window.location.reload()
+                }, 2000)
+              }
+            })
+          } else {
+            let param = {
+              id: model.basicinfo.id
+            }
+            axios.post('functions/report/revoke', null, {
+              data: param
+            }).then(function (data) {
+              window.mui.toast(text + '成功!')
+              setTimeout(function () {
+                model.init()
+              }, 1000)
+            }).catch(function (error) {
+              if (error.response.data.message === 'token is invalid') {
+                window.mui.toast('登录信息过期!')
+                setTimeout(function () {
+                  Cookies.set('dpjia-hall-token', '')
+                  window.location.reload()
+                }, 2000)
+              }
+            })
+          }
+        }
+        model.getmoreopt = false
+        return false
+      })
     },
 
     // 获取报备记录
@@ -831,24 +897,6 @@ export default {
         setTimeout(function () {
           model.activeTab = 'home'
         }, 1000)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
-          setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
-          }, 2000)
-        }
-      })
-    },
-
-    // 去报备
-    gotoReport: function () {
-      axios.post('functions/report/record', null, {
-        data: {id: model.basicinfo.id}
-      }).then(function (data) {
-        console.log(data)
-        window.mui.toast('12')
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
@@ -1136,6 +1184,39 @@ export default {
 }
 </script>
 <style>
+.more-opt {
+  position: relative;
+  top: 8px;
+  cursor: pointer;
+}
+.more-opt .point{
+  font-size: 10px;
+  color: #666;
+}
+.sub-opt-box{
+  display: inline-block;
+  position: absolute;
+  right: -5px;
+  top: 28px;
+  width: 64px;
+  text-align: center;
+  height: 26px;
+  line-height: 26px;
+  font-size: 12px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+.sub-opt-box .triangle {
+  position: absolute;
+  top: -6px;
+  left: 44px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 6px solid rgba(0, 0, 0, 0.6);
+}
 .attach-img-box {
   padding-bottom: 10px;
   display: inline-block;

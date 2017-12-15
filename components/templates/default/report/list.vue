@@ -235,17 +235,20 @@
   .wait_handle {
     background-color: #5278e5;
   }
-  .had_handle{
-    border-bottom: 6px solid #5278e5;
-  }
   .had_handle {
     background-color: #5278e5;
   }
-  .reject {
-    background-color: #f14F4F;
-  }
   .adopt {
     background-color: #5278e5;
+  }
+  .rescinded {
+    background-color: #ccc;
+  }
+  .had_handle{
+    border-bottom: 6px solid #5278e5;
+  }
+  .reject {
+    background-color: #f14F4F;
   }
   .had_reset {
     background-color: #f14F4F;

@@ -234,24 +234,19 @@
         if (!model.ValidateForm(model.thisdata)) {
           return false
         }
-        let ssdata
-        if (model.thisdata.projectAttachment.length < 1) {
-          delete model.thisdata.projectAttachment
-        } else {
-          ssdata = _.extend(model.thisdata, {
-            project_attachment: JSON.stringify(model.thisdata.projectAttachment),
-            project_reportman: JSON.stringify(model.thisdata.project_reportman)
-          })
+        let submitData = _.extend(model.thisdata, {
+          project_attachment: JSON.stringify(model.thisdata.projectAttachment),
+          project_reportman: JSON.stringify(model.thisdata.project_reportman)
+        })
 
-          axios.post('functions/report/fast_record', null, {
-            data: ssdata
-          }).then(function (data) {
-            window.mui.toast('快速报备项目成功')
-            window.location.href = model.linkPath + '/report'
-          }).catch(function () {
-            window.mui.toast('失败!')
-          })
-        }
+        axios.post('functions/report/fast_record', null, {
+          data: submitData
+        }).then(function (data) {
+          window.mui.toast('快速报备项目成功')
+          window.location.href = model.linkPath + '/report'
+        }).catch(function () {
+          window.mui.toast('失败!')
+        })
       },
 
       // 验证

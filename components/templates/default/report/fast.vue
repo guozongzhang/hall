@@ -13,25 +13,25 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label >项目名称<i>*</i></label>
-            <input type="text" placeholder="请输入项目名称" v-model="thisdata.name" maxlength="20">
+            <input type="text" maxlength="20" placeholder="请输入项目名称" v-model="thisdata.name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>公司名称<i>*</i></label>
-            <input type="text" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="text" placeholder="万元" v-model="thisdata.amount">
+            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" placeholder="" v-model="thisdata.sketch" maxlength="20">
+            <input type="text" maxlength="20" placeholder="" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -50,7 +50,7 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>与项目关系</label>
-            <input type="text" placeholder="" v-model="thisdata.project_reportman[0].project_relation" maxlength="20">
+            <input type="text" maxlength="20" placeholder="" v-model="thisdata.project_reportman[0].project_relation">
           </div>
         </li>
         <li class="mui-table-view-cell" @click="starshow($event)">
@@ -86,7 +86,7 @@
         <li class="mui-table-view-cell textareaclass nextshow">
           <div class="mui-input-row" style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" type="text" placeholder="请输入" v-model="thisdata.remark"></textarea>
+            <textarea style="width:99%!important" maxlength="50" type="text" placeholder="请输入" v-model="thisdata.remark"></textarea>
           </div>
         </li>
       </ul>

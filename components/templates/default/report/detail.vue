@@ -1140,6 +1140,13 @@ export default {
 
     // 确认保存甲方信息
     confEditBuyer: function () {
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      if (!_.isEmpty(model.buyer.first_party_tel)) {
+        if (!telval.test(model.buyer.first_party_tel)) {
+          window.mui.toast('手机号格式错误!')
+          return false
+        }
+      }
       let param = {
         id: proId,
         first_party_province_poi_province: model.buyer.pro_id,
@@ -1198,6 +1205,20 @@ export default {
 
     // 确定提交报备人信息
     confEditReport: function () {
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      if (!_.isEmpty(model.reporter.tel)) {
+        if (!telval.test(model.reporter.tel)) {
+          window.mui.toast('手机号格式错误!')
+          return false
+        }
+      }
+      let emailval = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/
+      if (!_.isEmpty(model.reporter.email)) {
+        if (!emailval.test(model.reporter.email)) {
+          window.mui.toast('邮箱格式错误!')
+          return false
+        }
+      }
       let param = {
         id: proId,
         name: model.reporter.name || '',

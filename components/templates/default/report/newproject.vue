@@ -16,13 +16,13 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>公司名称<i>*</i></label>
-            <input type="text" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number"   placeholder="万元" v-model="thisdata.amount">
+            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -74,7 +74,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目编号</label>
-              <input type="text"   placeholder="请输入项目编号" v-model="thisdata.number">
+              <input type="text" maxlength="20" placeholder="请输入项目编号" v-model="thisdata.number">
             </div>
           </li>
           <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
@@ -108,19 +108,19 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人姓名</label>
-              <input type="text"   placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
+              <input type="text" maxlength="20" placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人职务</label>
-              <input type="text"   placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
+              <input type="text" maxlength="20" placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人电话</label>
-              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
+              <input type="text" maxlength="20" placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
             </div>
           </li>
         </div>
@@ -139,19 +139,19 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>期望提成</label>
-              <input type="text"   placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
+              <input type="number" placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目优势</label>
-              <input type="text"   placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
+              <input type="text" maxlength="20" placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <input type="text"  placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
@@ -177,13 +177,13 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目亮点</label>
-              <input type="text"   placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
+              <input type="text" maxlength="20" placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目形式预测</label>
-              <input type="text"   placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
+              <input type="text" maxlength="20" placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
             </div>
           </li>
         </div>
@@ -212,8 +212,8 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
-              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
+              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
             </div>
           </li>
         </div>
@@ -229,7 +229,7 @@
         <li class="mui-table-view-cell textareaclass">
           <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" type="text" maxlength="50" class="mui-input-clear othertextarea"></textarea>
+            <textarea style="width:99%!important" maxlength="50" type="text" class="mui-input-clear othertextarea"></textarea>
           </div>
         </li>
       </ul>
@@ -245,7 +245,7 @@
           <div class="jzztitele">第{{index+1}}竞争者</div>
           <div class="mui-input-row" style="width:60%;float:left;">
             <label style="width:1%"><i></i></label>
-            <input style="width:99%!important" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
+            <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
           <div class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
         </li>

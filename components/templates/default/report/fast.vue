@@ -275,11 +275,6 @@
         return result.status
       },
 
-      // 提交新建项目
-      postReport: function () {
-        console.log(model.thisdata)
-      },
-
       // 改变可行性
       changeStart: function (index) {
         this.thisdata.feasibility = index

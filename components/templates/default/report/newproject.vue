@@ -634,7 +634,6 @@
       // 开始竞争对手
       enterOtherCompete: function (type, text) {
         let ms = model.thisdata[type].split(',')
-        console.log(ms)
         model.jzds = []
         ms.forEach(item => {
           model.jzds.push({value: item})
@@ -654,11 +653,6 @@
           ms.push(item.value)
         })
         model.thisdata[typeStr] = ms.join(',')
-      },
-
-      // 提交新建项目
-      postReport: function () {
-        console.log(model.thisdata)
       },
 
       // 改变可行性

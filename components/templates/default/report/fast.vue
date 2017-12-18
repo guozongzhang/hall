@@ -82,7 +82,7 @@
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="endall('cencle')">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">{{clonetitel}}</h1>
-        <a class="mui-icon mui-pull-right complete" @click="endall('end')" >完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="endall('end')" >提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass nextshow">
@@ -162,7 +162,7 @@
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
               Cookies.set('dpjia-hall-token', '')
-              window.location.reload()
+              window.location.href = model.linkPath + '/login'
             }, 2000)
           }
         })

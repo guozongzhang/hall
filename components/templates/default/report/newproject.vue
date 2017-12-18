@@ -195,7 +195,7 @@
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="postReporter('back')">返回</a>
         <h1 class="mui-title">我的项目</h1>
-        <a class="mui-icon mui-pull-right complete" @click="postReporter()">完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="postReporter()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <div class="reporter">
@@ -223,7 +223,7 @@
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
         <h1 class="mui-title othertitle"></h1>
-        <a class="mui-icon mui-pull-right complete" @click="postRremork()">完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="postRremork()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass">
@@ -238,7 +238,7 @@
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
         <h1 class="mui-title otherCompetetitle"></h1>
-        <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass jzzli" v-for="(item,index) in jzds">
@@ -378,6 +378,7 @@
       init: function () {
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
+        console.log('123', model.linkPath)
         let token = Cookies.get('dpjia-hall-token')
         axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
           headers: {
@@ -393,7 +394,7 @@
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
               Cookies.set('dpjia-hall-token', '')
-              window.location.reload()
+              window.location.href = model.linkPath + '/login'
             }, 2000)
           }
         })
@@ -410,7 +411,7 @@
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
               Cookies.set('dpjia-hall-token', '')
-              window.location.reload()
+              window.location.href = model.linkPath + '/login'
             }, 2000)
           }
         })

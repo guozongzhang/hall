@@ -735,7 +735,7 @@ export default {
                 window.mui.toast('登录信息过期!')
                 setTimeout(function () {
                   Cookies.set('dpjia-hall-token', '')
-                  window.location.reload()
+                  window.location.href = model.linkPath + '/login'
                 }, 2000)
               }
             })
@@ -755,7 +755,7 @@ export default {
                 window.mui.toast('登录信息过期!')
                 setTimeout(function () {
                   Cookies.set('dpjia-hall-token', '')
-                  window.location.reload()
+                  window.location.href = model.linkPath + '/login'
                 }, 2000)
               }
             })
@@ -841,7 +841,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1036,7 +1036,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1183,7 +1183,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1250,7 +1250,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1293,7 +1293,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })

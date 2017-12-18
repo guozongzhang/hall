@@ -25,7 +25,7 @@
             </span>
           </div>
           <div class="fz14">{{basicinfo.first_party_name}}</div>
-          <div class="fz14 intro-style">{{basicinfo.intro}}</div>
+          <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)"></span>
           <div class="fz12">
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
@@ -266,21 +266,21 @@
         </header>
         <div class="textarea-box">
           <div class="line-box"></div>
-          <div>
+          <div class="must">
             <div class="mui-input-row sub-input-box">
-              <label>项目名称</label>
+              <label>项目名称<span>*</span></label>
               <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>甲方名称</label>
+              <label>甲方名称<span>*</span></label>
               <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>项目金额</label>
+              <label>项目金额<span>*</span></label>
               <input type="text" placeholder="万元" v-model="editbaisc.amount">
             </div>
             <div class="mui-input-row sub-input-box edit-basic-box">
-              <label>项目可行性</label>
+              <label>项目可行性<span>*</span></label>
               <div class="stars-style">
                 <span class="star-box">
                   <i class="fa mui-icon mui-icon-left-nav mui-pull-right" @click="getStar(sub)"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= editbaisc.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -288,11 +288,11 @@
               </div>
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>有效期</label>
+              <label>有效期<span>*</span></label>
               <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>简单描述</label>
+              <label>简单描述<span>*</span></label>
               <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
             </div>
           </div>
@@ -496,6 +496,7 @@
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
+let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
 let querystring = require('querystring')
@@ -643,6 +644,31 @@ export default {
       model.activeTab = 'editbasic'
     },
 
+    ValidateForm: function (data) {
+      let result = ESVal.validate(data, {
+        name: {
+          required: true,
+          msg: '项目名称不能为空!'
+        },
+        first_party_name: {
+          required: true,
+          msg: '公司名称不能为空!'
+        },
+        amount: {
+          required: true,
+          msg: '预计金额不能为空!'
+        },
+        sketch: {
+          required: true,
+          msg: '简单描述不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
+    },
+
     // 保存必填信息
     confEditBasic: function () {
       let param = {
@@ -653,6 +679,9 @@ export default {
         feasibility: model.editbaisc.feasibility || '',
         validity: model.editbaisc.validity || '',
         sketch: model.editbaisc.sketch || ''
+      }
+      if (!model.ValidateForm(param)) {
+        return false
       }
       axios.put('functions/report/project', null, {
         data: param
@@ -1933,6 +1962,9 @@ export default {
   background-color: #5075ce;
   border-top: 1px solid #5075ce;
   color: #fff;
+}
+.must label span{
+  color: red;
 }
 
 </style>

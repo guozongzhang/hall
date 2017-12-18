@@ -23,7 +23,7 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" onkeyup="value=value.replace(/[^[0-9]+([.]{1}[0-9]+){0,1}$)">
+            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -251,7 +251,7 @@
             <label style="width:1%"><i></i></label>
             <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
+          <div v-show="index > 0" class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
@@ -419,6 +419,13 @@
             }, 2000)
           }
         })
+      },
+
+      money: function () {
+        if (model.thisdata.amount.indexOf('.') > -1) {
+          let length = model.thisdata.amount.indexOf('.')
+          model.thisdata.amount = model.thisdata.amount.slice(0, length + 3)
+        }
       },
 
       // 返回首页(云展厅)

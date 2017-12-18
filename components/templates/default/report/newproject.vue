@@ -251,7 +251,7 @@
             <label style="width:1%"><i></i></label>
             <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="index > 0" class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
+          <div v-show="1 < jzds.length" class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>

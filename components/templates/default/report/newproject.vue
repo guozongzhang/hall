@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div class="more">
+    <div class="more subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-        <h1 class="mui-title">我的项目</h1>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title">新建项目</h1>
         <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
@@ -16,19 +17,19 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>公司名称<i>*</i></label>
-            <input type="text" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number"   placeholder="万元" v-model="thisdata.amount">
+            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -47,7 +48,7 @@
         <li class="mui-table-view-cell" @click="getreport()">
           <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
-        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注')">
+        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '50')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
         </li>
         <li class="mui-table-view-cell" style="min-height: 43px">
@@ -74,13 +75,13 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目编号</label>
-              <input type="text"   placeholder="请输入项目编号" v-model="thisdata.number">
+              <input type="text" maxlength="20" placeholder="请输入项目编号" v-model="thisdata.number">
             </div>
           </li>
-          <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
+          <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍', '500')">
             <a href="javascript:;" class="mui-navigate-right">项目介绍<span class="mui-ellipsis">{{thisdata.intro}}</span></a>
           </li>
-          <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析')">
+          <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析', '500')">
             <a href="javascript:;" class="mui-navigate-right">风险分析<span class="mui-ellipsis">{{thisdata.risk_analysis}}</span></a>
           </li>
           <li class="mui-table-view-cell">
@@ -108,25 +109,25 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人姓名</label>
-              <input type="text"   placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
+              <input type="text" maxlength="20" placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人职务</label>
-              <input type="text"   placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
+              <input type="text" maxlength="20" placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系人电话</label>
-              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
+              <input type="text" maxlength="20" placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
             </div>
           </li>
         </div>
 
         <li class="mui-table-view-cell right0" @click="showmore('.reportInfo')">
-          <a href="javascript:;" class="mui-navigate-right ">更多报备信息</a>
+          <a href="javascript:;" class="mui-navigate-right ">更多报备人信息</a>
         </li>
 
         <div class="reportInfo">
@@ -139,19 +140,19 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>期望提成</label>
-              <input type="text"   placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
+              <input type="number" placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目优势</label>
-              <input type="text"   placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
+              <input type="text" maxlength="20" placeholder="请输入项目优势" v-model="thisdata.project_reportman[0].strengths">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text"   placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <input type="text"  placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
@@ -167,23 +168,23 @@
         </li>
 
         <div class="jzInfo">
-          <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
-            <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
+          <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
+            <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{thisdata.second_party_competitor}}</span></a>
           </li>
 
           <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
-            <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
+            <a href="javascript:;" class="mui-navigate-right">报备人对手<span class="mui-ellipsis">{{thisdata.competitor}}</span></a>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目亮点</label>
-              <input type="text"   placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
+              <input type="text" maxlength="20" placeholder="请输入项目亮点" v-model="thisdata.competitor_strengths">
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>项目形式预测</label>
-              <input type="text"   placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
+              <input type="text" maxlength="20" placeholder="请输入项目形式预测" v-model="thisdata.competitor_projections">
             </div>
           </li>
         </div>
@@ -192,10 +193,11 @@
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
     </div>
     <div class="other">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+      <header class="mui-bar mui-bar-nav subbox-show">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="postReporter('back')">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">我的项目</h1>
-        <a class="mui-icon mui-pull-right complete" @click="postReporter()">完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="postReporter()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <div class="reporter">
@@ -212,8 +214,8 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
-              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text"   placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
+              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
             </div>
           </li>
         </div>
@@ -222,14 +224,15 @@
     <div class="otherRemark">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle"></h1>
-        <a class="mui-icon mui-pull-right complete" @click="postRremork()">完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="postRremork()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass">
           <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" type="text" maxlength="50" class="mui-input-clear othertextarea"></textarea>
+            <textarea style="width:99%!important"  type="text" class="mui-input-clear othertextarea"></textarea>
           </div>
         </li>
       </ul>
@@ -237,17 +240,18 @@
     <div class="otherCompete">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title otherCompetetitle"></h1>
-        <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass jzzli" v-for="(item,index) in jzds">
           <div class="jzztitele">第{{index+1}}竞争者</div>
           <div class="mui-input-row" style="width:60%;float:left;">
             <label style="width:1%"><i></i></label>
-            <input style="width:99%!important" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
+            <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div class="fa fa-trash" style="float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
+          <div v-show="1 < jzds.length" class="fa fa-trash" style="color:red; float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, index)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
@@ -291,6 +295,7 @@
   let model
   let typeStr
   let changeOneType
+  let msInfo = {}
   export default {
     head: {
       title: '我的项目'
@@ -368,7 +373,8 @@
         cloneInfo: {
           name: '',
           email: '',
-          tel: ''
+          tel: '',
+          type: ''
         } // 临时其他报备人信息
       }
     },
@@ -376,6 +382,7 @@
       init: function () {
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
+        console.log('123', model.linkPath)
         let token = Cookies.get('dpjia-hall-token')
         axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
           headers: {
@@ -391,7 +398,7 @@
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
               Cookies.set('dpjia-hall-token', '')
-              window.location.reload()
+              window.location.href = model.linkPath + '/login'
             }, 2000)
           }
         })
@@ -408,10 +415,22 @@
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
               Cookies.set('dpjia-hall-token', '')
-              window.location.reload()
+              window.location.href = model.linkPath + '/login'
             }, 2000)
           }
         })
+      },
+
+      money: function () {
+        if (model.thisdata.amount.indexOf('.') > -1) {
+          let length = model.thisdata.amount.indexOf('.')
+          model.thisdata.amount = model.thisdata.amount.slice(0, length + 3)
+        }
+      },
+
+      // 返回首页(云展厅)
+      goHome: function () {
+        window.location.href = model.linkPath + '/'
       },
 
       // 添加跟踪记录页面的返回
@@ -534,7 +553,8 @@
           item.active = ''
         })
         model.classifyActiveArr = []
-        $('#classifylist').hide()
+        model.furtypeStr = ''
+        // $('#classifylist').hide()
       },
 
       // 上传图片
@@ -594,12 +614,41 @@
         $('.more').hide()
         $('.other').show()
         $('.reporter').show()
+        if (model.thisdata.project_reportman[0].type === 'other') {
+          msInfo = {
+            name: model.cloneInfo.name,
+            tel: model.cloneInfo.tel,
+            email: model.cloneInfo.email,
+            type: model.thisdata.project_reportman[0].type
+          }
+        } else {
+          msInfo = {
+            name: model.thisdata.project_reportman[0].name,
+            tel: model.thisdata.project_reportman[0].tel,
+            email: model.thisdata.project_reportman[0].email,
+            type: model.thisdata.project_reportman[0].type
+          }
+        }
       },
 
-      postReporter: function () {
+      postReporter: function (type) {
         $('.more').show()
         $('.other').hide()
         $('.reporter').hide()
+        if (type === 'back' && msInfo.type === 'other') {
+          model.cloneInfo = {
+            name: msInfo.name,
+            tel: msInfo.tel,
+            email: msInfo.email
+          }
+          model.thisdata.project_reportman[0].type = msInfo.type // changeraios 的时候发生改变了 要赋值回去
+        }
+        if (type === 'back' && msInfo.type === 'self') {
+          model.thisdata.project_reportman[0].name = msInfo.name
+          model.thisdata.project_reportman[0].tel = msInfo.tel
+          model.thisdata.project_reportman[0].email = msInfo.email
+          model.thisdata.project_reportman[0].type = msInfo.type // changeraios 的时候发生改变了 要赋值回去
+        }
       },
 
       showmore: function (value) {
@@ -616,12 +665,14 @@
       },
 
       // 进入textarea
-      enterremork: function (type, text) {
+      enterremork: function (type, text, num) {
         $('.othertitle').text(text)
         typeStr = type
         $('.more').hide()
         $('.otherRemark').show()
         $('.othertextarea').val(model.thisdata[type])
+        $('.othertextarea').attr('maxlength', num)
+        $('.othertextarea').attr('placeholder', '请输入' + text + ',' + num + '字')
       },
 
       // 结束textarea
@@ -634,7 +685,6 @@
       // 开始竞争对手
       enterOtherCompete: function (type, text) {
         let ms = model.thisdata[type].split(',')
-        console.log(ms)
         model.jzds = []
         ms.forEach(item => {
           model.jzds.push({value: item})
@@ -654,11 +704,6 @@
           ms.push(item.value)
         })
         model.thisdata[typeStr] = ms.join(',')
-      },
-
-      // 提交新建项目
-      postReport: function () {
-        console.log(model.thisdata)
       },
 
       // 改变可行性
@@ -811,7 +856,7 @@
     position: relative;
     top: 5px;
     color: #666;
-    font-size: 14px !important;
+    font-size: 12px!important;
   }
   .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
     display: none;
@@ -848,6 +893,9 @@
     color: #9D9D9D;
     margin-right: 5px;
   }
+  .right0 a {
+    color: #999;
+  }
   
   .mui-input-row {
     height: 43px;
@@ -871,7 +919,17 @@
   .nav {
     margin-top: 50px;
   }
-
+  .close-icon{
+    position: absolute;
+    top: 10px;
+    left: 66px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    color: #666;
+    z-index: 9999;
+  }
   .nav li {
     height: 43px;
     line-height: 43px;

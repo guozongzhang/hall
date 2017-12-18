@@ -4,8 +4,6 @@
 </div>
 </template>
 <script>
-  let $ = require('jquery')
-  // let modal
   export default {
     head: {
       title: '我的项目'
@@ -22,26 +20,10 @@
     },
     methods: {
       init: function () {
-      },
-      show: function (even) {
-        var el = event.currentTarget
-        $(el).addClass('show').siblings().removeClass('show')
-      },
-
-      // 提交新建项目
-      postReport: function () {
-      },
-
-      // 改变可行性
-      changeStart: function (index) {
-        alert(0)
-        console.log(index)
-        this.startlength = index
       }
     },
     mounted () {
       this.init()
-      // modal = this
     }
   }
 </script>

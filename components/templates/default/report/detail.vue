@@ -25,12 +25,15 @@
             </span>
           </div>
           <div class="fz14">{{basicinfo.first_party_name}}</div>
-          <div class="fz14 intro-style">{{basicinfo.intro}}</div>
+          <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
+          <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)"></span>
           <div class="fz12">
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
             <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
+            <span class="left-circle icon-circle"></span>
+            <span class="right-circle icon-circle"></span>
             <a href="javascript:;" @click="gotoReport()">去报备</a>
           </div>
         </div>
@@ -253,6 +256,49 @@
         </div>
       </div>
     </div>
+    <div v-show="activeTab == 'editbasic'" class="subbox-show record-show">
+      <div class="subbox-show">
+        <header class="mui-bar mui-bar-nav">
+          <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+          <span class="fa close-icon" @click="goHome()">×</span>
+          <h1 class="mui-title othertitle">编辑必要信息</h1>
+          <a class="mui-icon mui-pull-right save-btn" @click="confEditBasic()">提交</a>
+        </header>
+        <div class="textarea-box">
+          <div class="line-box"></div>
+          <div class="must">
+            <div class="mui-input-row sub-input-box">
+              <label>项目名称<span>*</span></label>
+              <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
+            </div>
+            <div class="mui-input-row sub-input-box">
+              <label>甲方名称<span>*</span></label>
+              <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
+            </div>
+            <div class="mui-input-row sub-input-box">
+              <label>项目金额<span>*</span></label>
+              <input type="text" placeholder="万元" v-model="editbaisc.amount">
+            </div>
+            <div class="mui-input-row sub-input-box edit-basic-box">
+              <label>项目可行性<span>*</span></label>
+              <div class="stars-style">
+                <span class="star-box">
+                  <i class="fa mui-icon mui-icon-left-nav mui-pull-right" @click="getStar(sub)"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= editbaisc.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+                </span>
+              </div>
+            </div>
+            <div class="mui-input-row sub-input-box">
+              <label>有效期<span>*</span></label>
+              <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
+            </div>
+            <div class="mui-input-row sub-input-box">
+              <label>简单描述<span>*</span></label>
+              <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div v-show="activeTab == 'record'" class="subbox-show record-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
@@ -263,7 +309,7 @@
       <div class="textarea-box">
         <div class="line-box"></div>
         <div class="text-input">
-          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="输入项目的跟着记录"></textarea>
+          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
         </div>
       </div>
     </div>
@@ -420,7 +466,7 @@
     </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
-      <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getProType"></vue-one>
+      <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
     </div>
     <div class="classify-box" id="classifylist">
       <div class="sub-classify">
@@ -450,6 +496,7 @@
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
+let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
 let querystring = require('querystring')
@@ -498,6 +545,7 @@ export default {
     return {
       getmoreopt: false,
       layer: 'area',
+      editbaisc: {},
       areaarr: [],
       areaobj: {
         state: 0
@@ -580,6 +628,96 @@ export default {
       await model.getRecordLog(urlObj.id)
     },
 
+    // 编辑必填信息
+    editBasic: function (id) {
+      proId = id
+      model.editbaisc = {
+        name: model.basicinfo.name,
+        first_party_name: model.basicinfo.first_party_name,
+        amount: model.basicinfo.amount,
+        feasibility: model.basicinfo.feasibility,
+        validity: model.basicinfo.validity,
+        validity_text: model.valtimeFilter(model.basicinfo.validity),
+        sketch: model.basicinfo.sketch
+      }
+      model.protypearrs = proValTime
+      model.activeTab = 'editbasic'
+    },
+
+    ValidateForm: function (data) {
+      let result = ESVal.validate(data, {
+        name: {
+          required: true,
+          msg: '项目名称不能为空!'
+        },
+        first_party_name: {
+          required: true,
+          msg: '公司名称不能为空!'
+        },
+        amount: {
+          required: true,
+          msg: '预计金额不能为空!'
+        },
+        sketch: {
+          required: true,
+          msg: '简单描述不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
+    },
+
+    // 保存必填信息
+    confEditBasic: function () {
+      let param = {
+        id: proId,
+        name: model.editbaisc.name,
+        first_party_name: model.editbaisc.first_party_name,
+        amount: model.editbaisc.amount,
+        feasibility: model.editbaisc.feasibility || '',
+        validity: model.editbaisc.validity || '',
+        sketch: model.editbaisc.sketch || ''
+      }
+      if (!model.ValidateForm(param)) {
+        return false
+      }
+      axios.put('functions/report/project', null, {
+        data: param
+      }).then(function (data) {
+        model.basicinfo.name = model.editbaisc.name
+        model.basicinfo.first_party_name = model.editbaisc.first_party_name
+        model.basicinfo.amount = model.editbaisc.amount
+        model.basicinfo.feasibility = model.editbaisc.feasibility
+        model.basicinfo.validity = model.editbaisc.validity
+        model.basicinfo.sketch = model.editbaisc.sketch
+        window.mui.toast('编辑必填信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.reload()
+          }, 2000)
+        }
+      })
+    },
+
+    // 选择可行性
+    getStar: function (num) {
+      model.editbaisc.feasibility = num
+    },
+
+    // 有效期
+    changeProValtime: function () {
+      model.protypearrs = proValTime
+      model.oneobj.state = Math.random()
+    },
+
     // 去报备
     gotoReport: function () {
       axios.post('functions/report/record', null, {
@@ -626,7 +764,7 @@ export default {
                 window.mui.toast('登录信息过期!')
                 setTimeout(function () {
                   Cookies.set('dpjia-hall-token', '')
-                  window.location.reload()
+                  window.location.href = model.linkPath + '/login'
                 }, 2000)
               }
             })
@@ -646,7 +784,7 @@ export default {
                 window.mui.toast('登录信息过期!')
                 setTimeout(function () {
                   Cookies.set('dpjia-hall-token', '')
-                  window.location.reload()
+                  window.location.href = model.linkPath + '/login'
                 }, 2000)
               }
             })
@@ -662,6 +800,7 @@ export default {
       let param = {
         flow_id: 36,
         id: id,
+        order: '-id',
         report_name: model.basicinfo.name
       }
       let result = await axios.get('functions/report/record', {
@@ -732,7 +871,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -927,7 +1066,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -947,9 +1086,17 @@ export default {
     },
 
     // get项目类型
-    getProType: function (str) {
-      model.editpro.category_str = str[0].value
-      model.editpro.category = str[0].text
+    getVueOneInfo: function (str) {
+      // 编辑必填信息
+      if (model.activeTab === 'editbasic') {
+        model.editbaisc.validity = str[0].value
+        model.editbaisc.validity_text = str[0].text
+      }
+      // 编辑基本信息
+      if (model.activeTab === 'editproject') {
+        model.editpro.category_str = str[0].value
+        model.editpro.category = str[0].text
+      }
     },
 
     // 删除项目附件图片
@@ -1023,6 +1170,13 @@ export default {
 
     // 确认保存甲方信息
     confEditBuyer: function () {
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      if (!_.isEmpty(model.buyer.first_party_tel)) {
+        if (!telval.test(model.buyer.first_party_tel)) {
+          window.mui.toast('手机号格式错误!')
+          return false
+        }
+      }
       let param = {
         id: proId,
         first_party_province_poi_province: model.buyer.pro_id,
@@ -1059,7 +1213,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1081,6 +1235,20 @@ export default {
 
     // 确定提交报备人信息
     confEditReport: function () {
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      if (!_.isEmpty(model.reporter.tel)) {
+        if (!telval.test(model.reporter.tel)) {
+          window.mui.toast('手机号格式错误!')
+          return false
+        }
+      }
+      let emailval = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/
+      if (!_.isEmpty(model.reporter.email)) {
+        if (!emailval.test(model.reporter.email)) {
+          window.mui.toast('邮箱格式错误!')
+          return false
+        }
+      }
       let param = {
         id: proId,
         name: model.reporter.name || '',
@@ -1112,7 +1280,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1155,7 +1323,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1209,13 +1377,22 @@ export default {
 }
 </script>
 <style>
+.edit-basic-box .stars-style{
+  display: inline-block;
+  width: 70%;
+}
+.edit-basic-box .star-box {
+  width: 100%;
+  float: right;
+  padding-right: 10px;
+}
 .more-opt {
   position: relative;
   top: 8px;
   cursor: pointer;
 }
 .more-opt .point{
-  font-size: 10px;
+  font-size: 8px !important;
   color: #666;
 }
 .sub-opt-box{
@@ -1325,12 +1502,12 @@ export default {
 }
 .close-icon{
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 66px;
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 20px;
+  font-size: 18px;
   color: #666;
   z-index: 9999;
 }
@@ -1342,7 +1519,7 @@ export default {
   position: relative;
   top: 5px;
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
 }
 .subbox-show .save-btn{
   position: relative;
@@ -1585,6 +1762,7 @@ export default {
   background-color: #eeeeee;
 }
 .basic-info{
+  position: relative;
   background-color: #fff;
   margin: 15px;
   border-radius: 5px;
@@ -1596,6 +1774,15 @@ export default {
   font-weight: 600;
   color: #333;
   text-align: center;
+}
+.basic-info .edit-basic {
+  position: absolute;
+  right: 0;
+  top: 40%;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  color: #eee;
 }
 .money{
   color: red;
@@ -1646,9 +1833,11 @@ export default {
   white-space: nowrap;
 }
 .go-report{
+  position: relative;
   height: 40px;
   padding-top: 10px;
   border-top: 1px dashed #ccc;
+  margin-top: 10px;
 }
 .go-report a{
   display: block;
@@ -1660,6 +1849,21 @@ export default {
   background-color: #5278e5;
   color: #fff;
   border-radius: 50px;
+}
+.go-report .icon-circle {
+  position: absolute;
+  top: -10px;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  background-color: #eee;
+}
+.go-report .left-circle {
+  left: -18px;
+}
+.go-report .right-circle {
+  right: -18px;
 }
 .classify-box{
   display: none;
@@ -1759,4 +1963,8 @@ export default {
   border-top: 1px solid #5075ce;
   color: #fff;
 }
+.must label span{
+  color: red;
+}
+
 </style>

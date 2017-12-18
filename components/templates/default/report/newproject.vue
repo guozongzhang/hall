@@ -3,7 +3,7 @@
     <div class="more">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-        <h1 class="mui-title">我的项目</h1>
+        <h1 class="mui-title">新建项目</h1>
         <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
@@ -22,13 +22,13 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount">
+            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" onkeyup="value=value.replace(/[^[0-9]+([.]{1}[0-9]+){0,1}$)">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -47,7 +47,7 @@
         <li class="mui-table-view-cell" @click="getreport()">
           <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
-        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注')">
+        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '50')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
         </li>
         <li class="mui-table-view-cell" style="min-height: 43px">
@@ -77,10 +77,10 @@
               <input type="text" maxlength="20" placeholder="请输入项目编号" v-model="thisdata.number">
             </div>
           </li>
-          <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍')">
+          <li class="mui-table-view-cell "  @click="enterremork('intro', '项目介绍', '500')">
             <a href="javascript:;" class="mui-navigate-right">项目介绍<span class="mui-ellipsis">{{thisdata.intro}}</span></a>
           </li>
-          <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析')">
+          <li class="mui-table-view-cell" @click="enterremork('risk_analysis', '风险分析', '500')">
             <a href="javascript:;" class="mui-navigate-right">风险分析<span class="mui-ellipsis">{{thisdata.risk_analysis}}</span></a>
           </li>
           <li class="mui-table-view-cell">
@@ -126,7 +126,7 @@
         </div>
 
         <li class="mui-table-view-cell right0" @click="showmore('.reportInfo')">
-          <a href="javascript:;" class="mui-navigate-right ">更多报备信息</a>
+          <a href="javascript:;" class="mui-navigate-right ">更多报备人信息</a>
         </li>
 
         <div class="reportInfo">
@@ -167,12 +167,12 @@
         </li>
 
         <div class="jzInfo">
-          <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','己方竞争对手')">
-            <a href="javascript:;" class="mui-navigate-right ">己方竞争对手</a>
+          <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
+            <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{thisdata.second_party_competitor}}</span></a>
           </li>
 
           <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
-            <a href="javascript:;" class="mui-navigate-right">报备人对手</a>
+            <a href="javascript:;" class="mui-navigate-right">报备人对手<span class="mui-ellipsis">{{thisdata.competitor}}</span></a>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
@@ -193,7 +193,7 @@
     </div>
     <div class="other">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="postReporter('back')">返回</a>
         <h1 class="mui-title">我的项目</h1>
         <a class="mui-icon mui-pull-right complete" @click="postReporter()">完成</a>
       </header>
@@ -229,7 +229,7 @@
         <li class="mui-table-view-cell textareaclass">
           <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" maxlength="50" type="text" class="mui-input-clear othertextarea"></textarea>
+            <textarea style="width:99%!important"  type="text" class="mui-input-clear othertextarea"></textarea>
           </div>
         </li>
       </ul>
@@ -291,6 +291,7 @@
   let model
   let typeStr
   let changeOneType
+  let msInfo = {}
   export default {
     head: {
       title: '我的项目'
@@ -368,7 +369,8 @@
         cloneInfo: {
           name: '',
           email: '',
-          tel: ''
+          tel: '',
+          type: ''
         } // 临时其他报备人信息
       }
     },
@@ -534,7 +536,8 @@
           item.active = ''
         })
         model.classifyActiveArr = []
-        $('#classifylist').hide()
+        model.furtypeStr = ''
+        // $('#classifylist').hide()
       },
 
       // 上传图片
@@ -594,12 +597,41 @@
         $('.more').hide()
         $('.other').show()
         $('.reporter').show()
+        if (model.thisdata.project_reportman[0].type === 'other') {
+          msInfo = {
+            name: model.cloneInfo.name,
+            tel: model.cloneInfo.tel,
+            email: model.cloneInfo.email,
+            type: model.thisdata.project_reportman[0].type
+          }
+        } else {
+          msInfo = {
+            name: model.thisdata.project_reportman[0].name,
+            tel: model.thisdata.project_reportman[0].tel,
+            email: model.thisdata.project_reportman[0].email,
+            type: model.thisdata.project_reportman[0].type
+          }
+        }
       },
 
-      postReporter: function () {
+      postReporter: function (type) {
         $('.more').show()
         $('.other').hide()
         $('.reporter').hide()
+        if (type === 'back' && msInfo.type === 'other') {
+          model.cloneInfo = {
+            name: msInfo.name,
+            tel: msInfo.tel,
+            email: msInfo.email
+          }
+          model.thisdata.project_reportman[0].type = msInfo.type // changeraios 的时候发生改变了 要赋值回去
+        }
+        if (type === 'back' && msInfo.type === 'self') {
+          model.thisdata.project_reportman[0].name = msInfo.name
+          model.thisdata.project_reportman[0].tel = msInfo.tel
+          model.thisdata.project_reportman[0].email = msInfo.email
+          model.thisdata.project_reportman[0].type = msInfo.type // changeraios 的时候发生改变了 要赋值回去
+        }
       },
 
       showmore: function (value) {
@@ -616,12 +648,14 @@
       },
 
       // 进入textarea
-      enterremork: function (type, text) {
+      enterremork: function (type, text, num) {
         $('.othertitle').text(text)
         typeStr = type
         $('.more').hide()
         $('.otherRemark').show()
         $('.othertextarea').val(model.thisdata[type])
+        $('.othertextarea').attr('maxlength', num)
+        $('.othertextarea').attr('placeholder', '请输入' + text + ',' + num + '字')
       },
 
       // 结束textarea
@@ -841,6 +875,9 @@
     text-align: center;
     color: #9D9D9D;
     margin-right: 5px;
+  }
+  .right0 a {
+    color: #999;
   }
   
   .mui-input-row {

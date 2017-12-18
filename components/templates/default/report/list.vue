@@ -19,8 +19,8 @@
         <div class="mui-scroll">
           <div v-for="item in datalist" class="listdiv">
             <a :href="'/projectdetail?id=' + item.id" class="flagdetail">
-              <h4>
-                <i>{{item.amount}}万元</i>·<span>{{item.name}}</span>
+              <h4 class="mui-ellipsis">
+                <i>{{item.amount}}万元</i><span>·{{item.name}}</span>
               </h4>
               <div>
                 <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
@@ -30,7 +30,7 @@
                 </span>
                 <div class="stars-style">
                   <span class="star-box">
-                    <i class="fa mui-icon mui-icon-left-nav mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+                    <i class="mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa fa-star' : ''"></i>
                   </span>
                 </div>
                 <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
@@ -209,19 +209,22 @@
   }
   h4 {
     height: 44px;
-    line-height: 44px;
+    line-height: 50px;
     font-size: 14px;
     font-weight: 100;
     text-align: center;
-    border-bottom: 1px dashed #BEBEBE;
+    border-bottom: 1px dashed #eee;
     margin: 0;
+    font-weight: 600,
   }
   h4 i{
     font-style:normal;
-    color: red;
+    color: #f14f4f;
+    font-weight: 600;
   }
   h4 span {
-    color: #000;
+    color: #333;
+    font-weight: 600;
   }
   .report-state{
     position: absolute;
@@ -327,6 +330,9 @@
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
   }
+  .detail a {
+    color: #999;
+  }
   .navul {
     position: fixed;
     top: 44px;
@@ -360,7 +366,7 @@
   .navul li .bglan {
     width: 27%;
     margin: 0 auto;
-    height: 5px;
+    height: 4px;
     background: #4E7AE7;
     position: absolute;
     left: 50%;

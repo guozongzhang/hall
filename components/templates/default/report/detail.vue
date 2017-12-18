@@ -309,7 +309,7 @@
       <div class="textarea-box">
         <div class="line-box"></div>
         <div class="text-input">
-          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="输入项目的跟着记录"></textarea>
+          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
         </div>
       </div>
     </div>
@@ -1933,4 +1933,5 @@ export default {
   border-top: 1px solid #5075ce;
   color: #fff;
 }
+
 </style>

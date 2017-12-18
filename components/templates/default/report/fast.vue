@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div class="allshow">
+    <div class="allshow subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">快速报备</h1>
         <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
       </header>
@@ -31,7 +32,7 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -45,7 +46,7 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<span>{{cloneValidity}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right" @click="testone()">项目有效期<i>*</i><span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
@@ -78,15 +79,16 @@
     </div>
     <div class="allhide">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="endall('cencle')">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">{{clonetitel}}</h1>
-        <a class="mui-icon mui-pull-right complete" @click="endall()" >完成</a>
+        <a class="mui-icon mui-pull-right complete" @click="endall('end')" >完成</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass nextshow">
           <div class="mui-input-row" style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" maxlength="50" type="text" placeholder="请输入" v-model="thisdata.remark"></textarea>
+            <textarea style="width:99%!important" maxlength="50" type="text" placeholder="请输入备注" v-model="thisdata.cloneRemark"></textarea>
           </div>
         </li>
       </ul>
@@ -116,6 +118,7 @@
           feasibility: 3, // '可行性'
           validity: 'three_month',
           remark: '',
+          cloneRemark: '', // 临时变量
           project_reportman: [ // 报备人信息
             {
               user_poi_reportman: 0,
@@ -183,12 +186,16 @@
       starshow: function (e) {
         $('.allshow').hide()
         $('.allhide').show()
+        model.thisdata.cloneRemark = model.thisdata.remark ? _.clone(model.thisdata.remark) : ''
       },
 
       // 结束textarea
-      endall: function () {
+      endall: function (type) {
         $('.allshow').show()
         $('.allhide').hide()
+        if (type === 'end') {
+          model.thisdata.remark = _.clone(model.thisdata.cloneRemark)
+        }
       },
 
       // 上传图片
@@ -273,6 +280,11 @@
           window.mui.toast(result.msg)
         }
         return result.status
+      },
+
+      // 返回首页(云展厅)
+      goHome: function () {
+        window.location.href = model.linkPath + '/'
       },
 
       // 改变可行性
@@ -440,6 +452,23 @@
     font-size: 12px!important;
     line-height: 44px;
     padding: 0 10px!important;
+  }
+  .subbox-show .sub-go-back{
+    position: relative;
+    top: 5px;
+    color: #666;
+    font-size: 14px;
+  }
+  .close-icon{
+    position: absolute;
+    top: 10px;
+    left: 66px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: #666;
+    z-index: 9999;
   }
   .mui-ellipsis{
     max-width: 70%;

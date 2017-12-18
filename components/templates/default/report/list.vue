@@ -81,8 +81,8 @@
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
         window.mui('#pullfresh').on('tap', 'a', function (event) {
-          let classFlag = $('#pullfresh').find('.flagdetail').attr('href')
-          window.location.href = model.linkPath + classFlag
+          let objclass = $(event.target).closest('.flagdetail').attr('href')
+          window.location.href = model.linkPath + objclass
         })
         await model.getData()
       },

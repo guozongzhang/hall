@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div class="more">
+    <div class="more subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">新建项目</h1>
         <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
       </header>
@@ -192,8 +193,9 @@
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
     </div>
     <div class="other">
-      <header class="mui-bar mui-bar-nav">
+      <header class="mui-bar mui-bar-nav subbox-show">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="postReporter('back')">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">我的项目</h1>
         <a class="mui-icon mui-pull-right complete" @click="postReporter()">提交</a>
       </header>
@@ -222,6 +224,7 @@
     <div class="otherRemark">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle"></h1>
         <a class="mui-icon mui-pull-right complete" @click="postRremork()">提交</a>
       </header>
@@ -237,6 +240,7 @@
     <div class="otherCompete">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title otherCompetetitle"></h1>
         <a class="mui-icon mui-pull-right complete" @click="endOtherCompete()">提交</a>
       </header>
@@ -415,6 +419,11 @@
             }, 2000)
           }
         })
+      },
+
+      // 返回首页(云展厅)
+      goHome: function () {
+        window.location.href = model.linkPath + '/'
       },
 
       // 添加跟踪记录页面的返回
@@ -840,7 +849,7 @@
     position: relative;
     top: 5px;
     color: #666;
-    font-size: 14px !important;
+    font-size: 12px!important;
   }
   .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
     display: none;
@@ -903,7 +912,17 @@
   .nav {
     margin-top: 50px;
   }
-
+  .close-icon{
+    position: absolute;
+    top: 10px;
+    left: 66px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    color: #666;
+    z-index: 9999;
+  }
   .nav li {
     height: 43px;
     line-height: 43px;

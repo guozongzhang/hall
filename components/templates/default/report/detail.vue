@@ -771,6 +771,7 @@ export default {
       let param = {
         flow_id: 36,
         id: id,
+        order: '-id',
         report_name: model.basicinfo.name
       }
       let result = await axios.get('functions/report/record', {
@@ -1472,12 +1473,12 @@ export default {
 }
 .close-icon{
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 66px;
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 20px;
+  font-size: 18px;
   color: #666;
   z-index: 9999;
 }
@@ -1489,7 +1490,7 @@ export default {
   position: relative;
   top: 5px;
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
 }
 .subbox-show .save-btn{
   position: relative;

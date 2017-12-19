@@ -140,7 +140,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>期望提成</label>
-              <input type="number" placeholder="请输入期望提成" v-model="thisdata.project_reportman[0].royalties_expectation">
+              <input type="number" placeholder="请输入期望提成" min="0" max="100" v-model="thisdata.project_reportman[0].royalties_expectation">
             </div>
           </li>
           <li class="mui-table-view-cell">
@@ -152,7 +152,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text"  placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel" disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <input type="text"  placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
@@ -382,7 +382,6 @@
       init: function () {
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
-        console.log('123', model.linkPath)
         let token = Cookies.get('dpjia-hall-token')
         axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
           headers: {
@@ -478,8 +477,8 @@
           project_attachment: JSON.stringify(model.thisdata.projectAttachment),
           project_reportman: JSON.stringify(model.thisdata.project_reportman),
           project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
-          invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
-          delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
+          invitation_time: model.thisdata.invitation_time || '0',
+          delivery_time: model.thisdata.delivery_time || '0'
         })
         axios.post('functions/report/project', null, {
           data: submitData

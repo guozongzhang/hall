@@ -1045,8 +1045,8 @@ export default {
       let param = {
         id: proId,
         number: model.editpro.number,
-        invitation_time: model.editpro.invitation_time || 0,
-        delivery_time: model.editpro.delivery_time || 0,
+        invitation_time: model.editpro.invitation_time || '0',
+        delivery_time: model.editpro.delivery_time || '0',
         project_furniture_types: JSON.stringify(updateTypeArr),
         category: model.editpro.category_str,
         intro: model.editpro.intro,

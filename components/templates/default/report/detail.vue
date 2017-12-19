@@ -1217,12 +1217,6 @@ export default {
         tel: obj.tel,
         email: obj.email
       }
-<<<<<<< HEAD
-      window.mui.toast('编辑报备人信息成功')
-      setTimeout(function () {
-        model.activeTab = 'home'
-      }, 1000)
-=======
       axios.put('functions/report/project_reportman', null, {
         data: param
       }).then(function (data) {
@@ -1248,7 +1242,6 @@ export default {
           }, 2000)
         }
       })
->>>>>>> tmp
     },
 
     // 编辑竞争信息

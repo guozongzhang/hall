@@ -1053,7 +1053,9 @@ export default {
         risk_analysis: model.editpro.risk_analysis,
         project_attachment: JSON.stringify(model.editproImg)
       }
+      window.alert(model.editpro.invitation_time)
       window.alert(new Date(model.editpro.invitation_time || 0))
+      window.alert(Date.parse(new Date(model.editpro.invitation_time || 0)))
       window.alert(param.invitation_time)
       axios.put('functions/report/project', null, {
         data: param

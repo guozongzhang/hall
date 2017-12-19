@@ -1053,6 +1053,7 @@ export default {
         risk_analysis: model.editpro.risk_analysis,
         project_attachment: JSON.stringify(model.editproImg)
       }
+      window.alert(param.invitation_time)
       axios.put('functions/report/project', null, {
         data: param
       }).then(function (data) {

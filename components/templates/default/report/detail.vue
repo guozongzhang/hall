@@ -26,7 +26,7 @@
           </div>
           <div class="fz14">{{basicinfo.first_party_name}}</div>
           <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
-          <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)"></span>
+          <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12">
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
             <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
@@ -214,7 +214,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time)}}</p>
+                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:MM:SS')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -1012,8 +1012,8 @@ export default {
       let param = {
         id: proId,
         number: model.editpro.number,
-        invitation_time: Date.parse(new Date(model.editpro.invitation_time || 0)),
-        delivery_time: Date.parse(new Date(model.editpro.delivery_time || 0)),
+        invitation_time: model.editpro.invitation_time || '0',
+        delivery_time: model.editpro.delivery_time || '0',
         project_furniture_types: JSON.stringify(updateTypeArr),
         category: model.editpro.category_str,
         intro: model.editpro.intro,

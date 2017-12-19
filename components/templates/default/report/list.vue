@@ -59,7 +59,7 @@
   let $ = require('jquery')
   let _ = require('underscore')
   let model
-  let pagesize = 2
+  let pagesize = 6
   let flowState = [] // 项目状态
   export default {
     data () {

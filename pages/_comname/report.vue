@@ -68,10 +68,11 @@
   .footer div{
     font-size: 16px;
     line-height: 50px;
-    border-radius: 20px;
+    border-radius: 30px;
     background: #5278e5;
     text-align: center;
     color: #fff;
+    box-shadow: 2px 2px 2px #ccc;
   }
   .register-link{
     position: relative;

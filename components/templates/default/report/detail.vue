@@ -25,7 +25,7 @@
             </span>
           </div>
           <div class="fz14">{{basicinfo.first_party_name}}</div>
-          <div class="fz14 intro-style">{{basicinfo.intro}}</div>
+          <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)"></span>
           <div class="fz12">
             <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
@@ -266,21 +266,21 @@
         </header>
         <div class="textarea-box">
           <div class="line-box"></div>
-          <div>
+          <div class="must">
             <div class="mui-input-row sub-input-box">
-              <label>项目名称</label>
+              <label>项目名称<span>*</span></label>
               <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>甲方名称</label>
+              <label>甲方名称<span>*</span></label>
               <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>项目金额</label>
+              <label>项目金额<span>*</span></label>
               <input type="text" placeholder="万元" v-model="editbaisc.amount">
             </div>
             <div class="mui-input-row sub-input-box edit-basic-box">
-              <label>项目可行性</label>
+              <label>项目可行性<span>*</span></label>
               <div class="stars-style">
                 <span class="star-box">
                   <i class="fa mui-icon mui-icon-left-nav mui-pull-right" @click="getStar(sub)"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= editbaisc.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -288,11 +288,11 @@
               </div>
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>有效期</label>
+              <label>有效期<span>*</span></label>
               <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
             </div>
             <div class="mui-input-row sub-input-box">
-              <label>简单描述</label>
+              <label>简单描述<span>*</span></label>
               <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
             </div>
           </div>
@@ -309,7 +309,7 @@
       <div class="textarea-box">
         <div class="line-box"></div>
         <div class="text-input">
-          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="输入项目的跟着记录"></textarea>
+          <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
         </div>
       </div>
     </div>
@@ -462,7 +462,7 @@
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
-import editReport from './_editreport.vue'
+let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
 let querystring = require('querystring')
@@ -611,6 +611,31 @@ export default {
       model.activeTab = 'editbasic'
     },
 
+    ValidateForm: function (data) {
+      let result = ESVal.validate(data, {
+        name: {
+          required: true,
+          msg: '项目名称不能为空!'
+        },
+        first_party_name: {
+          required: true,
+          msg: '公司名称不能为空!'
+        },
+        amount: {
+          required: true,
+          msg: '预计金额不能为空!'
+        },
+        sketch: {
+          required: true,
+          msg: '简单描述不能为空!'
+        }
+      })
+      if (!result.status) {
+        window.mui.toast(result.msg)
+      }
+      return result.status
+    },
+
     // 保存必填信息
     confEditBasic: function () {
       let param = {
@@ -621,6 +646,9 @@ export default {
         feasibility: model.editbaisc.feasibility || '',
         validity: model.editbaisc.validity || '',
         sketch: model.editbaisc.sketch || ''
+      }
+      if (!model.ValidateForm(param)) {
+        return false
       }
       axios.put('functions/report/project', null, {
         data: param
@@ -703,7 +731,7 @@ export default {
                 window.mui.toast('登录信息过期!')
                 setTimeout(function () {
                   Cookies.set('dpjia-hall-token', '')
-                  window.location.reload()
+                  window.location.href = model.linkPath + '/login'
                 }, 2000)
               }
             })
@@ -723,7 +751,7 @@ export default {
                 window.mui.toast('登录信息过期!')
                 setTimeout(function () {
                   Cookies.set('dpjia-hall-token', '')
-                  window.location.reload()
+                  window.location.href = model.linkPath + '/login'
                 }, 2000)
               }
             })
@@ -739,6 +767,7 @@ export default {
       let param = {
         flow_id: 36,
         id: id,
+        order: '-id',
         report_name: model.basicinfo.name
       }
       let result = await axios.get('functions/report/record', {
@@ -809,7 +838,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1004,7 +1033,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1151,7 +1180,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1188,10 +1217,38 @@ export default {
         tel: obj.tel,
         email: obj.email
       }
+<<<<<<< HEAD
       window.mui.toast('编辑报备人信息成功')
       setTimeout(function () {
         model.activeTab = 'home'
       }, 1000)
+=======
+      axios.put('functions/report/project_reportman', null, {
+        data: param
+      }).then(function (data) {
+        model.reportman = {
+          id: proId,
+          name: model.reporter.name,
+          project_relation: model.reporter.relationship,
+          royalties_expectation: model.reporter.commission,
+          strengths: model.reporter.ascendancy,
+          tel: model.reporter.tel,
+          email: model.reporter.email
+        }
+        window.mui.toast('编辑报备人信息成功')
+        setTimeout(function () {
+          model.activeTab = 'home'
+        }, 1000)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '')
+            window.location.href = model.linkPath + '/login'
+          }, 2000)
+        }
+      })
+>>>>>>> tmp
     },
 
     // 编辑竞争信息
@@ -1231,7 +1288,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '')
-            window.location.reload()
+            window.location.href = model.linkPath + '/login'
           }, 2000)
         }
       })
@@ -1410,12 +1467,12 @@ export default {
 }
 .close-icon{
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 66px;
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 20px;
+  font-size: 18px;
   color: #666;
   z-index: 9999;
 }
@@ -1427,7 +1484,7 @@ export default {
   position: relative;
   top: 5px;
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
 }
 .subbox-show .save-btn{
   position: relative;
@@ -1871,4 +1928,8 @@ export default {
   border-top: 1px solid #5075ce;
   color: #fff;
 }
+.must label span{
+  color: red;
+}
+
 </style>

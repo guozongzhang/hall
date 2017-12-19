@@ -477,8 +477,8 @@
           project_attachment: JSON.stringify(model.thisdata.projectAttachment),
           project_reportman: JSON.stringify(model.thisdata.project_reportman),
           project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
-          invitation_time: Date.parse(new Date(model.thisdata.invitation_time || 0)),
-          delivery_time: Date.parse(new Date(model.thisdata.delivery_time || 0))
+          invitation_time: model.thisdata.invitation_time || 0,
+          delivery_time: model.thisdata.delivery_time || 0
         })
         axios.post('functions/report/project', null, {
           data: submitData

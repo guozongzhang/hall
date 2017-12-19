@@ -1045,18 +1045,14 @@ export default {
       let param = {
         id: proId,
         number: model.editpro.number,
-        invitation_time: Date.parse(new Date(model.editpro.invitation_time || 0)),
-        delivery_time: Date.parse(new Date(model.editpro.delivery_time || 0)),
+        invitation_time: model.editpro.invitation_time || 0,
+        delivery_time: model.editpro.delivery_time || 0,
         project_furniture_types: JSON.stringify(updateTypeArr),
         category: model.editpro.category_str,
         intro: model.editpro.intro,
         risk_analysis: model.editpro.risk_analysis,
         project_attachment: JSON.stringify(model.editproImg)
       }
-      window.alert(model.editpro.invitation_time)
-      window.alert(new Date(model.editpro.invitation_time || 0))
-      window.alert(Date.parse(model.editpro.invitation_time || 0))
-      window.alert(param.invitation_time)
       axios.put('functions/report/project', null, {
         data: param
       }).then(function (data) {

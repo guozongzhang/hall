@@ -1055,7 +1055,7 @@ export default {
       }
       window.alert(model.editpro.invitation_time)
       window.alert(new Date(model.editpro.invitation_time || 0))
-      window.alert(Date.parse(new Date(model.editpro.invitation_time || 0)))
+      window.alert(Date.parse(model.editpro.invitation_time || 0))
       window.alert(param.invitation_time)
       axios.put('functions/report/project', null, {
         data: param

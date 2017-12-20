@@ -15,6 +15,9 @@
     <li class="mui-table-view-cell sub-item">
       <a class="mui-navigate-right" :href="linkPath + '/editpwd'">更改密码</a>
     </li>
+    <li class="mui-table-view-cell sub-item logout" @click="logout()">
+      <a href="javascript:;">退出登录</a>
+    </li>
   </ul>
 </div>
 </template>
@@ -119,6 +122,17 @@ export default {
           window.mui.toast('设置失败!')
         })
       }
+    },
+
+    // 退出登录
+    logout: function () {
+      var btnArray = ['否', '是']
+      window.mui.confirm('确定退出登录？', '友情提示', btnArray, function (e) {
+        if (e.index === 1) {
+          Cookies.set('dpjia-hall-token', '')
+          window.location.href = model.linkPath + '/person'
+        }
+      })
     }
   },
   mounted () {
@@ -150,6 +164,9 @@ export default {
   line-height: 22px;
   font-size: 14px;
   color: #050505 !important;
+}
+.logout {
+  border-top: 1px solid #cccccc;
 }
 .switch-box{
   position: relative;

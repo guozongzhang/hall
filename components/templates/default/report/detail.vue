@@ -462,6 +462,7 @@
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
+import editReportvue from './_editreport.vue'
 let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
@@ -540,7 +541,7 @@ export default {
   components: {
     'vue-area': Area,
     'vue-one': proType,
-    'vue-editreport': editReport
+    'vue-editreport': editReportvue
   },
   methods: {
     init: async function () {
@@ -1218,7 +1219,7 @@ export default {
         email: obj.email
       }
       axios.put('functions/report/project_reportman', null, {
-        data: param
+        data: model.reportman
       }).then(function (data) {
         model.reportman = {
           id: proId,
@@ -1335,6 +1336,21 @@ export default {
 }
 </script>
 <style>
+.mui-title{
+  font-weight: 600;
+}
+.mui-bar-nav{
+  height: 48px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  box-shadow: none;
+}
+.sub-go-back{
+  height: 48px;
+  line-height: 26px;
+  color: #666;
+  font-size: 14px!important;
+}
 .edit-basic-box .stars-style{
   display: inline-block;
   width: 70%;
@@ -1440,6 +1456,7 @@ export default {
 .sub-input-box label{
   line-height: 18px;
   width: 30%;
+  color: #666;
 }
 .sub-input-box .area-text{
   display: inline-block;
@@ -1452,20 +1469,22 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #999;
 }
 .sub-input-box input{
   font-size: 14px;
   width: 70%;
   text-align: right;
+  color: #999;
 }
 .close-icon{
   position: absolute;
-  top: 12px;
+  top: 11px;
   left: 66px;
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 18px;
+  font-size: 20px;
   color: #666;
   z-index: 9999;
 }
@@ -1474,15 +1493,15 @@ export default {
 }
 .subbox-show .go-back,
 .subbox-show .sub-go-back{
-  position: relative;
-  top: 5px;
+  height: 48px;
+  line-height: 26px;
   color: #666;
-  font-size: 12px;
+  font-size: 14px!important;
 }
 .subbox-show .save-btn{
   position: relative;
   top: 6px;
-  color: #666;
+  color: #5278e5;
   font-size: 14px;
 }
 .textarea-box{
@@ -1633,8 +1652,8 @@ export default {
   border-left: none;
 }
 .detail-tab .mui-active{
-  color: #5278e5;
-  background-color: #fff;
+  color: #5278e5 !important;
+  background-color: #fff !important;
 }
 .detail-tab .mui-active .active-icon{
   position: absolute;

@@ -30,7 +30,7 @@
                 </span>
                 <div class="stars-style">
                   <span class="star-box">
-                    <i class="mui-pull-right"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= item.feasibility ? 'fa fa-star' : ''"></i>
+                    <i class="fa fa-star"  v-for="sub in stars" aria-hidden="true" v-if="sub <= item.feasibility"></i>
                   </span>
                 </div>
                 <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
@@ -203,14 +203,14 @@
   .listdiv {
     position: relative;
     margin: 15px;
-    height: 174px;
+    height: 170px;
     background: #fff;
     border-radius: 5px;
   }
   h4 {
     height: 44px;
     line-height: 50px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 100;
     text-align: center;
     border-bottom: 1px dashed #eee;
@@ -231,7 +231,7 @@
     right: 0;
     top: -6px;
     display: inline-block;
-    width: 50px;
+    width: 60px;
     height: 24px;
     text-align: center;
     line-height: 24px;
@@ -283,7 +283,7 @@
     height: 24px;
     line-height: 24px;
     text-align: center;
-    margin-top: 14px;
+    margin-top: 10px;
     margin-bottom: 5px;
   }
   .stars-style .fa{
@@ -299,7 +299,7 @@
   }
   .fa-star {
     color: #ffb400;
-    font-size: 20px;
+    font-size: 18px;
   }
   .fa-star-o {
     color: #ccc;
@@ -348,7 +348,7 @@
     width: 33.33%;
     height: 30px;
     list-style-type: none;
-    border-right: 1px solid #CBCBCB;
+    border-right: 1px solid #eee;
     position: relative;
   }
   .navul li:last-child{
@@ -366,7 +366,7 @@
   .navul li .bglan {
     width: 27%;
     margin: 0 auto;
-    height: 4px;
+    height: 3px;
     background: #4E7AE7;
     position: absolute;
     left: 50%;
@@ -386,6 +386,7 @@
   #pullfresh{
     position: fixed;
     top: 80px;
+    bottom: 60px;
     background-color: #eee;
   }
 </style>

@@ -48,7 +48,7 @@
         <li class="mui-table-view-cell" @click="getreport()">
           <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
-        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '50')">
+        <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '500')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
         </li>
         <li class="mui-table-view-cell" style="min-height: 43px">
@@ -56,6 +56,7 @@
             <a href="javascript:;">添加附件</a>
             <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
             <span class="add-btn" style="float: right">
+              <i class="fa fa-picture-o"></i>
               <i class="fa fa-plus add-icon"></i>
             </span>
           </span>
@@ -63,7 +64,7 @@
         <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
           <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
             <img :src="imgitem.file_url" alt=""  class="fjimg">
-            <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
+            <i class="deleteimg" @click="deleteimg(imgIndex)">×</i>
           </span>
         </li>
         <li style="height: 15px; background: #EEEEEE"></li>
@@ -204,7 +205,7 @@
           <li class="mui-table-view-cell"> 
             <div class="mui-radio cssradiodiv">
               <input type="radio" name="style" value="self" v-model="thisdata.project_reportman[0].type" @change="changeradio('self')"/> 
-              <label>自己</label> {{thisdata.project_reportman[0].type}}
+              <label>自己</label>
             </div>
             <div class="mui-radio cssradiodiv">
               <input type="radio" name="style" value="other" v-model="thisdata.project_reportman[0].type" @change="changeradio('other')"/> 
@@ -286,7 +287,6 @@
   import Two from '../common/twolayer.vue'
   import axios from '~/plugins/axios'
   let dateJson = require('~/static/js/date.json')
-  // let moment = require('moment')
   let url = require('url')
   let ESVal = require('es-validate')
   let Cookies = require('js-cookie')
@@ -298,7 +298,7 @@
   let msInfo = {}
   export default {
     head: {
-      title: '我的项目'
+      title: '新建项目'
     },
     data () {
       return {
@@ -671,7 +671,7 @@
         $('.otherRemark').show()
         $('.othertextarea').val(model.thisdata[type])
         $('.othertextarea').attr('maxlength', num)
-        $('.othertextarea').attr('placeholder', '请输入' + text + ',' + num + '字')
+        $('.othertextarea').attr('placeholder', '请输入' + text + '' + num + '字')
       },
 
       // 结束textarea
@@ -851,11 +851,34 @@
   }
 </script>
 <style lang="">
-  .sub-go-back{
+  .add-btn {
     position: relative;
-    top: 5px;
+    color: #999;
+  }
+  .add-btn .fa{
+    font-size: 16px;
+    color: #999 !important;
+  }
+  .add-btn .add-icon{
+    position: absolute;
+    font-size: 10px;
+    bottom: 10px;
+    right: -6px;
+  }
+  .mui-title{
+    font-weight: 600;
+  }
+  .mui-bar-nav{
+    height: 48px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    box-shadow: none;
+  }
+  .sub-go-back{
+    height: 48px;
+    line-height: 26px;
     color: #666;
-    font-size: 12px!important;
+    font-size: 14px!important;
   }
   .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
     display: none;
@@ -868,7 +891,7 @@
   }
   .jzztitele {
     margin: 0 -15px;
-    font-size: 12px;
+    font-size: 14px;
     background: #eee;
     height: 30px;
     line-height: 30px;
@@ -889,13 +912,12 @@
   }
   .right0 .mui-navigate-right {
     text-align: center;
-    color: #9D9D9D;
+    color: #999 !important;
     margin-right: 5px;
   }
   .right0 a {
-    color: #999;
+    color: #999 !important;
   }
-  
   .mui-input-row {
     height: 43px;
   }
@@ -903,40 +925,43 @@
     height: 43px;
     padding: 0;
     line-height: 43px;
-    font-size: 12px;
-    /*padding-left: 10px;*/
+    font-size: 14px;
     width: 25%;
   }
   .mui-input-row input{
-    font-size: 12px;
+    font-size: 14px;
     padding: 0;
     line-height: 43px;
     height: 43px;
     width: 75%!important;
     text-align: right;
+    color: #999;
   }
   .nav {
-    margin-top: 50px;
+    margin-top: 56px;
   }
   .close-icon{
     position: absolute;
-    top: 10px;
+    top: 11px;
     left: 66px;
     display: inline-block;
     width: 20px;
     height: 20px;
-    font-size: 18px;
+    font-size: 20px;
     color: #666;
     z-index: 9999;
   }
   .nav li {
-    height: 43px;
+    min-height: 43px;
     line-height: 43px;
     padding: 0;
   }
   .nav li a {
     font-size: 13px;
     color: #3A3A3A;
+  }
+  .mui-table-view:before {
+    background-color: #fff !important;
   }
   .nav li i {
     color: red;
@@ -959,7 +984,6 @@
   .mui-table-view-cell:after {
     left: 0
   }
-
   .liul{
     padding: 0;
   }
@@ -980,7 +1004,7 @@
   .mui-table-view-cell a span{
     float: right;
     color: #969696;
-    font-size: 12px;
+    font-size: 14px;
     margin-right: 20px;
   }
   .mui-table-view-chevron .mui-table-view-cell>a:not(.mui-btn) {
@@ -993,7 +1017,7 @@
     float: left;
   }
   .cssradiodiv label{
-    font-size: 12px;
+    font-size: 14px;
     margin-left: 27px;
     padding-right: 20px;
   }
@@ -1001,7 +1025,6 @@
     font-size: 20px;
   }
   .mui-radio input[type=radio] {
-    /*margin-top: 10px;*/
     top: 13px;
     left: 0px;
   }
@@ -1010,13 +1033,14 @@
   }
   .nav li.textareaclass textarea{
     height: 80px;
-    font-size: 12px;
+    font-size: 14px;
     padding:10px 0;
   }
   .complete{
-    font-size: 12px!important;
-    line-height: 44px;
+    font-size: 14px!important;
+    line-height: 48px;
     padding: 0 10px!important;
+    color: #5278e5;
   }
   .mui-ellipsis{
     max-width: 70%;
@@ -1028,27 +1052,38 @@
     text-align: left;
   }
   .addjjz {
-    font-size: 12px;
+    font-size: 14px;
     float: right;
     margin-top: 5px;
     margin-right: 15px;
   }
   .fjimg{
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     display: inline-block;
-    margin-top: 6px;
-    margin-right: 6px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
   .deleteimg{
     position: absolute;
-    left: -4px;
+    left: -8px;
     top: 2px;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 100%;
+    text-align: center;
+    background-color: #c63e40;
+    color: #fff !important;
+    z-index: 999;
+    font-size: 14px;
+    cursor: pointer;
   }
   .posir{
     position: relative;
     display: inline-block;
-    height:44px;
+    height: 48px;
   }
    .classify-box{
     display: none;

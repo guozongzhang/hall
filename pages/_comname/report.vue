@@ -1,7 +1,7 @@
 <template>
 <div class="box">
-  <header class="mui-bar mui-bar-nav">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+  <header class="mui-bar mui-bar-nav my-project">
+    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left">返回</a>
     <h1 class="mui-title">我的项目</h1>
     <a :href="linkPath + '/newproject'" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
   </header>
@@ -82,6 +82,22 @@
     color: #3f3f3f;
   }
   .add {
-    font-size:18px;
+    height: 44px;
+    line-height: 26px;
+    font-size: 16px !important;
+    font-weight: 400!important;;
+  }
+  .my-project {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  .my-project .mui-title{
+    font-weight: 600;
+  }
+  .my-project .mui-action-back{
+    font-size: 14px;
+    color: #666;
+    height: 44px;
+    line-height: 26px;
   }
 </style>

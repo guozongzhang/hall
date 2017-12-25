@@ -399,41 +399,7 @@
       </div>
     </div>
     <div v-show="activeTab == 'editreport'" class="subbox-show">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">编辑报备人信息</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confEditReport()">提交</a>
-      </header>
-      <div class="textarea-box">
-        <div class="line-box"></div>
-        <div>
-          <div class="mui-input-row sub-input-box">
-						<label>姓名</label>
-						<input type="text" placeholder="输入姓名" v-model="reporter.name">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>项目关系</label>
-						<input type="text" placeholder="输入项目关系务" v-model="reporter.relationship">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>期望提成</label>
-						<input type="number" placeholder="输入期望提成" v-model="reporter.commission">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>项目优势</label>
-						<input type="text" placeholder="输入项目优势" v-model="reporter.ascendancy">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系电话</label>
-						<input type="text" placeholder="输入联系电话" v-model="reporter.tel">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系邮箱</label>
-						<input type="text" placeholder="输入联系邮箱" v-model="reporter.email">
-					</div>
-        </div>
-      </div>
+      <vue-editreport :report="reporter" @getEditReport="confEditReport"></vue-editreport>
     </div>
     <div v-show="activeTab == 'editcompetitors'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
@@ -496,6 +462,7 @@
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
+import editReportvue from './_editreport.vue'
 let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
@@ -573,7 +540,8 @@ export default {
   },
   components: {
     'vue-area': Area,
-    'vue-one': proType
+    'vue-one': proType,
+    'vue-editreport': editReportvue
   },
   methods: {
     init: async function () {
@@ -1222,45 +1190,36 @@ export default {
     // 编辑报备人信息
     editReport: function (id) {
       model.reporter = {
+        id: id,
         name: model.reportman.name,
         relationship: model.reportman.project_relation,
         commission: model.reportman.royalties_expectation,
         ascendancy: model.reportman.strengths,
         tel: model.reportman.tel,
-        email: model.reportman.email
+        email: model.reportman.email,
+        goback: false
       }
       model.activeTab = 'editreport'
       proId = id
     },
 
     // 确定提交报备人信息
-    confEditReport: function () {
-      let telval = /^1[3|4|5|7|8][0-9]{9}$/
-      if (!_.isEmpty(model.reporter.tel)) {
-        if (!telval.test(model.reporter.tel)) {
-          window.mui.toast('手机号格式错误!')
-          return false
-        }
+    confEditReport: function (obj) {
+      if (obj.goback) {
+        model.goBack()
+        return
       }
-      let emailval = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/
-      if (!_.isEmpty(model.reporter.email)) {
-        if (!emailval.test(model.reporter.email)) {
-          window.mui.toast('邮箱格式错误!')
-          return false
-        }
-      }
-      let param = {
+      model.reportman = {
         id: proId,
-        name: model.reporter.name || '',
-        project_relation: model.reporter.relationship || '',
-        royalties_expectation: model.reporter.commission || '',
-        strengths: model.reporter.ascendancy || '',
-        tel: model.reporter.tel,
-        email: model.reporter.email,
-        is_self: 'yes'
+        name: obj.name,
+        project_relation: obj.relationship,
+        royalties_expectation: obj.commission,
+        strengths: obj.ascendancy,
+        tel: obj.tel,
+        email: obj.email
       }
       axios.put('functions/report/project_reportman', null, {
-        data: param
+        data: model.reportman
       }).then(function (data) {
         model.reportman = {
           id: proId,
@@ -1377,6 +1336,21 @@ export default {
 }
 </script>
 <style>
+.mui-title{
+  font-weight: 600;
+}
+.mui-bar-nav{
+  height: 48px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  box-shadow: none;
+}
+.sub-go-back{
+  height: 48px;
+  line-height: 26px;
+  color: #666;
+  font-size: 14px!important;
+}
 .edit-basic-box .stars-style{
   display: inline-block;
   width: 70%;
@@ -1482,6 +1456,7 @@ export default {
 .sub-input-box label{
   line-height: 18px;
   width: 30%;
+  color: #666;
 }
 .sub-input-box .area-text{
   display: inline-block;
@@ -1494,20 +1469,22 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #999;
 }
 .sub-input-box input{
   font-size: 14px;
   width: 70%;
   text-align: right;
+  color: #999;
 }
 .close-icon{
   position: absolute;
-  top: 12px;
+  top: 11px;
   left: 66px;
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 18px;
+  font-size: 20px;
   color: #666;
   z-index: 9999;
 }
@@ -1516,15 +1493,15 @@ export default {
 }
 .subbox-show .go-back,
 .subbox-show .sub-go-back{
-  position: relative;
-  top: 5px;
+  height: 48px;
+  line-height: 26px;
   color: #666;
-  font-size: 12px;
+  font-size: 14px!important;
 }
 .subbox-show .save-btn{
   position: relative;
   top: 6px;
-  color: #666;
+  color: #5278e5;
   font-size: 14px;
 }
 .textarea-box{
@@ -1675,8 +1652,8 @@ export default {
   border-left: none;
 }
 .detail-tab .mui-active{
-  color: #5278e5;
-  background-color: #fff;
+  color: #5278e5 !important;
+  background-color: #fff !important;
 }
 .detail-tab .mui-active .active-icon{
   position: absolute;

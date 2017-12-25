@@ -62,6 +62,7 @@
             <a href="javascript:;">添加附件</a>
             <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
             <span class="add-btn" style="float: right">
+              <i class="fa fa-picture-o"></i>
               <i class="fa fa-plus add-icon"></i>
             </span>
           </span>
@@ -69,10 +70,10 @@
         <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
           <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
             <img :src="imgitem.file_url" alt=""  class="fjimg">
-            <i class="fa fa-trash deleteimg" @click="deleteimg(imgIndex)"></i>
+            <i class="deleteimg" @click="deleteimg(imgIndex)">×</i>
           </span>
         </li>
-        <li style="height: 15px; background: #EEEEEE"></li>
+        <li style="height: 15px; background: #EEEEEE;display: none"></li>
       </ul>
         
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
@@ -106,7 +107,7 @@
   let model
   export default {
     head: {
-      title: '我的项目'
+      title: '快速报备'
     },
     data () {
       return {
@@ -320,6 +321,35 @@
   }
 </script>
 <style lang="">
+  .add-btn {
+    position: relative;
+    color: #999;
+  }
+  .add-btn .fa{
+    font-size: 16px;
+    color: #999 !important;
+  }
+  .add-btn .add-icon{
+    position: absolute;
+    font-size: 10px;
+    bottom: 10px;
+    right: -6px;
+  }
+  .mui-title{
+    font-weight: 600;
+  }
+  .mui-bar-nav{
+    height: 48px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    box-shadow: none;
+  }
+  .sub-go-back{
+    height: 48px;
+    line-height: 26px;
+    color: #666;
+    font-size: 14px!important;
+  }
   .allhide{
     display: none;
   }
@@ -340,7 +370,6 @@
     color: #9D9D9D;
     margin-right: 5px;
   }
-  
   .mui-input-row {
     height: 43px;
   }
@@ -348,20 +377,16 @@
     height: 43px;
     padding: 0;
     line-height: 43px;
-    font-size: 12px;
-    /*padding-left: 10px;*/
+    font-size: 14px;
   }
   .mui-input-row input{
-    font-size: 12px;
+    font-size: 14px;
     padding: 0;
     line-height: 43px;
     height: 43px
   }
   .nav {
-    margin-top: 50px;
-  }
-  .mui-input-row label {
-    /*padding-left: 20px;*/
+    margin-top: 48px;
   }
   .mui-table-view-chevron .mui-table-view-cell>a:not(.mui-btn){
     margin-right: 0;
@@ -373,15 +398,19 @@
   .mui-input-row label~input{
     text-align: right;
   }
+  .mui-table-view:before {
+    background-color: #fff;
+  }
   .nav li {
-    height: 43px;
+    min-height: 43px;
     line-height: 43px;
     padding: 0;
   }
   .nav li.bbnameli {
-    height: 30px;
+    min-height: 30px;
+    height: 30px !important;
     background: #E5E5E5;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 30px;
     color: #676767;
   }
@@ -428,7 +457,7 @@
   .mui-table-view-cell a span{
     float: right;
     color: #969696;
-    font-size: 12px;
+    font-size: 14px;
     margin-right: 20px;
   }
   .baobdiv{
@@ -438,13 +467,12 @@
     float: left;
   }
   .cssradiodiv label{
-    font-size: 12px;
+    font-size: 14px;
   }
   .mui-radio input[type=radio]:before {
     font-size: 20px;
   }
   .mui-radio input[type=radio] {
-    /*margin-top: 10px;*/
     top: 10px;
   }
   .nav li.textareaclass{
@@ -452,23 +480,24 @@
   }
   .nav li.textareaclass textarea{
     height: 80px;
-    font-size: 12px;
-    padding:10px 0;
+    font-size: 14px;
+    padding: 10px 0;
   }
   .complete{
-    font-size: 12px!important;
-    line-height: 44px;
+    font-size: 14px!important;
+    line-height: 48px;
     padding: 0 10px!important;
+    color: #5278e5;
   }
   .subbox-show .sub-go-back{
-    position: relative;
-    top: 5px;
+    height: 48px;
+    line-height: 26px;
     color: #666;
-    font-size: 14px;
+    font-size: 14px!important;
   }
   .close-icon{
     position: absolute;
-    top: 10px;
+    top: 11px;
     left: 66px;
     display: inline-block;
     width: 20px;
@@ -480,17 +509,28 @@
   .mui-ellipsis{
     max-width: 70%;
   }
-  .fjimg{
-    width: 30px;
-    height: 30px;
+ .fjimg{
+    width: 40px;
+    height: 40px;
     display: inline-block;
-    margin-top: 6px;
-    margin-right: 6px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
   .deleteimg{
     position: absolute;
-    left: -4px;
+    left: -8px;
     top: 2px;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 100%;
+    text-align: center;
+    background-color: #c63e40;
+    color: #fff !important;
+    z-index: 999;
+    font-size: 14px;
+    cursor: pointer;
   }
   .posir{
     position: relative;

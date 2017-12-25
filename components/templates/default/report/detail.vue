@@ -1218,6 +1218,10 @@ export default {
         tel: obj.tel,
         email: obj.email
       }
+      window.mui.toast('编辑报备人信息成功')
+      setTimeout(function () {
+        model.activeTab = 'home'
+      }, 1000)
     },
 
     // 编辑竞争信息

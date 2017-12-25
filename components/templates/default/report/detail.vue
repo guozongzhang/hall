@@ -1218,31 +1218,6 @@ export default {
         tel: obj.tel,
         email: obj.email
       }
-      axios.put('functions/report/project_reportman', null, {
-        data: model.reportman
-      }).then(function (data) {
-        model.reportman = {
-          id: proId,
-          name: model.reporter.name,
-          project_relation: model.reporter.relationship,
-          royalties_expectation: model.reporter.commission,
-          strengths: model.reporter.ascendancy,
-          tel: model.reporter.tel,
-          email: model.reporter.email
-        }
-        window.mui.toast('编辑报备人信息成功')
-        setTimeout(function () {
-          model.activeTab = 'home'
-        }, 1000)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
-          setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
-            window.location.href = model.linkPath + '/login'
-          }, 2000)
-        }
-      })
     },
 
     // 编辑竞争信息

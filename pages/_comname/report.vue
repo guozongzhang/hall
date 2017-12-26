@@ -3,7 +3,8 @@
   <header class="mui-bar mui-bar-nav my-project">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left">返回</a>
     <h1 class="mui-title">我的项目</h1>
-    <a :href="linkPath + '/newproject'" class="mui-icon mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
+    <a href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-icon-left-nav mui-pull-right fa fa-question-circle help-icon"></a>
+    <a :href="linkPath + '/newproject'" class="mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
   </header>
   
   <div class="mui-content">
@@ -49,12 +50,24 @@
   .box{
     background: #efeff4;
   }
-  
   html,body{
     background-color: #fff !important;
   }
   .mui-bar{
+    position: relative;
     box-shadow: none;
+  }
+  .box .mui-bar .help-icon {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    width: 26px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    font-size: 18px;
+    display: inline-block;
+    margin-left: 10px;
   }
   .footer{
     height: 73px;
@@ -81,8 +94,14 @@
     font-size: 14px;
     color: #3f3f3f;
   }
-  .add {
-    height: 44px;
+  .box .mui-bar .add {
+    position: absolute;
+    top: 10px;
+    right: 36px;
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    text-align: center;
     line-height: 26px;
     font-size: 16px !important;
     font-weight: 400!important;;

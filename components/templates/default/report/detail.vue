@@ -411,13 +411,13 @@
       <div class="textarea-box">
         <div class="line-box"></div>
         <div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
 						<label>乙方对手</label>
-						<input type="text" placeholder="输入乙方对手" v-model="competitors.second_party_competitor">
+            <span class="area-text sub-input-text">{{competitors.second_party_competitor}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('competitor','报备人对手')">
 						<label>竞争对手</label>
-						<input type="text" placeholder="输入竞争对手" v-model="competitors.competitor">
+            <span class="area-text sub-input-text">{{competitors.competitor}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>项目亮点</label>
@@ -429,6 +429,26 @@
 					</div>
         </div>
       </div>
+    </div>
+    <div v-show="activeTab == 'editcomp'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron textarea-box">
+        <li class="mui-table-view-cell comter-item" v-for="(item, num) in jzds">
+          <div class="jzztitele">第{{num+1}}竞争者</div>
+          <div class="mui-input-row input-com-box" style="width:100%;float:left;">
+            <input maxlength="20" type="text" class="sub-com-input" v-model="item.value"/> 
+          </div>
+          <div v-show="num != 0" class="fa fa-trash delete-icon" @click="deletejzz(num)"></div>
+        </li>
+        <li class="add-item">
+          <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+        </li>
+      </ul>
     </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
@@ -535,7 +555,10 @@ export default {
       buyer: {},
       competitors: {},
       classifyArr: [],
-      progoodstyepstr: ''
+      progoodstyepstr: '',
+      editcomtitle: '', // 编辑竞争者、竞争对手（标题）
+      editcomtstr: '', // 编辑竞争者、竞争对手字段
+      jzds: [] // 竞争者
     }
   },
   components: {
@@ -1187,6 +1210,50 @@ export default {
       })
     },
 
+    // 编辑竞争对手
+    enterOtherCompete: function (str, title) {
+      model.jzds = []
+      model.editcomtstr = str
+      model.activeTab = 'editcomp'
+      model.editcomtitle = title
+      let arr = (model.competitors[str]).split(',')
+      if (arr.length > 0) {
+        arr.forEach((sub) => {
+          let obj = {
+            value: sub
+          }
+          model.jzds.push(obj)
+        })
+      }
+    },
+
+    // 删除竞争对手
+    deletejzz: function (index) {
+      model.jzds.splice(index, 1)
+    },
+
+    // 添加竞争对手
+    addjjz: function () {
+      model.jzds.push({value: ''})
+    },
+
+    // 竞争对手返回
+    goSubBack: function () {
+      model.activeTab = 'editcompetitors'
+    },
+
+    // 提交竞争对手
+    endOtherCompete: function () {
+      let arr = []
+      model.jzds.forEach((item) => {
+        if (!_.isEmpty(item.value)) {
+          arr.push(item.value)
+        }
+      })
+      model.competitors[model.editcomtstr] = arr.join(',')
+      model.activeTab = 'editcompetitors'
+    },
+
     // 编辑报备人信息
     editReport: function (id) {
       model.reporter = {
@@ -1314,7 +1381,61 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+.add-item{
+  position: relative;
+  height: 30px;
+}
+.addjjz {
+  position: absolute;
+  bottom: 3px;
+  right: 10px;
+  font-size: 14px;
+  color: #000;
+}
+.mui-table-view-chevron {
+  background-color: #eee;
+}
+.mui-table-view:before,
+.mui-table-view:after {
+  background-color: #fff !important;
+}
+.mui-table-view-cell:after {
+  background-color: #fff !important;
+}
+.comter-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+.comter-item .delete-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #f00;
+}
+.comter-item .jzztitele {
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  background-color: #eee;
+  color: #969696;
+  font-size: 14px;
+  padding-left: 15px;
+}
+.comter-item .input-com-box {
+  height: 42px;
+  line-height: 42px;
+}
+.comter-item .sub-com-input {
+  border: none;
+  font-size: 14px;
+  color: #999;
+}
 .mui-title{
   font-weight: 600;
 }
@@ -1439,8 +1560,8 @@ export default {
 }
 .sub-input-box .area-text{
   display: inline-block;
-  height: 40px;
-  line-height: 40px;
+  height: 34px;
+  line-height: 34px;
   font-size: 14px;
   padding-right: 10px;
   width: 70%;
@@ -1449,6 +1570,11 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #999;
+}
+.sub-input-text {
+  position: relative;
+  top: 3px;
+  right: 26px;
 }
 .sub-input-box input{
   font-size: 14px;
@@ -1485,9 +1611,10 @@ export default {
 }
 .textarea-box{
   position: absolute;
-  top: 44px;
+  top: 48px;
   left: 0;
   width: 100%;
+  height: calc(100% - 48px);
 }
 .text-input{
   width: 100%;

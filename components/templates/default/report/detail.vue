@@ -449,6 +449,7 @@
           <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
         </li>
       </ul>
+    </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>

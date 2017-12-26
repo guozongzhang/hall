@@ -3,8 +3,16 @@
   <header class="mui-bar mui-bar-nav my-project">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left">返回</a>
     <h1 class="mui-title">我的项目</h1>
-    <a href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-icon-left-nav mui-pull-right fa fa-question-circle help-icon"></a>
-    <a :href="linkPath + '/newproject'" class="mui-icon-left-nav mui-pull-right fa fa-plus add" ></a>
+    <a href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right help-icon">
+      <svg class="svg-style">
+        <use xlink:href="/svg/icon.svg#help"></use>
+      </svg>
+    </a>
+    <a :href="linkPath + '/newproject'" class="mui-pull-right add" >
+      <svg class="svg-style">
+        <use xlink:href="/svg/icon.svg#plus"></use>
+      </svg>
+    </a>
   </header>
   
   <div class="mui-content">
@@ -57,10 +65,20 @@
     position: relative;
     box-shadow: none;
   }
+  .svg-style {
+    width: 22px;
+    height: 22px;
+    fill: #5278e5;
+  }
+  .box .mui-bar .add .svg-style {
+    width: 20px;
+    height: 20px;
+  }
+  
   .box .mui-bar .help-icon {
     position: absolute;
     right: 10px;
-    top: 9px;
+    top: 11px;
     width: 26px;
     height: 26px;
     text-align: center;
@@ -96,8 +114,8 @@
   }
   .box .mui-bar .add {
     position: absolute;
-    top: 10px;
-    right: 36px;
+    top: 12px;
+    right: 40px;
     display: inline-block;
     width: 26px;
     height: 26px;

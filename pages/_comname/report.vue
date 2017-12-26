@@ -114,8 +114,8 @@
   }
   .box .mui-bar .add {
     position: absolute;
-    top: 12px;
-    right: 40px;
+    top: 11px;
+    right: 46px;
     display: inline-block;
     width: 26px;
     height: 26px;

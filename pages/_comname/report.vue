@@ -66,19 +66,19 @@
     box-shadow: none;
   }
   .svg-style {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     fill: #5278e5;
   }
   .box .mui-bar .add .svg-style {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
   }
   
   .box .mui-bar .help-icon {
     position: absolute;
     right: 10px;
-    top: 11px;
+    top: 12px;
     width: 26px;
     height: 26px;
     text-align: center;
@@ -114,7 +114,7 @@
   }
   .box .mui-bar .add {
     position: absolute;
-    top: 11px;
+    top: 13px;
     right: 46px;
     display: inline-block;
     width: 26px;

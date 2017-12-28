@@ -94,6 +94,10 @@
                         <span class="list-text">{{basicinfo.risk_analysis}}</span>
                       </li>
                       <li class="mui-table-view-cell">
+                        <span>项目备注：</span>
+                        <span class="list-text">{{basicinfo.remark}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
                         <span>上传附件：</span>
                         <p class="attach-list">
                           <img :src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
@@ -350,6 +354,10 @@
           <div class="mui-input-row sub-input-box">
 						<label>风险分析</label>
 						<input type="text" placeholder="输入风险分析" v-model="editpro.risk_analysis">
+					</div>
+          <div class="mui-input-row sub-input-box">
+						<label>项目备注</label>
+						<input type="text" placeholder="输入项目备注" v-model="editpro.remark">
 					</div>
           <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
@@ -1012,7 +1020,8 @@ export default {
         category: model.filterProType(model.basicinfo.category),
         category_str: model.basicinfo.category,
         intro: model.basicinfo.intro,
-        risk_analysis: model.basicinfo.risk_analysis
+        risk_analysis: model.basicinfo.risk_analysis,
+        remark: model.basicinfo.remark
       }
       let tmparr = []
       if (model.basicinfo.project_rel_project_attachment.count > 0) {
@@ -1042,6 +1051,7 @@ export default {
         category: model.editpro.category_str,
         intro: model.editpro.intro,
         risk_analysis: model.editpro.risk_analysis,
+        remark: model.editpro.remark,
         project_attachment: JSON.stringify(model.editproImg)
       }
       axios.put('functions/report/project', null, {

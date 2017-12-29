@@ -316,8 +316,8 @@ export default {
         setTimeout(function () {
           window.location.href = model.linkPath + '/'
         }, 1000)
-      }).catch(function () {
-        window.mui.toast('注册失败!')
+      }).catch(function (error) {
+        window.mui.toast(error.response.data.message)
       })
     },
 

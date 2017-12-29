@@ -204,7 +204,7 @@ export default {
         }).then(function (data) {
           model.hadLogin(data.data)
         }).catch(function (msg) {
-          window.mui.toast('登录失败!')
+          window.mui.toast(msg.response.data.message)
         })
       } else {
         // 手机号
@@ -217,7 +217,7 @@ export default {
         }).then(function (data) {
           model.hadLogin(data.data)
         }).catch(function (msg) {
-          window.mui.toast('登录失败!')
+          window.mui.toast(msg.response.data.message)
         })
       }
     },

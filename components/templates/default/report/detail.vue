@@ -7,7 +7,11 @@
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
         <a href="javascript:;" class="mui-pull-right more-opt" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded'">
-          <span class="point" @click="preMoreOpt()">●●●</span>
+          <span class="point" @click="preMoreOpt()">
+            <svg class="svg-style">
+              <use xlink:href="/svg/icon.svg#more"></use>
+            </svg>
+          </span>
           <span class="sub-opt-box" v-show="getmoreopt" @click="optFunc(basicinfo.state)">
             <span class="triangle"></span>
             <span>{{(basicinfo.state == 'wait' || basicinfo.state == 'rescinded') ? '删除报备' : '撤回报备'}}</span>
@@ -1519,18 +1523,21 @@ export default {
   padding-right: 10px;
 }
 .more-opt {
+  width: 24px;
+  height: 24px;
   position: relative;
-  top: 8px;
+  top: 11px;
   cursor: pointer;
 }
-.more-opt .point{
-  font-size: 8px !important;
-  color: #666;
+.svg-style {
+  width: 24px;
+  height: 24px;
+  fill: #666;
 }
 .sub-opt-box{
   display: inline-block;
   position: absolute;
-  right: -5px;
+  right: -3px;
   top: 28px;
   width: 64px;
   text-align: center;

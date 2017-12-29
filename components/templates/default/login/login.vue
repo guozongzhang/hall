@@ -5,7 +5,7 @@
   </div>
   <div v-show="type == 'number'">
     <div class="mui-input-row number-box">
-      <input type="text" v-model="info.number" placeholder="搭配家账号">
+      <input type="text" v-model="info.number" placeholder="账号">
       <span class="has-data" v-show="info.number.length > 0"></span>
     </div>
     <div class="mui-input-row mui-password">

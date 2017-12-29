@@ -347,17 +347,17 @@
 						<label>项目类型</label>
             <span class="area-text" @click="changeProType()">{{editpro.category}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('intro','编辑项目介绍')">
 						<label>项目介绍</label>
-						<input type="text" placeholder="输入项目介绍" v-model="editpro.intro">
+            <span class="area-text sub-input-text">{{String(editpro.intro).length > 16 ? String(editpro.intro).substring(0, 16) + '...': String(editpro.intro)}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('risk_analysis','编辑风险分析')">
 						<label>风险分析</label>
-						<input type="text" placeholder="输入风险分析" v-model="editpro.risk_analysis">
+            <span class="area-text sub-input-text">{{String(editpro.risk_analysis).length > 16 ? String(editpro.risk_analysis).substring(0, 16) + '...': String(editpro.risk_analysis)}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('remark','编辑项目备注')">
 						<label>项目备注</label>
-						<input type="text" placeholder="输入项目备注" v-model="editpro.remark">
+            <span class="area-text sub-input-text">{{String(editpro.remark).length > 16 ? String(editpro.remark).substring(0, 16) + '...': String(editpro.remark)}}</span>
 					</div>
           <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
@@ -483,7 +483,20 @@
           <a href="javascript:;" class="submit-btn" @click="setClassify()">完成</a>
         </div>
       </div>
-  </div>
+    </div>
+    <div v-show="activeTab == 'edittextarea'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">{{edittextareaobj.title}}</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confEditTextarea()">提交</a>
+      </header>
+      <div class="textarea-box edit-box">
+        <div class="edittext">
+          <textarea type="text" class="" v-model="edittextareaobj.content" placeholder="最多输入500个字符"></textarea>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -566,7 +579,12 @@ export default {
       progoodstyepstr: '',
       editcomtitle: '', // 编辑竞争者、竞争对手（标题）
       editcomtstr: '', // 编辑竞争者、竞争对手字段
-      jzds: [] // 竞争者
+      jzds: [], // 竞争者
+      edittextareaobj: { // 编辑多文字
+        key: '', // 关键字
+        title: '', // 标题
+        content: '' // 内容
+      }
     }
   },
   components: {
@@ -625,6 +643,27 @@ export default {
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 编辑textarea
+    editText: function (key, title) {
+      model.activeTab = 'edittextarea'
+      model.edittextareaobj = {
+        key: key,
+        title: title,
+        content: model.editpro[key]
+      }
+    },
+
+    // 保存多文字编辑
+    confEditTextarea: function () {
+      model.activeTab = 'editproject'
+      model.editpro[model.edittextareaobj.key] = model.edittextareaobj.content
+    },
+
+    // 编辑多文字返回
+    goEditBack: function () {
+      model.activeTab = 'editproject'
     },
 
     // 编辑必填信息
@@ -1391,7 +1430,16 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
+.edit-box {
+  background-color: #eee;
+}
+.edittext textarea {
+  min-height: 80px;
+  border: none;
+   border-bottom: 1px solid #ccc;
+   font-size: 14px;
+}
 .add-item{
   position: relative;
   height: 30px;

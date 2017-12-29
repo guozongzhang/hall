@@ -5,7 +5,7 @@
   </div>
   <div v-show="type == 'number'">
     <div class="mui-input-row number-box">
-      <input type="text" v-model="info.number" placeholder="搭配家账号">
+      <input type="text" v-model="info.number" placeholder="账号">
       <span class="has-data" v-show="info.number.length > 0"></span>
     </div>
     <div class="mui-input-row mui-password">
@@ -204,7 +204,7 @@ export default {
         }).then(function (data) {
           model.hadLogin(data.data)
         }).catch(function (msg) {
-          window.mui.toast('登录失败!')
+          window.mui.toast(msg.response.data.message)
         })
       } else {
         // 手机号
@@ -217,7 +217,7 @@ export default {
         }).then(function (data) {
           model.hadLogin(data.data)
         }).catch(function (msg) {
-          window.mui.toast('登录失败!')
+          window.mui.toast(msg.response.data.message)
         })
       }
     },

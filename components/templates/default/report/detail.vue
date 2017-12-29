@@ -7,7 +7,11 @@
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
         <a href="javascript:;" class="mui-pull-right more-opt" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded'">
-          <span class="point" @click="preMoreOpt()">●●●</span>
+          <span class="point" @click="preMoreOpt()">
+            <svg class="svg-style">
+              <use xlink:href="/svg/icon.svg#more"></use>
+            </svg>
+          </span>
           <span class="sub-opt-box" v-show="getmoreopt" @click="optFunc(basicinfo.state)">
             <span class="triangle"></span>
             <span>{{(basicinfo.state == 'wait' || basicinfo.state == 'rescinded') ? '删除报备' : '撤回报备'}}</span>
@@ -92,6 +96,10 @@
                       <li class="mui-table-view-cell">
                         <span>风险分析：</span>
                         <span class="list-text">{{basicinfo.risk_analysis}}</span>
+                      </li>
+                      <li class="mui-table-view-cell">
+                        <span>项目备注：</span>
+                        <span class="list-text">{{basicinfo.remark}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>上传附件：</span>
@@ -343,13 +351,17 @@
 						<label>项目类型</label>
             <span class="area-text" @click="changeProType()">{{editpro.category}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('intro','编辑项目介绍')">
 						<label>项目介绍</label>
-						<input type="text" placeholder="输入项目介绍" v-model="editpro.intro">
+            <span class="area-text sub-input-text">{{String(editpro.intro).length > 16 ? String(editpro.intro).substring(0, 16) + '...': String(editpro.intro)}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('risk_analysis','编辑风险分析')">
 						<label>风险分析</label>
-						<input type="text" placeholder="输入风险分析" v-model="editpro.risk_analysis">
+            <span class="area-text sub-input-text">{{String(editpro.risk_analysis).length > 16 ? String(editpro.risk_analysis).substring(0, 16) + '...': String(editpro.risk_analysis)}}</span>
+					</div>
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('remark','编辑项目备注')">
+						<label>项目备注</label>
+            <span class="area-text sub-input-text">{{String(editpro.remark).length > 16 ? String(editpro.remark).substring(0, 16) + '...': String(editpro.remark)}}</span>
 					</div>
           <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
@@ -411,13 +423,13 @@
       <div class="textarea-box">
         <div class="line-box"></div>
         <div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
 						<label>乙方对手</label>
-						<input type="text" placeholder="输入乙方对手" v-model="competitors.second_party_competitor">
+            <span class="area-text sub-input-text">{{competitors.second_party_competitor}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('competitor','报备人对手')">
 						<label>竞争对手</label>
-						<input type="text" placeholder="输入竞争对手" v-model="competitors.competitor">
+            <span class="area-text sub-input-text">{{competitors.competitor}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>项目亮点</label>
@@ -429,6 +441,26 @@
 					</div>
         </div>
       </div>
+    </div>
+    <div v-show="activeTab == 'editcomp'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron textarea-box">
+        <li class="mui-table-view-cell comter-item" v-for="(item, num) in jzds">
+          <div class="jzztitele">第{{num+1}}竞争者</div>
+          <div class="mui-input-row input-com-box" style="width:100%;float:left;">
+            <input maxlength="20" type="text" class="sub-com-input" v-model="item.value"/> 
+          </div>
+          <div v-show="num != 0" class="fa fa-trash delete-icon" @click="deletejzz(num)"></div>
+        </li>
+        <li class="add-item">
+          <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+        </li>
+      </ul>
     </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
@@ -455,7 +487,20 @@
           <a href="javascript:;" class="submit-btn" @click="setClassify()">完成</a>
         </div>
       </div>
-  </div>
+    </div>
+    <div v-show="activeTab == 'edittextarea'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">{{edittextareaobj.title}}</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="confEditTextarea()">提交</a>
+      </header>
+      <div class="textarea-box edit-box">
+        <div class="edittext">
+          <textarea type="text" class="" v-model="edittextareaobj.content" placeholder="最多输入500个字符"></textarea>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -535,7 +580,15 @@ export default {
       buyer: {},
       competitors: {},
       classifyArr: [],
-      progoodstyepstr: ''
+      progoodstyepstr: '',
+      editcomtitle: '', // 编辑竞争者、竞争对手（标题）
+      editcomtstr: '', // 编辑竞争者、竞争对手字段
+      jzds: [], // 竞争者
+      edittextareaobj: { // 编辑多文字
+        key: '', // 关键字
+        title: '', // 标题
+        content: '' // 内容
+      }
     }
   },
   components: {
@@ -594,6 +647,27 @@ export default {
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 编辑textarea
+    editText: function (key, title) {
+      model.activeTab = 'edittextarea'
+      model.edittextareaobj = {
+        key: key,
+        title: title,
+        content: model.editpro[key]
+      }
+    },
+
+    // 保存多文字编辑
+    confEditTextarea: function () {
+      model.activeTab = 'editproject'
+      model.editpro[model.edittextareaobj.key] = model.edittextareaobj.content
+    },
+
+    // 编辑多文字返回
+    goEditBack: function () {
+      model.activeTab = 'editproject'
     },
 
     // 编辑必填信息
@@ -989,7 +1063,8 @@ export default {
         category: model.filterProType(model.basicinfo.category),
         category_str: model.basicinfo.category,
         intro: model.basicinfo.intro,
-        risk_analysis: model.basicinfo.risk_analysis
+        risk_analysis: model.basicinfo.risk_analysis,
+        remark: model.basicinfo.remark
       }
       let tmparr = []
       if (model.basicinfo.project_rel_project_attachment.count > 0) {
@@ -1019,6 +1094,7 @@ export default {
         category: model.editpro.category_str,
         intro: model.editpro.intro,
         risk_analysis: model.editpro.risk_analysis,
+        remark: model.editpro.remark,
         project_attachment: JSON.stringify(model.editproImg)
       }
       axios.put('functions/report/project', null, {
@@ -1187,6 +1263,50 @@ export default {
       })
     },
 
+    // 编辑竞争对手
+    enterOtherCompete: function (str, title) {
+      model.jzds = []
+      model.editcomtstr = str
+      model.activeTab = 'editcomp'
+      model.editcomtitle = title
+      let arr = (model.competitors[str]).split(',')
+      if (arr.length > 0) {
+        arr.forEach((sub) => {
+          let obj = {
+            value: sub
+          }
+          model.jzds.push(obj)
+        })
+      }
+    },
+
+    // 删除竞争对手
+    deletejzz: function (index) {
+      model.jzds.splice(index, 1)
+    },
+
+    // 添加竞争对手
+    addjjz: function () {
+      model.jzds.push({value: ''})
+    },
+
+    // 竞争对手返回
+    goSubBack: function () {
+      model.activeTab = 'editcompetitors'
+    },
+
+    // 提交竞争对手
+    endOtherCompete: function () {
+      let arr = []
+      model.jzds.forEach((item) => {
+        if (!_.isEmpty(item.value)) {
+          arr.push(item.value)
+        }
+      })
+      model.competitors[model.editcomtstr] = arr.join(',')
+      model.activeTab = 'editcompetitors'
+    },
+
     // 编辑报备人信息
     editReport: function (id) {
       model.reporter = {
@@ -1315,6 +1435,69 @@ export default {
 }
 </script>
 <style>
+.edit-box {
+  background-color: #eee;
+}
+.edittext textarea {
+  min-height: 80px;
+  border: none;
+   border-bottom: 1px solid #ccc;
+   font-size: 14px;
+}
+.add-item{
+  position: relative;
+  height: 30px;
+}
+.addjjz {
+  position: absolute;
+  bottom: 3px;
+  right: 10px;
+  font-size: 14px;
+  color: #000;
+}
+.mui-table-view-chevron {
+  background-color: #eee;
+}
+.mui-table-view:before,
+.mui-table-view:after {
+  background-color: #fff !important;
+}
+.mui-table-view-cell:after {
+  background-color: #fff !important;
+}
+.comter-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+.comter-item .delete-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #f00;
+}
+.comter-item .jzztitele {
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  background-color: #eee;
+  color: #969696;
+  font-size: 14px;
+  padding-left: 15px;
+}
+.comter-item .input-com-box {
+  height: 42px;
+  line-height: 42px;
+}
+.comter-item .sub-com-input {
+  border: none;
+  font-size: 14px;
+  color: #999;
+}
 .mui-title{
   font-weight: 600;
 }
@@ -1340,18 +1523,21 @@ export default {
   padding-right: 10px;
 }
 .more-opt {
+  width: 24px;
+  height: 24px;
   position: relative;
-  top: 8px;
+  top: 11px;
   cursor: pointer;
 }
-.more-opt .point{
-  font-size: 8px !important;
-  color: #666;
+.svg-style {
+  width: 24px;
+  height: 24px;
+  fill: #666;
 }
 .sub-opt-box{
   display: inline-block;
   position: absolute;
-  right: -5px;
+  right: -3px;
   top: 28px;
   width: 64px;
   text-align: center;
@@ -1439,8 +1625,8 @@ export default {
 }
 .sub-input-box .area-text{
   display: inline-block;
-  height: 40px;
-  line-height: 40px;
+  height: 34px;
+  line-height: 34px;
   font-size: 14px;
   padding-right: 10px;
   width: 70%;
@@ -1449,6 +1635,11 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #999;
+}
+.sub-input-text {
+  position: relative;
+  top: 3px;
+  right: 26px;
 }
 .sub-input-box input{
   font-size: 14px;
@@ -1485,9 +1676,10 @@ export default {
 }
 .textarea-box{
   position: absolute;
-  top: 44px;
+  top: 48px;
   left: 0;
   width: 100%;
+  height: calc(100% - 48px);
 }
 .text-input{
   width: 100%;

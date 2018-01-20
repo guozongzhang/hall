@@ -21,7 +21,7 @@
       <div class="detail-box">
         <div class="basic-info">
           <label>
-            <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
+            <span class="money">{{basicinfo.amount}}元</span>·<span>{{basicinfo.name}}</span>
           </label>
           <div class="stars-style">
             <span class="star-box">
@@ -31,9 +31,9 @@
           <div class="fz14">{{basicinfo.first_party_name}}</div>
           <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
-          <div class="fz12">
-            <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
-            <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
+          <div class="fz12" style="height: 24px;">
+            <span style="display: inline-block;float: left;margin-left: 15px;">有效期{{valtimeFilter(basicinfo.validity)}}</span>
+            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 15px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
             <span class="left-circle icon-circle"></span>
@@ -75,11 +75,11 @@
                       </li>
                       <li class="mui-table-view-cell">
                         <span>招标时间：</span>
-                        <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY-MM-DD')}}</span>
+                        <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY.MM.DD')}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>交付时间：</span>
-                        <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY-MM-DD')}}</span>
+                        <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY.MM.DD')}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>项目类型：</span>
@@ -222,7 +222,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:MM:SS')}}</p>
+                        <p>{{forMatTime(sub.create_time, 'YYYY-MM-DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -255,9 +255,18 @@
                         <p>{{forMatTime(sub.create_time)}}</p>
                       </div>
                     </li>
+                    <li v-show="recordLoglist.length == 0">
+                      <div class="li-box">
+                        <p>
+                          <span class="last-white-line"></span>
+                          <span class="pointer"></span>
+                          <span>您还没有添加任务项目跟踪记录~</span>
+                        </p>
+                      </div>
+                    </li>
                   </ul>
                 </div>
-                <p class="no-data" v-show="recordLoglist.length == 0">您还没有添加任务项目跟踪记录~</p>
+                <p class="no-data" v-show="recordLoglist.length == 0"></p>
               </div>
             </div>
           </div>
@@ -1753,7 +1762,7 @@ export default {
   color: #fff;
 }
 .record-box ul li{
-  border-left: 1px dashed #ccc;
+  border-left: 1px solid #ccc;
   padding-left: 20px;
 }
 .record-box ul li:last-child .li-box {
@@ -1780,6 +1789,7 @@ export default {
 }
 .first p{
   color: #666;
+  font-size: 16px;
 }
 .li-box.first .pointer{
   width: 7px;
@@ -1816,7 +1826,7 @@ export default {
 .detail-tab .mui-control-item{
   position: relative;
   border: none;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #eee;
   color: #999999;
 }
 .detail-tab .mui-control-item:nth-child(1){
@@ -1964,14 +1974,14 @@ export default {
 .fz12{
   font-size: 12px;
   text-align: center;
-  color: #696969;
+  color: #99999;
 }
 .fz14 {
   font-size: 14px;
   text-align: center;
   height: 26px;
   line-height: 24px;
-  color: #696969;
+  color: #666;
 }
 .intro-style{
   padding: 0 10px;
@@ -1990,9 +2000,9 @@ export default {
 .go-report a{
   display: block;
   width: 80%;
-  height: 30px;
+  height: 33px;
   text-align: center;
-  line-height: 30px;
+  line-height: 33px;
   margin: 0 auto;
   background-color: #5278e5;
   color: #fff;

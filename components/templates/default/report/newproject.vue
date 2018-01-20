@@ -23,13 +23,13 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
+            <input type="number" maxlength="20" placeholder="元" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -43,7 +43,7 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<span>{{cloneValidity}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<i>*</i><span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
           <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
@@ -231,7 +231,7 @@
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass">
-          <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
+          <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;min-height: 80px;">
             <label style="width:1%"><i></i></label>
             <textarea style="width:99%!important"  type="text" class="mui-input-clear othertextarea"></textarea>
           </div>
@@ -252,12 +252,13 @@
             <label style="width:1%"><i></i></label>
             <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-trash" style="color:red; float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
     </div>
     <div class="classify-box" id="classifylist">
+      <div class="null-box"></div>
       <div class="sub-classify">
         <div class="clasify-item" v-for="item in classifyArr">
           <p class="title">
@@ -851,6 +852,14 @@
   }
 </script>
 <style lang="">
+  .null-box {
+    display: inline-block;
+    width: calc(100% - 280px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #f00;
+  }
   .add-btn {
     position: relative;
     color: #999;
@@ -1029,10 +1038,10 @@
     left: 0px;
   }
   .nav li.textareaclass{
-    height: 80px;
+    min-height: 80px;
   }
   .nav li.textareaclass textarea{
-    height: 80px;
+    min-height: 80px;
     font-size: 14px;
     padding:10px 0;
   }
@@ -1055,6 +1064,8 @@
     font-size: 14px;
     float: right;
     margin-top: 5px;
+    color: #666;
+    text-align: right;
     margin-right: 15px;
   }
   .fjimg{

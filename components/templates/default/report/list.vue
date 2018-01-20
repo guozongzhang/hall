@@ -20,7 +20,7 @@
           <div v-for="item in datalist" class="listdiv">
             <a :href="'/projectdetail?id=' + item.id" class="flagdetail">
               <h4 class="mui-ellipsis">
-                <i>{{item.amount}}万元</i><span>·{{item.name}}</span>
+                <i>{{item.amount}}元</i><span>·{{item.name}}</span>
               </h4>
               <div>
                 <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
@@ -210,7 +210,7 @@
   h4 {
     height: 44px;
     line-height: 50px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 100;
     text-align: center;
     border-bottom: 1px dashed #eee;
@@ -231,7 +231,7 @@
     right: 0;
     top: -6px;
     display: inline-block;
-    width: 60px;
+    width: 64px;
     height: 24px;
     text-align: center;
     line-height: 24px;

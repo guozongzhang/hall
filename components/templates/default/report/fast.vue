@@ -9,7 +9,7 @@
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell bbnameli">
-          报备人姓名：{{thisdata.project_reportman[0].name}}
+          报备人：{{thisdata.project_reportman[0].name}}
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
@@ -26,13 +26,13 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
+            <input type="number" maxlength="20" placeholder="元" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -89,7 +89,7 @@
         <li class="mui-table-view-cell textareaclass nextshow">
           <div class="mui-input-row" style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" maxlength="50" type="text" placeholder="请输入备注" v-model="thisdata.cloneRemark"></textarea>
+            <textarea style="width:99%!important; font-size: 15px;" maxlength="50" type="text" placeholder="请输入备注" v-model="thisdata.cloneRemark"></textarea>
           </div>
         </li>
       </ul>
@@ -181,6 +181,11 @@
             model.onearr.push({'value': item.name, 'text': item.alias})
           })
         })
+      },
+
+      // 删除附件图片
+      deleteimg: function (index) {
+        model.thisdata.projectAttachment.splice(index, 1)
       },
 
       // 控制样式开合
@@ -409,10 +414,10 @@
   .nav li.bbnameli {
     min-height: 30px;
     height: 30px !important;
-    background: #E5E5E5;
+    background: #eee;
     font-size: 14px;
     line-height: 30px;
-    color: #676767;
+    color: #999;
   }
   .nav li a {
     font-size: 13px;
@@ -476,10 +481,10 @@
     top: 10px;
   }
   .nav li.textareaclass{
-    height: 80px;
+    min-height: 80px;
   }
   .nav li.textareaclass textarea{
-    height: 80px;
+    min-height: 80px;
     font-size: 14px;
     padding: 10px 0;
   }

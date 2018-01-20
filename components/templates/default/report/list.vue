@@ -1,5 +1,18 @@
 <template>
   <div>
+    <div class="mui-input-row mui-search">
+      <a href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right help-icon">
+        <svg class="svg-style">
+          <use xlink:href="/svg/icon.svg#help"></use>
+        </svg>
+      </a>
+      <input type="text" class="search-box-input" placeholder="搜素您想要查找的项目">
+      <a :href="linkPath + '/newproject'" class="mui-pull-right add" >
+        <svg class="svg-style">
+          <use xlink:href="/svg/icon.svg#plus"></use>
+        </svg>
+      </a>
+    </div>
     <ul class="navul">
       <li @click="switchTab('all')" v-bind:class="{active:'all'== active}">
         <span class="text">全部项目</span>
@@ -37,7 +50,10 @@
                 <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
               </div>
               <div class="detail">
-                <a href="javascript:;">查看详情</a>
+                <a href="javascript:;">
+                查看详情
+                <span class="active-point">•</span>
+                </a>
               </div>
             </a>
           </div>
@@ -184,6 +200,45 @@
   }
 </script>
 <style scoped>
+  .mui-search {
+    height: 34px;
+  }
+  .search-box-input {
+    position: relative;
+    top: 5px;
+    display: block;
+    width: 70%;
+    height: 24px;
+    margin: 0 auto;
+    border-radius: 50px;
+    font-size: 12px;
+    border: none;
+    background-color: #eee;
+  }
+  .svg-style {
+    width: 18px;
+    height: 18px;
+    fill: #5278e5;
+  }
+  .help-icon {
+    position: absolute;
+    left: -3px;
+    top: 6px;
+    width: 26px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    font-size: 18px;
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .add{
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    width: 18px;
+    height: 18px;
+  }
   .loading-icon,
   .nodata-icon{
     height: 30px;
@@ -320,6 +375,7 @@
     white-space: nowrap;
   }
   .detail {
+    position: relative;
     height: 30px;
     line-height: 30px;
     line-height: 30px;
@@ -333,13 +389,20 @@
   .detail a {
     color: #999;
   }
+  .detail .active-point {
+    position: relative;
+    left: -9px;
+    top: -6px;
+    font-size: 16px;
+    color: #f14f4f;
+  }
   .navul {
     position: fixed;
-    top: 44px;
+    top: 35px;
     width: 100%;
     overflow: hidden;
-    height: 40px;
-    padding: 5px 0px;
+    height: 34px;
+    padding: 0px;
     background: #fff;
     z-index: 1000;
   }
@@ -350,6 +413,7 @@
     list-style-type: none;
     border-right: 1px solid #eee;
     position: relative;
+    top: 2px;
   }
   .navul li:last-child{
     border: 0px;
@@ -385,7 +449,7 @@
   }
   #pullfresh{
     position: fixed;
-    top: 80px;
+    top: 68px;
     bottom: 60px;
     background-color: #eee;
   }

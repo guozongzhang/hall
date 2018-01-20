@@ -23,6 +23,7 @@
           <label>
             <span class="money">{{basicinfo.amount}}元</span>·<span>{{basicinfo.name}}</span>
           </label>
+          <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
             <span class="star-box">
               <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -125,17 +126,9 @@
                         <span>所属区域：</span>
                         <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人姓名：</span>
-                        <span class="alist-text">{{basicinfo.first_party_linkman}}</span>
-                      </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人职务：</span>
-                        <span class="alist-text">{{basicinfo.first_party_job}}</span>
-                      </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人电话：</span>
-                        <span class="alist-text">{{basicinfo.first_party_tel}}</span>
+                      <li class="mui-table-view-cell" v-for="(sub, index) in alinkman">
+                        <span>第{{index+1}}联系人：</span>
+                        <span class="alist-text">{{sub.name}} / {{sub.job}} / {{sub.tel}}</span>
                       </li>
                     </ul>
                   </div>
@@ -383,7 +376,7 @@
                 <span class="add-btn">
                   <i class="fa fa-plus add-icon"></i>
                 </span>
-                <input class="hidden" type="file" name="files">
+                <input class="hidden" type="file" name="files[]" multiple>
               </span>
             </div>
 					</div>
@@ -405,17 +398,12 @@
             <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
-						<label>联系人姓名</label>
-						<input type="text" placeholder="输入联系人姓名" v-model="buyer.first_party_linkman">
+						<label>甲方联系人</label>
+            <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
 					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人职务</label>
-						<input type="text" placeholder="输入联系人职务" v-model="buyer.first_party_job">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人电话</label>
-						<input type="text" placeholder="输入联系人电话" v-model="buyer.first_party_tel">
-					</div>
+          <div style="padding: 10px 0;" v-show="alinkman.length > 0">
+            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -458,16 +446,56 @@
         <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
       </header>
-      <ul class="mui-table-view mui-table-view-chevron textarea-box">
-        <li class="mui-table-view-cell comter-item" v-for="(item, num) in jzds">
-          <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row input-com-box" style="width:100%;float:left;">
-            <input maxlength="20" type="text" class="sub-com-input" v-model="item.value"/> 
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell textareaclass" style="padding: 0 !important" v-for="(item, num) in alinkman">
+          <div class="jzztitele" style="padding-left: 25px;">
+            第{{num+1}}联系人
+            <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="deletelinkman(item)"></div>
           </div>
-          <div v-show="num != 0" class="fa fa-trash delete-icon" @click="deletejzz(num)"></div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人姓名</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人职务</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
+          </div>
+          <div class="mui-input-row" style="padding: 0 10px;">
+            <label>联系人电话</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
+          </div>
+        </li>
+      </ul>
+      <span class="addjjz" @click="addsublinkman()">添加联系人</span>
+    </div>
+    <div v-show="activeTab == 'editlinkman'" class="subbox-show">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">甲方联系人</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron textarea-box">
+        <li class="mui-table-view-cell linkman-item" v-for="(item, num) in alinkman">
+          <div class="jzztitele">
+            第{{num+1}}联系人
+            <div v-show="num != 0" class="fa fa-trash delete-icon" @click="deletejzz(num)"></div>
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人姓名</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人职务</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
+          </div>
+          <div class="mui-input-row" style="padding: 0 10px;">
+            <label>联系人电话</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
+          </div>
         </li>
         <li class="add-item">
-          <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+          <span class="addjjz" @click="addjjz()">添加竞争者</span>
         </li>
       </ul>
     </div>
@@ -560,12 +588,21 @@ let reportState = [
   {
     key: 'rescinded',
     value: '撤回'
+  },
+  {
+    key: 'shutdown',
+    value: '关闭'
+  },
+  {
+    key: 'overdue',
+    value: '过期'
   }
 ]
 export default {
   data () {
     return {
       getmoreopt: false,
+      alinkman: [], // 甲方联系人
       layer: 'area',
       editbaisc: {},
       areaarr: [],
@@ -629,6 +666,10 @@ export default {
           {
             table: 'project_furniture_types',
             key: 'project_poi_projects'
+          },
+          {
+            table: 'project_first_party_linkman',
+            key: 'project_poi_projects'
           }
         ],
         include: [
@@ -654,9 +695,35 @@ export default {
       })
       model.progoodstyepstr = arr.join('-')
       model.basicinfo = getresult.data
+      model.alinkman = (getresult.data.project_rel_project_first_party_linkman || {}).items || []
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 添加甲方联系人
+    addlinkman: function () {
+      if (model.alinkman.length === 0) {
+        model.addsublinkman()
+      }
+      model.activeTab = 'editlinkman'
+    },
+
+    // 添加多个联系人
+    addsublinkman: function () {
+      let obj = {
+        id: 0,
+        name: '',
+        job: '',
+        tel: '',
+        delete: 'no'
+      }
+      model.alinkman.push(obj)
+    },
+
+    // 删除联系人
+    deletelinkman: function (item) {
+      model.alinkman = _.without(model.alinkman, item)
     },
 
     // 编辑textarea
@@ -1418,7 +1485,7 @@ export default {
           url: url,
           data: {
             mode: 'image',
-            mutiple: '0'
+            mutiple: '1'
           },
           crossDomain: true,
           headers: {
@@ -1426,14 +1493,16 @@ export default {
             'X-DP-ID': '7748955b16d6f1a0'
           },
           success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                delete: 'no',
+                file_url: sub.url,
+                show: true
+              }
+              model.editproImg.push(imgtmp)
+            })
             $input.unwrap()
-            let imgtmp = {
-              id: 0,
-              delete: 'no',
-              file_url: data.url,
-              show: true
-            }
-            model.editproImg.push(imgtmp)
           },
           error: function (error) {
             console.log(error)
@@ -1450,6 +1519,36 @@ export default {
 }
 </script>
 <style>
+.linkman-item{
+  height: 160px;
+  background-color: #fff;
+}
+.sublinkman-style {
+  font-size: 14px;
+  color: #ccc;
+  text-align: right;
+  padding: 0 20px;
+  height: 24px;
+  line-height: 24px;
+}
+.report-state-icon {
+  position: absolute;
+  top:0;
+  right: 50px;
+  width: 60px;
+  height: 38px;
+  background: url('/images/report_state.png') no-repeat;
+  background-size: 492px;
+}
+.reject{
+  background-position: -18px -43px;
+}
+.overdue{
+  background-position: -162px -43px;
+}
+.shutdown{
+  background-position: -92px -43px;
+}
 .edit-box {
   background-color: #eee;
 }
@@ -1930,7 +2029,7 @@ export default {
   background-color: #fff;
   margin: 15px;
   border-radius: 5px;
-  padding: 20px 10px 10px 10px;
+  padding: 10px;
 }
 .basic-info label {
   display: block;
@@ -1955,8 +2054,7 @@ export default {
   height: 24px;
   line-height: 24px;
   text-align: center;
-  margin-top: 14px;
-  margin-bottom: 5px;
+  margin-top: 8px;
 }
 .stars-style .fa{
   display: inline-block;

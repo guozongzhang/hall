@@ -477,6 +477,7 @@
     </div>
     <div class="classify-box" id="classifylist">
       <div class="sub-classify">
+        <div class="null-box" @click="cancelModal()"></div>
         <div class="clasify-item" v-for="item in classifyArr">
           <p class="title">
             <label>{{item.sp_type_name}}</label>
@@ -1033,6 +1034,11 @@ export default {
         }
         updateTypeArr.unshift(tmp)
       }
+    },
+
+    // 点击空白消失选择宽
+    cancelModal: function () {
+      $('#classifylist').hide()
     },
 
     // 重置
@@ -2037,13 +2043,25 @@ export default {
   position: absolute;
   right: 0;
   top: 0;
-  width: 280px;
+  width: 100%;
   min-height: calc(100% - 44px);
   padding: 10px;
   background-color: #fff;
   padding-bottom: 50px;
 }
+.null-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: calc(100% - 276px);
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  float: left;
+}
 .clasify-item{
+  width: 260px;
+  float: right;
   margin-bottom: 20px;
 }
 .clasify-item .title{

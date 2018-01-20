@@ -258,8 +258,8 @@
       <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
     </div>
     <div class="classify-box" id="classifylist">
-      <div class="null-box"></div>
       <div class="sub-classify">
+        <div class="null-box" @click="cancelModal()"></div>
         <div class="clasify-item" v-for="item in classifyArr">
           <p class="title">
             <label>{{item.sp_type_name}}</label>
@@ -544,6 +544,11 @@
       setClassify: function () {
         model.thisdata.project_furniture_types = model.classifyActiveArr
         model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
+        $('#classifylist').hide()
+      },
+
+      // 点击空白消失选择宽
+      cancelModal: function () {
         $('#classifylist').hide()
       },
 
@@ -852,14 +857,6 @@
   }
 </script>
 <style lang="">
-  .null-box {
-    display: inline-block;
-    width: calc(100% - 280px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #f00;
-  }
   .add-btn {
     position: relative;
     color: #999;
@@ -1110,13 +1107,25 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 280px;
+    width: 100%;
     min-height: calc(100% - 44px);
     padding: 10px;
     background-color: #fff;
     padding-bottom: 50px;
   }
+  .null-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: calc(100% - 276px);
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    float: left;
+  }
   .clasify-item{
+    width: 260px;
+    float: right;
     margin-bottom: 20px;
   }
   .clasify-item .title{

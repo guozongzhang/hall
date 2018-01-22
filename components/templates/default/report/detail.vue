@@ -245,6 +245,9 @@
                           <span>{{sub.remark}}</span>
                         </p>
                         <p>{{forMatTime(sub.create_time)}}</p>
+                        <div>
+                          <img :src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
+                        </div>
                       </div>
                     </li>
                     <li v-show="recordLoglist.length == 0">
@@ -319,6 +322,18 @@
         <div class="line-box"></div>
         <div class="text-input">
           <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
+          <div class="attach-box" style="padding: 0 10px;">
+            <span v-for="img in recordImgs" v-show="recordImgs.length > 0" style="display: inline-block;width: 40px;height: 40px;position: relative;margin-right: 10px;margin-bottom: 10px;">
+              <img :src="img.file_url">
+              <span class="deleteimg" @click="deleteattchimg(img)">×</span>
+            </span>
+            <span class="upload-files" id="upload_attch" @click="upload_attch()" style="position: relative;top: -15px;">
+              <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
+                <use xlink:href="/svg/icon.svg#add"></use>
+              </svg>
+              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -587,6 +602,7 @@ let reportState = [
 export default {
   data () {
     return {
+      recordImgs: [], // 报备记录附件
       dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
       alinkman: [], // 甲方联系人
@@ -906,6 +922,14 @@ export default {
         where: {
           project_poi_projects: id
         },
+        with: {
+          relation: [
+            {
+              table: 'project_track_files',
+              key: 'imgaes_poi_project_track'
+            }
+          ]
+        },
         order: '-id'
       }
       let result = await axios.get('classes/project_track', {
@@ -940,11 +964,15 @@ export default {
       }
       let param = {
         project_poi_projects: proId,
-        remark: model.recordtext
+        remark: model.recordtext,
+        track_files: JSON.stringify(model.recordImgs)
       }
       axios.post('functions/report/project_track', null, {
         data: param
       }).then(function (data) {
+        data.data.imgaes_rel_project_track_files = {
+          items: model.recordImgs
+        }
         model.recordLoglist.unshift(data.data)
         window.mui.toast('添加跟踪记录成功！')
         setTimeout(function () {
@@ -1491,6 +1519,51 @@ export default {
       })
     },
 
+    // 删除报备记录附件（图片）
+    deleteattchimg: function (obj) {
+      model.recordImgs = _.without(model.recordImgs, obj)
+    },
+
+    // 上传报备记录附件
+    upload_attch: function () {
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+      var $input = $('#upload_attch').find('input')
+      $input.unbind().click()
+      $input.unbind().change(function () {
+        if ($input.val() === '') {
+          return false
+        }
+        var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+        $input.wrap(form)
+        window.$('#upload_attch').find('form').ajaxSubmit({
+          type: 'post',
+          url: url,
+          data: {
+            mode: 'image',
+            mutiple: '1'
+          },
+          crossDomain: true,
+          headers: {
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
+          },
+          success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                file_url: sub.url
+              }
+              model.recordImgs.push(imgtmp)
+            })
+            $input.unwrap()
+          },
+          error: function (error) {
+            console.log(error)
+          }
+        })
+      })
+    },
+
     // 上传图片
     upload_com: function () {
       var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
@@ -1543,6 +1616,28 @@ export default {
 <style>
 body,html{
   background-color: #eee !important;
+}
+.upload-files {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #eee;
+}
+.deleteimg {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  background-color: #c63e40;
+  border-radius: 100%;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 999;
 }
 .nav {
   margin-top: 48px;
@@ -1833,6 +1928,7 @@ body,html{
   background-color: #fff;
 }
 .text-input{
+  background-color: #fff;
   width: 100%;
   border-bottom: 1px solid #ccc;
 }
@@ -1840,7 +1936,7 @@ body,html{
   display: block;
   width: 100%;
   border: none;
-  min-height: 60px;
+  min-height: 80px;
   margin: 0;
   padding: 10px;
   font-size: 14px;

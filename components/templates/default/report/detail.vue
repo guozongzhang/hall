@@ -240,14 +240,14 @@
                     <li v-for="(sub, num) in recordLoglist">
                       <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
                         <p>
-                          <span class="last-white-line" v-show="num == (recordLoglist.length - 1)"></span>
+                          <span class="last-white-line"></span>
                           <span class="pointer"></span>
-                          <span>{{sub.remark}}</span>
+                          <span style="color: #666">{{sub.remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time)}}</p>
                         <div>
                           <img :src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
                         </div>
+                        <p>{{forMatTime(sub.create_time)}}</p>
                       </div>
                     </li>
                     <li v-show="recordLoglist.length == 0">

@@ -374,21 +374,19 @@
     font-size: 12px;
     border-radius: 0 0 5px 5px; 
   }
-  .wait_handle {
-    background-color: #5278e5;
-  }
-  .had_handle {
-    background-color: #5278e5;
-  }
+  .wait_handle,
+  .had_handle,
   .adopt {
     background-color: #5278e5;
-  }
-  .rescinded,
-  .had_handle{
     border-bottom: 6px solid #5278e5;
   }
   .had_reset {
     background-color: #f14F4F;
+    border-bottom: 6px solid #f14F4F;
+  }
+  .rescinded {
+    background-color: #ccc;
+    border-bottom: 6px solid #ccc;
   }
   .report-state .sub{
     position: absolute;

@@ -1692,19 +1692,19 @@ body,html{
   z-index: 6;
   top:0;
   right: 50px;
-  width: 60px;
-  height: 38px;
+  width: 68px;
+  height: 44px;
   background: url('/images/report_state.png') no-repeat;
-  background-size: 492px;
+  background-size: 615px;
 }
 .reject{
-  background-position: -18px -43px;
+  background-position: -27px -55px;
 }
 .overdue{
-  background-position: -162px -43px;
+  background-position: -206px -55px;
 }
 .shutdown{
-  background-position: -92px -43px;
+  background-position: -117px -55px;
 }
 .edit-box {
   background-color: #eee;

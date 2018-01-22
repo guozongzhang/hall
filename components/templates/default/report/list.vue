@@ -34,11 +34,12 @@
                 <i>{{item.amount}}万元</i><span>·{{item.name}}</span>
               </h4>
               <div>
-                <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
+                <span class="report-state" v-bind:class="item.state" v-if="item.state == 'rescinded' || item.state == 'had_reset' || item.state == 'adopt' || item.state == 'had_handle' || item.state == 'wait_handle'">
                   <span class="sub" v-bind:class="item.state"></span>
                   <span class="white-sub"></span>
                   <span>{{proStateFilter(item.state)}}</span>
                 </span>
+                <span class="report-state-icon" v-bind:class="item.state" v-show="item.state == 'reject' || item.state == 'shutdown' || item.state == 'overdue'"></span>
                 <div class="stars-style">
                   <span class="star-box">
                     <i class="fa fa-star"  v-for="sub in stars" aria-hidden="true" v-if="sub <= item.feasibility"></i>
@@ -248,6 +249,25 @@
   }
 </script>
 <style scoped>
+  .report-state-icon {
+    position: absolute;
+    z-index: 6;
+    top:0;
+    right: 50px;
+    width: 68px;
+    height: 44px;
+    background: url('/images/report_state.png') no-repeat;
+    background-size: 615px;
+  }
+  .reject{
+    background-position: -27px -55px;
+  }
+  .overdue{
+    background-position: -206px -55px;
+  }
+  .shutdown{
+    background-position: -117px -55px;
+  }
   .add-new{
     display: inline-block;
     width: 18px;
@@ -364,15 +384,8 @@
     background-color: #5278e5;
   }
   .rescinded,
-  .overdue,
-  .shutdown {
-    background-color: #ccc;
-  }
   .had_handle{
     border-bottom: 6px solid #5278e5;
-  }
-  .reject {
-    background-color: #f14F4F;
   }
   .had_reset {
     background-color: #f14F4F;
@@ -452,6 +465,7 @@
     color: #999;
   }
   .detail .active-point {
+    display: none;
     position: relative;
     left: -9px;
     top: -6px;

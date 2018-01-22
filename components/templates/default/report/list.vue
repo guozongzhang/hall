@@ -1,16 +1,14 @@
 <template>
   <div>
     <div class="mui-input-row mui-search">
-      <a href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right help-icon">
+      <a target="_blank" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right help-icon">
         <svg class="svg-style">
           <use xlink:href="/svg/icon.svg#help"></use>
         </svg>
       </a>
       <input type="text" class="search-box-input" v-model="searchKey" placeholder="搜素您想要查找的项目">
       <a :href="linkPath + '/newproject'" class="mui-pull-right add" >
-        <svg class="svg-style">
-          <use xlink:href="/svg/icon.svg#plus"></use>
-        </svg>
+        <span class="add-new">+</span>
       </a>
     </div>
     <ul class="navul">
@@ -107,8 +105,8 @@
         document.onkeydown = function (e) {
           var ev = document.all ? window.event : e
           if (ev.keyCode === 13) {
-            window.mui.toast('enter进来了')
             if (!_.isEmpty(model.searchKey)) {
+              model.datalist = []
               model.getSearch()
             }
           }
@@ -117,14 +115,44 @@
 
       // 搜索
       getSearch: function () {
-        window.mui.toast(model.searchKey)
+        model.is_loading = true
+        model.getSearchData()
+      },
+
+      // 搜索接口
+      getSearchData: function () {
+        let param = {
+          clazz: 'projects',
+          com_id_poi_companys: this.$store.state.comid,
+          search: model.searchKey
+        }
+        axios.get('es/es', {
+          params: param
+        }).then(function (msg) {
+          if (msg.data.items.length > 0) {
+            model.datalist = _.union(model.datalist, msg.data.items)
+            model.pages++
+            window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
+          } else {
+            model.is_loading = false
+            model.is_nodata = true
+            window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
+          }
+        }).catch(function (error) {
+          console.log(error)
+        })
       },
 
       // 下拉刷新获取数据
       pulldownRefresh: function () {
         model.is_loading = true
         $('.mui-pull-bottom-pocket').remove()
-        model.getData()
+        if (!_.isEmpty(model.searchKey)) {
+          // 有搜索
+          model.getSearchData()
+        } else {
+          model.getData()
+        }
       },
 
       // 获取项目数据
@@ -217,6 +245,17 @@
   }
 </script>
 <style scoped>
+  .add-new{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 16px;
+    border-radius: 100%;
+    background-color: #4e7ae7;
+    color: #fff;
+    box-shadow: 0 0 10px #5f87ec;
+  }
   .mui-search {
     height: 34px;
   }
@@ -235,11 +274,11 @@
   .svg-style {
     width: 18px;
     height: 18px;
-    fill: #5278e5;
+    fill: #ccc;
   }
   .help-icon {
     position: absolute;
-    left: -3px;
+    left: -2px;
     top: 6px;
     width: 26px;
     height: 26px;
@@ -251,10 +290,11 @@
   }
   .add{
     position: absolute;
-    right: 7px;
+    right: 10px;
     top: 7px;
     width: 18px;
     height: 18px;
+    cursor: pointer;
   }
   .loading-icon,
   .nodata-icon{

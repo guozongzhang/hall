@@ -60,7 +60,7 @@
         <li class="mui-table-view-cell" style="min-height: 43px">
           <span class="upload-box" id="upload_com"  @click="upload_com()">
             <a href="javascript:;">添加附件</a>
-            <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
+            <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
             <span class="add-btn" style="float: right">
               <i class="fa fa-picture-o"></i>
               <i class="fa fa-plus add-icon"></i>
@@ -227,7 +227,7 @@
             url: url,
             data: {
               mode: 'image',
-              mutiple: '0'
+              mutiple: '1'
             },
             crossDomain: true,
             headers: {
@@ -236,10 +236,12 @@
             },
             success: function (data) {
               $input.unwrap()
-              model.thisdata.projectAttachment.push({
-                file_url: data.url,
-                id: 0,
-                delete: 'no'
+              data.forEach((sub) => {
+                model.thisdata.projectAttachment.push({
+                  file_url: sub.url,
+                  id: 0,
+                  delete: 'no'
+                })
               })
             },
             error: function (error) {

@@ -6,16 +6,15 @@
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
-        <a href="javascript:;" class="mui-pull-right more-opt" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded'">
-          <span class="point" @click="preMoreOpt()">
-            <svg class="svg-style">
-              <use xlink:href="/svg/icon.svg#more"></use>
-            </svg>
-          </span>
-          <span class="sub-opt-box" v-show="getmoreopt" @click="optFunc(basicinfo.state)">
-            <span class="triangle"></span>
-            <span>{{(basicinfo.state == 'wait' || basicinfo.state == 'rescinded') ? '删除报备' : '撤回报备'}}</span>
-          </span>
+        <a href="javascript:;" class="mui-pull-right" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle'">
+          <svg class="svg-style del-icon">
+            <use xlink:href="/svg/icon.svg#trash"></use>
+          </svg>
+        </a>
+        <a href="javascript:;" class="mui-pull-right" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'rescinded'">
+          <svg class="svg-style del-icon">
+            <use xlink:href="/svg/icon.svg#trash"></use>
+          </svg>
         </a>
       </header>
       <div class="detail-box">
@@ -23,6 +22,7 @@
           <label>
             <span class="money">{{basicinfo.amount}}元</span>·<span>{{basicinfo.name}}</span>
           </label>
+          <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
             <span class="star-box">
               <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -125,17 +125,9 @@
                         <span>所属区域：</span>
                         <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人姓名：</span>
-                        <span class="alist-text">{{basicinfo.first_party_linkman}}</span>
-                      </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人职务：</span>
-                        <span class="alist-text">{{basicinfo.first_party_job}}</span>
-                      </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人电话：</span>
-                        <span class="alist-text">{{basicinfo.first_party_tel}}</span>
+                      <li class="mui-table-view-cell" v-for="(sub, index) in alinkman" >
+                        <span>第{{index+1}}联系人：</span>
+                        <span class="alist-text">{{sub.name}} / {{sub.job}} / {{sub.tel}}</span>
                       </li>
                     </ul>
                   </div>
@@ -383,7 +375,7 @@
                 <span class="add-btn">
                   <i class="fa fa-plus add-icon"></i>
                 </span>
-                <input class="hidden" type="file" name="files">
+                <input class="hidden" type="file" name="files[]" multiple>
               </span>
             </div>
 					</div>
@@ -405,17 +397,12 @@
             <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
-						<label>联系人姓名</label>
-						<input type="text" placeholder="输入联系人姓名" v-model="buyer.first_party_linkman">
+						<label>甲方联系人</label>
+            <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
 					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人职务</label>
-						<input type="text" placeholder="输入联系人职务" v-model="buyer.first_party_job">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人电话</label>
-						<input type="text" placeholder="输入联系人电话" v-model="buyer.first_party_tel">
-					</div>
+          <div style="padding: 10px 0;" v-show="alinkman.length > 0">
+            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -451,25 +438,52 @@
         </div>
       </div>
     </div>
-    <div v-show="activeTab == 'editcomp'" class="subbox-show">
+    <div v-show="activeTab == 'editcomp'" class="subbox-show" style="position: relative">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
       </header>
-      <ul class="mui-table-view mui-table-view-chevron textarea-box">
-        <li class="mui-table-view-cell comter-item" v-for="(item, num) in jzds">
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell comp-input-box" v-for="(item, num) in jzds">
           <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row input-com-box" style="width:100%;float:left;">
-            <input maxlength="20" type="text" class="sub-com-input" v-model="item.value"/> 
+          <div class="mui-input-row" style="width:60%;float:left;height: 44px;">
+            <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-trash delete-icon" @click="deletejzz(num)"></div>
-        </li>
-        <li class="add-item">
-          <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
         </li>
       </ul>
+      <span class="addjjz" @click="addjjz()">添加竞争者</span>
+    </div>
+    <div v-show="activeTab == 'editlinkman'" class="subbox-show" style="position: relative">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="subGoBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">甲方联系人</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="subaddlinkman()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell linkmantext linkman-box" style="padding: 0 !important" v-for="(item, num) in alinkman">
+          <div class="jzztitele" style="padding-left: 25px;">
+            第{{num+1}}联系人
+            <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="editalinkman(item)"></div>
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
+            <label>联系人姓名</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
+            <label>联系人职务</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
+          </div>
+          <div class="mui-input-row" style="padding: 0 10px;background-color: #fff;">
+            <label>联系人电话</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
+          </div>
+        </li>
+      </ul>
+      <span class="addlinkman" @click="addsublinkman()">添加联系人</span>
     </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
@@ -560,12 +574,22 @@ let reportState = [
   {
     key: 'rescinded',
     value: '撤回'
+  },
+  {
+    key: 'shutdown',
+    value: '关闭'
+  },
+  {
+    key: 'overdue',
+    value: '过期'
   }
 ]
 export default {
   data () {
     return {
+      dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
+      alinkman: [], // 甲方联系人
       layer: 'area',
       editbaisc: {},
       areaarr: [],
@@ -629,6 +653,10 @@ export default {
           {
             table: 'project_furniture_types',
             key: 'project_poi_projects'
+          },
+          {
+            table: 'project_first_party_linkman',
+            key: 'project_poi_projects'
           }
         ],
         include: [
@@ -654,9 +682,18 @@ export default {
       })
       model.progoodstyepstr = arr.join('-')
       model.basicinfo = getresult.data
+      model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 格式化联系人
+    formatLinkman: function (arr) {
+      arr.forEach((sub) => {
+        sub.delete = sub.delete ? sub.delete : 'no'
+      })
+      return arr
     },
 
     // 编辑textarea
@@ -786,11 +823,6 @@ export default {
           }, 2000)
         }
       })
-    },
-
-    // 右上角更多操作
-    preMoreOpt: function () {
-      model.getmoreopt = !model.getmoreopt
     },
 
     // 右上角操作函数（撤销、删除）
@@ -1227,23 +1259,83 @@ export default {
       }
     },
 
+    // 添加甲方联系人
+    addlinkman: function () {
+      if (model.alinkman.length === 0) {
+        model.addsublinkman()
+      }
+      model.activeTab = 'editlinkman'
+    },
+
+    // 添加多个联系人
+    addsublinkman: function () {
+      let obj = {
+        id: 0,
+        name: '',
+        job: '',
+        tel: '',
+        delete: 'no'
+      }
+      model.alinkman.push(obj)
+    },
+
+    // 删除联系人
+    deletelinkman: function (item) {
+      model.alinkman = _.without(model.alinkman, item)
+    },
+
+    // 删除甲方联系人
+    editalinkman: function (item) {
+      if (item.id > 0) {
+        model.dellinkmanids.push(item.id)
+      }
+      model.alinkman = _.without(model.alinkman, item)
+    },
+
+    // 添加甲方联系人返回
+    subGoBack: function () {
+      model.activeTab = 'editbuyer'
+    },
+
+    // 提交联系人
+    subaddlinkman: function () {
+      let flag = false
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      model.alinkman.forEach((sub) => {
+        if (!sub.name || !sub.job) {
+          flag = true
+        }
+        if (!telval.test(sub.tel)) {
+          window.mui.toast('手机号格式错误!')
+          flag = true
+        }
+      })
+      if (flag) {
+        window.mui.toast('请填写完整的联系人信息')
+        return
+      }
+      model.activeTab = 'editbuyer'
+    },
+
     // 确认保存甲方信息
     confEditBuyer: function () {
-      let telval = /^1[3|4|5|7|8][0-9]{9}$/
-      if (!_.isEmpty(model.buyer.first_party_tel)) {
-        if (!telval.test(model.buyer.first_party_tel)) {
-          window.mui.toast('手机号格式错误!')
-          return false
+      let tmplinkman = []
+      model.dellinkmanids.forEach((sub) => {
+        let obj = {
+          id: sub,
+          delete: 'yes'
         }
-      }
+        tmplinkman.push(obj)
+      })
+      model.alinkman.forEach((tmp) => {
+        tmplinkman.push(tmp)
+      })
       let param = {
         id: proId,
         first_party_province_poi_province: model.buyer.pro_id,
         first_party_city_poi_city: model.buyer.city_id,
         first_party_district_poi_district: model.buyer.dis_id,
-        first_party_linkman: model.buyer.first_party_linkman || '',
-        first_party_job: model.buyer.first_party_job || '',
-        first_party_tel: model.buyer.first_party_tel || ''
+        project_first_party_linkman: JSON.stringify(tmplinkman)
       }
       axios.put('functions/report/project', null, {
         data: param
@@ -1260,9 +1352,6 @@ export default {
           id: model.buyer.dis_id,
           DistrictName: model.buyer.area.split('-')[2]
         }
-        model.basicinfo.first_party_linkman = model.buyer.first_party_linkman
-        model.basicinfo.first_party_job = model.buyer.first_party_job
-        model.basicinfo.first_party_tel = model.buyer.first_party_tel
         window.mui.toast('编辑甲方信息成功')
         setTimeout(function () {
           model.activeTab = 'home'
@@ -1418,7 +1507,7 @@ export default {
           url: url,
           data: {
             mode: 'image',
-            mutiple: '0'
+            mutiple: '1'
           },
           crossDomain: true,
           headers: {
@@ -1426,14 +1515,16 @@ export default {
             'X-DP-ID': '7748955b16d6f1a0'
           },
           success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                delete: 'no',
+                file_url: sub.url,
+                show: true
+              }
+              model.editproImg.push(imgtmp)
+            })
             $input.unwrap()
-            let imgtmp = {
-              id: 0,
-              delete: 'no',
-              file_url: data.url,
-              show: true
-            }
-            model.editproImg.push(imgtmp)
           },
           error: function (error) {
             console.log(error)
@@ -1450,6 +1541,74 @@ export default {
 }
 </script>
 <style>
+body,html{
+  background-color: #eee !important;
+}
+.nav {
+  margin-top: 48px;
+}
+.nav li {
+  min-height: 43px;
+  line-height: 43px;
+  padding: 0;
+}
+.nav li a {
+  font-size: 13px;
+  color: #3A3A3A;
+}
+.mui-table-view:before {
+  background-color: #fff !important;
+}
+.nav li i {
+  color: red;
+  font-style: normal;
+  margin-left: 4px;
+}
+.nav li.linkmantext {
+  min-height: 80px;
+}
+.linkman-item{
+  height: 160px;
+  background-color: #fff;
+}
+.comp-input-box {
+  height: 74px;
+  background-color: #fff;
+  padding: 0 !important;  
+}
+.comp-input-box input {
+  font-size: 14px;
+  color:#666;
+  width:100%!important;
+  border: none;
+  margin: 0;
+}
+.sublinkman-style {
+  font-size: 14px;
+  color: #ccc;
+  text-align: right;
+  padding: 0 20px;
+  height: 24px;
+  line-height: 24px;
+}
+.report-state-icon {
+  position: absolute;
+  top:0;
+  right: 50px;
+  width: 60px;
+  height: 38px;
+  background: url('/images/report_state.png') no-repeat;
+  background-size: 492px;
+}
+.reject{
+  background-position: -18px -43px;
+}
+.overdue{
+  background-position: -162px -43px;
+}
+.shutdown{
+  background-position: -92px -43px;
+}
 .edit-box {
   background-color: #eee;
 }
@@ -1463,9 +1622,16 @@ export default {
   position: relative;
   height: 30px;
 }
+.addlinkman {
+  position: absolute;
+  bottom: -25px;
+  right: 10px;
+  font-size: 14px;
+  color: #000;
+}
 .addjjz {
   position: absolute;
-  bottom: 3px;
+  bottom: -32px;
   right: 10px;
   font-size: 14px;
   color: #000;
@@ -1480,22 +1646,7 @@ export default {
 .mui-table-view-cell:after {
   background-color: #fff !important;
 }
-.comter-item {
-  position: relative;
-  margin: 0;
-  padding: 0;
-}
-.comter-item .delete-icon {
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  color: #f00;
-}
-.comter-item .jzztitele {
+.jzztitele {
   height: 30px;
   line-height: 30px;
   width: 100%;
@@ -1504,13 +1655,23 @@ export default {
   font-size: 14px;
   padding-left: 15px;
 }
-.comter-item .input-com-box {
-  height: 42px;
-  line-height: 42px;
+.linkman-box .mui-input-row {
+  height: 43px;
 }
-.comter-item .sub-com-input {
-  border: none;
+.linkman-box .mui-input-row label {
+  height: 43px;
+  padding: 0;
+  line-height: 43px;
   font-size: 14px;
+  width: 25%;
+}
+.linkman-box .mui-input-row input{
+  font-size: 14px;
+  padding: 0;
+  line-height: 43px;
+  height: 43px;
+  width: 75%!important;
+  text-align: right;
   color: #999;
 }
 .mui-title{
@@ -1537,41 +1698,15 @@ export default {
   float: right;
   padding-right: 10px;
 }
-.more-opt {
-  width: 24px;
-  height: 24px;
-  position: relative;
-  top: 11px;
-  cursor: pointer;
-}
 .svg-style {
   width: 24px;
   height: 24px;
   fill: #666;
 }
-.sub-opt-box{
-  display: inline-block;
-  position: absolute;
-  right: -3px;
-  top: 28px;
-  width: 64px;
-  text-align: center;
-  height: 26px;
-  line-height: 26px;
-  font-size: 12px;
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-}
-.sub-opt-box .triangle {
-  position: absolute;
-  top: -6px;
-  left: 44px;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 6px solid rgba(0, 0, 0, 0.6);
+.del-icon{
+  position: relative;
+  top: 10px;
+  fill: red;
 }
 .attach-img-box {
   padding-bottom: 10px;
@@ -1695,6 +1830,7 @@ export default {
   left: 0;
   width: 100%;
   height: calc(100% - 48px);
+  background-color: #fff;
 }
 .text-input{
   width: 100%;
@@ -1930,7 +2066,7 @@ export default {
   background-color: #fff;
   margin: 15px;
   border-radius: 5px;
-  padding: 20px 10px 10px 10px;
+  padding: 10px;
 }
 .basic-info label {
   display: block;
@@ -1955,8 +2091,7 @@ export default {
   height: 24px;
   line-height: 24px;
   text-align: center;
-  margin-top: 14px;
-  margin-bottom: 5px;
+  margin-top: 8px;
 }
 .stars-style .fa{
   display: inline-block;

@@ -23,7 +23,7 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="元" v-model="thisdata.amount" v-on:keyup="money()">
+            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -113,7 +113,7 @@
               <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
             </div>
           </li>
-          <div style="padding: 10px 0;" v-show="alinkman.length > 0">
+          <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
             <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
           </div>
         </div>
@@ -953,7 +953,7 @@
   .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo, .alinkman{
     display: none;
   }
-  .jzInfo, .reportInfo, .comInfo, .projectInfo{
+  .jzInfo, .reportInfo, .projectInfo{
     border-bottom: 1px solid #DBDBDD;
   }
   .jzInfo.active,.reportInfo.active,.comInfo.active,.projectInfo.active{

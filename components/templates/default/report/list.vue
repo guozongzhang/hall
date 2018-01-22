@@ -6,7 +6,7 @@
           <use xlink:href="/svg/icon.svg#help"></use>
         </svg>
       </a>
-      <input type="text" class="search-box-input" placeholder="搜素您想要查找的项目">
+      <input type="text" class="search-box-input" v-model="searchKey" placeholder="搜素您想要查找的项目">
       <a :href="linkPath + '/newproject'" class="mui-pull-right add" >
         <svg class="svg-style">
           <use xlink:href="/svg/icon.svg#plus"></use>
@@ -33,7 +33,7 @@
           <div v-for="item in datalist" class="listdiv">
             <a :href="'/projectdetail?id=' + item.id" class="flagdetail">
               <h4 class="mui-ellipsis">
-                <i>{{item.amount}}元</i><span>·{{item.name}}</span>
+                <i>{{item.amount}}万元</i><span>·{{item.name}}</span>
               </h4>
               <div>
                 <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
@@ -80,6 +80,7 @@
   export default {
     data () {
       return {
+        searchKey: '',
         linkPath: '',
         pages: 1,
         stars: [5, 4, 3, 2, 1],
@@ -101,6 +102,22 @@
           window.location.href = model.linkPath + objclass
         })
         await model.getData()
+
+        // 搜索enter事件注册执行enter事件
+        document.onkeydown = function (e) {
+          var ev = document.all ? window.event : e
+          if (ev.keyCode === 13) {
+            window.mui.toast('enter进来了')
+            if (!_.isEmpty(model.searchKey)) {
+              model.getSearch()
+            }
+          }
+        }
+      },
+
+      // 搜索
+      getSearch: function () {
+        window.mui.toast(model.searchKey)
       },
 
       // 下拉刷新获取数据
@@ -174,7 +191,6 @@
 
       // 项目状态过滤
       proStateFilter: function (str) {
-        console.log(flowState)
         let res = ''
         flowState.forEach((item) => {
           if (item.value === str) {

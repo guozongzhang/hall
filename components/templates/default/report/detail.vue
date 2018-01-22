@@ -20,7 +20,7 @@
       <div class="detail-box">
         <div class="basic-info">
           <label>
-            <span class="money">{{basicinfo.amount}}元</span>·<span>{{basicinfo.name}}</span>
+            <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
           </label>
           <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
@@ -952,6 +952,7 @@ export default {
     // 添加跟踪记录
     addRecord: async function (id) {
       model.recordtext = ''
+      model.recordImgs = []
       model.activeTab = 'record'
       proId = id
     },
@@ -1688,6 +1689,7 @@ body,html{
 }
 .report-state-icon {
   position: absolute;
+  z-index: 6;
   top:0;
   right: 50px;
   width: 60px;
@@ -2165,6 +2167,8 @@ body,html{
   padding: 10px;
 }
 .basic-info label {
+  position: relative;
+  z-index: 8;
   display: block;
   font-size: 16px;
   font-weight: 600;

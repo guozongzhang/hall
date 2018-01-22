@@ -221,7 +221,7 @@
         <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
-        <li class="mui-table-view-cell textareaclass" style="padding: 0 !important" v-for="(item, num) in alinkman">
+        <li class="mui-table-view-cell linkmantext" style="padding: 0 !important" v-for="(item, num) in alinkman">
           <div class="jzztitele" style="padding-left: 25px;">
             第{{num+1}}联系人
             <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="deletelinkman(item)"></div>
@@ -275,7 +275,7 @@
           <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
         </li>
       </ul>
-      <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+      <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
     <div class="classify-box" id="classifylist">
       <div class="sub-classify">
@@ -1098,11 +1098,10 @@
     top: 13px;
     left: 0px;
   }
-  .nav li.textareaclass{
+  .nav li.linkmantext {
     min-height: 80px;
   }
   .nav li.textareaclass textarea{
-    min-height: 80px;
     font-size: 14px;
     padding:10px 0;
   }
@@ -1116,7 +1115,7 @@
     max-width: 70%;
   }
   .nav li.jzzli{
-    height: 74px;
+    height: 74px !important;
   }
   .jzzli input {
     text-align: left;

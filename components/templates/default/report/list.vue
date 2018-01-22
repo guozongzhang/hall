@@ -174,6 +174,7 @@
 
       // 项目状态过滤
       proStateFilter: function (str) {
+        console.log(flowState)
         let res = ''
         flowState.forEach((item) => {
           if (item.value === str) {
@@ -303,7 +304,9 @@
   .adopt {
     background-color: #5278e5;
   }
-  .rescinded {
+  .rescinded,
+  .overdue,
+  .shutdown {
     background-color: #ccc;
   }
   .had_handle{

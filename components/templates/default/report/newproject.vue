@@ -23,7 +23,8 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
+            <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;">万元</span>
+            <input type="number" maxlength="20" style="width: 60% !important" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">

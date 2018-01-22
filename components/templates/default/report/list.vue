@@ -106,6 +106,7 @@
           var ev = document.all ? window.event : e
           if (ev.keyCode === 13) {
             if (!_.isEmpty(model.searchKey)) {
+              model.pages = 1
               model.datalist = []
               model.getSearch()
             }
@@ -123,6 +124,8 @@
       getSearchData: function () {
         let param = {
           clazz: 'projects',
+          skip: (model.pages - 1) * pagesize,
+          limit: pagesize,
           com_id_poi_companys: this.$store.state.comid,
           search: model.searchKey
         }

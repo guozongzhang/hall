@@ -1,14 +1,12 @@
 <template>
   <div>
     <div class="mui-input-row mui-search">
-      <a target="_blank" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right help-icon">
-        <svg class="svg-style">
-          <use xlink:href="/svg/icon.svg#help"></use>
-        </svg>
+      <a target="_blank" style="position: absolute;left: 8px;top: 5px;width: 26px;height: 26px;" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right">
+        <span class="list-icon help-icon"></span>
       </a>
       <input type="text" class="search-box-input" v-model="searchKey" placeholder="搜素您想要查找的项目">
-      <a :href="linkPath + '/newproject'" class="mui-pull-right add" >
-        <span class="add-new">+</span>
+      <a :href="linkPath + '/newproject'" class="mui-pull-right" style="position: absolute;right: 8px;top: 5px;width: 26px;height: 26px;">
+        <span class="list-icon add-icon"></span>
       </a>
     </div>
     <ul class="navul">
@@ -249,11 +247,27 @@
   }
 </script>
 <style scoped>
+  .list-icon {
+    position: absolute;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: url('/images/list_icon.png') no-repeat;
+    background-size: 250px;
+  }
+  .help-icon{
+    left: 0;
+    background-position: -75px -14px;
+  }
+  .add-icon{
+    right: 0;
+    background-position: -117px -14px;
+  }
   .report-state-icon {
     position: absolute;
     z-index: 6;
     top:0;
-    right: 50px;
+    right: 30px;
     width: 68px;
     height: 44px;
     background: url('/images/report_state.png') no-repeat;
@@ -268,19 +282,8 @@
   .shutdown{
     background-position: -117px -55px;
   }
-  .add-new{
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    text-align: center;
-    line-height: 16px;
-    border-radius: 100%;
-    background-color: #4e7ae7;
-    color: #fff;
-    box-shadow: 0 0 10px #5f87ec;
-  }
   .mui-search {
-    height: 34px;
+    height: 36px;
   }
   .search-box-input {
     position: relative;
@@ -298,26 +301,6 @@
     width: 18px;
     height: 18px;
     fill: #ccc;
-  }
-  .help-icon {
-    position: absolute;
-    left: -2px;
-    top: 6px;
-    width: 26px;
-    height: 26px;
-    text-align: center;
-    line-height: 26px;
-    font-size: 18px;
-    display: inline-block;
-    margin-left: 10px;
-  }
-  .add{
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
   }
   .loading-icon,
   .nodata-icon{
@@ -472,7 +455,7 @@
   }
   .navul {
     position: fixed;
-    top: 35px;
+    top: 37px;
     width: 100%;
     overflow: hidden;
     height: 34px;

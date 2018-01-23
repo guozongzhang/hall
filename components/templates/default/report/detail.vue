@@ -6,15 +6,11 @@
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
-        <a href="javascript:;" class="mui-pull-right" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle'">
-          <svg class="svg-style del-icon">
-            <use xlink:href="/svg/icon.svg#trash"></use>
-          </svg>
+        <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded'">
+          <span class="list-icon del-icon"></span>
         </a>
-        <a href="javascript:;" class="mui-pull-right" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'rescinded'">
-          <svg class="svg-style del-icon">
-            <use xlink:href="/svg/icon.svg#trash"></use>
-          </svg>
+        <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait_handle'">
+          <span class="list-icon reset-icon"></span>
         </a>
       </header>
       <div class="detail-box">
@@ -32,8 +28,8 @@
           <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
-            <span style="display: inline-block;float: left;margin-left: 15px;">有效期{{valtimeFilter(basicinfo.validity)}}</span>
-            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 15px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
+            <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
+            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 15px;color: #999">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
             <span class="left-circle icon-circle"></span>
@@ -214,7 +210,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time, 'YYYY-MM-DD HH:mm:ss')}}</p>
+                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -247,7 +243,7 @@
                         <div>
                           <img :src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
                         </div>
-                        <p>{{forMatTime(sub.create_time)}}</p>
+                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                     <li v-show="recordLoglist.length == 0">
@@ -485,15 +481,15 @@
             <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="editalinkman(item)"></div>
           </div>
           <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
-            <label>联系人姓名</label>
+            <label class="linkman-title">联系人姓名</label>
             <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
           </div>
           <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
-            <label>联系人职务</label>
+            <label class="linkman-title">联系人职务</label>
             <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
           </div>
           <div class="mui-input-row" style="padding: 0 10px;background-color: #fff;">
-            <label>联系人电话</label>
+            <label class="linkman-title">联系人电话</label>
             <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
           </div>
         </li>
@@ -1332,6 +1328,7 @@ export default {
       let telval = /^1[3|4|5|7|8][0-9]{9}$/
       model.alinkman.forEach((sub) => {
         if (!sub.name || !sub.job) {
+          window.mui.toast('请填写完整的联系人信息')
           flag = true
         }
         if (!telval.test(sub.tel)) {
@@ -1340,7 +1337,6 @@ export default {
         }
       })
       if (flag) {
-        window.mui.toast('请填写完整的联系人信息')
         return
       }
       model.activeTab = 'editbuyer'
@@ -1618,6 +1614,26 @@ export default {
 body,html{
   background-color: #eee !important;
 }
+.linkman-title {
+  color: #666;
+}
+.list-icon {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 26px;
+  height: 26px;
+  background: url('/images/list_icon.png') no-repeat;
+  background-size: 250px;
+}
+.del-icon{
+  left: 0;
+  background-position: -9px -14px;
+}
+.reset-icon{
+  left: 0;
+  background-position: -47px -14px;
+}
 .upload-files {
   display: inline-block;
   width: 40px;
@@ -1724,14 +1740,14 @@ body,html{
   bottom: -25px;
   right: 10px;
   font-size: 14px;
-  color: #000;
+  color: #999;
 }
 .addjjz {
   position: absolute;
   bottom: -32px;
   right: 10px;
   font-size: 14px;
-  color: #000;
+  color: #999;
 }
 .mui-table-view-chevron {
   background-color: #eee;
@@ -1799,11 +1815,6 @@ body,html{
   width: 24px;
   height: 24px;
   fill: #666;
-}
-.del-icon{
-  position: relative;
-  top: 10px;
-  fill: red;
 }
 .attach-img-box {
   padding-bottom: 10px;

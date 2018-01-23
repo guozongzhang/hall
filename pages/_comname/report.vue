@@ -133,7 +133,7 @@
     border-bottom: 1px solid #eee;
   }
   .my-project .mui-title{
-    font-weight: 600;
+    font-weight: 400;
   }
   .my-project .mui-action-back{
     font-size: 14px;

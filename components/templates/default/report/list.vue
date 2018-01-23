@@ -290,7 +290,7 @@
     top: 5px;
     display: block;
     width: 70%;
-    height: 24px;
+    height: 26px;
     margin: 0 auto;
     border-radius: 50px;
     font-size: 12px;

@@ -937,7 +937,7 @@
     right: -6px;
   }
   .mui-title{
-    font-weight: 600;
+    font-weight: 400;
   }
   .mui-bar-nav{
     height: 48px;

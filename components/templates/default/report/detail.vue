@@ -222,7 +222,7 @@
               <div id="reportlog" class="mui-control-content">
                 <div class="record-box">
                   <ul>
-                    <li>
+                    <li v-show="basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset' || basicinfo.state == 'had_handle'">
                       <div class="li-box add-item">
                         <p>
                           <span class="white-line"></span>

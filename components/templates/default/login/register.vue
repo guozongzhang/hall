@@ -306,6 +306,7 @@ export default {
         password: model.info.newpwd,
         code: model.info.verify,
         designer_type: 'seller',
+        ui_name: model.info.relname,
         com_id_poi_companys: this.$store.state.comid,
         designer_url: model.info.img,
         st_id: model.info.store

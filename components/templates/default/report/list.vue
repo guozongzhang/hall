@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="mui-input-row mui-search">
-      <a target="_blank" style="position: absolute;left: 8px;top: 5px;width: 26px;height: 26px;" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right">
+      <a target="_blank" style="position: absolute;left: 10px;top: 5px;width: 26px;height: 26px;" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right">
         <span class="list-icon help-icon"></span>
       </a>
       <input type="text" class="search-box-input" v-model="searchKey" placeholder="搜素您想要查找的项目">
-      <a :href="linkPath + '/newproject'" class="mui-pull-right" style="position: absolute;right: 8px;top: 5px;width: 26px;height: 26px;">
+      <a :href="linkPath + '/newproject'" class="mui-pull-right" style="position: absolute;right: 10px;top: 5px;width: 26px;height: 26px;">
         <span class="list-icon add-icon"></span>
       </a>
     </div>

@@ -3,7 +3,9 @@
   <div>
     <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
         <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded'">
@@ -24,8 +26,8 @@
               <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
             </span>
           </div>
-          <div class="fz14">{{basicinfo.first_party_name}}</div>
-          <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
+          <div class="fz16">{{basicinfo.first_party_name}}</div>
+          <div class="fz16 intro-style">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
             <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
@@ -210,7 +212,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
+                        <p style="font-size: 14px;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -236,14 +238,13 @@
                     <li v-for="(sub, num) in recordLoglist">
                       <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
                         <p>
-                          <span class="last-white-line"></span>
                           <span class="pointer"></span>
                           <span style="color: #666">{{sub.remark}}</span>
                         </p>
                         <div>
                           <img :src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
                         </div>
-                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
+                        <p style="font-size: 14px;color: #666">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                     <li v-show="recordLoglist.length == 0">
@@ -267,7 +268,9 @@
     <div v-show="activeTab == 'editbasic'" class="subbox-show record-show">
       <div class="subbox-show">
         <header class="mui-bar mui-bar-nav">
-          <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+          <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+            <span style="position: relative;top: -1px;">返回</span>
+          </a>
           <span class="fa close-icon" @click="goHome()">×</span>
           <h1 class="mui-title othertitle">编辑必要信息</h1>
           <a class="mui-icon mui-pull-right save-btn" @click="confEditBasic()">提交</a>
@@ -309,7 +312,9 @@
     </div>
     <div v-show="activeTab == 'record'" class="subbox-show record-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">进度跟踪</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confAddRecord()">提交</a>
@@ -335,7 +340,9 @@
     </div>
     <div v-show="activeTab == 'editproject'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">编辑项目信息</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confEditPro()">提交</a>
@@ -395,7 +402,9 @@
     </div>
     <div v-show="activeTab == 'editbuyer'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">编辑甲方信息</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confEditBuyer()">提交</a>
@@ -422,7 +431,9 @@
     </div>
     <div v-show="activeTab == 'editcompetitors'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">编辑竞争信息</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confEditComp()">提交</a>
@@ -451,7 +462,9 @@
     </div>
     <div v-show="activeTab == 'editcomp'" class="subbox-show" style="position: relative">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
@@ -469,7 +482,9 @@
     </div>
     <div v-show="activeTab == 'editlinkman'" class="subbox-show" style="position: relative">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="subGoBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="subGoBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">甲方联系人</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="subaddlinkman()">提交</a>
@@ -1614,6 +1629,9 @@ export default {
 body,html{
   background-color: #eee !important;
 }
+.mui-icon-back:before, .mui-icon-left-nav:before{
+  font-size: 20px !important;
+}
 .linkman-title {
   color: #666;
 }
@@ -1788,7 +1806,7 @@ body,html{
   color: #999;
 }
 .mui-title{
-  font-weight: 600;
+  font-weight: 400;
 }
 .mui-bar-nav{
   height: 48px;
@@ -1912,7 +1930,7 @@ body,html{
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 20px;
+  font-size: 21px;
   color: #666;
   z-index: 9999;
 }
@@ -1928,7 +1946,7 @@ body,html{
 }
 .subbox-show .save-btn{
   position: relative;
-  top: 6px;
+  top: 8px;
   color: #5278e5;
   font-size: 14px;
 }
@@ -2181,7 +2199,7 @@ body,html{
   position: relative;
   z-index: 8;
   display: block;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: #333;
   text-align: center;
@@ -2228,8 +2246,8 @@ body,html{
   text-align: center;
   color: #99999;
 }
-.fz14 {
-  font-size: 14px;
+.fz16 {
+  font-size: 16px;
   text-align: center;
   height: 26px;
   line-height: 24px;
@@ -2262,10 +2280,10 @@ body,html{
 }
 .go-report .icon-circle {
   position: absolute;
-  top: -10px;
+  top: -8px;
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 100%;
   background-color: #eee;
 }

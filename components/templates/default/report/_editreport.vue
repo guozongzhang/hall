@@ -1,7 +1,9 @@
 <template>
 <div>
   <header class="mui-bar mui-bar-nav">
-    <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+    <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+      <span style="position: relative;top: -1px;">返回</span>
+    </a>
     <span class="fa close-icon" @click="goHome()">×</span>
     <h1 class="mui-title othertitle">编辑报备人信息</h1>
     <a class="mui-icon mui-pull-right save-btn" @click="confEditReport()">提交</a>
@@ -123,5 +125,7 @@ export default {
 </script>
 
 <style>
-
+.mui-icon-back:before, .mui-icon-left-nav:before{
+  font-size: 20px !important;
+}
 </style>

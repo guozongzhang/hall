@@ -127,6 +127,9 @@
                         <span>第{{index+1}}联系人：</span>
                         <span class="alist-text">{{sub.name}} / {{sub.job}} / {{sub.tel}}</span>
                       </li>
+                      <li class="mui-table-view-cell" v-show="alinkman.length == 0">
+                        <span>甲方联系人：</span>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -278,19 +281,20 @@
         <div class="textarea-box">
           <div class="line-box"></div>
           <div class="must">
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目名称<span>*</span></label>
               <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>甲方名称<span>*</span></label>
               <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目金额<span>*</span></label>
-              <input type="text" placeholder="万元" v-model="editbaisc.amount">
+              <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;position: relative;top: 9px;margin-right: 15px;">万元</span>
+              <input type="text" placeholder="万元" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
             </div>
-            <div class="mui-input-row sub-input-box edit-basic-box">
+            <div class="mui-input-row sub-input-box edit-basic-box" style="background-color: #fff;">
               <label>项目可行性<span>*</span></label>
               <div class="stars-style">
                 <span class="star-box">
@@ -298,11 +302,11 @@
                 </span>
               </div>
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>有效期<span>*</span></label>
               <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>简单描述<span>*</span></label>
               <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
             </div>
@@ -323,12 +327,18 @@
         <div class="line-box"></div>
         <div class="text-input">
           <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
-          <div class="attach-box" style="padding: 0 10px;">
+          <div class="attach-box" style="padding: 0 10px;margin-top: 10px;min-height: 55px;">
             <span v-for="img in recordImgs" v-show="recordImgs.length > 0" style="display: inline-block;width: 40px;height: 40px;position: relative;margin-right: 10px;margin-bottom: 10px;">
               <img :src="img.file_url">
               <span class="deleteimg" @click="deleteattchimg(img)">×</span>
             </span>
-            <span class="upload-files" id="upload_attch" @click="upload_attch()" style="position: relative;top: -15px;">
+            <span class="upload-files" id="upload_attch" @click="upload_attch()" v-show="recordImgs.length > 0" style="position: relative;top: -15px;">
+              <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
+                <use xlink:href="/svg/icon.svg#add"></use>
+              </svg>
+              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+            </span>
+            <span class="upload-files" id="upload_attch" @click="upload_attch()" style="position: relative;top: 0px;" v-show="recordImgs.length == 0">
               <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
                 <use xlink:href="/svg/icon.svg#add"></use>
               </svg>
@@ -362,13 +372,13 @@
 						<label>交付时间</label>
             <span class="area-text" @click="changeTime('delivery')">{{editpro.delivery_time}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>产品品类</label>
             <span class="area-text" @click="changeGoodsType()">{{editpro.type}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>项目类型</label>
-            <span class="area-text" @click="changeProType()">{{editpro.category}}</span>
+            <span class="area-text" style="padding-right: 34px;" @click="changeProType()">{{editpro.category}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('intro','编辑项目介绍')">
 						<label>项目介绍</label>
@@ -384,17 +394,19 @@
 					</div>
           <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
-            <div class="attach-img-box">
+            <span class="upload-box" id="upload_com"  @click="upload_com()">
+              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+              <span class="add-btn-upload" style="float: right">
+                <i class="fa fa-picture-o"></i>
+                <i class="fa fa-plus add-icon"></i>
+              </span>
+            </span>
+            <div class="attach-img-box" >
               <div class="img-box" v-for="img in editproImg" v-show="img.show">
                 <span class="delete-img" @click="deleteImg(img)">×</span>
                 <img :src="img.file_url"/>
               </div>
-              <span class="upload-box" id="upload_com" @click="upload_com()">
-                <span class="add-btn">
-                  <i class="fa fa-plus add-icon"></i>
-                </span>
-                <input class="hidden" type="file" name="files[]" multiple>
-              </span>
+              
             </div>
 					</div>
         </div>
@@ -475,7 +487,7 @@
           <div class="mui-input-row" style="width:60%;float:left;height: 44px;">
             <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
@@ -1339,21 +1351,11 @@ export default {
 
     // 提交联系人
     subaddlinkman: function () {
-      let flag = false
-      let telval = /^1[3|4|5|7|8][0-9]{9}$/
       model.alinkman.forEach((sub) => {
-        if (!sub.name || !sub.job) {
-          window.mui.toast('请填写完整的联系人信息')
-          flag = true
-        }
-        if (!telval.test(sub.tel)) {
-          window.mui.toast('手机号格式错误!')
-          flag = true
+        if (_.isEmpty(sub.name) && _.isEmpty(sub.job) && _.isEmpty(sub.tel)) {
+          model.alinkman = _.without(model.alinkman, sub)
         }
       })
-      if (flag) {
-        return
-      }
       model.activeTab = 'editbuyer'
     },
 
@@ -1425,8 +1427,8 @@ export default {
     },
 
     // 删除竞争对手
-    deletejzz: function (index) {
-      model.jzds.splice(index, 1)
+    deletejzz: function (item) {
+      model.jzds = _.without(model.jzds, item)
     },
 
     // 添加竞争对手
@@ -1570,6 +1572,8 @@ export default {
             $input.unwrap()
           },
           error: function (error) {
+            window.mui.toast('上传失败!')
+            $input.unwrap()
             console.log(error)
           }
         })
@@ -1612,6 +1616,8 @@ export default {
             $input.unwrap()
           },
           error: function (error) {
+            window.mui.toast('上传失败!')
+            $input.unwrap()
             console.log(error)
           }
         })
@@ -1646,11 +1652,11 @@ body,html{
 }
 .del-icon{
   left: 0;
-  background-position: -9px -14px;
+  background-position: -9px -5px;
 }
 .reset-icon{
   left: 0;
-  background-position: -47px -14px;
+  background-position: -43px -5px;
 }
 .upload-files {
   display: inline-block;
@@ -1837,18 +1843,16 @@ body,html{
 .attach-img-box {
   padding-bottom: 10px;
   display: inline-block;
-  width: 70%;
-  float: right;
+  width: 100%;
+  padding-left: 20px;
 }
 .upload-box{
-  float: left;
+  float: right;
   margin-right: 10px;
   margin-top: 10px;
   display: inline-block;
   width: 40px;
-  height: 40px;
   text-align: center;
-  background-color: #f3f3f3;
   cursor: pointer;
 }
 .upload-box .add-icon{
@@ -2014,6 +2018,20 @@ body,html{
 .record-box .add-item .pointer{
   background-color: #5278e5;
   z-index: 100;
+}
+.add-btn-upload {
+  position: relative;
+  color: #999;
+}
+.add-btn-upload .fa{
+  font-size: 16px;
+  color: #999 !important;
+}
+.add-btn-upload .add-icon{
+  position: absolute;
+  font-size: 10px;
+  bottom: 10px;
+  right: -6px;
 }
 .add-item .add-btn {
   display: inline-block;
@@ -2193,7 +2211,7 @@ body,html{
   background-color: #fff;
   margin: 15px;
   border-radius: 5px;
-  padding: 10px;
+  padding: 16px 10px 10px 10px;
 }
 .basic-info label {
   position: relative;
@@ -2262,12 +2280,14 @@ body,html{
 }
 .go-report{
   position: relative;
-  height: 40px;
+  height: 48px;
   padding-top: 10px;
   border-top: 1px dashed #ccc;
   margin-top: 10px;
 }
 .go-report a{
+  position: relative;
+  top: 2px;
   display: block;
   width: 80%;
   height: 33px;

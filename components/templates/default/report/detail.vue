@@ -3,19 +3,16 @@
   <div>
     <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">项目详情</h1>
-        <a href="javascript:;" class="mui-pull-right more-opt" v-show="basicinfo.state == 'wait' || basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded'">
-          <span class="point" @click="preMoreOpt()">
-            <svg class="svg-style">
-              <use xlink:href="/svg/icon.svg#more"></use>
-            </svg>
-          </span>
-          <span class="sub-opt-box" v-show="getmoreopt" @click="optFunc(basicinfo.state)">
-            <span class="triangle"></span>
-            <span>{{(basicinfo.state == 'wait' || basicinfo.state == 'rescinded') ? '删除报备' : '撤回报备'}}</span>
-          </span>
+        <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded'">
+          <span class="list-icon del-icon"></span>
+        </a>
+        <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait_handle'">
+          <span class="list-icon reset-icon"></span>
         </a>
       </header>
       <div class="detail-box">
@@ -23,17 +20,18 @@
           <label>
             <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
           </label>
+          <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
             <span class="star-box">
               <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
             </span>
           </div>
-          <div class="fz14">{{basicinfo.first_party_name}}</div>
-          <div class="fz14 intro-style">{{basicinfo.sketch}}</div>
+          <div class="fz16">{{basicinfo.first_party_name}}</div>
+          <div class="fz16 intro-style">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
-          <div class="fz12">
-            <span>有效期{{valtimeFilter(basicinfo.validity)}}</span>
-            <span style="display: inline-block;margin-left: 10px;">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
+          <div class="fz12" style="height: 24px;">
+            <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
+            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 15px;color: #999">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
             <span class="left-circle icon-circle"></span>
@@ -75,11 +73,11 @@
                       </li>
                       <li class="mui-table-view-cell">
                         <span>招标时间：</span>
-                        <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY-MM-DD')}}</span>
+                        <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY.MM.DD')}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>交付时间：</span>
-                        <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY-MM-DD')}}</span>
+                        <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY.MM.DD')}}</span>
                       </li>
                       <li class="mui-table-view-cell">
                         <span>项目类型：</span>
@@ -125,17 +123,9 @@
                         <span>所属区域：</span>
                         <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人姓名：</span>
-                        <span class="alist-text">{{basicinfo.first_party_linkman}}</span>
-                      </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人职务：</span>
-                        <span class="alist-text">{{basicinfo.first_party_job}}</span>
-                      </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系人电话：</span>
-                        <span class="alist-text">{{basicinfo.first_party_tel}}</span>
+                      <li class="mui-table-view-cell" v-for="(sub, index) in alinkman" >
+                        <span>第{{index+1}}联系人：</span>
+                        <span class="alist-text">{{sub.name}} / {{sub.job}} / {{sub.tel}}</span>
                       </li>
                     </ul>
                   </div>
@@ -222,7 +212,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:MM:SS')}}</p>
+                        <p style="font-size: 14px;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -232,7 +222,7 @@
               <div id="reportlog" class="mui-control-content">
                 <div class="record-box">
                   <ul>
-                    <li>
+                    <li v-show="basicinfo.state == 'wait_handle' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset' || basicinfo.state == 'had_handle'">
                       <div class="li-box add-item">
                         <p>
                           <span class="white-line"></span>
@@ -248,16 +238,27 @@
                     <li v-for="(sub, num) in recordLoglist">
                       <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
                         <p>
-                          <span class="last-white-line" v-show="num == (recordLoglist.length - 1)"></span>
                           <span class="pointer"></span>
-                          <span>{{sub.remark}}</span>
+                          <span style="color: #666">{{sub.remark}}</span>
                         </p>
-                        <p>{{forMatTime(sub.create_time)}}</p>
+                        <div>
+                          <img :src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
+                        </div>
+                        <p style="font-size: 14px;color: #666">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
+                      </div>
+                    </li>
+                    <li v-show="recordLoglist.length == 0">
+                      <div class="li-box">
+                        <p>
+                          <span class="last-white-line"></span>
+                          <span class="pointer"></span>
+                          <span>您还没有添加任务项目跟踪记录~</span>
+                        </p>
                       </div>
                     </li>
                   </ul>
                 </div>
-                <p class="no-data" v-show="recordLoglist.length == 0">您还没有添加任务项目跟踪记录~</p>
+                <p class="no-data" v-show="recordLoglist.length == 0"></p>
               </div>
             </div>
           </div>
@@ -267,7 +268,9 @@
     <div v-show="activeTab == 'editbasic'" class="subbox-show record-show">
       <div class="subbox-show">
         <header class="mui-bar mui-bar-nav">
-          <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+          <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+            <span style="position: relative;top: -1px;">返回</span>
+          </a>
           <span class="fa close-icon" @click="goHome()">×</span>
           <h1 class="mui-title othertitle">编辑必要信息</h1>
           <a class="mui-icon mui-pull-right save-btn" @click="confEditBasic()">提交</a>
@@ -309,7 +312,9 @@
     </div>
     <div v-show="activeTab == 'record'" class="subbox-show record-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">进度跟踪</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confAddRecord()">提交</a>
@@ -318,12 +323,26 @@
         <div class="line-box"></div>
         <div class="text-input">
           <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
+          <div class="attach-box" style="padding: 0 10px;">
+            <span v-for="img in recordImgs" v-show="recordImgs.length > 0" style="display: inline-block;width: 40px;height: 40px;position: relative;margin-right: 10px;margin-bottom: 10px;">
+              <img :src="img.file_url">
+              <span class="deleteimg" @click="deleteattchimg(img)">×</span>
+            </span>
+            <span class="upload-files" id="upload_attch" @click="upload_attch()" style="position: relative;top: -15px;">
+              <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
+                <use xlink:href="/svg/icon.svg#add"></use>
+              </svg>
+              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+            </span>
+          </div>
         </div>
       </div>
     </div>
     <div v-show="activeTab == 'editproject'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">编辑项目信息</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confEditPro()">提交</a>
@@ -374,7 +393,7 @@
                 <span class="add-btn">
                   <i class="fa fa-plus add-icon"></i>
                 </span>
-                <input class="hidden" type="file" name="files">
+                <input class="hidden" type="file" name="files[]" multiple>
               </span>
             </div>
 					</div>
@@ -383,7 +402,9 @@
     </div>
     <div v-show="activeTab == 'editbuyer'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">编辑甲方信息</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confEditBuyer()">提交</a>
@@ -396,17 +417,12 @@
             <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
-						<label>联系人姓名</label>
-						<input type="text" placeholder="输入联系人姓名" v-model="buyer.first_party_linkman">
+						<label>甲方联系人</label>
+            <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
 					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人职务</label>
-						<input type="text" placeholder="输入联系人职务" v-model="buyer.first_party_job">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人电话</label>
-						<input type="text" placeholder="输入联系人电话" v-model="buyer.first_party_tel">
-					</div>
+          <div style="padding: 10px 0;" v-show="alinkman.length > 0">
+            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -415,7 +431,9 @@
     </div>
     <div v-show="activeTab == 'editcompetitors'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title othertitle">编辑竞争信息</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="confEditComp()">提交</a>
@@ -442,25 +460,56 @@
         </div>
       </div>
     </div>
-    <div v-show="activeTab == 'editcomp'" class="subbox-show">
+    <div v-show="activeTab == 'editcomp'" class="subbox-show" style="position: relative">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
       </header>
-      <ul class="mui-table-view mui-table-view-chevron textarea-box">
-        <li class="mui-table-view-cell comter-item" v-for="(item, num) in jzds">
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell comp-input-box" v-for="(item, num) in jzds">
           <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row input-com-box" style="width:100%;float:left;">
-            <input maxlength="20" type="text" class="sub-com-input" v-model="item.value"/> 
+          <div class="mui-input-row" style="width:60%;float:left;height: 44px;">
+            <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-trash delete-icon" @click="deletejzz(num)"></div>
-        </li>
-        <li class="add-item">
-          <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
         </li>
       </ul>
+      <span class="addjjz" @click="addjjz()">添加竞争者</span>
+    </div>
+    <div v-show="activeTab == 'editlinkman'" class="subbox-show" style="position: relative">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="subGoBack()">
+          <span style="position: relative;top: -1px;">返回</span>
+        </a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title othertitle">甲方联系人</h1>
+        <a class="mui-icon mui-pull-right save-btn" @click="subaddlinkman()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell linkmantext linkman-box" style="padding: 0 !important" v-for="(item, num) in alinkman">
+          <div class="jzztitele" style="padding-left: 25px;">
+            第{{num+1}}联系人
+            <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="editalinkman(item)"></div>
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
+            <label class="linkman-title">联系人姓名</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
+            <label class="linkman-title">联系人职务</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
+          </div>
+          <div class="mui-input-row" style="padding: 0 10px;background-color: #fff;">
+            <label class="linkman-title">联系人电话</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
+          </div>
+        </li>
+      </ul>
+      <span class="addlinkman" @click="addsublinkman()">添加联系人</span>
     </div>
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
@@ -468,6 +517,7 @@
     </div>
     <div class="classify-box" id="classifylist">
       <div class="sub-classify">
+        <div class="null-box" @click="cancelModal()"></div>
         <div class="clasify-item" v-for="item in classifyArr">
           <p class="title">
             <label>{{item.sp_type_name}}</label>
@@ -550,12 +600,23 @@ let reportState = [
   {
     key: 'rescinded',
     value: '撤回'
+  },
+  {
+    key: 'shutdown',
+    value: '关闭'
+  },
+  {
+    key: 'overdue',
+    value: '过期'
   }
 ]
 export default {
   data () {
     return {
+      recordImgs: [], // 报备记录附件
+      dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
+      alinkman: [], // 甲方联系人
       layer: 'area',
       editbaisc: {},
       areaarr: [],
@@ -619,6 +680,10 @@ export default {
           {
             table: 'project_furniture_types',
             key: 'project_poi_projects'
+          },
+          {
+            table: 'project_first_party_linkman',
+            key: 'project_poi_projects'
           }
         ],
         include: [
@@ -644,9 +709,18 @@ export default {
       })
       model.progoodstyepstr = arr.join('-')
       model.basicinfo = getresult.data
+      model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
       await model.getReportLog(urlObj.id)
       await model.getRecordLog(urlObj.id)
+    },
+
+    // 格式化联系人
+    formatLinkman: function (arr) {
+      arr.forEach((sub) => {
+        sub.delete = sub.delete ? sub.delete : 'no'
+      })
+      return arr
     },
 
     // 编辑textarea
@@ -778,11 +852,6 @@ export default {
       })
     },
 
-    // 右上角更多操作
-    preMoreOpt: function () {
-      model.getmoreopt = !model.getmoreopt
-    },
-
     // 右上角操作函数（撤销、删除）
     optFunc: function (state) {
       let text = (state === 'wait' || state === 'rescinded') ? '删除项目' : '撤回项目'
@@ -864,6 +933,14 @@ export default {
         where: {
           project_poi_projects: id
         },
+        with: {
+          relation: [
+            {
+              table: 'project_track_files',
+              key: 'imgaes_poi_project_track'
+            }
+          ]
+        },
         order: '-id'
       }
       let result = await axios.get('classes/project_track', {
@@ -886,6 +963,7 @@ export default {
     // 添加跟踪记录
     addRecord: async function (id) {
       model.recordtext = ''
+      model.recordImgs = []
       model.activeTab = 'record'
       proId = id
     },
@@ -898,11 +976,15 @@ export default {
       }
       let param = {
         project_poi_projects: proId,
-        remark: model.recordtext
+        remark: model.recordtext,
+        track_files: JSON.stringify(model.recordImgs)
       }
       axios.post('functions/report/project_track', null, {
         data: param
       }).then(function (data) {
+        data.data.imgaes_rel_project_track_files = {
+          items: model.recordImgs
+        }
         model.recordLoglist.unshift(data.data)
         window.mui.toast('添加跟踪记录成功！')
         setTimeout(function () {
@@ -1024,6 +1106,11 @@ export default {
         }
         updateTypeArr.unshift(tmp)
       }
+    },
+
+    // 点击空白消失选择宽
+    cancelModal: function () {
+      $('#classifylist').hide()
     },
 
     // 重置
@@ -1212,23 +1299,83 @@ export default {
       }
     },
 
+    // 添加甲方联系人
+    addlinkman: function () {
+      if (model.alinkman.length === 0) {
+        model.addsublinkman()
+      }
+      model.activeTab = 'editlinkman'
+    },
+
+    // 添加多个联系人
+    addsublinkman: function () {
+      let obj = {
+        id: 0,
+        name: '',
+        job: '',
+        tel: '',
+        delete: 'no'
+      }
+      model.alinkman.push(obj)
+    },
+
+    // 删除联系人
+    deletelinkman: function (item) {
+      model.alinkman = _.without(model.alinkman, item)
+    },
+
+    // 删除甲方联系人
+    editalinkman: function (item) {
+      if (item.id > 0) {
+        model.dellinkmanids.push(item.id)
+      }
+      model.alinkman = _.without(model.alinkman, item)
+    },
+
+    // 添加甲方联系人返回
+    subGoBack: function () {
+      model.activeTab = 'editbuyer'
+    },
+
+    // 提交联系人
+    subaddlinkman: function () {
+      let flag = false
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      model.alinkman.forEach((sub) => {
+        if (!sub.name || !sub.job) {
+          window.mui.toast('请填写完整的联系人信息')
+          flag = true
+        }
+        if (!telval.test(sub.tel)) {
+          window.mui.toast('手机号格式错误!')
+          flag = true
+        }
+      })
+      if (flag) {
+        return
+      }
+      model.activeTab = 'editbuyer'
+    },
+
     // 确认保存甲方信息
     confEditBuyer: function () {
-      let telval = /^1[3|4|5|7|8][0-9]{9}$/
-      if (!_.isEmpty(model.buyer.first_party_tel)) {
-        if (!telval.test(model.buyer.first_party_tel)) {
-          window.mui.toast('手机号格式错误!')
-          return false
+      let tmplinkman = []
+      model.dellinkmanids.forEach((sub) => {
+        let obj = {
+          id: sub,
+          delete: 'yes'
         }
-      }
+        tmplinkman.push(obj)
+      })
+      model.alinkman.forEach((tmp) => {
+        tmplinkman.push(tmp)
+      })
       let param = {
         id: proId,
         first_party_province_poi_province: model.buyer.pro_id,
         first_party_city_poi_city: model.buyer.city_id,
         first_party_district_poi_district: model.buyer.dis_id,
-        first_party_linkman: model.buyer.first_party_linkman || '',
-        first_party_job: model.buyer.first_party_job || '',
-        first_party_tel: model.buyer.first_party_tel || ''
+        project_first_party_linkman: JSON.stringify(tmplinkman)
       }
       axios.put('functions/report/project', null, {
         data: param
@@ -1245,9 +1392,6 @@ export default {
           id: model.buyer.dis_id,
           DistrictName: model.buyer.area.split('-')[2]
         }
-        model.basicinfo.first_party_linkman = model.buyer.first_party_linkman
-        model.basicinfo.first_party_job = model.buyer.first_party_job
-        model.basicinfo.first_party_tel = model.buyer.first_party_tel
         window.mui.toast('编辑甲方信息成功')
         setTimeout(function () {
           model.activeTab = 'home'
@@ -1387,6 +1531,51 @@ export default {
       })
     },
 
+    // 删除报备记录附件（图片）
+    deleteattchimg: function (obj) {
+      model.recordImgs = _.without(model.recordImgs, obj)
+    },
+
+    // 上传报备记录附件
+    upload_attch: function () {
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+      var $input = $('#upload_attch').find('input')
+      $input.unbind().click()
+      $input.unbind().change(function () {
+        if ($input.val() === '') {
+          return false
+        }
+        var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+        $input.wrap(form)
+        window.$('#upload_attch').find('form').ajaxSubmit({
+          type: 'post',
+          url: url,
+          data: {
+            mode: 'image',
+            mutiple: '1'
+          },
+          crossDomain: true,
+          headers: {
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
+          },
+          success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                file_url: sub.url
+              }
+              model.recordImgs.push(imgtmp)
+            })
+            $input.unwrap()
+          },
+          error: function (error) {
+            console.log(error)
+          }
+        })
+      })
+    },
+
     // 上传图片
     upload_com: function () {
       var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
@@ -1403,7 +1592,7 @@ export default {
           url: url,
           data: {
             mode: 'image',
-            mutiple: '0'
+            mutiple: '1'
           },
           crossDomain: true,
           headers: {
@@ -1411,14 +1600,16 @@ export default {
             'X-DP-ID': '7748955b16d6f1a0'
           },
           success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                delete: 'no',
+                file_url: sub.url,
+                show: true
+              }
+              model.editproImg.push(imgtmp)
+            })
             $input.unwrap()
-            let imgtmp = {
-              id: 0,
-              delete: 'no',
-              file_url: data.url,
-              show: true
-            }
-            model.editproImg.push(imgtmp)
           },
           error: function (error) {
             console.log(error)
@@ -1435,6 +1626,120 @@ export default {
 }
 </script>
 <style>
+body,html{
+  background-color: #eee !important;
+}
+.mui-icon-back:before, .mui-icon-left-nav:before{
+  font-size: 20px !important;
+}
+.linkman-title {
+  color: #666;
+}
+.list-icon {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 26px;
+  height: 26px;
+  background: url('/images/list_icon.png') no-repeat;
+  background-size: 250px;
+}
+.del-icon{
+  left: 0;
+  background-position: -9px -14px;
+}
+.reset-icon{
+  left: 0;
+  background-position: -47px -14px;
+}
+.upload-files {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #eee;
+}
+.deleteimg {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  background-color: #c63e40;
+  border-radius: 100%;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 999;
+}
+.nav {
+  margin-top: 48px;
+}
+.nav li {
+  min-height: 43px;
+  line-height: 43px;
+  padding: 0;
+}
+.nav li a {
+  font-size: 13px;
+  color: #3A3A3A;
+}
+.mui-table-view:before {
+  background-color: #fff !important;
+}
+.nav li i {
+  color: red;
+  font-style: normal;
+  margin-left: 4px;
+}
+.nav li.linkmantext {
+  min-height: 80px;
+}
+.linkman-item{
+  height: 160px;
+  background-color: #fff;
+}
+.comp-input-box {
+  height: 74px;
+  background-color: #fff;
+  padding: 0 !important;  
+}
+.comp-input-box input {
+  font-size: 14px;
+  color:#666;
+  width:100%!important;
+  border: none;
+  margin: 0;
+}
+.sublinkman-style {
+  font-size: 14px;
+  color: #ccc;
+  text-align: right;
+  padding: 0 20px;
+  height: 24px;
+  line-height: 24px;
+}
+.report-state-icon {
+  position: absolute;
+  z-index: 6;
+  top:0;
+  right: 50px;
+  width: 68px;
+  height: 44px;
+  background: url('/images/report_state.png') no-repeat;
+  background-size: 615px;
+}
+.reject{
+  background-position: -27px -55px;
+}
+.overdue{
+  background-position: -206px -55px;
+}
+.shutdown{
+  background-position: -117px -55px;
+}
 .edit-box {
   background-color: #eee;
 }
@@ -1448,12 +1753,19 @@ export default {
   position: relative;
   height: 30px;
 }
-.addjjz {
+.addlinkman {
   position: absolute;
-  bottom: 3px;
+  bottom: -25px;
   right: 10px;
   font-size: 14px;
-  color: #000;
+  color: #999;
+}
+.addjjz {
+  position: absolute;
+  bottom: -32px;
+  right: 10px;
+  font-size: 14px;
+  color: #999;
 }
 .mui-table-view-chevron {
   background-color: #eee;
@@ -1465,22 +1777,7 @@ export default {
 .mui-table-view-cell:after {
   background-color: #fff !important;
 }
-.comter-item {
-  position: relative;
-  margin: 0;
-  padding: 0;
-}
-.comter-item .delete-icon {
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  color: #f00;
-}
-.comter-item .jzztitele {
+.jzztitele {
   height: 30px;
   line-height: 30px;
   width: 100%;
@@ -1489,17 +1786,27 @@ export default {
   font-size: 14px;
   padding-left: 15px;
 }
-.comter-item .input-com-box {
-  height: 42px;
-  line-height: 42px;
+.linkman-box .mui-input-row {
+  height: 43px;
 }
-.comter-item .sub-com-input {
-  border: none;
+.linkman-box .mui-input-row label {
+  height: 43px;
+  padding: 0;
+  line-height: 43px;
   font-size: 14px;
+  width: 25%;
+}
+.linkman-box .mui-input-row input{
+  font-size: 14px;
+  padding: 0;
+  line-height: 43px;
+  height: 43px;
+  width: 75%!important;
+  text-align: right;
   color: #999;
 }
 .mui-title{
-  font-weight: 600;
+  font-weight: 400;
 }
 .mui-bar-nav{
   height: 48px;
@@ -1522,41 +1829,10 @@ export default {
   float: right;
   padding-right: 10px;
 }
-.more-opt {
-  width: 24px;
-  height: 24px;
-  position: relative;
-  top: 11px;
-  cursor: pointer;
-}
 .svg-style {
   width: 24px;
   height: 24px;
   fill: #666;
-}
-.sub-opt-box{
-  display: inline-block;
-  position: absolute;
-  right: -3px;
-  top: 28px;
-  width: 64px;
-  text-align: center;
-  height: 26px;
-  line-height: 26px;
-  font-size: 12px;
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-}
-.sub-opt-box .triangle {
-  position: absolute;
-  top: -6px;
-  left: 44px;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 6px solid rgba(0, 0, 0, 0.6);
 }
 .attach-img-box {
   padding-bottom: 10px;
@@ -1654,7 +1930,7 @@ export default {
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: 20px;
+  font-size: 21px;
   color: #666;
   z-index: 9999;
 }
@@ -1670,7 +1946,7 @@ export default {
 }
 .subbox-show .save-btn{
   position: relative;
-  top: 6px;
+  top: 8px;
   color: #5278e5;
   font-size: 14px;
 }
@@ -1680,8 +1956,10 @@ export default {
   left: 0;
   width: 100%;
   height: calc(100% - 48px);
+  background-color: #fff;
 }
 .text-input{
+  background-color: #fff;
   width: 100%;
   border-bottom: 1px solid #ccc;
 }
@@ -1689,7 +1967,7 @@ export default {
   display: block;
   width: 100%;
   border: none;
-  min-height: 60px;
+  min-height: 80px;
   margin: 0;
   padding: 10px;
   font-size: 14px;
@@ -1753,7 +2031,7 @@ export default {
   color: #fff;
 }
 .record-box ul li{
-  border-left: 1px dashed #ccc;
+  border-left: 1px solid #ccc;
   padding-left: 20px;
 }
 .record-box ul li:last-child .li-box {
@@ -1780,6 +2058,7 @@ export default {
 }
 .first p{
   color: #666;
+  font-size: 16px;
 }
 .li-box.first .pointer{
   width: 7px;
@@ -1816,7 +2095,7 @@ export default {
 .detail-tab .mui-control-item{
   position: relative;
   border: none;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #eee;
   color: #999999;
 }
 .detail-tab .mui-control-item:nth-child(1){
@@ -1914,11 +2193,13 @@ export default {
   background-color: #fff;
   margin: 15px;
   border-radius: 5px;
-  padding: 20px 10px 10px 10px;
+  padding: 10px;
 }
 .basic-info label {
+  position: relative;
+  z-index: 8;
   display: block;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: #333;
   text-align: center;
@@ -1939,8 +2220,7 @@ export default {
   height: 24px;
   line-height: 24px;
   text-align: center;
-  margin-top: 14px;
-  margin-bottom: 5px;
+  margin-top: 8px;
 }
 .stars-style .fa{
   display: inline-block;
@@ -1964,14 +2244,14 @@ export default {
 .fz12{
   font-size: 12px;
   text-align: center;
-  color: #696969;
+  color: #99999;
 }
-.fz14 {
-  font-size: 14px;
+.fz16 {
+  font-size: 16px;
   text-align: center;
   height: 26px;
   line-height: 24px;
-  color: #696969;
+  color: #666;
 }
 .intro-style{
   padding: 0 10px;
@@ -1990,9 +2270,9 @@ export default {
 .go-report a{
   display: block;
   width: 80%;
-  height: 30px;
+  height: 33px;
   text-align: center;
-  line-height: 30px;
+  line-height: 33px;
   margin: 0 auto;
   background-color: #5278e5;
   color: #fff;
@@ -2000,10 +2280,10 @@ export default {
 }
 .go-report .icon-circle {
   position: absolute;
-  top: -10px;
+  top: -8px;
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 100%;
   background-color: #eee;
 }
@@ -2027,13 +2307,25 @@ export default {
   position: absolute;
   right: 0;
   top: 0;
-  width: 280px;
+  width: 100%;
   min-height: calc(100% - 44px);
   padding: 10px;
   background-color: #fff;
   padding-bottom: 50px;
 }
+.null-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: calc(100% - 276px);
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  float: left;
+}
 .clasify-item{
+  width: 260px;
+  float: right;
   margin-bottom: 20px;
 }
 .clasify-item .title{

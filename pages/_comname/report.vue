@@ -1,6 +1,6 @@
 <template>
 <div class="box">
-  <header class="mui-bar mui-bar-nav my-project">
+  <header class="mui-bar mui-bar-nav my-project" style="display: none">
     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left">返回</a>
     <h1 class="mui-title">我的项目</h1>
     <a href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right help-icon">
@@ -14,7 +14,6 @@
       </svg>
     </a>
   </header>
-  
   <div class="mui-content">
     <component :is="report"></component>
   </div>
@@ -55,6 +54,11 @@
   }
 </script>
 <style>
+  .mui-bar-nav~.mui-content{
+    padding: 0;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+  }
   .box{
     background: #efeff4;
   }
@@ -129,7 +133,7 @@
     border-bottom: 1px solid #eee;
   }
   .my-project .mui-title{
-    font-weight: 600;
+    font-weight: 400;
   }
   .my-project .mui-action-back{
     font-size: 14px;

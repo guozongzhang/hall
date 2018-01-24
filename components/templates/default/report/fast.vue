@@ -9,7 +9,7 @@
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell bbnameli">
-          报备人姓名：{{thisdata.project_reportman[0].name}}
+          报备人：{{thisdata.project_reportman[0].name}}
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
@@ -26,13 +26,14 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
+            <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;">万元</span>
+            <input type="number" maxlength="20" style="width: 55% !important" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -60,7 +61,7 @@
         <li class="mui-table-view-cell" style="min-height: 43px">
           <span class="upload-box" id="upload_com"  @click="upload_com()">
             <a href="javascript:;">添加附件</a>
-            <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
+            <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
             <span class="add-btn" style="float: right">
               <i class="fa fa-picture-o"></i>
               <i class="fa fa-plus add-icon"></i>
@@ -89,7 +90,7 @@
         <li class="mui-table-view-cell textareaclass nextshow">
           <div class="mui-input-row" style="float: left;width: 100%;height: 80px;">
             <label style="width:1%"><i></i></label>
-            <textarea style="width:99%!important" maxlength="50" type="text" placeholder="请输入备注" v-model="thisdata.cloneRemark"></textarea>
+            <textarea style="width:99%!important; font-size: 15px;" maxlength="50" type="text" placeholder="请输入备注" v-model="thisdata.cloneRemark"></textarea>
           </div>
         </li>
       </ul>
@@ -183,6 +184,11 @@
         })
       },
 
+      // 删除附件图片
+      deleteimg: function (index) {
+        model.thisdata.projectAttachment.splice(index, 1)
+      },
+
       // 控制样式开合
       starshow: function (e) {
         $('.allshow').hide()
@@ -222,7 +228,7 @@
             url: url,
             data: {
               mode: 'image',
-              mutiple: '0'
+              mutiple: '1'
             },
             crossDomain: true,
             headers: {
@@ -231,10 +237,12 @@
             },
             success: function (data) {
               $input.unwrap()
-              model.thisdata.projectAttachment.push({
-                file_url: data.url,
-                id: 0,
-                delete: 'no'
+              data.forEach((sub) => {
+                model.thisdata.projectAttachment.push({
+                  file_url: sub.url,
+                  id: 0,
+                  delete: 'no'
+                })
               })
             },
             error: function (error) {
@@ -336,7 +344,7 @@
     right: -6px;
   }
   .mui-title{
-    font-weight: 600;
+    font-weight: 400;
   }
   .mui-bar-nav{
     height: 48px;
@@ -383,7 +391,8 @@
     font-size: 14px;
     padding: 0;
     line-height: 43px;
-    height: 43px
+    height: 43px;
+    color: #999;
   }
   .nav {
     margin-top: 48px;
@@ -409,10 +418,10 @@
   .nav li.bbnameli {
     min-height: 30px;
     height: 30px !important;
-    background: #E5E5E5;
+    background: #eee;
     font-size: 14px;
     line-height: 30px;
-    color: #676767;
+    color: #999;
   }
   .nav li a {
     font-size: 13px;
@@ -476,10 +485,10 @@
     top: 10px;
   }
   .nav li.textareaclass{
-    height: 80px;
+    min-height: 80px;
   }
   .nav li.textareaclass textarea{
-    height: 80px;
+    min-height: 80px;
     font-size: 14px;
     padding: 10px 0;
   }

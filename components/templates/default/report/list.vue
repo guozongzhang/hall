@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div class="mui-input-row mui-search">
+      <a target="_blank" style="position: absolute;left: 10px;top: 5px;width: 26px;height: 26px;" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right">
+        <span class="list-icon help-icon"></span>
+      </a>
+      <input type="text" class="search-box-input" v-model="searchKey" placeholder="搜素您想要查找的项目">
+      <a :href="linkPath + '/newproject'" class="mui-pull-right" style="position: absolute;right: 10px;top: 5px;width: 26px;height: 26px;">
+        <span class="list-icon add-icon"></span>
+      </a>
+    </div>
     <ul class="navul">
       <li @click="switchTab('all')" v-bind:class="{active:'all'== active}">
         <span class="text">全部项目</span>
@@ -23,11 +32,12 @@
                 <i>{{item.amount}}万元</i><span>·{{item.name}}</span>
               </h4>
               <div>
-                <span class="report-state" v-bind:class="item.state" v-if="item.state != 'wait'">
+                <span class="report-state" v-bind:class="item.state" v-if="item.state == 'rescinded' || item.state == 'had_reset' || item.state == 'adopt' || item.state == 'had_handle' || item.state == 'wait_handle'">
                   <span class="sub" v-bind:class="item.state"></span>
                   <span class="white-sub"></span>
                   <span>{{proStateFilter(item.state)}}</span>
                 </span>
+                <span class="report-state-icon" v-bind:class="item.state" v-show="item.state == 'reject' || item.state == 'shutdown' || item.state == 'overdue'"></span>
                 <div class="stars-style">
                   <span class="star-box">
                     <i class="fa fa-star"  v-for="sub in stars" aria-hidden="true" v-if="sub <= item.feasibility"></i>
@@ -37,7 +47,10 @@
                 <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
               </div>
               <div class="detail">
-                <a href="javascript:;">查看详情</a>
+                <a href="javascript:;">
+                查看详情
+                <span class="active-point">•</span>
+                </a>
               </div>
             </a>
           </div>
@@ -64,6 +77,7 @@
   export default {
     data () {
       return {
+        searchKey: '',
         linkPath: '',
         pages: 1,
         stars: [5, 4, 3, 2, 1],
@@ -85,13 +99,62 @@
           window.location.href = model.linkPath + objclass
         })
         await model.getData()
+
+        // 搜索enter事件注册执行enter事件
+        document.onkeydown = function (e) {
+          var ev = document.all ? window.event : e
+          if (ev.keyCode === 13) {
+            if (!_.isEmpty(model.searchKey)) {
+              model.pages = 1
+              model.datalist = []
+              model.getSearch()
+            }
+          }
+        }
+      },
+
+      // 搜索
+      getSearch: function () {
+        model.is_loading = true
+        model.getSearchData()
+      },
+
+      // 搜索接口
+      getSearchData: function () {
+        let param = {
+          clazz: 'projects',
+          skip: (model.pages - 1) * pagesize,
+          limit: pagesize,
+          com_id_poi_companys: this.$store.state.comid,
+          search: model.searchKey
+        }
+        axios.get('es/es', {
+          params: param
+        }).then(function (msg) {
+          if (msg.data.items.length > 0) {
+            model.datalist = _.union(model.datalist, msg.data.items)
+            model.pages++
+            window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
+          } else {
+            model.is_loading = false
+            model.is_nodata = true
+            window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
+          }
+        }).catch(function (error) {
+          console.log(error)
+        })
       },
 
       // 下拉刷新获取数据
       pulldownRefresh: function () {
         model.is_loading = true
         $('.mui-pull-bottom-pocket').remove()
-        model.getData()
+        if (!_.isEmpty(model.searchKey)) {
+          // 有搜索
+          model.getSearchData()
+        } else {
+          model.getData()
+        }
       },
 
       // 获取项目数据
@@ -184,6 +247,61 @@
   }
 </script>
 <style scoped>
+  .list-icon {
+    position: absolute;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: url('/images/list_icon.png') no-repeat;
+    background-size: 250px;
+  }
+  .help-icon{
+    left: 0;
+    background-position: -75px -14px;
+  }
+  .add-icon{
+    right: 0;
+    background-position: -117px -14px;
+  }
+  .report-state-icon {
+    position: absolute;
+    z-index: 6;
+    top:0;
+    right: 30px;
+    width: 68px;
+    height: 44px;
+    background: url('/images/report_state.png') no-repeat;
+    background-size: 615px;
+  }
+  .reject{
+    background-position: -27px -55px;
+  }
+  .overdue{
+    background-position: -206px -55px;
+  }
+  .shutdown{
+    background-position: -117px -55px;
+  }
+  .mui-search {
+    height: 36px;
+  }
+  .search-box-input {
+    position: relative;
+    top: 5px;
+    display: block;
+    width: 70%;
+    height: 26px;
+    margin: 0 auto;
+    border-radius: 50px;
+    font-size: 12px;
+    border: none;
+    background-color: #eee;
+  }
+  .svg-style {
+    width: 18px;
+    height: 18px;
+    fill: #ccc;
+  }
   .loading-icon,
   .nodata-icon{
     height: 30px;
@@ -210,7 +328,7 @@
   h4 {
     height: 44px;
     line-height: 50px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 100;
     text-align: center;
     border-bottom: 1px dashed #eee;
@@ -231,7 +349,7 @@
     right: 0;
     top: -6px;
     display: inline-block;
-    width: 60px;
+    width: 64px;
     height: 24px;
     text-align: center;
     line-height: 24px;
@@ -239,26 +357,19 @@
     font-size: 12px;
     border-radius: 0 0 5px 5px; 
   }
-  .wait_handle {
-    background-color: #5278e5;
-  }
-  .had_handle {
-    background-color: #5278e5;
-  }
+  .wait_handle,
+  .had_handle,
   .adopt {
     background-color: #5278e5;
-  }
-  .rescinded {
-    background-color: #ccc;
-  }
-  .had_handle{
     border-bottom: 6px solid #5278e5;
-  }
-  .reject {
-    background-color: #f14F4F;
   }
   .had_reset {
     background-color: #f14F4F;
+    border-bottom: 6px solid #f14F4F;
+  }
+  .rescinded {
+    background-color: #ccc;
+    border-bottom: 6px solid #ccc;
   }
   .report-state .sub{
     position: absolute;
@@ -320,6 +431,7 @@
     white-space: nowrap;
   }
   .detail {
+    position: relative;
     height: 30px;
     line-height: 30px;
     line-height: 30px;
@@ -333,13 +445,21 @@
   .detail a {
     color: #999;
   }
+  .detail .active-point {
+    display: none;
+    position: relative;
+    left: -9px;
+    top: -6px;
+    font-size: 16px;
+    color: #f14f4f;
+  }
   .navul {
     position: fixed;
-    top: 44px;
+    top: 37px;
     width: 100%;
     overflow: hidden;
-    height: 40px;
-    padding: 5px 0px;
+    height: 34px;
+    padding: 0px;
     background: #fff;
     z-index: 1000;
   }
@@ -350,6 +470,7 @@
     list-style-type: none;
     border-right: 1px solid #eee;
     position: relative;
+    top: 2px;
   }
   .navul li:last-child{
     border: 0px;
@@ -385,7 +506,7 @@
   }
   #pullfresh{
     position: fixed;
-    top: 80px;
+    top: 68px;
     bottom: 60px;
     background-color: #eee;
   }

@@ -23,13 +23,14 @@
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
-            <input type="number" maxlength="20" placeholder="万元" v-model="thisdata.amount" v-on:keyup="money()">
+            <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;">万元</span>
+            <input type="number" maxlength="20" style="width: 60% !important" v-model="thisdata.amount" v-on:keyup="money()">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入简单描述" v-model="thisdata.sketch">
+            <input type="text" maxlength="20" placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -43,7 +44,7 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<span>{{cloneValidity}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<i>*</i><span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
           <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
@@ -54,7 +55,7 @@
         <li class="mui-table-view-cell" style="min-height: 43px">
           <span class="upload-box" id="upload_com"  @click="upload_com()">
             <a href="javascript:;">添加附件</a>
-            <input class="hidden" type="file" name="files" style="width: 75%; display: none;">
+            <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
             <span class="add-btn" style="float: right">
               <i class="fa fa-picture-o"></i>
               <i class="fa fa-plus add-icon"></i>
@@ -109,22 +110,13 @@
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
-              <label>联系人姓名</label>
-              <input type="text" maxlength="20" placeholder="请输入联系人姓名" v-model="thisdata.first_party_linkman">
+              <label>甲方联系人</label>
+              <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
             </div>
           </li>
-          <li class="mui-table-view-cell">
-            <div class="mui-input-row">
-              <label>联系人职务</label>
-              <input type="text" maxlength="20" placeholder="请输入联系人职务" v-model="thisdata.first_party_job">
-            </div>
-          </li>
-          <li class="mui-table-view-cell">
-            <div class="mui-input-row">
-              <label>联系人电话</label>
-              <input type="text" maxlength="20" placeholder="请输入联系人电话" v-model="thisdata.first_party_tel">
-            </div>
-          </li>
+          <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
+            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+          </div>
         </div>
 
         <li class="mui-table-view-cell right0" @click="showmore('.reportInfo')">
@@ -222,6 +214,35 @@
         </div>
       </ul>
     </div>
+    <div class="alinkman">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title">甲方联系人</h1>
+        <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell linkmantext" style="padding: 0 !important" v-for="(item, num) in alinkman">
+          <div class="jzztitele" style="padding-left: 25px;">
+            第{{num+1}}联系人
+            <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="deletelinkman(item)"></div>
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人姓名</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人职务</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
+          </div>
+          <div class="mui-input-row" style="padding: 0 10px;">
+            <label>联系人电话</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
+          </div>
+        </li>
+      </ul>
+      <span class="addjjz" @click="addsublinkman()">添加联系人</span>
+    </div>
     <div class="otherRemark">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
@@ -231,7 +252,7 @@
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass">
-          <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;height: 80px;">
+          <div class="mui-input-row mui-pull-left"  style="float: left;width: 100%;min-height: 80px;">
             <label style="width:1%"><i></i></label>
             <textarea style="width:99%!important"  type="text" class="mui-input-clear othertextarea"></textarea>
           </div>
@@ -252,13 +273,14 @@
             <label style="width:1%"><i></i></label>
             <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-trash" style="color:red; float: left;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
         </li>
       </ul>
-      <span class="addjjz" @click="addjjz()" v-show="jzds.length < 3">添加竞争者</span>
+      <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
     <div class="classify-box" id="classifylist">
       <div class="sub-classify">
+        <div class="null-box" @click="cancelModal()"></div>
         <div class="clasify-item" v-for="item in classifyArr">
           <p class="title">
             <label>{{item.sp_type_name}}</label>
@@ -350,6 +372,7 @@
           competitor_strengths: '',
           competitor_projections: ''
         },
+        alinkman: [], // 甲方联系人
         onearr: [],
         oneobj: {
           state: 'three_month'
@@ -420,6 +443,38 @@
         })
       },
 
+      // 添加甲方联系人
+      addlinkman: function () {
+        if (model.alinkman.length === 0) {
+          model.addsublinkman()
+        }
+        $('.more').hide()
+        $('.alinkman').show()
+      },
+
+      // 添加多个联系人
+      addsublinkman: function () {
+        let obj = {
+          id: 0,
+          name: '',
+          job: '',
+          tel: '',
+          delete: 'no'
+        }
+        model.alinkman.push(obj)
+      },
+
+      // 删除联系人
+      deletelinkman: function (item) {
+        model.alinkman = _.without(model.alinkman, item)
+      },
+
+      // 提交联系人
+      addlinmanBtn: function () {
+        $('.alinkman').hide()
+        $('.more').show()
+      },
+
       money: function () {
         if (model.thisdata.amount.indexOf('.') > -1) {
           let length = model.thisdata.amount.indexOf('.')
@@ -478,7 +533,8 @@
           project_reportman: JSON.stringify(model.thisdata.project_reportman),
           project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
           invitation_time: model.thisdata.invitation_time || '0',
-          delivery_time: model.thisdata.delivery_time || '0'
+          delivery_time: model.thisdata.delivery_time || '0',
+          project_first_party_linkman: JSON.stringify(model.alinkman)
         })
         axios.post('functions/report/project', null, {
           data: submitData
@@ -546,6 +602,11 @@
         $('#classifylist').hide()
       },
 
+      // 点击空白消失选择宽
+      cancelModal: function () {
+        $('#classifylist').hide()
+      },
+
       // 重置分类
       resetClassify: function () {
         model.classifyArr.forEach(item => {
@@ -572,7 +633,7 @@
             url: url,
             data: {
               mode: 'image',
-              mutiple: '0'
+              mutiple: '1'
             },
             crossDomain: true,
             headers: {
@@ -580,12 +641,14 @@
               'X-DP-ID': '7748955b16d6f1a0'
             },
             success: function (data) {
-              $input.unwrap()
-              model.thisdata.projectAttachment.push({
-                file_url: data.url,
-                id: 0,
-                delete: 'no'
+              data.forEach((sub) => {
+                model.thisdata.projectAttachment.push({
+                  file_url: sub.url,
+                  id: 0,
+                  delete: 'no'
+                })
               })
+              $input.unwrap()
             },
             error: function (error) {
               console.log(error)
@@ -851,6 +914,14 @@
   }
 </script>
 <style lang="">
+  .sublinkman-style {
+    font-size: 14px;
+    color: #ccc;
+    text-align: right;
+    padding: 0 20px;
+    height: 24px;
+    line-height: 24px;
+  }
   .add-btn {
     position: relative;
     color: #999;
@@ -866,7 +937,7 @@
     right: -6px;
   }
   .mui-title{
-    font-weight: 600;
+    font-weight: 400;
   }
   .mui-bar-nav{
     height: 48px;
@@ -880,10 +951,10 @@
     color: #666;
     font-size: 14px!important;
   }
-  .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo{
+  .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo, .alinkman{
     display: none;
   }
-  .jzInfo, .reportInfo, .comInfo, .projectInfo{
+  .jzInfo, .reportInfo, .projectInfo{
     border-bottom: 1px solid #DBDBDD;
   }
   .jzInfo.active,.reportInfo.active,.comInfo.active,.projectInfo.active{
@@ -1028,11 +1099,10 @@
     top: 13px;
     left: 0px;
   }
-  .nav li.textareaclass{
-    height: 80px;
+  .nav li.linkmantext {
+    min-height: 80px;
   }
   .nav li.textareaclass textarea{
-    height: 80px;
     font-size: 14px;
     padding:10px 0;
   }
@@ -1046,7 +1116,7 @@
     max-width: 70%;
   }
   .nav li.jzzli{
-    height: 74px;
+    height: 74px !important;
   }
   .jzzli input {
     text-align: left;
@@ -1055,7 +1125,10 @@
     font-size: 14px;
     float: right;
     margin-top: 5px;
+    color: #666;
+    text-align: right;
     margin-right: 15px;
+    margin-bottom: 40px;
   }
   .fjimg{
     width: 40px;
@@ -1099,13 +1172,25 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 280px;
+    width: 100%;
     min-height: calc(100% - 44px);
     padding: 10px;
     background-color: #fff;
     padding-bottom: 50px;
   }
+  .null-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: calc(100% - 276px);
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    float: left;
+  }
   .clasify-item{
+    width: 260px;
+    float: right;
     margin-bottom: 20px;
   }
   .clasify-item .title{

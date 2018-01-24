@@ -273,7 +273,7 @@
             <label style="width:1%"><i></i></label>
             <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
@@ -576,8 +576,8 @@
         return result.status
       },
 
-      deletejzz: function (item, index) {
-        model.jzds.splice(index, 1)
+      deletejzz: function (item) {
+        model.jzds = _.without(model.jzds, item)
       },
 
       // 显示各分类全部（收起）

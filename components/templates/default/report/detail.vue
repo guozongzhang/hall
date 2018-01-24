@@ -376,9 +376,9 @@
 						<label>产品品类</label>
             <span class="area-text" @click="changeGoodsType()">{{editpro.type}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>项目类型</label>
-            <span class="area-text" @click="changeProType()">{{editpro.category}}</span>
+            <span class="area-text" style="padding-right: 34px;" @click="changeProType()">{{editpro.category}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('intro','编辑项目介绍')">
 						<label>项目介绍</label>
@@ -487,7 +487,7 @@
           <div class="mui-input-row" style="width:60%;float:left;height: 44px;">
             <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
-          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item, num)"></div>
+          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>
         </li>
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
@@ -1427,8 +1427,8 @@ export default {
     },
 
     // 删除竞争对手
-    deletejzz: function (index) {
-      model.jzds.splice(index, 1)
+    deletejzz: function (item) {
+      model.jzds = _.without(model.jzds, item)
     },
 
     // 添加竞争对手

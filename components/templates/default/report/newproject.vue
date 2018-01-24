@@ -471,6 +471,11 @@
 
       // 提交联系人
       addlinmanBtn: function () {
+        model.alinkman.forEach((sub) => {
+          if (_.isEmpty(sub.name) && _.isEmpty(sub.job) && _.isEmpty(sub.tel)) {
+            model.alinkman = _.without(model.alinkman, sub)
+          }
+        })
         $('.alinkman').hide()
         $('.more').show()
       },
@@ -651,7 +656,8 @@
               $input.unwrap()
             },
             error: function (error) {
-              window.mui.toast(error)
+              window.mui.toast('上传失败!')
+              $input.unwrap()
               console.log(error)
             }
           })
@@ -764,7 +770,9 @@
         $('.otherCompete').hide()
         let ms = []
         model.jzds.forEach(item => {
-          ms.push(item.value)
+          if (!_.isEmpty(item.value)) {
+            ms.push(item.value)
+          }
         })
         model.thisdata[typeStr] = ms.join(',')
       },

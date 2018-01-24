@@ -246,6 +246,8 @@
               })
             },
             error: function (error) {
+              window.mui.toast('上传失败!')
+              $input.unwrap()
               console.log(error)
             }
           })

@@ -249,7 +249,7 @@
 <style scoped>
   .list-icon {
     position: absolute;
-    top: 0;
+    top: 5px;
     width: 26px;
     height: 26px;
     background: url('/images/list_icon.png') no-repeat;
@@ -283,14 +283,14 @@
     background-position: -117px -55px;
   }
   .mui-search {
-    height: 36px;
+    height: 43px;
   }
   .search-box-input {
     position: relative;
-    top: 5px;
+    top: 7px;
     display: block;
     width: 70%;
-    height: 26px;
+    height: 30px;
     margin: 0 auto;
     border-radius: 50px;
     font-size: 12px;
@@ -455,7 +455,7 @@
   }
   .navul {
     position: fixed;
-    top: 37px;
+    top: 46px;
     width: 100%;
     overflow: hidden;
     height: 34px;
@@ -506,7 +506,7 @@
   }
   #pullfresh{
     position: fixed;
-    top: 68px;
+    top: 80px;
     bottom: 60px;
     background-color: #eee;
   }

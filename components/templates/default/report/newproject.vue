@@ -651,6 +651,7 @@
               $input.unwrap()
             },
             error: function (error) {
+              window.mui.toast(error)
               console.log(error)
             }
           })

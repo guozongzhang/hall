@@ -281,19 +281,20 @@
         <div class="textarea-box">
           <div class="line-box"></div>
           <div class="must">
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目名称<span>*</span></label>
               <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>甲方名称<span>*</span></label>
               <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目金额<span>*</span></label>
-              <input type="text" placeholder="万元" v-model="editbaisc.amount">
+              <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;position: relative;top: 9px;margin-right: 15px;">万元</span>
+              <input type="text" placeholder="万元" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
             </div>
-            <div class="mui-input-row sub-input-box edit-basic-box">
+            <div class="mui-input-row sub-input-box edit-basic-box" style="background-color: #fff;">
               <label>项目可行性<span>*</span></label>
               <div class="stars-style">
                 <span class="star-box">
@@ -301,11 +302,11 @@
                 </span>
               </div>
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>有效期<span>*</span></label>
               <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
             </div>
-            <div class="mui-input-row sub-input-box">
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>简单描述<span>*</span></label>
               <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
             </div>
@@ -371,7 +372,7 @@
 						<label>交付时间</label>
             <span class="area-text" @click="changeTime('delivery')">{{editpro.delivery_time}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>产品品类</label>
             <span class="area-text" @click="changeGoodsType()">{{editpro.type}}</span>
 					</div>
@@ -393,17 +394,19 @@
 					</div>
           <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
-            <div class="attach-img-box">
+            <span class="upload-box" id="upload_com"  @click="upload_com()">
+              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+              <span class="add-btn-upload" style="float: right">
+                <i class="fa fa-picture-o"></i>
+                <i class="fa fa-plus add-icon"></i>
+              </span>
+            </span>
+            <div class="attach-img-box" >
               <div class="img-box" v-for="img in editproImg" v-show="img.show">
                 <span class="delete-img" @click="deleteImg(img)">×</span>
                 <img :src="img.file_url"/>
               </div>
-              <span class="upload-box" id="upload_com" @click="upload_com()">
-                <span class="add-btn">
-                  <i class="fa fa-plus add-icon"></i>
-                </span>
-                <input class="hidden" type="file" name="files[]" multiple>
-              </span>
+              
             </div>
 					</div>
         </div>
@@ -1649,11 +1652,11 @@ body,html{
 }
 .del-icon{
   left: 0;
-  background-position: -9px -14px;
+  background-position: -9px -5px;
 }
 .reset-icon{
   left: 0;
-  background-position: -47px -14px;
+  background-position: -43px -5px;
 }
 .upload-files {
   display: inline-block;
@@ -1840,18 +1843,16 @@ body,html{
 .attach-img-box {
   padding-bottom: 10px;
   display: inline-block;
-  width: 70%;
-  float: right;
+  width: 100%;
+  padding-left: 20px;
 }
 .upload-box{
-  float: left;
+  float: right;
   margin-right: 10px;
   margin-top: 10px;
   display: inline-block;
   width: 40px;
-  height: 40px;
   text-align: center;
-  background-color: #f3f3f3;
   cursor: pointer;
 }
 .upload-box .add-icon{
@@ -2017,6 +2018,20 @@ body,html{
 .record-box .add-item .pointer{
   background-color: #5278e5;
   z-index: 100;
+}
+.add-btn-upload {
+  position: relative;
+  color: #999;
+}
+.add-btn-upload .fa{
+  font-size: 16px;
+  color: #999 !important;
+}
+.add-btn-upload .add-icon{
+  position: absolute;
+  font-size: 10px;
+  bottom: 10px;
+  right: -6px;
 }
 .add-item .add-btn {
   display: inline-block;

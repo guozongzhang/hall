@@ -278,35 +278,14 @@
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
-    <div class="classify-box" id="classifylist">
-      <div class="sub-classify">
-        <div class="null-box" @click="cancelModal()"></div>
-        <div class="clasify-item" v-for="item in classifyArr">
-          <p class="title">
-            <label>{{item.sp_type_name}}</label>
-            <a href="javascript:;" @click="showAllTypes(item)">
-              <span>{{item.showall ? '收起' : '全部'}}</span>
-              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
-            </a>
-          </p>
-          <ul class="items-ul">
-            <li v-bind:class="item.active.indexOf(sub.id) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
-              <a href="javascript:;">{{sub.type_name}}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="clasify-btn">
-          <a href="javascript:;" @click="resetClassify()">重置</a>
-          <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
-        </div>
-      </div>
-    </div>
+    <vue-tab></vue-tab>
   </div>
 </template>  
 <script>
   import One from '../common/onelayer.vue'
   import Area from '../common/threelayer.vue'
   import Two from '../common/twolayer.vue'
+  import Tab from './_tab.vue'
   import axios from '~/plugins/axios'
   let dateJson = require('~/static/js/date.json')
   let url = require('url')
@@ -415,23 +394,6 @@
           model.thisdata.project_reportman[0].name = data.data.ui_name || '未设置'
           model.thisdata.project_reportman[0].tel = data.data.mobile || ''
           model.thisdata.project_reportman[0].email = data.data.u_email || ''
-        }).catch(function (error) {
-          if (error.response.data.message === 'token is invalid') {
-            window.mui.toast('登录信息过期!')
-            setTimeout(function () {
-              Cookies.set('dpjia-hall-token', '')
-              window.location.href = model.linkPath + '/login'
-            }, 2000)
-          }
-        })
-
-        axios.get('/functions/furnitures/furniture_types', {
-        }).then(function (data) {
-          data.data.forEach(item => {
-            item.active = ''
-            item.showall = false
-          })
-          model.classifyArr = data.data
         }).catch(function (error) {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
@@ -580,47 +542,47 @@
         model.jzds = _.without(model.jzds, item)
       },
 
-      // 显示各分类全部（收起）
-      showAllTypes: function (obj) {
-        obj.showall = !obj.showall
-      },
+      // // 显示各分类全部（收起）
+      // showAllTypes: function (obj) {
+      //   obj.showall = !obj.showall
+      // },
 
-      // 选择分类
-      choiceType: function (item, sub) {
-        if (item.active.indexOf(sub.id) < 0) {
-          let obj = {
-            type_poi_furniture_types: sub.id,
-            name: sub.type_name,
-            id: 0,
-            delete: 'no'
-          }
-          item.active = item.active + ',' + sub.id
-          model.classifyActiveArr.push(obj)
-          model.furtypeStr = model.furtypeStr + ',' + sub.type_name
-        }
-      },
+      // // 选择分类
+      // choiceType: function (item, sub) {
+      //   if (item.active.indexOf(sub.id) < 0) {
+      //     let obj = {
+      //       type_poi_furniture_types: sub.id,
+      //       name: sub.type_name,
+      //       id: 0,
+      //       delete: 'no'
+      //     }
+      //     item.active = item.active + ',' + sub.id
+      //     model.classifyActiveArr.push(obj)
+      //     model.furtypeStr = model.furtypeStr + ',' + sub.type_name
+      //   }
+      // },
 
-      // 确定分类
-      setClassify: function () {
-        model.thisdata.project_furniture_types = model.classifyActiveArr
-        model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
-        $('#classifylist').hide()
-      },
+      // // 确定分类
+      // setClassify: function () {
+      //   model.thisdata.project_furniture_types = model.classifyActiveArr
+      //   model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
+      //   $('#classifylist').hide()
+      // },
 
-      // 点击空白消失选择宽
-      cancelModal: function () {
-        $('#classifylist').hide()
-      },
+      // // 点击空白消失选择宽
+      // cancelModal: function () {
+      //   $('#classifylist').hide()
+      // },
 
       // 重置分类
-      resetClassify: function () {
-        model.classifyArr.forEach(item => {
-          item.active = ''
-        })
-        model.classifyActiveArr = []
-        model.furtypeStr = ''
-        // $('#classifylist').hide()
-      },
+      // resetClassify: function () {
+      //   model.classifyArr.forEach(item => {
+      //     item.active = ''
+      //   })
+      //   model.classifyActiveArr = []
+      //   model.furtypeStr = ''
+      //   // $('#classifylist').hide()
+      // },
 
       // 上传图片
       upload_com: function () {
@@ -664,7 +626,7 @@
         })
       },
 
-      // 点击筛选
+      // 弹出分类模态框
       showClassify: function () {
         $('#classifylist').show()
         $('#classifylist').addClass('animated bounceInRight')
@@ -914,7 +876,8 @@
     components: {
       'vue-area': Area,
       'vue-two': Two,
-      'vue-one': One
+      'vue-one': One,
+      'vue-tab': Tab
     },
     mounted () {
       model = this

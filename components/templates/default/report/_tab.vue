@@ -33,24 +33,45 @@ let model
 let $ = require('jquery')
 let Cookies = require('js-cookie')
 export default {
-  props: [],
+  props: ['acticearr'],
   data () {
     return {
       classifyArr: [] // 操作的分类数据
-      // classifyArrY: [], // 原始分类数据
-      // nameStr: '' // 显示的名字
     }
   },
   methods: {
-    init: function () {
+    init: function (obj) {
+      console.log('111', obj)
+      let ms
+      if (obj) {
+        ms = obj
+      } else {
+        ms = model.acticearr
+      }
+      console.log('2', ms)
       axios.get('/functions/furnitures/furniture_types', {
       }).then(function (data) {
+        console.log('1111', data)
         data.data.forEach(item => {
-          item.active = []
+          if (item.furniture_types.length > 0) {
+            item.furniture_types.forEach(furitem => {
+              if (ms.length > 0) {
+                ms.forEach(acitem => {
+                  if (acitem.type_poi_furniture_types === furitem.id) {
+                    item.active.push(acitem.id)
+                  }
+                })
+              } else {
+                item.active = []
+              }
+            })
+          } else {
+            item.active = []
+          }
           item.showall = false
         })
-        // model.classifyArrY = _.clone(data.data)
         model.classifyArr = data.data
+        console.log('1112145', model.classifyArr)
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
@@ -64,7 +85,7 @@ export default {
     // 点击空白消失选择宽
     cancelModal: function () {
       $('#classifylist').hide()
-      // model.classifyArr = model.classifyArrY // 恢复原来数据
+      model.init(model.acticearr) // 恢复原来数据
     },
 
     // 重置分类
@@ -77,7 +98,7 @@ export default {
     // 确定分类
     setClassify: function () {
       let classifyArr = [] // 重新保存确定的分类
-      let nameStr = [] // 显示的名字
+      let nameStr = '' // 显示的名字
       let activearr = [] // 选中的ids
       model.classifyArr.forEach(item => {
         item.active.forEach(msitem => {
@@ -102,6 +123,7 @@ export default {
           }
         })
       })
+      model.init(classifyArr)
       model.$emit('submitArr', classifyArr, nameStr)
       $('#classifylist').hide()
     },
@@ -131,7 +153,7 @@ export default {
   .content-box {
     background: #fff;
     overflow: hidden;
-    width: 275px;
+    width: 276px;
     float: right;
   }  
   .selectTitle {

@@ -278,7 +278,7 @@
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
-    <vue-tab @submitArr="getclassifyArr"></vue-tab>
+    <vue-tab :acticearr="acticearr" @submitArr="getclassifyArr"></vue-tab>
   </div>
 </template>  
 <script>
@@ -351,6 +351,7 @@
           competitor_strengths: '',
           competitor_projections: ''
         },
+        acticearr: [],
         alinkman: [], // 甲方联系人
         onearr: [],
         oneobj: {
@@ -407,8 +408,8 @@
 
       // 获取产品分类
       getclassifyArr (obj, info) {
-        console.log(obj, info)
         model.furtypeStr = info
+        model.acticearr = obj
         model.thisdata.project_furniture_types = obj
       },
 

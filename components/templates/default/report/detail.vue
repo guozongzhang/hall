@@ -1255,6 +1255,7 @@ export default {
     // 产品品类
     changeGoodsType: async function () {
       let res = await axios.get('functions/furnitures/furniture_types', {params: ''})
+      console.log()
       res.data.forEach((item) => {
         item.showall = false
         item.furniture_types.forEach((sub) => {

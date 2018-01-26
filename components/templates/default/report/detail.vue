@@ -527,29 +527,8 @@
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
     </div>
-    <div class="classify-box" id="classifylist">
-      <div class="sub-classify">
-        <div class="null-box" @click="cancelModal()"></div>
-        <div class="clasify-item" v-for="item in classifyArr">
-          <p class="title">
-            <label>{{item.sp_type_name}}</label>
-            <a href="javascript:;" @click="showAllTypes(item)">
-              <span>{{item.showall ? '收起' : '全部'}}</span>
-              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
-            </a>
-          </p>
-          <ul class="items-ul">
-            <li v-bind:class="sub.active ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(sub)" v-show="index < 3 || item.showall">
-              <a href="javascript:;" :title="sub.type_name">{{sub.type_name}}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="clasify-btn">
-          <a href="javascript:;" @click="resetClassify()">重置</a>
-          <a href="javascript:;" class="submit-btn" @click="setClassify()">完成</a>
-        </div>
-      </div>
-    </div>
+    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
+
     <div v-show="activeTab == 'edittextarea'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
@@ -570,6 +549,7 @@ import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
 import editReportvue from './_editreport.vue'
+import Tab from './_tab.vue'
 let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
@@ -582,7 +562,7 @@ let model
 let proId
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
-let activeTypeIds = [] // 产品品类
+// let activeTypeIds = [] // 产品品类
 let updateTypeArr = [] // 提交的项目类型数组
 let reportState = [
   {
@@ -625,6 +605,9 @@ let reportState = [
 export default {
   data () {
     return {
+      acticearr: [],
+      oriarr: [],
+      flag: 0,
       recordImgs: [], // 报备记录附件
       dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
@@ -667,7 +650,8 @@ export default {
   components: {
     'vue-area': Area,
     'vue-one': proType,
-    'vue-editreport': editReportvue
+    'vue-editreport': editReportvue,
+    'vue-tab': Tab
   },
   methods: {
     init: async function () {
@@ -795,6 +779,52 @@ export default {
         window.mui.toast(result.msg)
       }
       return result.status
+    },
+
+    // 获取产品分类
+    getclassifyArr (obj, info) {
+      model.editpro.type = info
+      model.acticearr = obj
+      let res = []
+      let oriids = []
+      let newids = []
+      if (model.oriarr.length > 0) {
+        oriids = _.map(model.oriarr, item => {
+          return item.type_poi_furniture_types
+        })
+      }
+      if (obj.length > 0) {
+        newids = _.map(obj, item => {
+          return item.type_poi_furniture_types
+        })
+      }
+      if (obj.length > 0) {
+        obj.forEach(item => {
+          if (oriids.indexOf(item.type_poi_furniture_types) < 0) {
+            let tmp = {
+              type_poi_furniture_types: item.type_poi_furniture_types,
+              name: item.name,
+              id: 0,
+              delete: 'no'
+            }
+            res.push(tmp)
+          }
+        })
+      }
+      if (model.oriarr.length > 0) {
+        model.oriarr.forEach(oriitem => {
+          if (newids.indexOf(oriitem.type_poi_furniture_types) < 0) {
+            let tmp = {
+              id: oriitem.id,
+              name: oriitem.name,
+              type_poi_furniture_types: oriitem.type_poi_furniture_types,
+              delete: 'yes'
+            }
+            res.push(tmp)
+          }
+        })
+      }
+      updateTypeArr = res
     },
 
     // 保存必填信息
@@ -1075,82 +1105,74 @@ export default {
 
     // 编辑产品品类
     filterGoodsType: function (arr) {
-      let res = ''
+      model.oriarr = _.clone(arr)
+      model.acticearr = arr
       let subarr = []
       arr.forEach((item) => {
-        let tmp = {
-          id: item.id,
-          delete: 'no',
-          name: item.name,
-          type_poi_furniture_types: item.type_poi_furniture_types
-        }
-        updateTypeArr.push(tmp)
-        activeTypeIds.push(item.type_poi_furniture_types)
         subarr.push(item.name)
       })
-      res = subarr.join('-')
-      return res
+      return subarr.join('-')
     },
 
-    // 显示各分类全部（收起）
-    showAllTypes: function (obj) {
-      obj.showall = !obj.showall
-    },
+    // // 显示各分类全部（收起）
+    // showAllTypes: function (obj) {
+    //   obj.showall = !obj.showall
+    // },
 
-    // 选择三级分类
-    choiceType: function (obj) {
-      if (obj.active) {
-        obj.active = false
-        activeTypeIds = _.without(activeTypeIds, obj.id)
-        updateTypeArr.forEach((item) => {
-          if (obj.id === item.type_poi_furniture_types) {
-            item.delete = 'yes'
-          }
-        })
-      } else {
-        obj.active = true
-        activeTypeIds.unshift(obj.id)
-        let tmp = {
-          id: 0,
-          delete: 'no',
-          name: obj.type_name,
-          type_poi_furniture_types: obj.id
-        }
-        updateTypeArr.unshift(tmp)
-      }
-    },
+    // // 选择三级分类
+    // choiceType: function (obj) {
+    //   if (obj.active) {
+    //     obj.active = false
+    //     activeTypeIds = _.without(activeTypeIds, obj.id)
+    //     updateTypeArr.forEach((item) => {
+    //       if (obj.id === item.type_poi_furniture_types) {
+    //         item.delete = 'yes'
+    //       }
+    //     })
+    //   } else {
+    //     obj.active = true
+    //     activeTypeIds.unshift(obj.id)
+    //     let tmp = {
+    //       id: 0,
+    //       delete: 'no',
+    //       name: obj.type_name,
+    //       type_poi_furniture_types: obj.id
+    //     }
+    //     updateTypeArr.unshift(tmp)
+    //   }
+    // },
 
-    // 点击空白消失选择宽
-    cancelModal: function () {
-      $('#classifylist').hide()
-    },
+    // // 点击空白消失选择宽
+    // cancelModal: function () {
+    //   $('#classifylist').hide()
+    // },
 
-    // 重置
-    resetClassify: function () {
-      model.classifyArr.forEach((p) => {
-        p.furniture_types.forEach((sub) => {
-          sub.active = false
-        })
-      })
-      updateTypeArr.forEach((item) => {
-        item.delete = 'yes'
-      })
-      activeTypeIds = []
-    },
+    // // 重置
+    // resetClassify: function () {
+    //   model.classifyArr.forEach((p) => {
+    //     p.furniture_types.forEach((sub) => {
+    //       sub.active = false
+    //     })
+    //   })
+    //   updateTypeArr.forEach((item) => {
+    //     item.delete = 'yes'
+    //   })
+    //   activeTypeIds = []
+    // },
 
-    // 完成三级分类
-    setClassify: function () {
-      let tmp = []
-      model.classifyArr.forEach((p) => {
-        p.furniture_types.forEach((sub) => {
-          if (activeTypeIds.indexOf(sub.id) > -1) {
-            tmp.push(sub.type_name)
-          }
-        })
-      })
-      model.editpro.type = tmp.join('-')
-      $('#classifylist').hide()
-    },
+    // // 完成三级分类
+    // setClassify: function () {
+    //   let tmp = []
+    //   model.classifyArr.forEach((p) => {
+    //     p.furniture_types.forEach((sub) => {
+    //       if (activeTypeIds.indexOf(sub.id) > -1) {
+    //         tmp.push(sub.type_name)
+    //       }
+    //     })
+    //   })
+    //   model.editpro.type = tmp.join('-')
+    //   $('#classifylist').hide()
+    // },
 
     // 编辑项目信息
     editProject: function (id) {
@@ -1254,21 +1276,12 @@ export default {
 
     // 产品品类
     changeGoodsType: async function () {
-      let res = await axios.get('functions/furnitures/furniture_types', {params: ''})
-      console.log()
-      res.data.forEach((item) => {
-        item.showall = false
-        item.furniture_types.forEach((sub) => {
-          if (activeTypeIds.indexOf(sub.id) > -1) {
-            sub.active = true
-          } else {
-            sub.active = false
-          }
-        })
-      })
-      model.classifyArr = res.data
+      model.flag = Math.random()
       $('#classifylist').show()
       $('#classifylist').addClass('animated bounceInRight')
+      setTimeout(function () {
+        $('#classifylist').removeClass('bounceInRight')
+      }, 1000)
     },
 
     // 编辑甲方信息
@@ -2313,116 +2326,6 @@ body,html{
 }
 .go-report .right-circle {
   right: -18px;
-}
-.classify-box{
-  display: none;
-  position: fixed;
-  top: 44px;
-  z-index: 1000;
-  width: 100%;
-  height: calc(100% - 44px);
-  background-color: rgba(0, 0, 0, 0.6);
-  overflow-y: auto;
-}
-.sub-classify{
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
-  min-height: calc(100% - 44px);
-  padding: 10px;
-  background-color: #fff;
-  padding-bottom: 50px;
-}
-.null-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: inline-block;
-  width: calc(100% - 276px);
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  float: left;
-}
-.clasify-item{
-  width: 260px;
-  float: right;
-  margin-bottom: 20px;
-}
-.clasify-item .title{
-  margin: 0;
-  padding: 0;
-  height: 22px;
-  line-height: 22px;
-  margin-bottom: 10px;
-}
-.title > label {
-  color: #050505;
-}
-.title > a{
-  float: right;
-}
-.clasify-item .items-ul{
-  margin: 0;
-  padding: 4px;
-  list-style: none;
-}
-.clasify-item .items-ul li{
-  display: inline-block;
-  list-style: none;
-  width: 74px;
-  height: 30px;
-  margin-right: 12px;
-  margin-bottom: 6px;
-}
-.clasify-item .items-ul li:nth-child(3n){
-  margin-right: 0;
-}
-.clasify-item .items-ul li a{
-  display: inline-block;
-  width: 80px;
-  height: 30px;
-  padding: 0 5px;
-  text-align: center;
-  line-height: 28px;
-  font-size: 14px;
-  text-decoration: none;
-  color: #3d3d3d;
-  border: 1px solid #737373;
-  border-radius: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.clasify-item .items-ul .active a{
-  background-color: #5075ce;
-  border: 1px solid #5075ce;
-  color: #fff;
-}
-.clasify-btn{
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  width: 280px;
-  height: 50px;
-  z-index: 100;
-  background-color: #fff;
-}
-.clasify-btn > a{
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-  height: 50px;
-  line-height: 50px;
-  color: #3d3d3d;
-  font-size: 15px;
-  border-top: 1px solid #ababab;
-  cursor: pointer;
-}
-.clasify-btn .submit-btn{
-  background-color: #5075ce;
-  border-top: 1px solid #5075ce;
-  color: #fff;
 }
 .must label span{
   color: red;

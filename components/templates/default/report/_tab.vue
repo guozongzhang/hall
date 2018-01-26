@@ -8,12 +8,12 @@
           <p class="title">
             <label>{{item.sp_type_name}}</label>
             <a href="javascript:;" @click="showAllTypes(item)">
-              <span v-show="item.active.length > 0" style="margin-right:5px">已选{{item.active.length}}</span>
+              <span v-show="(item.active ? item.active : []).length > 0" style="margin-right:5px">已选{{item.active ? item.active.length : ''}}</span>
               <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
             </a>
           </p>
           <ul class="items-ul">
-            <li v-bind:class="item.active.indexOf(sub.id) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
+            <li v-bind:class="(item.active ? item.active : []).indexOf(String(sub.id)) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
               <a href="javascript:;">{{sub.type_name}}</a>
             </li>
           </ul>
@@ -33,45 +33,43 @@ let model
 let $ = require('jquery')
 let Cookies = require('js-cookie')
 export default {
-  props: ['acticearr'],
+  props: ['acticearr', 'flag'],
   data () {
     return {
       classifyArr: [] // 操作的分类数据
     }
   },
+  watch: {
+    flag: function () {
+      console.log('11', model.acticearr)
+      model.classifyArr.forEach(item => {
+        item.active = []
+      })
+      model.classifyArr.forEach(item => {
+        if (item.furniture_types.length > 0) {
+          item.furniture_types.forEach(furitem => {
+            if (model.acticearr.length > 0) {
+              model.acticearr.forEach(acitem => {
+                if (acitem.type_poi_furniture_types === furitem.id) {
+                  item.active.push(acitem.type_poi_furniture_types)
+                }
+              })
+            }
+          })
+        }
+        item.showall = false
+      })
+    }
+  },
   methods: {
-    init: function (obj) {
-      console.log('111', obj)
-      let ms
-      if (obj) {
-        ms = obj
-      } else {
-        ms = model.acticearr
-      }
-      console.log('2', ms)
+    init: function () {
       axios.get('/functions/furnitures/furniture_types', {
       }).then(function (data) {
-        console.log('1111', data)
         data.data.forEach(item => {
-          if (item.furniture_types.length > 0) {
-            item.furniture_types.forEach(furitem => {
-              if (ms.length > 0) {
-                ms.forEach(acitem => {
-                  if (acitem.type_poi_furniture_types === furitem.id) {
-                    item.active.push(acitem.id)
-                  }
-                })
-              } else {
-                item.active = []
-              }
-            })
-          } else {
-            item.active = []
-          }
+          item.active = []
           item.showall = false
         })
         model.classifyArr = data.data
-        console.log('1112145', model.classifyArr)
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
@@ -85,7 +83,6 @@ export default {
     // 点击空白消失选择宽
     cancelModal: function () {
       $('#classifylist').hide()
-      model.init(model.acticearr) // 恢复原来数据
     },
 
     // 重置分类
@@ -123,7 +120,6 @@ export default {
           }
         })
       })
-      model.init(classifyArr)
       model.$emit('submitArr', classifyArr, nameStr)
       $('#classifylist').hide()
     },
@@ -141,6 +137,7 @@ export default {
         let index = item.active.indexOf(sub.id)
         item.active.splice(index, 1)
       }
+      console.log(item.active)
     }
   },
   mounted () {

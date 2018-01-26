@@ -278,7 +278,7 @@
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
-    <vue-tab :acticearr="acticearr" @submitArr="getclassifyArr"></vue-tab>
+    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
   </div>
 </template>  
 <script>
@@ -351,6 +351,7 @@
           competitor_strengths: '',
           competitor_projections: ''
         },
+        flag: 0,
         acticearr: [],
         alinkman: [], // 甲方联系人
         onearr: [],
@@ -550,48 +551,6 @@
         model.jzds = _.without(model.jzds, item)
       },
 
-      // // 显示各分类全部（收起）
-      // showAllTypes: function (obj) {
-      //   obj.showall = !obj.showall
-      // },
-
-      // // 选择分类
-      // choiceType: function (item, sub) {
-      //   if (item.active.indexOf(sub.id) < 0) {
-      //     let obj = {
-      //       type_poi_furniture_types: sub.id,
-      //       name: sub.type_name,
-      //       id: 0,
-      //       delete: 'no'
-      //     }
-      //     item.active = item.active + ',' + sub.id
-      //     model.classifyActiveArr.push(obj)
-      //     model.furtypeStr = model.furtypeStr + ',' + sub.type_name
-      //   }
-      // },
-
-      // // 确定分类
-      // setClassify: function () {
-      //   model.thisdata.project_furniture_types = model.classifyActiveArr
-      //   model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
-      //   $('#classifylist').hide()
-      // },
-
-      // // 点击空白消失选择宽
-      // cancelModal: function () {
-      //   $('#classifylist').hide()
-      // },
-
-      // 重置分类
-      // resetClassify: function () {
-      //   model.classifyArr.forEach(item => {
-      //     item.active = ''
-      //   })
-      //   model.classifyActiveArr = []
-      //   model.furtypeStr = ''
-      //   // $('#classifylist').hide()
-      // },
-
       // 上传图片
       upload_com: function () {
         var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
@@ -636,6 +595,7 @@
 
       // 弹出分类模态框
       showClassify: function () {
+        model.flag = Math.random()
         $('#classifylist').show()
         $('#classifylist').addClass('animated bounceInRight')
         setTimeout(function () {

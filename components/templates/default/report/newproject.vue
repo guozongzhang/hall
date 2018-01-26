@@ -1133,10 +1133,10 @@
    .classify-box{
     display: none;
     position: fixed;
-    top: 44px;
+    top: 0px;
     z-index: 1000;
     width: 100%;
-    height: calc(100% - 44px);
+    height: calc(100%);
     background-color: rgba(0, 0, 0, 0.6);
     overflow-y: auto;
   }
@@ -1146,8 +1146,7 @@
     top: 0;
     width: 100%;
     min-height: calc(100% - 44px);
-    padding: 10px;
-    background-color: #fff;
+    background-color:rgba(255,255,255,0.1);
     padding-bottom: 50px;
   }
   .null-box {
@@ -1157,20 +1156,21 @@
     display: inline-block;
     width: calc(100% - 276px);
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.1);
     float: left;
   }
   .clasify-item{
-    width: 260px;
+    width: 275px;
     float: right;
-    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
   }
   .clasify-item .title{
     margin: 0;
     padding: 0;
     height: 22px;
     line-height: 22px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   .title > label {
     color: #050505;
@@ -1180,7 +1180,7 @@
   }
   .clasify-item .items-ul{
     margin: 0;
-    padding: 4px;
+    padding: 0px;
     list-style: none;
   }
   .clasify-item .items-ul li{

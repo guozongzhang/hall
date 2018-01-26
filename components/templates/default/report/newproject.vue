@@ -278,7 +278,7 @@
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
-    <vue-tab></vue-tab>
+    <vue-tab @submitArr="getclassifyArr"></vue-tab>
   </div>
 </template>  
 <script>
@@ -403,6 +403,13 @@
             }, 2000)
           }
         })
+      },
+
+      // 获取产品分类
+      getclassifyArr (obj, info) {
+        console.log(obj, info)
+        model.furtypeStr = info
+        model.thisdata.project_furniture_types = obj
       },
 
       // 添加甲方联系人
@@ -1130,114 +1137,5 @@
     display: inline-block;
     height: 48px;
   }
-   .classify-box{
-    display: none;
-    position: fixed;
-    top: 0px;
-    z-index: 1000;
-    width: 100%;
-    height: calc(100%);
-    background-color: rgba(0, 0, 0, 0.6);
-    overflow-y: auto;
-  }
-   .sub-classify{
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 100%;
-    min-height: calc(100% - 44px);
-    background-color:rgba(255,255,255,0.1);
-    padding-bottom: 50px;
-  }
-  .null-box {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: inline-block;
-    width: calc(100% - 276px);
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-    float: left;
-  }
-  .clasify-item{
-    width: 275px;
-    float: right;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  .clasify-item .title{
-    margin: 0;
-    padding: 0;
-    height: 22px;
-    line-height: 22px;
-    margin-bottom: 20px;
-  }
-  .title > label {
-    color: #050505;
-  }
-  .title > a{
-    float: right;
-  }
-  .clasify-item .items-ul{
-    margin: 0;
-    padding: 0px;
-    list-style: none;
-  }
-  .clasify-item .items-ul li{
-    display: inline-block;
-    list-style: none;
-    width: 74px;
-    height: 30px;
-    margin-right: 12px;
-    margin-bottom: 6px;
-  }
-  .clasify-item .items-ul li:nth-child(3n){
-    margin-right: 0;
-  }
-  .clasify-item .items-ul li a{
-    display: inline-block;
-    width: 80px;
-    height: 30px;
-    padding: 0 5px;
-    text-align: center;
-    line-height: 28px;
-    font-size: 14px;
-    text-decoration: none;
-    color: #3d3d3d;
-    border: 1px solid #737373;
-    border-radius: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .clasify-item .items-ul .active a{
-    background-color: #5075ce;
-    border: 1px solid #5075ce;
-    color: #fff;
-  }
-  .clasify-btn{
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    width: 280px;
-    height: 50px;
-    z-index: 100;
-    background-color: #fff;
-  }
-  .clasify-btn > a{
-    display: inline-block;
-    width: 50%;
-    text-align: center;
-    height: 50px;
-    line-height: 50px;
-    color: #3d3d3d;
-    font-size: 15px;
-    border-top: 1px solid #ababab;
-    cursor: pointer;
-  }
-  .clasify-btn .submit-btn{
-    background-color: #5075ce;
-    border-top: 1px solid #5075ce;
-    color: #fff;
-  }
+  
 </style>

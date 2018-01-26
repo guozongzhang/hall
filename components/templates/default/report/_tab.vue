@@ -36,9 +36,9 @@ export default {
   props: [],
   data () {
     return {
-      classifyArr: [], // 操作的分类数据
+      classifyArr: [] // 操作的分类数据
       // classifyArrY: [], // 原始分类数据
-      nameStr: '' // 显示的名字
+      // nameStr: '' // 显示的名字
     }
   },
   methods: {
@@ -77,6 +77,7 @@ export default {
     // 确定分类
     setClassify: function () {
       let classifyArr = [] // 重新保存确定的分类
+      let nameStr = [] // 显示的名字
       let activearr = [] // 选中的ids
       model.classifyArr.forEach(item => {
         item.active.forEach(msitem => {
@@ -93,14 +94,15 @@ export default {
               delete: 'no'
             }
             classifyArr.push(obj)
-            if (model.nameStr.length > 0) {
-              model.nameStr = model.nameStr + ',' + acfur.type_name
+            if (nameStr.length > 0) {
+              nameStr = nameStr + ',' + acfur.type_name
             } else {
-              model.nameStr = acfur.type_name
+              nameStr = acfur.type_name
             }
           }
         })
       })
+      model.$emit('submitArr', classifyArr, nameStr)
       $('#classifylist').hide()
     },
 

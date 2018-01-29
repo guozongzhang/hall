@@ -184,11 +184,11 @@
                     <ul class="ul-list">
                       <li class="mui-table-view-cell f16">
                         <span class="c666 f16">乙方对手：</span>
-                        <span class="alist-text">{{basicinfo.second_party_competitor}}</span>
+                        <span class="alist-text">{{((basicinfo.second_party_competitor || '').split(',') || []).join('/')}}</span>
                       </li>
                       <li class="mui-table-view-cell f16">
                         <span class="c666 f16">竞争对手：</span>
-                        <span class="alist-text">{{basicinfo.competitor}}</span>
+                        <span class="alist-text">{{((basicinfo.competitor || '').split(',') || []).join('/')}}</span>
                       </li>
                       <li class="mui-table-view-cell f16">
                         <span class="c666 f16">项目亮点：</span>
@@ -457,11 +457,11 @@
         <div>
           <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
 						<label>乙方对手</label>
-            <span class="area-text sub-input-text">{{competitors.second_party_competitor}}</span>
+            <span class="area-text sub-input-text">{{((competitors.second_party_competitor || '').split(',') || []).join('/')}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('competitor','报备人对手')">
 						<label>竞争对手</label>
-            <span class="area-text sub-input-text">{{competitors.competitor}}</span>
+            <span class="area-text sub-input-text">{{((competitors.competitor || '').split(',') || []).join('/')}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>项目亮点</label>

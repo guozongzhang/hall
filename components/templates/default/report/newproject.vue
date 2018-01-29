@@ -164,7 +164,7 @@
 
         <div class="jzInfo">
           <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
-            <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{thisdata.second_party_competitor}}</span></a>
+            <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{((thisdata.second_party_competitor || '').split(',') || []).join('/')}}</span></a>
           </li>
 
           <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">

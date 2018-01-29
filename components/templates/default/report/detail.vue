@@ -15,10 +15,10 @@
           <span class="list-icon reset-icon"></span>
         </a>
       </header>
-      <div class="detail-box">
+      <div class="detail-box" v-show="initok">
         <div class="basic-info">
           <label class="mui-ellipsis">
-            <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
+            <span class="money">{{parseFloat(basicinfo.amount || 0)}}万元</span>·<span>{{String(basicinfo.name).length > 13 ? String(basicinfo.name).substring(0, 13) + '...': String(basicinfo.name)}}</span>
           </label>
           <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
@@ -125,7 +125,7 @@
                       </li>
                       <li class="mui-table-view-cell" v-for="(sub, index) in alinkman" >
                         <span>第{{index+1}}联系人：</span>
-                        <span class="alist-text">{{sub.name}} / {{sub.job}} / {{sub.tel}}</span>
+                        <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
                       </li>
                       <li class="mui-table-view-cell" v-show="alinkman.length == 0">
                         <span>甲方联系人：</span>
@@ -295,7 +295,7 @@
               <input type="text" placeholder="万元" maxlength="20" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
             </div>
             <div class="mui-input-row sub-input-box edit-basic-box" style="background-color: #fff;">
-              <label>项目可行性<span>*</span></label>
+              <label style="width: 29%">项目可行性<span>*</span></label>
               <div class="stars-style">
                 <span class="star-box">
                   <i class="fa mui-icon mui-icon-left-nav mui-pull-right" @click="getStar(sub)"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= editbaisc.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -304,7 +304,9 @@
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>有效期<span>*</span></label>
-              <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
+              <span class="area-text mui-navigate-right" @click="changeProValtime()">
+                <span style="position: relative;top: 3px;">{{editbaisc.validity_text}}</span>
+              </span>
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>简单描述<span>*</span></label>
@@ -362,7 +364,7 @@
         <div>
           <div class="mui-input-row sub-input-box">
 						<label>项目编号</label>
-						<input type="text" placeholder="输入项目编号" maxlength="11" style="width: 74%;" v-model="editpro.number">
+						<input type="text" placeholder="输入项目编号" maxlength="11" style="width: 73%;" v-model="editpro.number">
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>招标时间</label>
@@ -430,10 +432,10 @@
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>甲方联系人</label>
-            <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
+            <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
 					</div>
           <div style="padding: 10px 0;" v-show="alinkman.length > 0">
-            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
           </div>
         </div>
       </div>
@@ -605,6 +607,7 @@ let reportState = [
 export default {
   data () {
     return {
+      initok: false,
       acticearr: [],
       oriarr: [],
       flag: 0,
@@ -703,6 +706,7 @@ export default {
       getresult.data.project_rel_project_furniture_types.items.forEach((item) => {
         arr.push(item.name)
       })
+      model.initok = true
       model.progoodstyepstr = arr.join('-')
       model.basicinfo = getresult.data
       model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
@@ -1220,7 +1224,7 @@ export default {
       $('#classifylist').show()
       $('.content-box').addClass('animated bounceInRight')
       setTimeout(function () {
-        $('.content-box').removeClass('bounceInRight')
+        // $('.content-box').removeClass('bounceInRight')
       }, 1000)
     },
 
@@ -1592,6 +1596,7 @@ export default {
 }
 </script>
 <style>
+[v-cloak] { display: none!important; }
 body,html{
   background-color: #eee !important;
 }
@@ -1860,7 +1865,7 @@ body,html{
 }
 .sub-input-box label{
   line-height: 18px;
-  width: 26%;
+  width: 27%;
   color: #666;
 }
 .sub-input-box .area-text{
@@ -1877,7 +1882,7 @@ body,html{
   color: #999;
 }
 .mui-input-row label~input {
-  width: 74%;
+  width: 73%;
 }
 .sub-input-text {
   position: relative;

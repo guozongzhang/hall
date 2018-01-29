@@ -115,7 +115,7 @@
             </div>
           </li>
           <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
-            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
           </div>
         </div>
 
@@ -600,7 +600,7 @@
         $('#classifylist').show()
         $('.content-box').addClass('animated bounceInRight')
         setTimeout(function () {
-          $('.content-box').removeClass('bounceInRight')
+          // $('.content-box').removeClass('bounceInRight')
         }, 1000)
       },
 

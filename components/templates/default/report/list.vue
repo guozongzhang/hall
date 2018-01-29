@@ -29,7 +29,7 @@
           <div v-for="item in datalist" class="listdiv">
             <a :href="'/projectdetail?id=' + item.id" class="flagdetail">
               <h4 class="mui-ellipsis">
-                <i>{{item.amount}}万元</i><span>·{{item.name}}</span>
+                <i>{{parseFloat(item.amount)}}万元</i><span>·{{String(item.name).length > 13 ? String(item.name).substring(0, 13) + '...': String(item.name)}}</span>
               </h4>
               <div>
                 <span class="report-state" v-bind:class="item.state" v-if="item.state == 'rescinded' || item.state == 'had_reset' || item.state == 'adopt' || item.state == 'had_handle' || item.state == 'wait_handle'">
@@ -43,8 +43,8 @@
                     <i class="fa fa-star"  v-for="sub in stars" aria-hidden="true" v-if="sub <= item.feasibility"></i>
                   </span>
                 </div>
-                <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
-                <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
+                <div class="fz12 mui-ellipsis">{{String(item.first_party_name).length > 13 ? String(item.first_party_name).substring(0, 13) + '...': String(item.first_party_name)}}</div>
+                <div class="fz12 intro-style mui-ellipsis">{{String(item.sketch).length > 13 ? String(item.sketch).substring(0, 13) + '...': String(item.sketch)}}</div>
               </div>
               <div class="detail">
                 <a href="javascript:;">

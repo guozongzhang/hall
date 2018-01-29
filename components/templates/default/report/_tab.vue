@@ -16,12 +16,13 @@
             <li v-bind:class="(item.active ? item.active : []).indexOf(String(sub.id)) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
               <a href="javascript:;">{{sub.type_name}}</a>
             </li>
+
           </ul>
         </div>
-      </div>
-      <div class="clasify-btn">
-        <a href="javascript:;" @click="resetClassify()">重置</a>
-        <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
+        <div class="clasify-btn">
+          <a href="javascript:;" @click="resetClassify()">重置</a>
+          <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
+        </div>
       </div>
     </div>
   </div>

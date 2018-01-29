@@ -13,14 +13,14 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label >项目名称<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入项目名称" v-model="thisdata.name">
+            <label style="width:22%">项目名称<i>*</i></label>
+            <input type="text" maxlength="20" style="width: 78%" placeholder="请输入项目名称" v-model="thisdata.name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>公司名称<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <label style="width:22%">公司名称<i>*</i></label>
+            <input type="text" maxlength="20" style="width: 78%" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -384,7 +384,7 @@
     height: 43px;
   }
   .mui-input-row label {
-    width: 30%;
+    width: 28%;
     height: 43px;
     padding: 0;
     line-height: 43px;

@@ -68,39 +68,39 @@
                   <div class="project-sublist">
                     <ul class="ul-list">
                       <li class="mui-table-view-cell">
-                        <span>项目编号：</span>
+                        <span class="c666">项目编号：</span>
                         <span class="list-text">{{basicinfo.number}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>招标时间：</span>
+                        <span class="c666">招标时间：</span>
                         <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY.MM.DD')}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>交付时间：</span>
+                        <span class="c666">交付时间：</span>
                         <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY.MM.DD')}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>项目类型：</span>
+                        <span class="c666">项目类型：</span>
                         <span class="list-text">{{filterProType(basicinfo.category)}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>产品品类：</span>
+                        <span class="c666">产品品类：</span>
                         <span class="list-text">{{progoodstyepstr}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>项目介绍：</span>
+                        <span class="c666">项目介绍：</span>
                         <span class="list-text">{{basicinfo.intro}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>风险分析：</span>
+                        <span class="c666">风险分析：</span>
                         <span class="list-text">{{basicinfo.risk_analysis}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>项目备注：</span>
+                        <span class="c666">项目备注：</span>
                         <span class="list-text">{{basicinfo.remark}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>上传附件：</span>
+                        <span class="c666">上传附件：</span>
                         <p class="attach-list">
                           <img :src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
                         </p>
@@ -120,15 +120,15 @@
                   <div class="project-sublist">
                     <ul class="ul-list">
                       <li class="mui-table-view-cell">
-                        <span>所属区域：</span>
+                        <span class="c666">所属区域：</span>
                         <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                       </li>
                       <li class="mui-table-view-cell" v-for="(sub, index) in alinkman" >
-                        <span>第{{index+1}}联系人：</span>
+                        <span class="c666">第{{index+1}}联系人：</span>
                         <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
                       </li>
                       <li class="mui-table-view-cell" v-show="alinkman.length == 0">
-                        <span>甲方联系人：</span>
+                        <span class="c666">甲方联系人：</span>
                       </li>
                     </ul>
                   </div>
@@ -145,27 +145,27 @@
                   <div class="project-sublist">
                     <ul class="ul-list">
                       <li class="mui-table-view-cell">
-                        <span>姓名：</span>
+                        <span class="c666">姓名：</span>
                         <span class="alist-text">{{reportman.name}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>项目关系：</span>
+                        <span class="c666">项目关系：</span>
                         <span class="alist-text">{{reportman.project_relation}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>期望提成：</span>
+                        <span class="c666">期望提成：</span>
                         <span class="alist-text">{{reportman.royalties_expectation ? reportman.royalties_expectation + '%' : ''}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>项目优势：</span>
+                        <span class="c666">项目优势：</span>
                         <span class="alist-text">{{reportman.strengths}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>联系电话：</span>
+                        <span class="c666">联系电话：</span>
                         <span class="alist-text">{{reportman.tel}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>联系邮箱：</span>
+                        <span class="c666">联系邮箱：</span>
                         <span class="alist-text">{{reportman.email}}</span>
                       </li>
                     </ul>
@@ -183,19 +183,19 @@
                   <div class="project-sublist">
                     <ul class="ul-list">
                       <li class="mui-table-view-cell">
-                        <span>乙方对手：</span>
+                        <span class="c666">乙方对手：</span>
                         <span class="alist-text">{{basicinfo.second_party_competitor}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>竞争对手：</span>
+                        <span class="c666">竞争对手：</span>
                         <span class="alist-text">{{basicinfo.competitor}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>项目亮点：</span>
+                        <span class="c666">项目亮点：</span>
                         <span class="alist-text">{{basicinfo.competitor_strengths}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>形式预测：</span>
+                        <span class="c666">形式预测：</span>
                         <span class="alist-text">{{basicinfo.competitor_projections}}</span>
                       </li>
                     </ul>
@@ -215,7 +215,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p style="font-size: 14px;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
+                        <p style="font-size: 14px;color: #999;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -707,7 +707,7 @@ export default {
         arr.push(item.name)
       })
       model.initok = true
-      model.progoodstyepstr = arr.join('-')
+      model.progoodstyepstr = arr.join('/')
       model.basicinfo = getresult.data
       model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
@@ -1115,7 +1115,7 @@ export default {
       arr.forEach((item) => {
         subarr.push(item.name)
       })
-      return subarr.join(',')
+      return subarr.join('/')
     },
 
     // 编辑项目信息
@@ -2143,12 +2143,16 @@ body,html{
 .project-sublist .ul-list li:after{
   background-color: #fff;
 }
+.c666 {
+  color: #666;
+}
 .list-text{
   display: inline-block;
   width: calc(100% - 74px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #666;
 }
 .alist-text{
   flex-grow: 1;
@@ -2157,6 +2161,7 @@ body,html{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #666;
 }
 .attach-list{
 }

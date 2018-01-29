@@ -95,7 +95,7 @@ export default {
     // 确定分类
     setClassify: function () {
       let classifyArr = [] // 重新保存确定的分类
-      let nameStr = '' // 显示的名字
+      let nameStr = [] // 显示的名字
       let activearr = [] // 选中的ids
       model.classifyArr.forEach(item => {
         item.active.forEach(msitem => {
@@ -112,15 +112,11 @@ export default {
               delete: 'no'
             }
             classifyArr.push(obj)
-            if (nameStr.length > 0) {
-              nameStr = nameStr + ',' + acfur.type_name
-            } else {
-              nameStr = acfur.type_name
-            }
+            nameStr.push(acfur.type_name)
           }
         })
       })
-      model.$emit('submitArr', classifyArr, nameStr)
+      model.$emit('submitArr', classifyArr, nameStr.join('/'))
       $('#classifylist').hide()
     },
 

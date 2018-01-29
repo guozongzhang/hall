@@ -43,8 +43,8 @@
                     <i class="fa fa-star"  v-for="sub in stars" aria-hidden="true" v-if="sub <= item.feasibility"></i>
                   </span>
                 </div>
-                <div class="fz12 mui-ellipsis">{{String(item.first_party_name).length > 13 ? String(item.first_party_name).substring(0, 13) + '...': String(item.first_party_name)}}</div>
-                <div class="fz12 intro-style mui-ellipsis">{{String(item.sketch).length > 13 ? String(item.sketch).substring(0, 13) + '...': String(item.sketch)}}</div>
+                <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
+                <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
               </div>
               <div class="detail">
                 <a href="javascript:;">

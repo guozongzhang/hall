@@ -3,7 +3,7 @@
   <div>
     <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" href="/jlxd/report">
           <span style="position: relative;top: -1px;">返回</span>
         </a>
         <span class="fa close-icon" @click="goHome()">×</span>
@@ -2224,7 +2224,7 @@ body,html{
   font-size: 20px;
 }
 .fa-star-o {
-  color: #ccc;
+  color: #aaa;
   font-size: 20px;
 }
 .fz12{

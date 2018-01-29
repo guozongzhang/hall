@@ -384,6 +384,7 @@
     height: 43px;
   }
   .mui-input-row label {
+    width: 30%;
     height: 43px;
     padding: 0;
     line-height: 43px;
@@ -407,6 +408,7 @@
     right: 0;
   }
   .mui-input-row label~input{
+    width: 70%;
     text-align: right;
   }
   .mui-table-view:before {
@@ -438,7 +440,7 @@
     color: #FFBE00;
   }
   .nav li i.fa-star-o{
-    color: #FFBE00;
+    color: #aaa;
   }
   .mui-table-view-cell{
     padding: 0 15px!important;

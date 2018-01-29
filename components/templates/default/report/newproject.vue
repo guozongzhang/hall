@@ -111,7 +111,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>甲方联系人</label>
-              <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
+              <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
             </div>
           </li>
           <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
@@ -815,7 +815,7 @@
 <style lang="">
   .sublinkman-style {
     font-size: 14px;
-    color: #ccc;
+    color: #999;
     text-align: right;
     padding: 0 20px;
     height: 24px;
@@ -866,7 +866,7 @@
     height: 30px;
     line-height: 30px;
     padding-left: 15px;
-    color: #969696;
+    color: #999;
   }
   .nav li.show{
     height: auto;
@@ -942,7 +942,7 @@
     color: #FFBE00;
   }
   .nav li i.fa-star-o{
-    color: #FFBE00;
+    color: #aaa;
   }
   .mui-table-view-cell{
     padding: 0 15px!important;
@@ -973,7 +973,7 @@
   }
   .mui-table-view-cell a span{
     float: right;
-    color: #969696;
+    color: #999;
     font-size: 14px;
     margin-right: 20px;
   }

@@ -3,7 +3,7 @@
   <div>
     <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" href="/jlxd/report">
           <span style="position: relative;top: -1px;">返回</span>
         </a>
         <span class="fa close-icon" @click="goHome()">×</span>
@@ -15,19 +15,19 @@
           <span class="list-icon reset-icon"></span>
         </a>
       </header>
-      <div class="detail-box">
+      <div class="detail-box" v-show="initok">
         <div class="basic-info">
-          <label>
-            <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
+          <label class="mui-ellipsis">
+            <span class="money">{{parseFloat(basicinfo.amount || 0)}}万元</span>·<span>{{String(basicinfo.name).length > 13 ? String(basicinfo.name).substring(0, 13) + '...': String(basicinfo.name)}}</span>
           </label>
           <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
             <span class="star-box">
-              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : ''"></i>
             </span>
           </div>
-          <div class="fz16">{{basicinfo.first_party_name}}</div>
-          <div class="fz16 intro-style">{{basicinfo.sketch}}</div>
+          <div class="fz16 mui-ellipsis">{{basicinfo.first_party_name}}</div>
+          <div class="fz16 intro-style mui-ellipsis">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
             <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
@@ -67,40 +67,40 @@
                   </div>
                   <div class="project-sublist">
                     <ul class="ul-list">
-                      <li class="mui-table-view-cell">
-                        <span>项目编号：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666">项目编号：</span>
                         <span class="list-text">{{basicinfo.number}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>招标时间：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">招标时间：</span>
                         <span class="list-text">{{forMatTime(basicinfo.invitation_time, 'YYYY.MM.DD')}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>交付时间：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">交付时间：</span>
                         <span class="list-text">{{forMatTime(basicinfo.delivery_time, 'YYYY.MM.DD')}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>项目类型：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">项目类型：</span>
                         <span class="list-text">{{filterProType(basicinfo.category)}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>产品品类：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">产品品类：</span>
                         <span class="list-text">{{progoodstyepstr}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>项目介绍：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">项目介绍：</span>
                         <span class="list-text">{{basicinfo.intro}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>风险分析：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">风险分析：</span>
                         <span class="list-text">{{basicinfo.risk_analysis}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>项目备注：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">项目备注：</span>
                         <span class="list-text">{{basicinfo.remark}}</span>
                       </li>
                       <li class="mui-table-view-cell">
-                        <span>上传附件：</span>
+                        <span class="c666 f16">上传附件：</span>
                         <p class="attach-list">
                           <img :src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
                         </p>
@@ -119,16 +119,16 @@
                   </div>
                   <div class="project-sublist">
                     <ul class="ul-list">
-                      <li class="mui-table-view-cell">
-                        <span>所属区域：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">所属区域：</span>
                         <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                       </li>
-                      <li class="mui-table-view-cell" v-for="(sub, index) in alinkman" >
-                        <span>第{{index+1}}联系人：</span>
-                        <span class="alist-text">{{sub.name}} / {{sub.job}} / {{sub.tel}}</span>
+                      <li class="mui-table-view-cell f16" v-for="(sub, index) in alinkman" >
+                        <span class="c666 f16">第{{index+1}}联系人：</span>
+                        <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
                       </li>
-                      <li class="mui-table-view-cell" v-show="alinkman.length == 0">
-                        <span>甲方联系人：</span>
+                      <li class="mui-table-view-cell f16" v-show="alinkman.length == 0">
+                        <span class="c666 f16">甲方联系人：</span>
                       </li>
                     </ul>
                   </div>
@@ -144,28 +144,28 @@
                   </div>
                   <div class="project-sublist">
                     <ul class="ul-list">
-                      <li class="mui-table-view-cell">
-                        <span>姓名：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">姓名：</span>
                         <span class="alist-text">{{reportman.name}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>项目关系：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">项目关系：</span>
                         <span class="alist-text">{{reportman.project_relation}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>期望提成：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">期望提成：</span>
                         <span class="alist-text">{{reportman.royalties_expectation ? reportman.royalties_expectation + '%' : ''}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>项目优势：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">项目优势：</span>
                         <span class="alist-text">{{reportman.strengths}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系电话：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">联系电话：</span>
                         <span class="alist-text">{{reportman.tel}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>联系邮箱：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">联系邮箱：</span>
                         <span class="alist-text">{{reportman.email}}</span>
                       </li>
                     </ul>
@@ -182,20 +182,20 @@
                   </div>
                   <div class="project-sublist">
                     <ul class="ul-list">
-                      <li class="mui-table-view-cell">
-                        <span>乙方对手：</span>
-                        <span class="alist-text">{{basicinfo.second_party_competitor}}</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">乙方对手：</span>
+                        <span class="alist-text">{{((basicinfo.second_party_competitor || '').split(',') || []).join('/')}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>竞争对手：</span>
-                        <span class="alist-text">{{basicinfo.competitor}}</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">竞争对手：</span>
+                        <span class="alist-text">{{((basicinfo.competitor || '').split(',') || []).join('/')}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>项目亮点：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">项目亮点：</span>
                         <span class="alist-text">{{basicinfo.competitor_strengths}}</span>
                       </li>
-                      <li class="mui-table-view-cell">
-                        <span>形式预测：</span>
+                      <li class="mui-table-view-cell f16">
+                        <span class="c666 f16">形式预测：</span>
                         <span class="alist-text">{{basicinfo.competitor_projections}}</span>
                       </li>
                     </ul>
@@ -215,7 +215,7 @@
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
                         </p>
-                        <p style="font-size: 14px;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
+                        <p style="font-size: 14px;color: #999;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
                   </ul>
@@ -283,19 +283,19 @@
           <div class="must">
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目名称<span>*</span></label>
-              <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
+              <input type="text" placeholder="输入项目名称" maxlength="20" v-model="editbaisc.name">
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>甲方名称<span>*</span></label>
-              <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
+              <input type="text" placeholder="输入甲方名称" maxlength="20" v-model="editbaisc.first_party_name">
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目金额<span>*</span></label>
               <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;position: relative;top: 9px;margin-right: 15px;">万元</span>
-              <input type="text" placeholder="万元" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
+              <input type="text" placeholder="万元" maxlength="20" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
             </div>
             <div class="mui-input-row sub-input-box edit-basic-box" style="background-color: #fff;">
-              <label>项目可行性<span>*</span></label>
+              <label style="width: 29%">项目可行性<span>*</span></label>
               <div class="stars-style">
                 <span class="star-box">
                   <i class="fa mui-icon mui-icon-left-nav mui-pull-right" @click="getStar(sub)"  v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= editbaisc.feasibility ? 'fa-star' : 'fa-star-o'"></i>
@@ -304,11 +304,13 @@
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>有效期<span>*</span></label>
-              <span class="area-text" @click="changeProValtime()">{{editbaisc.validity_text}}</span>
+              <span class="area-text mui-navigate-right" @click="changeProValtime()">
+                <span style="position: relative;top: 3px;">{{editbaisc.validity_text}}</span>
+              </span>
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>简单描述<span>*</span></label>
-              <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
+              <input type="text" placeholder="输入简单描述" maxlength="20" v-model="editbaisc.sketch">
             </div>
           </div>
         </div>
@@ -362,7 +364,7 @@
         <div>
           <div class="mui-input-row sub-input-box">
 						<label>项目编号</label>
-						<input type="text" placeholder="输入项目编号" v-model="editpro.number">
+						<input type="text" placeholder="输入项目编号" maxlength="11" style="width: 73%;" v-model="editpro.number">
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>招标时间</label>
@@ -374,7 +376,7 @@
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>产品品类</label>
-            <span class="area-text" @click="changeGoodsType()">{{editpro.type}}</span>
+            <span class="area-text" style="padding-right: 20px;" @click="changeGoodsType()">{{editpro.type}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>项目类型</label>
@@ -401,7 +403,7 @@
                 <i class="fa fa-plus add-icon"></i>
               </span>
             </span>
-            <div class="attach-img-box" >
+            <div class="attach-img-box" v-show="editproImg.length > 0">
               <div class="img-box" v-for="img in editproImg" v-show="img.show">
                 <span class="delete-img" @click="deleteImg(img)">×</span>
                 <img :src="img.file_url"/>
@@ -430,10 +432,10 @@
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>甲方联系人</label>
-            <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
+            <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
 					</div>
           <div style="padding: 10px 0;" v-show="alinkman.length > 0">
-            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
           </div>
         </div>
       </div>
@@ -455,11 +457,11 @@
         <div>
           <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
 						<label>乙方对手</label>
-            <span class="area-text sub-input-text">{{competitors.second_party_competitor}}</span>
+            <span class="area-text sub-input-text">{{((competitors.second_party_competitor || '').split(',') || []).join('/')}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('competitor','报备人对手')">
 						<label>竞争对手</label>
-            <span class="area-text sub-input-text">{{competitors.competitor}}</span>
+            <span class="area-text sub-input-text">{{((competitors.competitor || '').split(',') || []).join('/')}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>项目亮点</label>
@@ -527,29 +529,8 @@
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
     </div>
-    <div class="classify-box" id="classifylist">
-      <div class="sub-classify">
-        <div class="null-box" @click="cancelModal()"></div>
-        <div class="clasify-item" v-for="item in classifyArr">
-          <p class="title">
-            <label>{{item.sp_type_name}}</label>
-            <a href="javascript:;" @click="showAllTypes(item)">
-              <span>{{item.showall ? '收起' : '全部'}}</span>
-              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
-            </a>
-          </p>
-          <ul class="items-ul">
-            <li v-bind:class="sub.active ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(sub)" v-show="index < 3 || item.showall">
-              <a href="javascript:;" :title="sub.type_name">{{sub.type_name}}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="clasify-btn">
-          <a href="javascript:;" @click="resetClassify()">重置</a>
-          <a href="javascript:;" class="submit-btn" @click="setClassify()">完成</a>
-        </div>
-      </div>
-    </div>
+    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
+
     <div v-show="activeTab == 'edittextarea'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
@@ -570,6 +551,7 @@ import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
 import editReportvue from './_editreport.vue'
+import Tab from './_tab.vue'
 let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
 let url = require('url')
@@ -580,9 +562,9 @@ let Cookies = require('js-cookie')
 let moment = require('moment')
 let model
 let proId
+let modalflag = true
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
-let activeTypeIds = [] // 产品品类
 let updateTypeArr = [] // 提交的项目类型数组
 let reportState = [
   {
@@ -625,6 +607,10 @@ let reportState = [
 export default {
   data () {
     return {
+      initok: false,
+      acticearr: [],
+      oriarr: [],
+      flag: 0,
       recordImgs: [], // 报备记录附件
       dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
@@ -667,7 +653,8 @@ export default {
   components: {
     'vue-area': Area,
     'vue-one': proType,
-    'vue-editreport': editReportvue
+    'vue-editreport': editReportvue,
+    'vue-tab': Tab
   },
   methods: {
     init: async function () {
@@ -719,7 +706,8 @@ export default {
       getresult.data.project_rel_project_furniture_types.items.forEach((item) => {
         arr.push(item.name)
       })
-      model.progoodstyepstr = arr.join('-')
+      model.initok = true
+      model.progoodstyepstr = arr.join('/')
       model.basicinfo = getresult.data
       model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
       model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
@@ -795,6 +783,52 @@ export default {
         window.mui.toast(result.msg)
       }
       return result.status
+    },
+
+    // 获取产品分类
+    getclassifyArr (obj, info) {
+      model.editpro.type = info
+      model.acticearr = obj
+      let res = []
+      let oriids = []
+      let newids = []
+      if (model.oriarr.length > 0) {
+        oriids = _.map(model.oriarr, item => {
+          return item.type_poi_furniture_types
+        })
+      }
+      if (obj.length > 0) {
+        newids = _.map(obj, item => {
+          return item.type_poi_furniture_types
+        })
+      }
+      if (obj.length > 0) {
+        obj.forEach(item => {
+          if (oriids.indexOf(item.type_poi_furniture_types) < 0) {
+            let tmp = {
+              type_poi_furniture_types: item.type_poi_furniture_types,
+              name: item.name,
+              id: 0,
+              delete: 'no'
+            }
+            res.push(tmp)
+          }
+        })
+      }
+      if (model.oriarr.length > 0) {
+        model.oriarr.forEach(oriitem => {
+          if (newids.indexOf(oriitem.type_poi_furniture_types) < 0) {
+            let tmp = {
+              id: oriitem.id,
+              name: oriitem.name,
+              type_poi_furniture_types: oriitem.type_poi_furniture_types,
+              delete: 'yes'
+            }
+            res.push(tmp)
+          }
+        })
+      }
+      updateTypeArr = res
     },
 
     // 保存必填信息
@@ -982,8 +1016,8 @@ export default {
 
     // 确定添加跟踪记录
     confAddRecord: function () {
-      if (!model.recordtext) {
-        window.mui.toast('跟踪记录为空！')
+      if (!model.recordtext && model.recordImgs.length === 0) {
+        window.mui.toast('请填写跟踪记录或者上传附件！')
         return
       }
       let param = {
@@ -1075,81 +1109,13 @@ export default {
 
     // 编辑产品品类
     filterGoodsType: function (arr) {
-      let res = ''
+      model.oriarr = _.clone(arr)
+      model.acticearr = arr
       let subarr = []
       arr.forEach((item) => {
-        let tmp = {
-          id: item.id,
-          delete: 'no',
-          name: item.name,
-          type_poi_furniture_types: item.type_poi_furniture_types
-        }
-        updateTypeArr.push(tmp)
-        activeTypeIds.push(item.type_poi_furniture_types)
         subarr.push(item.name)
       })
-      res = subarr.join('-')
-      return res
-    },
-
-    // 显示各分类全部（收起）
-    showAllTypes: function (obj) {
-      obj.showall = !obj.showall
-    },
-
-    // 选择三级分类
-    choiceType: function (obj) {
-      if (obj.active) {
-        obj.active = false
-        activeTypeIds = _.without(activeTypeIds, obj.id)
-        updateTypeArr.forEach((item) => {
-          if (obj.id === item.type_poi_furniture_types) {
-            item.delete = 'yes'
-          }
-        })
-      } else {
-        obj.active = true
-        activeTypeIds.unshift(obj.id)
-        let tmp = {
-          id: 0,
-          delete: 'no',
-          name: obj.type_name,
-          type_poi_furniture_types: obj.id
-        }
-        updateTypeArr.unshift(tmp)
-      }
-    },
-
-    // 点击空白消失选择宽
-    cancelModal: function () {
-      $('#classifylist').hide()
-    },
-
-    // 重置
-    resetClassify: function () {
-      model.classifyArr.forEach((p) => {
-        p.furniture_types.forEach((sub) => {
-          sub.active = false
-        })
-      })
-      updateTypeArr.forEach((item) => {
-        item.delete = 'yes'
-      })
-      activeTypeIds = []
-    },
-
-    // 完成三级分类
-    setClassify: function () {
-      let tmp = []
-      model.classifyArr.forEach((p) => {
-        p.furniture_types.forEach((sub) => {
-          if (activeTypeIds.indexOf(sub.id) > -1) {
-            tmp.push(sub.type_name)
-          }
-        })
-      })
-      model.editpro.type = tmp.join('-')
-      $('#classifylist').hide()
+      return subarr.join('/')
     },
 
     // 编辑项目信息
@@ -1254,20 +1220,12 @@ export default {
 
     // 产品品类
     changeGoodsType: async function () {
-      let res = await axios.get('functions/furnitures/furniture_types', {params: ''})
-      res.data.forEach((item) => {
-        item.showall = false
-        item.furniture_types.forEach((sub) => {
-          if (activeTypeIds.indexOf(sub.id) > -1) {
-            sub.active = true
-          } else {
-            sub.active = false
-          }
-        })
-      })
-      model.classifyArr = res.data
+      model.flag = Math.random()
       $('#classifylist').show()
-      $('#classifylist').addClass('animated bounceInRight')
+      $('.content-box').addClass('animated bounceInRight')
+      setTimeout(function () {
+        // $('.content-box').removeClass('bounceInRight')
+      }, 1000)
     },
 
     // 编辑甲方信息
@@ -1287,9 +1245,14 @@ export default {
 
     // 选择地区
     changeAre: function () {
-      model.layer = 'area'
-      model.areaarr = []
-      model.areaobj.state = Math.random()
+      if (modalflag) {
+        model.layer = 'area'
+        model.areaarr = []
+        model.areaobj.state = Math.random()
+      }
+      setTimeout(function () {
+        modalflag = true
+      }, 500)
     },
 
     // 获取选择地区信息
@@ -1309,6 +1272,7 @@ export default {
       if (model.layer === 'delivery') {
         model.editpro.delivery_time = str[0].text + '-' + str[1].text + '-' + str[2].text
       }
+      modalflag = true
     },
 
     // 添加甲方联系人
@@ -1632,6 +1596,10 @@ export default {
 }
 </script>
 <style>
+.f16 {
+  font-size: 16px !important;
+}
+[v-cloak] { display: none!important; }
 body,html{
   background-color: #eee !important;
 }
@@ -1900,7 +1868,7 @@ body,html{
 }
 .sub-input-box label{
   line-height: 18px;
-  width: 30%;
+  width: 27%;
   color: #666;
 }
 .sub-input-box .area-text{
@@ -1908,13 +1876,16 @@ body,html{
   height: 34px;
   line-height: 34px;
   font-size: 14px;
-  padding-right: 10px;
-  width: 70%;
+  padding-right: 17px;
+  width: 70% !important;
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #999;
+}
+.mui-input-row label~input {
+  width: 73%;
 }
 .sub-input-text {
   position: relative;
@@ -2175,12 +2146,16 @@ body,html{
 .project-sublist .ul-list li:after{
   background-color: #fff;
 }
+.c666 {
+  color: #666;
+}
 .list-text{
   display: inline-block;
-  width: calc(100% - 74px);
+  width: calc(100% - 82px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #666;
 }
 .alist-text{
   flex-grow: 1;
@@ -2189,6 +2164,7 @@ body,html{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #666;
 }
 .attach-list{
 }
@@ -2256,7 +2232,7 @@ body,html{
   font-size: 20px;
 }
 .fa-star-o {
-  color: #ccc;
+  color: #aaa;
   font-size: 20px;
 }
 .fz12{
@@ -2312,116 +2288,6 @@ body,html{
 }
 .go-report .right-circle {
   right: -18px;
-}
-.classify-box{
-  display: none;
-  position: fixed;
-  top: 44px;
-  z-index: 1000;
-  width: 100%;
-  height: calc(100% - 44px);
-  background-color: rgba(0, 0, 0, 0.6);
-  overflow-y: auto;
-}
-.sub-classify{
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
-  min-height: calc(100% - 44px);
-  padding: 10px;
-  background-color: #fff;
-  padding-bottom: 50px;
-}
-.null-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: inline-block;
-  width: calc(100% - 276px);
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  float: left;
-}
-.clasify-item{
-  width: 260px;
-  float: right;
-  margin-bottom: 20px;
-}
-.clasify-item .title{
-  margin: 0;
-  padding: 0;
-  height: 22px;
-  line-height: 22px;
-  margin-bottom: 10px;
-}
-.title > label {
-  color: #050505;
-}
-.title > a{
-  float: right;
-}
-.clasify-item .items-ul{
-  margin: 0;
-  padding: 4px;
-  list-style: none;
-}
-.clasify-item .items-ul li{
-  display: inline-block;
-  list-style: none;
-  width: 74px;
-  height: 30px;
-  margin-right: 12px;
-  margin-bottom: 6px;
-}
-.clasify-item .items-ul li:nth-child(3n){
-  margin-right: 0;
-}
-.clasify-item .items-ul li a{
-  display: inline-block;
-  width: 80px;
-  height: 30px;
-  padding: 0 5px;
-  text-align: center;
-  line-height: 28px;
-  font-size: 14px;
-  text-decoration: none;
-  color: #3d3d3d;
-  border: 1px solid #737373;
-  border-radius: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.clasify-item .items-ul .active a{
-  background-color: #5075ce;
-  border: 1px solid #5075ce;
-  color: #fff;
-}
-.clasify-btn{
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  width: 280px;
-  height: 50px;
-  z-index: 100;
-  background-color: #fff;
-}
-.clasify-btn > a{
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-  height: 50px;
-  line-height: 50px;
-  color: #3d3d3d;
-  font-size: 15px;
-  border-top: 1px solid #ababab;
-  cursor: pointer;
-}
-.clasify-btn .submit-btn{
-  background-color: #5075ce;
-  border-top: 1px solid #5075ce;
-  color: #fff;
 }
 .must label span{
   color: red;

@@ -40,3 +40,15 @@ html,body{
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.1);
   background-color: rgba(0,0,0,.1);
 }
+::-webkit-input-placeholder { /* WebKit browsers */
+  color: #999;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #999;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #999;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color: #999;
+}

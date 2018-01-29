@@ -13,14 +13,14 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label >项目名称<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入项目名称" v-model="thisdata.name">
+            <label style="width:22%">项目名称<i>*</i></label>
+            <input type="text" maxlength="20" style="width: 78%" placeholder="请输入项目名称" v-model="thisdata.name">
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>公司名称<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <label style="width:22%">公司名称<i>*</i></label>
+            <input type="text" maxlength="20" style="width: 78%" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -32,8 +32,8 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
+            <label style="width:22%">简单描述<i>*</i></label>
+            <input type="text" maxlength="20" style="width: 78%"  placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -51,8 +51,8 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>与项目关系</label>
-            <input type="text" maxlength="20" placeholder="" v-model="thisdata.project_reportman[0].project_relation">
+            <label style="width:22%">与项目关系</label>
+            <input type="text" maxlength="20" style="width: 78%"  placeholder="" v-model="thisdata.project_reportman[0].project_relation">
           </div>
         </li>
         <li class="mui-table-view-cell" @click="starshow($event)">
@@ -384,6 +384,7 @@
     height: 43px;
   }
   .mui-input-row label {
+    width: 28%;
     height: 43px;
     padding: 0;
     line-height: 43px;
@@ -407,6 +408,7 @@
     right: 0;
   }
   .mui-input-row label~input{
+    width: 70%;
     text-align: right;
   }
   .mui-table-view:before {
@@ -438,7 +440,7 @@
     color: #FFBE00;
   }
   .nav li i.fa-star-o{
-    color: #FFBE00;
+    color: #aaa;
   }
   .mui-table-view-cell{
     padding: 0 15px!important;

@@ -47,7 +47,7 @@
           <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<i>*</i><span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
-          <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right">报备人报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '500')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
@@ -111,11 +111,11 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>甲方联系人</label>
-              <a href="javascript:;" class="mui-navigate-right" @click="addlinkman()"></a>
+              <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
             </div>
           </li>
           <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
-            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}} / {{sublink.job}} / {{sublink.tel}}</div>
+            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
           </div>
         </div>
 
@@ -145,13 +145,15 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text"  placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <span style="color: #666;float: right;font-size: 14px;" v-show="thisdata.project_reportman[0].type == 'self'">{{thisdata.project_reportman[0].tel}}</span>
+              <input type="text" style="color: #666 !important;" v-show="thisdata.project_reportman[0].type != 'self'" placeholder="请输入联系人电话" v-model="cloneInfo.tel"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系邮箱</label>
-              <input type="text" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email"  placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
+              <span style="color: #666;float: right;font-size: 14px;" v-show="thisdata.project_reportman[0].type == 'self'">{{thisdata.project_reportman[0].email}}</span>
+              <input type="text" style="color: #666 !important;" v-show="thisdata.project_reportman[0].type != 'self'" v-model="cloneInfo.email"  placeholder="请输入联系邮箱">
             </div>
           </li>
         </div>
@@ -162,7 +164,7 @@
 
         <div class="jzInfo">
           <li class="mui-table-view-cell" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
-            <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{thisdata.second_party_competitor}}</span></a>
+            <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{((thisdata.second_party_competitor || '').split(',') || []).join('/')}}</span></a>
           </li>
 
           <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
@@ -216,7 +218,7 @@
     </div>
     <div class="alinkman">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goLinkBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">甲方联系人</h1>
         <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
@@ -278,35 +280,14 @@
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
-    <div class="classify-box" id="classifylist">
-      <div class="sub-classify">
-        <div class="null-box" @click="cancelModal()"></div>
-        <div class="clasify-item" v-for="item in classifyArr">
-          <p class="title">
-            <label>{{item.sp_type_name}}</label>
-            <a href="javascript:;" @click="showAllTypes(item)">
-              <span>{{item.showall ? '收起' : '全部'}}</span>
-              <span class="fa" v-bind:class="item.showall ? 'fa-angle-up' : 'fa-angle-down'"></span>
-            </a>
-          </p>
-          <ul class="items-ul">
-            <li v-bind:class="item.active.indexOf(sub.id) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
-              <a href="javascript:;">{{sub.type_name}}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="clasify-btn">
-          <a href="javascript:;" @click="resetClassify()">重置</a>
-          <a href="javascript:;" class="submit-btn" @click="setClassify()">确定</a>
-        </div>
-      </div>
-    </div>
+    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
   </div>
 </template>  
 <script>
   import One from '../common/onelayer.vue'
   import Area from '../common/threelayer.vue'
   import Two from '../common/twolayer.vue'
+  import Tab from './_tab.vue'
   import axios from '~/plugins/axios'
   let dateJson = require('~/static/js/date.json')
   let url = require('url')
@@ -318,6 +299,7 @@
   let typeStr
   let changeOneType
   let msInfo = {}
+  let modalflag = true
   export default {
     head: {
       title: '新建项目'
@@ -372,6 +354,8 @@
           competitor_strengths: '',
           competitor_projections: ''
         },
+        flag: 0,
+        acticearr: [],
         alinkman: [], // 甲方联系人
         onearr: [],
         oneobj: {
@@ -424,23 +408,13 @@
             }, 2000)
           }
         })
+      },
 
-        axios.get('/functions/furnitures/furniture_types', {
-        }).then(function (data) {
-          data.data.forEach(item => {
-            item.active = ''
-            item.showall = false
-          })
-          model.classifyArr = data.data
-        }).catch(function (error) {
-          if (error.response.data.message === 'token is invalid') {
-            window.mui.toast('登录信息过期!')
-            setTimeout(function () {
-              Cookies.set('dpjia-hall-token', '')
-              window.location.href = model.linkPath + '/login'
-            }, 2000)
-          }
-        })
+      // 获取产品分类
+      getclassifyArr (obj, info) {
+        model.furtypeStr = info
+        model.acticearr = obj
+        model.thisdata.project_furniture_types = obj
       },
 
       // 添加甲方联系人
@@ -450,6 +424,12 @@
         }
         $('.more').hide()
         $('.alinkman').show()
+      },
+
+      // 联系人返回
+      goLinkBack: function () {
+        $('.more').show()
+        $('.alinkman').hide()
       },
 
       // 添加多个联系人
@@ -580,48 +560,6 @@
         model.jzds = _.without(model.jzds, item)
       },
 
-      // 显示各分类全部（收起）
-      showAllTypes: function (obj) {
-        obj.showall = !obj.showall
-      },
-
-      // 选择分类
-      choiceType: function (item, sub) {
-        if (item.active.indexOf(sub.id) < 0) {
-          let obj = {
-            type_poi_furniture_types: sub.id,
-            name: sub.type_name,
-            id: 0,
-            delete: 'no'
-          }
-          item.active = item.active + ',' + sub.id
-          model.classifyActiveArr.push(obj)
-          model.furtypeStr = model.furtypeStr + ',' + sub.type_name
-        }
-      },
-
-      // 确定分类
-      setClassify: function () {
-        model.thisdata.project_furniture_types = model.classifyActiveArr
-        model.furtypeStr = model.furtypeStr.substr(1, model.furtypeStr.length - 1)
-        $('#classifylist').hide()
-      },
-
-      // 点击空白消失选择宽
-      cancelModal: function () {
-        $('#classifylist').hide()
-      },
-
-      // 重置分类
-      resetClassify: function () {
-        model.classifyArr.forEach(item => {
-          item.active = ''
-        })
-        model.classifyActiveArr = []
-        model.furtypeStr = ''
-        // $('#classifylist').hide()
-      },
-
       // 上传图片
       upload_com: function () {
         var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
@@ -664,12 +602,13 @@
         })
       },
 
-      // 点击筛选
+      // 弹出分类模态框
       showClassify: function () {
+        model.flag = Math.random()
         $('#classifylist').show()
-        $('#classifylist').addClass('animated bounceInRight')
+        $('.content-box').addClass('animated bounceInRight')
         setTimeout(function () {
-          $('#classifylist').removeClass('bounceInRight')
+          // $('.content-box').removeClass('bounceInRight')
         }, 1000)
       },
 
@@ -784,41 +723,51 @@
 
       // 获取项目类型/月份
       testone: function (type) {
-        changeOneType = type
-        let param = {}
-        model.onearr = []
-        if (type === 'time') {
-          param = {
-            where: {
-              state_types: 'report_valtime'
+        if (modalflag) {
+          modalflag = false
+          changeOneType = type
+          let param = {}
+          model.onearr = []
+          if (type === 'time') {
+            param = {
+              where: {
+                state_types: 'report_valtime'
+              }
+            }
+          } else {
+            param = {
+              where: {
+                state_types: 'report_projecttype'
+              }
             }
           }
-        } else {
-          param = {
-            where: {
-              state_types: 'report_projecttype'
-            }
-          }
-        }
-        axios.get('classes/selectable_states', {
-          params: param
-        }).then(function (data) {
-          data.data.items.forEach((item) => {
-            model.onearr.push({'value': item.name, 'text': item.alias})
+          axios.get('classes/selectable_states', {
+            params: param
+          }).then(function (data) {
+            data.data.items.forEach((item) => {
+              modalflag = true
+              model.onearr.push({'value': item.name, 'text': item.alias})
+            })
+            model.oneobj.state = Math.random()
           })
-          model.oneobj.state = Math.random()
-        })
+        }
       },
 
       // 改变月份
       change: function (val) {
-        if (changeOneType === 'time') {
-          model.cloneValidity = val[0].text
-          model.thisdata.validity = val[0].value
-        } else {
-          model.cloneCategory = val[0].text
-          model.thisdata.category = val[0].value
+        if (modalflag) {
+          modalflag = false
+          if (changeOneType === 'time') {
+            model.cloneValidity = val[0].text
+            model.thisdata.validity = val[0].value
+          } else {
+            model.cloneCategory = val[0].text
+            model.thisdata.category = val[0].value
+          }
         }
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       },
 
       // 选择省市区
@@ -846,75 +795,40 @@
         if (model.layer === 'delivery') {
           model.thisdata.delivery_time = val[0].text + '-' + val[1].text + '-' + val[2].text
         }
+        modalflag = true
       },
 
       // 招标时间
       changeTime: function (str) {
-        model.layer = str
-        model.arr = dateJson
-        model.area.state = Math.random()
+        if (modalflag) {
+          model.layer = str
+          model.arr = dateJson
+          model.area.state = Math.random()
+          modalflag = false
+        }
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       },
 
       // 省市区三级联动
       testarea: async function () {
-        model.layer = 'area'
-        model.arr = []
-
-        // 省
-        let paramp = {
-          limit: 100
+        if (modalflag) {
+          modalflag = false
+          model.layer = 'area'
+          model.arr = []
+          model.area.state = Math.random()
         }
-        let prodata = await axios.get('classes/province', {
-          params: paramp
-        })
-        // 市
-        let paramc = {
-          limit: 500
-        }
-        let citydata = await axios.get('classes/city', {
-          params: paramc
-        })
-        // 区
-        let paramd = {
-          limit: 3000
-        }
-        let disdata = await axios.get('classes/district', {
-          params: paramd
-        })
-        prodata.data.items.forEach((p) => {
-          let tp = {
-            'value': p.id,
-            'text': p.ProvinceName,
-            'children': []
-          }
-          citydata.data.items.forEach((c) => {
-            if (c.ProvinceID === p.id) {
-              let cp = {
-                'value': c.id,
-                'text': c.CityName,
-                'children': []
-              }
-              disdata.data.items.forEach((d) => {
-                if (d.CityID === c.id) {
-                  let dp = {
-                    'value': d.id,
-                    'text': d.DistrictName
-                  }
-                  cp.children.push(dp)
-                }
-              })
-              tp.children.push(cp)
-            }
-          })
-          model.arr.push(tp)
-        })
-        model.area.state = Math.random()
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       }
     },
     components: {
       'vue-area': Area,
       'vue-two': Two,
-      'vue-one': One
+      'vue-one': One,
+      'vue-tab': Tab
     },
     mounted () {
       model = this
@@ -925,7 +839,7 @@
 <style lang="">
   .sublinkman-style {
     font-size: 14px;
-    color: #ccc;
+    color: #999;
     text-align: right;
     padding: 0 20px;
     height: 24px;
@@ -976,7 +890,7 @@
     height: 30px;
     line-height: 30px;
     padding-left: 15px;
-    color: #969696;
+    color: #999;
   }
   .nav li.show{
     height: auto;
@@ -1052,7 +966,7 @@
     color: #FFBE00;
   }
   .nav li i.fa-star-o{
-    color: #FFBE00;
+    color: #aaa;
   }
   .mui-table-view-cell{
     padding: 0 15px!important;
@@ -1083,7 +997,7 @@
   }
   .mui-table-view-cell a span{
     float: right;
-    color: #969696;
+    color: #999;
     font-size: 14px;
     margin-right: 20px;
   }
@@ -1167,114 +1081,5 @@
     display: inline-block;
     height: 48px;
   }
-   .classify-box{
-    display: none;
-    position: fixed;
-    top: 44px;
-    z-index: 1000;
-    width: 100%;
-    height: calc(100% - 44px);
-    background-color: rgba(0, 0, 0, 0.6);
-    overflow-y: auto;
-  }
-   .sub-classify{
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 100%;
-    min-height: calc(100% - 44px);
-    padding: 10px;
-    background-color: #fff;
-    padding-bottom: 50px;
-  }
-  .null-box {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: inline-block;
-    width: calc(100% - 276px);
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    float: left;
-  }
-  .clasify-item{
-    width: 260px;
-    float: right;
-    margin-bottom: 20px;
-  }
-  .clasify-item .title{
-    margin: 0;
-    padding: 0;
-    height: 22px;
-    line-height: 22px;
-    margin-bottom: 10px;
-  }
-  .title > label {
-    color: #050505;
-  }
-  .title > a{
-    float: right;
-  }
-  .clasify-item .items-ul{
-    margin: 0;
-    padding: 4px;
-    list-style: none;
-  }
-  .clasify-item .items-ul li{
-    display: inline-block;
-    list-style: none;
-    width: 74px;
-    height: 30px;
-    margin-right: 12px;
-    margin-bottom: 6px;
-  }
-  .clasify-item .items-ul li:nth-child(3n){
-    margin-right: 0;
-  }
-  .clasify-item .items-ul li a{
-    display: inline-block;
-    width: 80px;
-    height: 30px;
-    padding: 0 5px;
-    text-align: center;
-    line-height: 28px;
-    font-size: 14px;
-    text-decoration: none;
-    color: #3d3d3d;
-    border: 1px solid #737373;
-    border-radius: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .clasify-item .items-ul .active a{
-    background-color: #5075ce;
-    border: 1px solid #5075ce;
-    color: #fff;
-  }
-  .clasify-btn{
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    width: 280px;
-    height: 50px;
-    z-index: 100;
-    background-color: #fff;
-  }
-  .clasify-btn > a{
-    display: inline-block;
-    width: 50%;
-    text-align: center;
-    height: 50px;
-    line-height: 50px;
-    color: #3d3d3d;
-    font-size: 15px;
-    border-top: 1px solid #ababab;
-    cursor: pointer;
-  }
-  .clasify-btn .submit-btn{
-    background-color: #5075ce;
-    border-top: 1px solid #5075ce;
-    color: #fff;
-  }
+  
 </style>

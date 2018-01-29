@@ -401,7 +401,7 @@
                 <i class="fa fa-plus add-icon"></i>
               </span>
             </span>
-            <div class="attach-img-box" >
+            <div class="attach-img-box" v-show="editproImg.length > 0">
               <div class="img-box" v-for="img in editproImg" v-show="img.show">
                 <span class="delete-img" @click="deleteImg(img)">×</span>
                 <img :src="img.file_url"/>
@@ -1922,7 +1922,7 @@ body,html{
   height: 34px;
   line-height: 34px;
   font-size: 14px;
-  padding-right: 10px;
+  padding-right: 17px;
   width: 70%;
   text-align: right;
   overflow: hidden;

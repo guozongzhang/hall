@@ -137,7 +137,6 @@ export default {
         let index = item.active.indexOf(sub.id)
         item.active.splice(index, 1)
       }
-      console.log(item.active)
     }
   },
   mounted () {

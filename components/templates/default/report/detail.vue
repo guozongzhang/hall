@@ -560,6 +560,7 @@ let Cookies = require('js-cookie')
 let moment = require('moment')
 let model
 let proId
+let modalflag = true
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let updateTypeArr = [] // 提交的项目类型数组
@@ -1240,9 +1241,14 @@ export default {
 
     // 选择地区
     changeAre: function () {
-      model.layer = 'area'
-      model.areaarr = []
-      model.areaobj.state = Math.random()
+      if (modalflag) {
+        model.layer = 'area'
+        model.areaarr = []
+        model.areaobj.state = Math.random()
+      }
+      setTimeout(function () {
+        modalflag = true
+      }, 500)
     },
 
     // 获取选择地区信息
@@ -1262,6 +1268,7 @@ export default {
       if (model.layer === 'delivery') {
         model.editpro.delivery_time = str[0].text + '-' + str[1].text + '-' + str[2].text
       }
+      modalflag = true
     },
 
     // 添加甲方联系人

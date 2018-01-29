@@ -297,6 +297,7 @@
   let typeStr
   let changeOneType
   let msInfo = {}
+  let modalflag = true
   export default {
     head: {
       title: '新建项目'
@@ -776,6 +777,7 @@
         if (model.layer === 'delivery') {
           model.thisdata.delivery_time = val[0].text + '-' + val[1].text + '-' + val[2].text
         }
+        modalflag = true
       },
 
       // 招标时间
@@ -787,9 +789,15 @@
 
       // 省市区三级联动
       testarea: async function () {
-        model.layer = 'area'
-        model.arr = []
-        model.area.state = Math.random()
+        if (modalflag) {
+          modalflag = false
+          model.layer = 'area'
+          model.arr = []
+          model.area.state = Math.random()
+        }
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       }
     },
     components: {

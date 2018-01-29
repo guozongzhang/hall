@@ -251,9 +251,8 @@ export default {
   }
   .clasify-btn{
     position: fixed;
-    right: 0;
     bottom: 0;
-    width: 280px;
+    width: 276px;
     height: 50px;
     z-index: 100;
     background-color: #fff;

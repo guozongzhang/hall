@@ -32,8 +32,8 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>简单描述<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
+            <label style="width:22%">简单描述<i>*</i></label>
+            <input type="text" maxlength="20" style="width: 78%"  placeholder="一句话简单的描述一下项目" v-model="thisdata.sketch">
           </div>
         </li>
         <li class="mui-table-view-cell">
@@ -51,8 +51,8 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>与项目关系</label>
-            <input type="text" maxlength="20" placeholder="" v-model="thisdata.project_reportman[0].project_relation">
+            <label style="width:22%">与项目关系</label>
+            <input type="text" maxlength="20" style="width: 78%"  placeholder="" v-model="thisdata.project_reportman[0].project_relation">
           </div>
         </li>
         <li class="mui-table-view-cell" @click="starshow($event)">

@@ -153,6 +153,7 @@ export default {
     overflow: hidden;
     width: 276px;
     float: right;
+    position: relative;
   }  
   .selectTitle {
     height: 40px;

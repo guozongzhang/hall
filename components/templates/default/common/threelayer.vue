@@ -5,6 +5,7 @@
   </div>
 </template>
 <script>
+let $ = require('jquery')
 let procitydis = require('~/static/js/area.json')
 let model
 export default {
@@ -26,6 +27,7 @@ export default {
       picker.setData(arrs)
       picker.show(function (selectItems) {
         model.$emit('getLayerThree', selectItems)
+        $('.mui-poppicker').remove()
       })
     }
   },

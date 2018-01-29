@@ -17,7 +17,7 @@
       </header>
       <div class="detail-box">
         <div class="basic-info">
-          <label>
+          <label class="mui-ellipsis">
             <span class="money">{{basicinfo.amount}}万元</span>·<span>{{basicinfo.name}}</span>
           </label>
           <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
@@ -26,8 +26,8 @@
               <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
             </span>
           </div>
-          <div class="fz16">{{basicinfo.first_party_name}}</div>
-          <div class="fz16 intro-style">{{basicinfo.sketch}}</div>
+          <div class="fz16 mui-ellipsis">{{basicinfo.first_party_name}}</div>
+          <div class="fz16 intro-style mui-ellipsis">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
             <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
@@ -283,16 +283,16 @@
           <div class="must">
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目名称<span>*</span></label>
-              <input type="text" placeholder="输入项目名称" v-model="editbaisc.name">
+              <input type="text" placeholder="输入项目名称" maxlength="20" v-model="editbaisc.name">
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>甲方名称<span>*</span></label>
-              <input type="text" placeholder="输入甲方名称" v-model="editbaisc.first_party_name">
+              <input type="text" placeholder="输入甲方名称" maxlength="20" v-model="editbaisc.first_party_name">
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目金额<span>*</span></label>
               <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;position: relative;top: 9px;margin-right: 15px;">万元</span>
-              <input type="text" placeholder="万元" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
+              <input type="text" placeholder="万元" maxlength="20" style="width: 50% !important;padding-right: 3px" v-model="editbaisc.amount">
             </div>
             <div class="mui-input-row sub-input-box edit-basic-box" style="background-color: #fff;">
               <label>项目可行性<span>*</span></label>
@@ -308,7 +308,7 @@
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>简单描述<span>*</span></label>
-              <input type="text" placeholder="输入简单描述" v-model="editbaisc.sketch">
+              <input type="text" placeholder="输入简单描述" maxlength="20" v-model="editbaisc.sketch">
             </div>
           </div>
         </div>
@@ -362,7 +362,7 @@
         <div>
           <div class="mui-input-row sub-input-box">
 						<label>项目编号</label>
-						<input type="text" placeholder="输入项目编号" v-model="editpro.number">
+						<input type="text" placeholder="输入项目编号" maxlength="20" v-model="editpro.number">
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>招标时间</label>
@@ -562,7 +562,6 @@ let model
 let proId
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
-// let activeTypeIds = [] // 产品品类
 let updateTypeArr = [] // 提交的项目类型数组
 let reportState = [
   {
@@ -1114,66 +1113,6 @@ export default {
       return subarr.join('-')
     },
 
-    // // 显示各分类全部（收起）
-    // showAllTypes: function (obj) {
-    //   obj.showall = !obj.showall
-    // },
-
-    // // 选择三级分类
-    // choiceType: function (obj) {
-    //   if (obj.active) {
-    //     obj.active = false
-    //     activeTypeIds = _.without(activeTypeIds, obj.id)
-    //     updateTypeArr.forEach((item) => {
-    //       if (obj.id === item.type_poi_furniture_types) {
-    //         item.delete = 'yes'
-    //       }
-    //     })
-    //   } else {
-    //     obj.active = true
-    //     activeTypeIds.unshift(obj.id)
-    //     let tmp = {
-    //       id: 0,
-    //       delete: 'no',
-    //       name: obj.type_name,
-    //       type_poi_furniture_types: obj.id
-    //     }
-    //     updateTypeArr.unshift(tmp)
-    //   }
-    // },
-
-    // // 点击空白消失选择宽
-    // cancelModal: function () {
-    //   $('#classifylist').hide()
-    // },
-
-    // // 重置
-    // resetClassify: function () {
-    //   model.classifyArr.forEach((p) => {
-    //     p.furniture_types.forEach((sub) => {
-    //       sub.active = false
-    //     })
-    //   })
-    //   updateTypeArr.forEach((item) => {
-    //     item.delete = 'yes'
-    //   })
-    //   activeTypeIds = []
-    // },
-
-    // // 完成三级分类
-    // setClassify: function () {
-    //   let tmp = []
-    //   model.classifyArr.forEach((p) => {
-    //     p.furniture_types.forEach((sub) => {
-    //       if (activeTypeIds.indexOf(sub.id) > -1) {
-    //         tmp.push(sub.type_name)
-    //       }
-    //     })
-    //   })
-    //   model.editpro.type = tmp.join('-')
-    //   $('#classifylist').hide()
-    // },
-
     // 编辑项目信息
     editProject: function (id) {
       model.editpro = {
@@ -1278,9 +1217,9 @@ export default {
     changeGoodsType: async function () {
       model.flag = Math.random()
       $('#classifylist').show()
-      $('#classifylist').addClass('animated bounceInRight')
+      $('.content-box').addClass('animated bounceInRight')
       setTimeout(function () {
-        $('#classifylist').removeClass('bounceInRight')
+        $('.content-box').removeClass('bounceInRight')
       }, 1000)
     },
 

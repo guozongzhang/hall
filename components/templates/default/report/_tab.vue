@@ -42,7 +42,6 @@ export default {
   },
   watch: {
     flag: function () {
-      console.log('11', model.acticearr)
       model.classifyArr.forEach(item => {
         item.active = []
       })
@@ -180,7 +179,6 @@ export default {
     top: 0;
     width: 100%;
     min-height: calc(100% - 44px);
-    background-color:rgba(255,255,255,0.1);
     padding-bottom: 50px;
   }
   .null-box {
@@ -190,7 +188,6 @@ export default {
     display: inline-block;
     width: calc(100% - 276px);
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
     float: left;
   }
   .clasify-item{

@@ -597,9 +597,9 @@
       showClassify: function () {
         model.flag = Math.random()
         $('#classifylist').show()
-        $('#classifylist').addClass('animated bounceInRight')
+        $('.content-box').addClass('animated bounceInRight')
         setTimeout(function () {
-          $('#classifylist').removeClass('bounceInRight')
+          $('.content-box').removeClass('bounceInRight')
         }, 1000)
       },
 
@@ -789,55 +789,6 @@
       testarea: async function () {
         model.layer = 'area'
         model.arr = []
-
-        // 省
-        let paramp = {
-          limit: 100
-        }
-        let prodata = await axios.get('classes/province', {
-          params: paramp
-        })
-        // 市
-        let paramc = {
-          limit: 500
-        }
-        let citydata = await axios.get('classes/city', {
-          params: paramc
-        })
-        // 区
-        let paramd = {
-          limit: 3000
-        }
-        let disdata = await axios.get('classes/district', {
-          params: paramd
-        })
-        prodata.data.items.forEach((p) => {
-          let tp = {
-            'value': p.id,
-            'text': p.ProvinceName,
-            'children': []
-          }
-          citydata.data.items.forEach((c) => {
-            if (c.ProvinceID === p.id) {
-              let cp = {
-                'value': c.id,
-                'text': c.CityName,
-                'children': []
-              }
-              disdata.data.items.forEach((d) => {
-                if (d.CityID === c.id) {
-                  let dp = {
-                    'value': d.id,
-                    'text': d.DistrictName
-                  }
-                  cp.children.push(dp)
-                }
-              })
-              tp.children.push(cp)
-            }
-          })
-          model.arr.push(tp)
-        })
         model.area.state = Math.random()
       }
     },

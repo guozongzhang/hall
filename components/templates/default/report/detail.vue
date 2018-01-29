@@ -362,7 +362,7 @@
         <div>
           <div class="mui-input-row sub-input-box">
 						<label>项目编号</label>
-						<input type="text" placeholder="输入项目编号" maxlength="20" v-model="editpro.number">
+						<input type="text" placeholder="输入项目编号" maxlength="11" style="width: 74%;" v-model="editpro.number">
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>招标时间</label>
@@ -374,7 +374,7 @@
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>产品品类</label>
-            <span class="area-text" @click="changeGoodsType()">{{editpro.type}}</span>
+            <span class="area-text" style="padding-right: 20px;" @click="changeGoodsType()">{{editpro.type}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>项目类型</label>
@@ -1111,7 +1111,7 @@ export default {
       arr.forEach((item) => {
         subarr.push(item.name)
       })
-      return subarr.join('-')
+      return subarr.join(',')
     },
 
     // 编辑项目信息
@@ -1860,7 +1860,7 @@ body,html{
 }
 .sub-input-box label{
   line-height: 18px;
-  width: 30%;
+  width: 26%;
   color: #666;
 }
 .sub-input-box .area-text{
@@ -1869,12 +1869,15 @@ body,html{
   line-height: 34px;
   font-size: 14px;
   padding-right: 17px;
-  width: 70%;
+  width: 70% !important;
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #999;
+}
+.mui-input-row label~input {
+  width: 74%;
 }
 .sub-input-text {
   position: relative;

@@ -23,7 +23,7 @@
           <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
             <span class="star-box">
-              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : 'fa-star-o'"></i>
+              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : ''"></i>
             </span>
           </div>
           <div class="fz16 mui-ellipsis">{{basicinfo.first_party_name}}</div>
@@ -1016,7 +1016,7 @@ export default {
 
     // 确定添加跟踪记录
     confAddRecord: function () {
-      if (!model.recordtext && model.recordImgs.lenght === 0) {
+      if (!model.recordtext && model.recordImgs.length === 0) {
         window.mui.toast('请填写跟踪记录或者上传附件！')
         return
       }

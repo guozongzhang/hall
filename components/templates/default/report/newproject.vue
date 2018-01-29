@@ -715,41 +715,51 @@
 
       // 获取项目类型/月份
       testone: function (type) {
-        changeOneType = type
-        let param = {}
-        model.onearr = []
-        if (type === 'time') {
-          param = {
-            where: {
-              state_types: 'report_valtime'
+        if (modalflag) {
+          modalflag = false
+          changeOneType = type
+          let param = {}
+          model.onearr = []
+          if (type === 'time') {
+            param = {
+              where: {
+                state_types: 'report_valtime'
+              }
+            }
+          } else {
+            param = {
+              where: {
+                state_types: 'report_projecttype'
+              }
             }
           }
-        } else {
-          param = {
-            where: {
-              state_types: 'report_projecttype'
-            }
-          }
-        }
-        axios.get('classes/selectable_states', {
-          params: param
-        }).then(function (data) {
-          data.data.items.forEach((item) => {
-            model.onearr.push({'value': item.name, 'text': item.alias})
+          axios.get('classes/selectable_states', {
+            params: param
+          }).then(function (data) {
+            data.data.items.forEach((item) => {
+              modalflag = true
+              model.onearr.push({'value': item.name, 'text': item.alias})
+            })
+            model.oneobj.state = Math.random()
           })
-          model.oneobj.state = Math.random()
-        })
+        }
       },
 
       // 改变月份
       change: function (val) {
-        if (changeOneType === 'time') {
-          model.cloneValidity = val[0].text
-          model.thisdata.validity = val[0].value
-        } else {
-          model.cloneCategory = val[0].text
-          model.thisdata.category = val[0].value
+        if (modalflag) {
+          modalflag = false
+          if (changeOneType === 'time') {
+            model.cloneValidity = val[0].text
+            model.thisdata.validity = val[0].value
+          } else {
+            model.cloneCategory = val[0].text
+            model.thisdata.category = val[0].value
+          }
         }
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       },
 
       // 选择省市区
@@ -782,9 +792,15 @@
 
       // 招标时间
       changeTime: function (str) {
-        model.layer = str
-        model.arr = dateJson
-        model.area.state = Math.random()
+        if (modalflag) {
+          model.layer = str
+          model.arr = dateJson
+          model.area.state = Math.random()
+          modalflag = false
+        }
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       },
 
       // 省市区三级联动

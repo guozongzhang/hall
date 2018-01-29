@@ -168,7 +168,7 @@
           </li>
 
           <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
-            <a href="javascript:;" class="mui-navigate-right">报备人对手<span class="mui-ellipsis">{{thisdata.competitor}}</span></a>
+            <a href="javascript:;" class="mui-navigate-right">报备人对手<span class="mui-ellipsis">{{((thisdata.competitor || '').split(',') || []).join('/')}}</span></a>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">

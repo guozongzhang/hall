@@ -145,13 +145,15 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text" style="color: #666 !important;" placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <span style="color: #666;float: right;font-size: 14px;" v-show="thisdata.project_reportman[0].type == 'self'">{{thisdata.project_reportman[0].tel}}</span>
+              <input type="text" style="color: #666 !important;" v-show="thisdata.project_reportman[0].type != 'self'" placeholder="请输入联系人电话" v-model="cloneInfo.tel"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系邮箱</label>
-              <input type="text" style="color: #666 !important;" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email"  placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
+              <span style="color: #666;float: right;font-size: 14px;" v-show="thisdata.project_reportman[0].type == 'self'">{{thisdata.project_reportman[0].email}}</span>
+              <input type="text" style="color: #666 !important;" v-show="thisdata.project_reportman[0].type != 'self'" v-model="cloneInfo.email"  placeholder="请输入联系邮箱">
             </div>
           </li>
         </div>

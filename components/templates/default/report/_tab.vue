@@ -165,7 +165,7 @@ export default {
     z-index: 1000;
     width: 100%;
     height: calc(100%);
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
     overflow-y: auto;
   }
    .sub-classify{

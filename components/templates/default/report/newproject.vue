@@ -47,7 +47,7 @@
           <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<i>*</i><span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
-          <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right">报备人报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '500')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>
@@ -145,13 +145,13 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系电话</label>
-              <input type="text"  placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
+              <input type="text" style="color: #666;" placeholder="请输入联系人电话" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].tel : cloneInfo.tel"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false"> 
             </div>
           </li>
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>联系邮箱</label>
-              <input type="text" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email"  placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
+              <input type="text" style="color: #666;" v-model="thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].email : cloneInfo.email"  placeholder="请输入联系邮箱"  disabled = "thisdata.project_reportman[0].type == 'self' ? true : false">
             </div>
           </li>
         </div>
@@ -216,7 +216,7 @@
     </div>
     <div class="alinkman">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBack()">返回</a>
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goLinkBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">甲方联系人</h1>
         <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
@@ -422,6 +422,12 @@
         }
         $('.more').hide()
         $('.alinkman').show()
+      },
+
+      // 联系人返回
+      goLinkBack: function () {
+        $('.more').show()
+        $('.alinkman').hide()
       },
 
       // 添加多个联系人

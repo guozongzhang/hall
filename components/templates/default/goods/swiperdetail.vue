@@ -43,11 +43,11 @@ export default {
 <style>
   .mui-slider {
     min-height: 200px;
-    max-height: 240px;
+    max-height: 400px;
     position: relative;
   }
   .mui-slider-item img {
-    max-height: 240px;
+    max-height: 400px;
   }
   .maodian {
     position: absolute;

@@ -47,7 +47,7 @@
           <a href="javascript:;" class="mui-navigate-right" @click="testone('time')">项目有效期<i>*</i><span>{{cloneValidity}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="getreport()">
-          <a href="javascript:;" class="mui-navigate-right">报备人报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right">报备人姓名<i>*</i><span class="mui-ellipsis"> {{thisdata.project_reportman[0].type == 'self' ? thisdata.project_reportman[0].name : cloneInfo.name}}</span></a>
         </li>
         <li class="mui-table-view-cell" @click="enterremork('remark', '添加备注', '500')">
           <a href="javascript:;" class="mui-navigate-right">添加备注<span class="mui-ellipsis">{{thisdata.remark}}</span></a>

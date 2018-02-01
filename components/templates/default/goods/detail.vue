@@ -6,11 +6,11 @@
       <span class="bqian" v-show="detail.fur_adv">{{detail.fur_adv}}</span>
       <div class="titelfoot">
         <div class="price">
-          <span>
+          <span style="display:none">
             <i>优惠价:</i>
             <i>¥{{defaluteSku.discount}}</i>
           </span>
-          <span>
+          <span style="display:none">
             <i>原价:</i>
             <i>¥{{defaluteSku.price}}</i>
           </span>

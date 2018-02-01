@@ -11,7 +11,7 @@
     <div class="fur-item" v-for="item in newlistArr" v-if="item.state_type === 'on'">
       <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
         <img class="mui-media-object" :src="item.fur_img || '/images/newfur.png'">
-        <span class="fur-price">￥{{item.price}}</span>
+        <span class="fur-price" style="display:none">￥{{item.price}}</span>
       </a>
     </div>
   </div>

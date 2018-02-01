@@ -22,8 +22,8 @@
           </label>
           <span class="report-state-icon" v-bind:class="basicinfo.state" v-show="basicinfo.state == 'reject' || basicinfo.state == 'shutdown' || basicinfo.state == 'overdue'"></span>
           <div class="stars-style">
-            <span class="star-box">
-              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right" v-for="sub in stars" aria-hidden="true" v-bind:class="sub <= basicinfo.feasibility ? 'fa-star' : ''"></i>
+            <span class="star-box" style="display: inline-block;">
+              <i class="fa mui-action-back mui-icon mui-icon-left-nav mui-pull-right fa-star" v-for="sub in stars" aria-hidden="true" v-if="sub <= basicinfo.feasibility"></i>
             </span>
           </div>
           <div class="fz16 mui-ellipsis">{{basicinfo.first_party_name}}</div>
@@ -2222,8 +2222,6 @@ body,html{
   height: 22px;
 }
 .star-box{
-  display: block;
-  width: 112px;
   height: 24px;
   margin: 0 auto;
 }

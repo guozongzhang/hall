@@ -1308,7 +1308,12 @@ export default {
       if (modalflag) {
         model.layer = 'area'
         model.areaarr = []
-        model.areaobj.state = Math.random()
+        model.areaobj = {
+          province: model.editbaisc.province.value,
+          city: model.editbaisc.city.value,
+          district: model.editbaisc.district.value,
+          state: Math.random()
+        }
       }
       setTimeout(function () {
         modalflag = true

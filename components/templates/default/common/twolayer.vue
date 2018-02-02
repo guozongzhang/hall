@@ -6,6 +6,7 @@
 </template>
 <script>
 let model
+let picker
 export default {
   props: ['twoobj', 'twoarr'],
   data () {
@@ -18,10 +19,12 @@ export default {
     }
   },
   methods: {
+    init: function () {
+      picker = new window.mui.PopPicker({layer: 2})
+    },
     // 获取数据
     getTwoInit: async function () {
       let arr = model.twoarr || []
-      var picker = new window.mui.PopPicker({layer: 2})
       picker.setData(arr)
       picker.show(function (selectItems) {
         model.$emit('getLayerTwo', selectItems)
@@ -30,6 +33,7 @@ export default {
   },
   mounted () {
     model = this
+    model.init()
   }
 }
 </script>

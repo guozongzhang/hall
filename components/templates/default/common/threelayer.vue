@@ -7,7 +7,7 @@
 <script>
 let procitydis = require('~/static/js/area.json')
 let model
-var picker
+let picker
 export default {
   props: ['areaobj', 'arr'],
   data () {

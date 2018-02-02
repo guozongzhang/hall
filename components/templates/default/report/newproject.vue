@@ -21,7 +21,7 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
-          <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">项目所在地区<i>*</i><span>{{thisdata.province.text}}</span><span>{{thisdata.city.text}}</span><span>{{thisdata.district.text}}</span></a>
+          <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">项目所在地区<i>*</i><span>{{thisdata.province.text}}-{{thisdata.city.text}}-{{thisdata.district.text}}</span></a>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">

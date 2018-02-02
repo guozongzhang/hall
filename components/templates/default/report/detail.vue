@@ -296,7 +296,7 @@
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>详细地址<span>*</span></label>
-              <input type="text" placeholder="输入甲方名称" maxlength="20" v-model="editbaisc.address">
+              <input type="text" placeholder="项目详细地址" maxlength="20" v-model="editbaisc.address">
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目金额<span>*</span></label>
@@ -572,6 +572,7 @@ let moment = require('moment')
 let model
 let proId
 let modalflag = true
+let flag = true
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let updateTypeArr = [] // 提交的项目类型数组
@@ -771,7 +772,7 @@ export default {
       model.editbaisc = {
         name: model.basicinfo.name,
         first_party_name: model.basicinfo.first_party_name,
-        amount: model.basicinfo.amount,
+        amount: parseFloat(model.basicinfo.amount || 0),
         feasibility: model.basicinfo.feasibility,
         validity: model.basicinfo.validity,
         validity_text: model.valtimeFilter(model.basicinfo.validity),
@@ -902,11 +903,11 @@ export default {
         }
         model.basicinfo.city_poi_city = {
           id: model.editbaisc.city.value,
-          CityName: model.editbaisc.province.text
+          CityName: model.editbaisc.city.text
         }
         model.basicinfo.district_poi_district = {
           id: model.editbaisc.district.value,
-          DistrictName: model.editbaisc.province.text
+          DistrictName: model.editbaisc.district.text
         }
         model.basicinfo.address = model.editbaisc.address
         window.mui.toast('编辑必填信息成功')
@@ -1075,31 +1076,35 @@ export default {
         window.mui.toast('请填写跟踪记录或者上传附件！')
         return
       }
-      let param = {
-        project_poi_projects: proId,
-        remark: model.recordtext,
-        track_files: JSON.stringify(model.recordImgs)
-      }
-      axios.post('functions/report/project_track', null, {
-        data: param
-      }).then(function (data) {
-        data.data.imgaes_rel_project_track_files = {
-          items: model.recordImgs
+      if (flag) {
+        flag = false
+        let param = {
+          project_poi_projects: proId,
+          remark: model.recordtext,
+          track_files: JSON.stringify(model.recordImgs)
         }
-        model.recordLoglist.unshift(data.data)
-        window.mui.toast('添加跟踪记录成功！')
-        setTimeout(function () {
-          model.activeTab = 'home'
-        }, 1000)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
+        axios.post('functions/report/project_track', null, {
+          data: param
+        }).then(function (data) {
+          data.data.imgaes_rel_project_track_files = {
+            items: model.recordImgs
+          }
+          model.recordLoglist.unshift(data.data)
+          window.mui.toast('添加跟踪记录成功！')
+          flag = true
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
-            window.location.href = model.linkPath + '/login'
-          }, 2000)
-        }
-      })
+            model.activeTab = 'home'
+          }, 1000)
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.href = model.linkPath + '/login'
+            }, 2000)
+          }
+        })
+      }
     },
 
     // 时间格式化

@@ -215,7 +215,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <span style="font-size: 14px;color: #999" v-if="thisdata.project_reportman[0].type == 'self'">{{thisdata.project_reportman[0].name}}</span>
               <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
             </div>
           </li>

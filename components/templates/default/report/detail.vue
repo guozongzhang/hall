@@ -27,6 +27,7 @@
             </span>
           </div>
           <div class="fz16 mui-ellipsis">{{basicinfo.first_party_name}}</div>
+          <div class="fz16 intro-style mui-ellipsis">{{(basicinfo.province_poi_province || {}).ProvinceName}}{{(basicinfo.city_poi_city || {}).CityName}}{{(basicinfo.district_poi_district || {}).DistrictName}}{{basicinfo.address}}</div>
           <div class="fz16 intro-style mui-ellipsis">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
@@ -119,7 +120,7 @@
                   </div>
                   <div class="project-sublist">
                     <ul class="ul-list">
-                      <li class="mui-table-view-cell f16">
+                      <li class="mui-table-view-cell f16" style="display: none">
                         <span class="c666 f16">所属区域：</span>
                         <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                       </li>
@@ -186,7 +187,7 @@
                         <span class="c666 f16">乙方对手：</span>
                         <span class="alist-text">{{((basicinfo.second_party_competitor || '').split(',') || []).join('/')}}</span>
                       </li>
-                      <li class="mui-table-view-cell f16">
+                      <li class="mui-table-view-cell f16" style="display: none">
                         <span class="c666 f16">竞争对手：</span>
                         <span class="alist-text">{{((basicinfo.competitor || '').split(',') || []).join('/')}}</span>
                       </li>
@@ -288,6 +289,14 @@
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>甲方名称<span>*</span></label>
               <input type="text" placeholder="输入甲方名称" maxlength="20" v-model="editbaisc.first_party_name">
+            </div>
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
+              <label style="width: 32% !important">项目所在区域<span>*</span></label>
+              <span class="area-text" style="width: 60% !important;float: right" @click="changeAre()"><span>{{(editbaisc.province || {}).text}}-{{(editbaisc.city || {}).text}}-{{(editbaisc.district || {}).text}}</span></span>
+            </div>
+            <div class="mui-input-row sub-input-box" style="background-color: #fff;">
+              <label>详细地址<span>*</span></label>
+              <input type="text" placeholder="项目详细地址" maxlength="20" v-model="editbaisc.address">
             </div>
             <div class="mui-input-row sub-input-box" style="background-color: #fff;">
               <label>项目金额<span>*</span></label>
@@ -426,7 +435,7 @@
       <div class="textarea-box">
         <div class="line-box"></div>
         <div>
-          <div class="mui-input-row sub-input-box">
+          <div class="mui-input-row sub-input-box" style="display: none">
 						<label>所属区域</label>
             <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
 					</div>
@@ -459,7 +468,7 @@
 						<label>乙方对手</label>
             <span class="area-text sub-input-text">{{((competitors.second_party_competitor || '').split(',') || []).join('/')}}</span>
 					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('competitor','报备人对手')">
+          <div class="mui-input-row sub-input-box mui-navigate-right" style="display: none" @click="enterOtherCompete('competitor','报备人对手')">
 						<label>竞争对手</label>
             <span class="area-text sub-input-text">{{((competitors.competitor || '').split(',') || []).join('/')}}</span>
 					</div>
@@ -563,6 +572,7 @@ let moment = require('moment')
 let model
 let proId
 let modalflag = true
+let flag = true
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let updateTypeArr = [] // 提交的项目类型数组
@@ -694,6 +704,18 @@ export default {
           },
           {
             table: 'first_party_district_poi_district'
+          },
+          {
+            table: 'province_poi_province',
+            keys: 'id,ProvinceName'
+          },
+          {
+            table: 'city_poi_city',
+            keys: 'id,CityName'
+          },
+          {
+            table: 'district_poi_district',
+            keys: 'id,DistrictName'
           }
         ]
       }
@@ -750,11 +772,24 @@ export default {
       model.editbaisc = {
         name: model.basicinfo.name,
         first_party_name: model.basicinfo.first_party_name,
-        amount: model.basicinfo.amount,
+        amount: parseFloat(model.basicinfo.amount || 0),
         feasibility: model.basicinfo.feasibility,
         validity: model.basicinfo.validity,
         validity_text: model.valtimeFilter(model.basicinfo.validity),
-        sketch: model.basicinfo.sketch
+        sketch: model.basicinfo.sketch,
+        address: model.basicinfo.address,
+        province: {
+          value: model.basicinfo.province_poi_province.id || 1,
+          text: model.basicinfo.province_poi_province.ProvinceName || '北京市'
+        },
+        city: {
+          value: model.basicinfo.city_poi_city.id || 1,
+          text: model.basicinfo.city_poi_city.CityName || '北京市'
+        },
+        district: {
+          value: model.basicinfo.district_poi_district.id || 1,
+          text: model.basicinfo.district_poi_district.DistrictName || '东城区'
+        }
       }
       model.protypearrs = proValTime
       model.activeTab = 'editbasic'
@@ -769,6 +804,10 @@ export default {
         first_party_name: {
           required: true,
           msg: '公司名称不能为空!'
+        },
+        address: {
+          required: true,
+          msg: '详细地址不能为空!'
         },
         amount: {
           required: true,
@@ -840,7 +879,11 @@ export default {
         amount: model.editbaisc.amount,
         feasibility: model.editbaisc.feasibility || '',
         validity: model.editbaisc.validity || '',
-        sketch: model.editbaisc.sketch || ''
+        sketch: model.editbaisc.sketch || '',
+        address: model.editbaisc.address || '',
+        province_poi_province: model.editbaisc.province.value,
+        city_poi_city: model.editbaisc.city.value,
+        district_poi_district: model.editbaisc.district.value
       }
       if (!model.ValidateForm(param)) {
         return false
@@ -854,6 +897,19 @@ export default {
         model.basicinfo.feasibility = model.editbaisc.feasibility
         model.basicinfo.validity = model.editbaisc.validity
         model.basicinfo.sketch = model.editbaisc.sketch
+        model.basicinfo.province_poi_province = {
+          id: model.editbaisc.province.value,
+          ProvinceName: model.editbaisc.province.text
+        }
+        model.basicinfo.city_poi_city = {
+          id: model.editbaisc.city.value,
+          CityName: model.editbaisc.city.text
+        }
+        model.basicinfo.district_poi_district = {
+          id: model.editbaisc.district.value,
+          DistrictName: model.editbaisc.district.text
+        }
+        model.basicinfo.address = model.editbaisc.address
         window.mui.toast('编辑必填信息成功')
         setTimeout(function () {
           model.activeTab = 'home'
@@ -1020,31 +1076,35 @@ export default {
         window.mui.toast('请填写跟踪记录或者上传附件！')
         return
       }
-      let param = {
-        project_poi_projects: proId,
-        remark: model.recordtext,
-        track_files: JSON.stringify(model.recordImgs)
-      }
-      axios.post('functions/report/project_track', null, {
-        data: param
-      }).then(function (data) {
-        data.data.imgaes_rel_project_track_files = {
-          items: model.recordImgs
+      if (flag) {
+        flag = false
+        let param = {
+          project_poi_projects: proId,
+          remark: model.recordtext,
+          track_files: JSON.stringify(model.recordImgs)
         }
-        model.recordLoglist.unshift(data.data)
-        window.mui.toast('添加跟踪记录成功！')
-        setTimeout(function () {
-          model.activeTab = 'home'
-        }, 1000)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
+        axios.post('functions/report/project_track', null, {
+          data: param
+        }).then(function (data) {
+          data.data.imgaes_rel_project_track_files = {
+            items: model.recordImgs
+          }
+          model.recordLoglist.unshift(data.data)
+          window.mui.toast('添加跟踪记录成功！')
+          flag = true
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
-            window.location.href = model.linkPath + '/login'
-          }, 2000)
-        }
-      })
+            model.activeTab = 'home'
+          }, 1000)
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.href = model.linkPath + '/login'
+            }, 2000)
+          }
+        })
+      }
     },
 
     // 时间格式化
@@ -1248,7 +1308,12 @@ export default {
       if (modalflag) {
         model.layer = 'area'
         model.areaarr = []
-        model.areaobj.state = Math.random()
+        model.areaobj = {
+          province: model.editbaisc.province.value,
+          city: model.editbaisc.city.value,
+          district: model.editbaisc.district.value,
+          state: Math.random()
+        }
       }
       setTimeout(function () {
         modalflag = true
@@ -1259,10 +1324,22 @@ export default {
     getArea: function (str) {
       // 省市区
       if (model.layer === 'area') {
-        model.buyer.area = str[0].text + '-' + str[1].text + '-' + str[2].text
-        model.buyer.pro_id = str[0].value || 1
-        model.buyer.city_id = str[1].value || 1
-        model.buyer.dis_id = str[2].value || 1
+        // model.buyer.area = str[0].text + '-' + str[1].text + '-' + str[2].text
+        // model.buyer.pro_id = str[0].value || 1
+        // model.buyer.city_id = str[1].value || 1
+        // model.buyer.dis_id = str[2].value || 1
+        model.editbaisc.province = {
+          value: str[0].value,
+          text: str[0].text
+        }
+        model.editbaisc.city = {
+          value: str[1].value,
+          text: str[1].text
+        }
+        model.editbaisc.district = {
+          value: str[2].value,
+          text: str[2].text
+        }
       }
       // 招标时间
       if (model.layer === 'invitation') {

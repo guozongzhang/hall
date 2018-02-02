@@ -6,6 +6,7 @@
 </template>
 <script>
 let model
+let picker
 export default {
   props: ['oneobj', 'onearr'],
   data () {
@@ -18,10 +19,12 @@ export default {
     }
   },
   methods: {
+    init: function () {
+      picker = new window.mui.PopPicker({layer: 1})
+    },
     // 获取数据
     getOneInit: async function () {
       let arr = model.onearr || []
-      var picker = new window.mui.PopPicker({layer: 1})
       picker.setData(arr)
       picker.show(function (selectItems) {
         model.$emit('getLayerOne', selectItems)
@@ -30,6 +33,7 @@ export default {
   },
   mounted () {
     model = this
+    model.init()
   }
 }
 </script>

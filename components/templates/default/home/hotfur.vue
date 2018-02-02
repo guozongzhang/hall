@@ -12,8 +12,8 @@
       <a class="link-box" :href="linkPath + '/furdetail?id=' + item.id">
         <img class="mui-media-object" :src="item.fur_image || '/images/square.png'">
         <span class="new-item" v-show="false">新品</span>
-        <div class="fur-name">{{item.fur_name}}</div>
-        <div class="money">
+        <div class="fur-name" style="margin-bottom: 4px;">{{item.fur_name}}</div>
+        <div class="money" style="display:none">
           <span>￥</span>
           <span>{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
         </div>

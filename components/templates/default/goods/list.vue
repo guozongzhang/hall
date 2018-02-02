@@ -61,8 +61,8 @@
               <div class="mui-media-body">
                 <a class="fur-name" :href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price col-flag">
-                  <span class="price">￥{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
-                  <span class="sub-price">￥{{(item.sku_poi_furniture_sku || {}).price || '0'}}</span>
+                  <span class="price" style="display:none">￥{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
+                  <span class="sub-price" style="display:none">￥{{(item.sku_poi_furniture_sku || {}).price || '0'}}</span>
                   <a :href="item.id + '_' + (item.sku_poi_furniture_sku || {}).id || '0'" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
                     <span class="fa collect-flag" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
                     <span class="collect-flag">{{item.user_preference ? '取消' : '收藏'}}</span>

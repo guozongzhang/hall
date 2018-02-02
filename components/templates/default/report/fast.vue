@@ -24,6 +24,15 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
+          <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">项目所在地区<i>*</i><span>{{thisdata.province.text}}-{{thisdata.city.text}}-{{thisdata.district.text}}</span></a>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>详细地址<i>*</i></label>
+            <input type="text" maxlength="20" placeholder="项目详细地址" v-model="thisdata.address">
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
             <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;">万元</span>
@@ -76,7 +85,7 @@
         </li>
         <li style="height: 15px; background: #EEEEEE;display: none"></li>
       </ul>
-        
+      <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
     </div>
     <div class="allhide">
@@ -99,6 +108,7 @@
 </template>  
 <script>
   import One from '../common/onelayer.vue'
+  import Area from '../common/threelayer.vue'
   import axios from '~/plugins/axios'
   let url = require('url')
   let Cookies = require('js-cookie')
@@ -106,6 +116,7 @@
   let $ = require('jquery')
   let _ = require('underscore')
   let model
+  let modalflag = true
   export default {
     head: {
       title: '快速报备'
@@ -120,6 +131,19 @@
           feasibility: 3, // '可行性'
           validity: 'three_month',
           remark: '',
+          province: {
+            value: '1',
+            text: '北京市'
+          },
+          city: {
+            value: '1',
+            text: '北京市'
+          },
+          district: {
+            value: '1',
+            text: '东城区'
+          },
+          address: '',
           cloneRemark: '', // 临时变量
           project_reportman: [ // 报备人信息
             {
@@ -141,6 +165,13 @@
         onearr: [],
         oneobj: {
           state: '0'
+        },
+        arr: [],
+        area: {
+          state: 0,
+          province: -1,
+          city: -1,
+          districts: -1
         },
         clonetitel: '报备备注'
       }
@@ -182,6 +213,44 @@
             model.onearr.push({'value': item.name, 'text': item.alias})
           })
         })
+      },
+
+      // 选择省市区
+      changearea: function (val) {
+        // 省市区
+        if (model.layer === 'area') {
+          model.thisdata.province = {
+            value: val[0].value,
+            text: val[0].text
+          }
+          model.thisdata.city = {
+            value: val[1].value,
+            text: val[1].text
+          }
+          model.thisdata.district = {
+            value: val[2].value,
+            text: val[2].text
+          }
+        }
+        modalflag = true
+      },
+
+      // 省市区三级联动
+      testarea: async function () {
+        if (modalflag) {
+          modalflag = false
+          model.layer = 'area'
+          model.arr = []
+          model.area = {
+            province: model.thisdata.province.value,
+            city: model.thisdata.city.value,
+            district: model.thisdata.district.value,
+            state: Math.random()
+          }
+        }
+        setTimeout(function () {
+          modalflag = true
+        }, 500)
       },
 
       // 删除附件图片
@@ -261,9 +330,11 @@
         }
         let submitData = _.extend(model.thisdata, {
           project_attachment: JSON.stringify(model.thisdata.projectAttachment),
-          project_reportman: JSON.stringify(model.thisdata.project_reportman)
+          project_reportman: JSON.stringify(model.thisdata.project_reportman),
+          province_poi_province: model.thisdata.province.value,
+          city_poi_city: model.thisdata.city.value,
+          district_poi_district: model.thisdata.district.value
         })
-
         axios.post('functions/report/fast_record', null, {
           data: submitData
         }).then(function (data) {
@@ -284,6 +355,10 @@
           first_party_name: {
             required: true,
             msg: '公司名称不能为空!'
+          },
+          address: {
+            required: true,
+            msg: '详细地址不能为空!'
           },
           amount: {
             required: true,
@@ -322,7 +397,8 @@
       }
     },
     components: {
-      'vue-one': One
+      'vue-one': One,
+      'vue-area': Area
     },
     mounted () {
       model = this

@@ -44,6 +44,7 @@
                   </span>
                 </div>
                 <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
+                <div class="fz12 mui-ellipsis">{{item.province_poi_province.ProvinceName}}{{item.city_poi_city.CityName}}{{item.district_poi_district.DistrictName}}{{item.address}}</div>
                 <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
               </div>
               <div class="detail">
@@ -159,10 +160,27 @@
 
       // 获取项目数据
       getData: function () {
+        let rel = {
+          include: [
+            {
+              table: 'province_poi_province',
+              keys: 'id,ProvinceName'
+            },
+            {
+              table: 'city_poi_city',
+              keys: 'id,CityName'
+            },
+            {
+              table: 'district_poi_district',
+              keys: 'id,DistrictName'
+            }
+          ]
+        }
         let param = {
           skip: (model.pages - 1) * pagesize,
           limit: pagesize,
-          order: '-update_time'
+          order: '-update_time',
+          with: JSON.stringify(rel)
         }
         if (model.active !== 'all') {
           if (model.active === 'other') {
@@ -321,7 +339,7 @@
   .listdiv {
     position: relative;
     margin: 15px;
-    height: 170px;
+    height: 190px;
     background: #fff;
     border-radius: 5px;
   }

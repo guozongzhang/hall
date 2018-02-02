@@ -21,6 +21,15 @@
           </div>
         </li>
         <li class="mui-table-view-cell">
+          <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">项目所在地区<i>*</i><span>{{thisdata.province.text}}-{{thisdata.city.text}}-{{thisdata.district.text}}</span></a>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-input-row">
+            <label>详细地址<i>*</i></label>
+            <input type="text" maxlength="20" placeholder="项目详细地址" v-model="thisdata.address">
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
           <div class="mui-input-row">
             <label>预计金额<i>*</i></label>
             <span style="float: right;font-size: 14px;color: #999;display: inline-block;margin-left: 3px;">万元</span>
@@ -106,9 +115,6 @@
 
         <div class="comInfo">
           <li class="mui-table-view-cell">
-            <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">所属区域<span>{{thisdata.first_party_district_poi_district.text}}</span><span>{{thisdata.first_party_city_poi_city.text}}</span><span>{{thisdata.first_party_province_poi_province.text}}</span></a>
-          </li>
-          <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label>甲方联系人</label>
               <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
@@ -167,7 +173,7 @@
             <a href="javascript:;" class="mui-navigate-right ">乙方竞争对手<span class="mui-ellipsis">{{((thisdata.second_party_competitor || '').split(',') || []).join('/')}}</span></a>
           </li>
 
-          <li class="mui-table-view-cell" @click="enterOtherCompete('competitor','报备人对手')">
+          <li class="mui-table-view-cell" style="display:none" @click="enterOtherCompete('competitor','报备人对手')">
             <a href="javascript:;" class="mui-navigate-right">报备人对手<span class="mui-ellipsis">{{((thisdata.competitor || '').split(',') || []).join('/')}}</span></a>
           </li>
           <li class="mui-table-view-cell">
@@ -209,7 +215,7 @@
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
               <label style="width:1%"><i></i></label>
-              <input v-if="thisdata.project_reportman[0].type == 'self'" style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="thisdata.project_reportman[0].name" disabled="thisdata.project_reportman[0].type == 'self' ? true : false" />
+              <span style="font-size: 14px;color: #999" v-if="thisdata.project_reportman[0].type == 'self'">{{thisdata.project_reportman[0].name}}</span>
               <input v-if="thisdata.project_reportman[0].type == 'other'"  style="width:99%!important;text-align:left;" type="text" maxlength="20" placeholder="请输入报备人姓名" v-model="cloneInfo.name"/>
             </div>
           </li>
@@ -334,6 +340,19 @@
             value: '1',
             text: '东城区'
           },
+          province: {
+            value: '1',
+            text: '北京市'
+          },
+          city: {
+            value: '1',
+            text: '北京市'
+          },
+          district: {
+            value: '1',
+            text: '东城区'
+          },
+          address: '',
           first_party_linkman: '',
           first_party_tel: '',
           first_party_job: '',
@@ -511,9 +530,12 @@
           return false
         }
         let submitData = _.extend(model.thisdata, {
-          first_party_province_poi_province: model.thisdata.first_party_province_poi_province.value,
-          first_party_city_poi_city: model.thisdata.first_party_city_poi_city.value,
-          first_party_district_poi_district: model.thisdata.first_party_district_poi_district.value,
+          first_party_province_poi_province: 1,
+          first_party_city_poi_city: 1,
+          first_party_district_poi_district: 1,
+          province_poi_province: model.thisdata.province.value,
+          city_poi_city: model.thisdata.city.value,
+          district_poi_district: model.thisdata.district.value,
           project_attachment: JSON.stringify(model.thisdata.projectAttachment),
           project_reportman: JSON.stringify(model.thisdata.project_reportman),
           project_furniture_types: JSON.stringify(model.thisdata.project_furniture_types),
@@ -540,6 +562,10 @@
           first_party_name: {
             required: true,
             msg: '公司名称不能为空!'
+          },
+          address: {
+            required: true,
+            msg: '详细地址不能为空!'
           },
           amount: {
             required: true,
@@ -608,7 +634,7 @@
         $('#classifylist').show()
         $('.content-box').addClass('animated bounceInRight')
         setTimeout(function () {
-          // $('.content-box').removeClass('bounceInRight')
+          $('.content-box').removeClass('bounceInRight')
         }, 1000)
       },
 
@@ -774,15 +800,15 @@
       changearea: function (val) {
         // 省市区
         if (model.layer === 'area') {
-          model.thisdata.first_party_province_poi_province = {
+          model.thisdata.province = {
             value: val[0].value,
             text: val[0].text
           }
-          model.thisdata.first_party_city_poi_city = {
+          model.thisdata.city = {
             value: val[1].value,
             text: val[1].text
           }
-          model.thisdata.first_party_district_poi_district = {
+          model.thisdata.district = {
             value: val[2].value,
             text: val[2].text
           }
@@ -817,8 +843,14 @@
           modalflag = false
           model.layer = 'area'
           model.arr = []
-          model.area.state = Math.random()
+          model.area = {
+            province: model.thisdata.province.value,
+            city: model.thisdata.city.value,
+            district: model.thisdata.district.value,
+            state: Math.random()
+          }
         }
+        console.log(model.area)
         setTimeout(function () {
           modalflag = true
         }, 500)

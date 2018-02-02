@@ -241,7 +241,12 @@
           modalflag = false
           model.layer = 'area'
           model.arr = []
-          model.area.state = Math.random()
+          model.area = {
+            province: model.thisdata.province.value,
+            city: model.thisdata.city.value,
+            district: model.thisdata.district.value,
+            state: Math.random()
+          }
         }
         setTimeout(function () {
           modalflag = true

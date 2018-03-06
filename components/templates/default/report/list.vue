@@ -124,11 +124,28 @@
 
       // 搜索接口
       getSearchData: function () {
+        let rel = {
+          include: [
+            {
+              table: 'province_poi_province',
+              keys: 'id,ProvinceName'
+            },
+            {
+              table: 'city_poi_city',
+              keys: 'id,CityName'
+            },
+            {
+              table: 'district_poi_district',
+              keys: 'id,DistrictName'
+            }
+          ]
+        }
         let param = {
           table: 'projects',
-          like: JSON.stringify(['name', 'number', 'amount']),
+          like: JSON.stringify(['name', 'amount']),
           search: $.trim(model.searchKey),
           where: JSON.stringify({com_id_poi_companys: this.$store.state.comid}),
+          with: JSON.stringify(rel),,
           limit: pagesize,
           skip: (model.pages - 1) * pagesize
         }

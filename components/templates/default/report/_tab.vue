@@ -16,7 +16,6 @@
             <li v-bind:class="(item.active ? item.active : []).indexOf(String(sub.id)) > -1 ? 'active' : ''" v-for="(sub, index) in item.furniture_types" @click="choiceType(item, sub)" v-show="index < 3 || item.showall">
               <a href="javascript:;">{{sub.type_name}}</a>
             </li>
-
           </ul>
         </div>
         <div class="clasify-btn">

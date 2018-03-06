@@ -2,7 +2,7 @@
 #
 # VERSION    1.0.0
 
-FROM hub.c.163.com/library/node:8.2.1
+FROM hub.c.163.com/library/node:8.9.4
 
 
 COPY . /app  

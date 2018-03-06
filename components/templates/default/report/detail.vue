@@ -3,7 +3,7 @@
   <div>
     <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" href="/jlxd/report">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
           <span style="position: relative;top: -1px;">返回</span>
         </a>
         <span class="fa close-icon" @click="goHome()">×</span>
@@ -1934,7 +1934,7 @@ body,html{
   text-align: center;
   background-color: #c63e40;
   color: #fff;
-  z-index: 999;
+  z-index: 20;
   font-size: 14px;
   cursor: pointer;
 }

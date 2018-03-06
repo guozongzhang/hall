@@ -240,6 +240,8 @@ export default {
         Cookies.set('dpjia-hall-pwd', model.info.pwd)
       } else {
         Cookies.set('dpjia-hall-remeber', false)
+        Cookies.set('dpjia-hall-number', '')
+        Cookies.set('dpjia-hall-pwd', '')
       }
       window.mui.toast('登录成功!')
       Cookies.set('designer-id', data.user_poi_users)

@@ -830,6 +830,7 @@
           model.layer = str
           model.arr = dateJson
           model.area.state = Math.random()
+          model.area.type = 'time'
           modalflag = false
         }
         setTimeout(function () {
@@ -844,13 +845,13 @@
           model.layer = 'area'
           model.arr = []
           model.area = {
+            type: 'area',
             province: model.thisdata.province.value,
             city: model.thisdata.city.value,
             district: model.thisdata.district.value,
             state: Math.random()
           }
         }
-        console.log(model.area)
         setTimeout(function () {
           modalflag = true
         }, 500)

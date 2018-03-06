@@ -243,6 +243,7 @@
           model.layer = 'area'
           model.arr = []
           model.area = {
+            type: 'area',
             province: model.thisdata.province.value,
             city: model.thisdata.city.value,
             district: model.thisdata.district.value,

@@ -74,13 +74,14 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let rem = Cookies.get('dpjia-hall-remeber')
-      model.info.remeber = rem
       let number = Cookies.get('dpjia-hall-number')
       let pwd = Cookies.get('dpjia-hall-pwd')
-      if (model.info.remeber) {
+      if (String(rem) === 'true') {
+        model.info.remeber = true
         model.info.number = number
         model.info.pwd = pwd
       } else {
+        model.info.remeber = false
         model.info.number = ''
         model.info.pwd = ''
       }

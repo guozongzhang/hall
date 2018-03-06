@@ -3,7 +3,7 @@
   <div>
     <div v-show="activeTab == 'home'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" href="/jlxd/report">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
           <span style="position: relative;top: -1px;">返回</span>
         </a>
         <span class="fa close-icon" @click="goHome()">×</span>
@@ -103,7 +103,7 @@
                       <li class="mui-table-view-cell">
                         <span class="c666 f16">上传附件：</span>
                         <p class="attach-list">
-                          <img :src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
+                          <img :src="sub.file_url" :data-preview-src="sub.file_url" v-for="sub in (basicinfo.project_rel_project_attachment || {}).items">
                         </p>
                       </li>
                     </ul>
@@ -246,7 +246,7 @@
                           <span style="color: #666">{{sub.remark}}</span>
                         </p>
                         <div>
-                          <img :src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
+                          <img :src="img.file_url" :data-preview-src="img.file_url" v-for="img in sub.imgaes_rel_project_track_files.items" style="width: 40px;height: 40px;margin-right: 10px;margin-top: 10px;">
                         </div>
                         <p style="font-size: 14px;color: #666">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
@@ -340,7 +340,7 @@
           <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
           <div class="attach-box" style="padding: 0 10px;margin-top: 10px;min-height: 55px;">
             <span v-for="img in recordImgs" v-show="recordImgs.length > 0" style="display: inline-block;width: 40px;height: 40px;position: relative;margin-right: 10px;margin-bottom: 10px;">
-              <img :src="img.file_url">
+              <img :src="img.file_url" :data-preview-src="img.file_url">
               <span class="deleteimg" @click="deleteattchimg(img)">×</span>
             </span>
             <span class="upload-files" id="upload_attch" @click="upload_attch()" v-show="recordImgs.length > 0" style="position: relative;top: -15px;">
@@ -415,9 +415,8 @@
             <div class="attach-img-box" v-show="editproImg.length > 0">
               <div class="img-box" v-for="img in editproImg" v-show="img.show">
                 <span class="delete-img" @click="deleteImg(img)">×</span>
-                <img :src="img.file_url"/>
+                <img :src="img.file_url" :data-preview-src="img.file_url"/>
               </div>
-              
             </div>
 					</div>
         </div>
@@ -668,6 +667,7 @@ export default {
   },
   methods: {
     init: async function () {
+      window.mui.previewImage()
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
@@ -1723,7 +1723,7 @@ body,html{
   color: #fff;
   font-size: 14px;
   cursor: pointer;
-  z-index: 999;
+  z-index: 20;
 }
 .nav {
   margin-top: 48px;
@@ -1934,7 +1934,7 @@ body,html{
   text-align: center;
   background-color: #c63e40;
   color: #fff;
-  z-index: 999;
+  z-index: 20;
   font-size: 14px;
   cursor: pointer;
 }
@@ -2065,7 +2065,7 @@ body,html{
 }
 .record-box .add-item .pointer{
   background-color: #5278e5;
-  z-index: 100;
+  z-index: 20;
 }
 .add-btn-upload {
   position: relative;
@@ -2367,5 +2367,4 @@ body,html{
 .must label span{
   color: red;
 }
-
 </style>

@@ -74,7 +74,17 @@ export default {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let rem = Cookies.get('dpjia-hall-remeber')
-      model.info.remeber = rem
+      let number = Cookies.get('dpjia-hall-number')
+      let pwd = Cookies.get('dpjia-hall-pwd')
+      if (String(rem) === 'true') {
+        model.info.remeber = true
+        model.info.number = number
+        model.info.pwd = pwd
+      } else {
+        model.info.remeber = false
+        model.info.number = ''
+        model.info.pwd = ''
+      }
       model.getCompany()
     },
 
@@ -227,8 +237,12 @@ export default {
       Cookies.set('dpjia-hall-token', data.token)
       if (model.info.remeber) {
         Cookies.set('dpjia-hall-remeber', true)
+        Cookies.set('dpjia-hall-number', model.info.number)
+        Cookies.set('dpjia-hall-pwd', model.info.pwd)
       } else {
-        Cookies.set('dpjia-hall-remeber', '')
+        Cookies.set('dpjia-hall-remeber', false)
+        Cookies.set('dpjia-hall-number', '')
+        Cookies.set('dpjia-hall-pwd', '')
       }
       window.mui.toast('登录成功!')
       Cookies.set('designer-id', data.user_poi_users)

@@ -1,5 +1,3 @@
-/* 用法
-*/
 <template>
   <div>
   </div>

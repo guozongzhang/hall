@@ -1104,7 +1104,7 @@
     text-align: center;
     background-color: #c63e40;
     color: #fff !important;
-    z-index: 999;
+    z-index: 20;
     font-size: 14px;
     cursor: pointer;
   }

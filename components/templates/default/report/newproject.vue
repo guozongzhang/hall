@@ -73,7 +73,7 @@
         </li>
         <li class="mui-table-view-cell" v-if="thisdata.projectAttachment.length > 0">
           <span v-for="(imgitem,imgIndex) in thisdata.projectAttachment" class="posir">
-            <img :src="imgitem.file_url" alt=""  class="fjimg">
+            <img :src="imgitem.file_url" :data-preview-src="imgitem.file_url" alt=""  class="fjimg">
             <i class="deleteimg" @click="deleteimg(imgIndex)">×</i>
           </span>
         </li>

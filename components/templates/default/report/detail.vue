@@ -1243,9 +1243,16 @@ export default {
 
     // 招标时间
     changeTime: function (str) {
-      model.layer = str
-      model.areaarr = dateJson
-      model.areaobj.state = Math.random()
+      if (modalflag) {
+        model.layer = str
+        model.areaarr = dateJson
+        model.areaobj.state = Math.random()
+        model.areaobj.type = 'time'
+        modalflag = false
+      }
+      setTimeout(function () {
+        modalflag = true
+      }, 500)
     },
 
     // 项目类型
@@ -1309,6 +1316,7 @@ export default {
         model.layer = 'area'
         model.areaarr = []
         model.areaobj = {
+          type: 'area',
           province: model.editbaisc.province.value,
           city: model.editbaisc.city.value,
           district: model.editbaisc.district.value,
@@ -1324,10 +1332,6 @@ export default {
     getArea: function (str) {
       // 省市区
       if (model.layer === 'area') {
-        // model.buyer.area = str[0].text + '-' + str[1].text + '-' + str[2].text
-        // model.buyer.pro_id = str[0].value || 1
-        // model.buyer.city_id = str[1].value || 1
-        // model.buyer.dis_id = str[2].value || 1
         model.editbaisc.province = {
           value: str[0].value,
           text: str[0].text

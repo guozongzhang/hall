@@ -1723,7 +1723,7 @@ body,html{
   color: #fff;
   font-size: 14px;
   cursor: pointer;
-  z-index: 999;
+  z-index: 20;
 }
 .nav {
   margin-top: 48px;

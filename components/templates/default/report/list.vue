@@ -44,7 +44,7 @@
                   </span>
                 </div>
                 <div class="fz12 mui-ellipsis">{{item.first_party_name}}</div>
-                <div class="fz12 mui-ellipsis">{{item.province_poi_province.ProvinceName}}{{item.city_poi_city.CityName}}{{item.district_poi_district.DistrictName}}{{item.address}}</div>
+                <div class="fz12 mui-ellipsis" style="padding: 0 10px;">{{item.province_poi_province.ProvinceName}}{{item.city_poi_city.CityName}}{{item.district_poi_district.DistrictName}}{{item.address}}</div>
                 <div class="fz12 intro-style mui-ellipsis">{{item.sketch}}</div>
               </div>
               <div class="detail">

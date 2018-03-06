@@ -56,20 +56,20 @@
       <div class="mui-scroll">
         <ul class="mui-table-view">
           <li class="mui-table-view-cell mui-media" v-for="item in goodsArr">
-            <div class="info-box">
+            <a class="info-box" :data-id="item.id" :data-skuid="(item.sku_poi_furniture_sku || {}).id || '0'">
               <img class="mui-media-object mui-pull-left" :src="item.fur_image || 'images/square.png'">
               <div class="mui-media-body">
                 <a class="fur-name" :href="linkPath + '/furdetail?id=' + item.id">{{item.fur_name}}</a>
                 <div class="fur-price col-flag">
                   <span class="price" style="display:none">￥{{(item.sku_poi_furniture_sku || {}).discount || '0'}}</span>
                   <span class="sub-price" style="display:none">￥{{(item.sku_poi_furniture_sku || {}).price || '0'}}</span>
-                  <a :href="item.id + '_' + (item.sku_poi_furniture_sku || {}).id || '0'" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
+                  <a href="javascript:;" class="collection-bth collect-flag" v-bind:class="item.user_preference ? 'star-active' : 'star-normal'">
                     <span class="fa collect-flag" v-bind:class="item.user_preference ? 'fa-star' : 'fa-star-o'"></span>
                     <span class="collect-flag">{{item.user_preference ? '取消' : '收藏'}}</span>
                   </a>
                 </div>
               </div>
-            </div>
+            </a>
           </li>
         </ul>
         <p class="loading-icon" v-show="is_loading">
@@ -133,6 +133,7 @@ let tabsObj = {
 export default {
   data () {
     return {
+      collectFlag: true,
       searchKey: '',
       linkPath: '',
       pages: 1,
@@ -185,6 +186,7 @@ export default {
       let urlObj = querystring.parse(myURL.query)
       window.mui('#pullfresh').on('tap', 'a', function (event) {
         let classFlag = $(event.target).attr('class')
+        let listId = $(event.target).closest('.mui-media').find('.info-box').attr('data-id')
         if (classFlag.indexOf('collect-flag') > -1) {
           let token = Cookies.get('dpjia-hall-token')
           if (_.isEmpty($.trim(token))) {
@@ -196,17 +198,23 @@ export default {
             })
             return false
           } else {
-            let objid = $(event.target).closest('.col-flag').find('.collection-bth').attr('href')
-            model.goodsArr.forEach((item) => {
-              if (String(item.id) === String(objid.split('_')[0])) {
-                let opt = {
-                  skuid: objid.split('_')[1],
-                  user_preference: item.user_preference
+            if (model.collectFlag) {
+              model.collectFlag = false
+              let skuid = $(event.target).closest('.mui-media').find('.info-box').attr('data-skuid')
+              let goodsid = $(event.target).closest('.mui-media').find('.info-box').attr('data-id')
+              model.goodsArr.forEach((item) => {
+                if (String(item.id) === String(goodsid)) {
+                  let opt = {
+                    skuid: skuid,
+                    user_preference: item.user_preference
+                  }
+                  model.collectFur(opt, item)
                 }
-                model.collectFur(opt, item)
-              }
-            })
+              })
+            }
           }
+        } else {
+          window.location.href = model.linkPath + '/furdetail?id=' + listId
         }
         if (classFlag.indexOf('fur-name') > -1) {
           window.location.href = $(event.target).attr('href')
@@ -302,6 +310,7 @@ export default {
         }).then(function (data) {
           objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
+          model.collectFlag = true
         }).catch(function (error) {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
@@ -328,6 +337,7 @@ export default {
         }).then(function (data) {
           objitem.user_preference = !objitem.user_preference
           window.mui.toast(text)
+          model.collectFlag = true
         }).catch(function (error) {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')

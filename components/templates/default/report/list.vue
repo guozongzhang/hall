@@ -109,6 +109,8 @@
               model.pages = 1
               model.datalist = []
               model.getSearch()
+            } else {
+              model.getData()
             }
           }
         }

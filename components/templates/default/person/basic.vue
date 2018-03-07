@@ -133,6 +133,9 @@ export default {
     // 是否要登录
     isLogin: function () {
       if (!model.loginstate) {
+        let myURL = url.parse(window.location.href)
+        let preurl = myURL.path.split('/')[2]
+        Cookies.set('dpjia-preurl', preurl)
         window.location.href = model.linkPath + '/login'
       }
     },

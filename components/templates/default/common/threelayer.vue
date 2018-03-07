@@ -26,22 +26,15 @@ export default {
     // 获取数据
     getThreeInit: async function () {
       let arrs = model.arr.length > 0 ? model.arr : procitydis
-      if (String(this.areaobj.type) === 'area') {
-        picker.setData(arrs)
-        picker.pickers[0].setSelectedValue(String(model.areaobj.province), 0, function () {
-          picker.pickers[1].setSelectedValue(String(model.areaobj.city), 0, function () {
-            picker.pickers[2].setSelectedValue(String(model.areaobj.district))
-            picker.show(function (selectItems) {
-              model.$emit('getLayerThree', selectItems)
-            })
+      picker.setData(arrs)
+      picker.pickers[0].setSelectedValue(String(model.areaobj.one), 0, function () {
+        picker.pickers[1].setSelectedValue(String(model.areaobj.two), 0, function () {
+          picker.pickers[2].setSelectedValue(String(model.areaobj.three))
+          picker.show(function (selectItems) {
+            model.$emit('getLayerThree', selectItems)
           })
         })
-      } else {
-        picker.setData(arrs)
-        picker.show(function (selectItems) {
-          model.$emit('getLayerThree', selectItems)
-        })
-      }
+      })
     }
   },
   mounted () {

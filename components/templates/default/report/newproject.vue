@@ -96,10 +96,10 @@
             <a href="javascript:;" class="mui-navigate-right">风险分析<span class="mui-ellipsis">{{thisdata.risk_analysis}}</span></a>
           </li>
           <li class="mui-table-view-cell">
-            <a href="javascript:;" class="mui-navigate-right"  @click="changeTime('invitation')">招标时间<span>{{thisdata.invitation_time}}</span></a>
+            <a href="javascript:;" class="mui-navigate-right"  @click="changeTime('invitation', thisdata.invitation_time)">招标时间<span>{{thisdata.invitation_time}}</span></a>
           </li>
           <li class="mui-table-view-cell">
-            <a href="javascript:;" class="mui-navigate-right" @click="changeTime('delivery')">交付时间<span>{{thisdata.delivery_time}}</span></a>
+            <a href="javascript:;" class="mui-navigate-right" @click="changeTime('delivery', thisdata.delivery_time)">交付时间<span>{{thisdata.delivery_time}}</span></a>
           </li>
           <li class="mui-table-view-cell">
             <a href="javascript:;" class="mui-navigate-right" @click="showClassify()">产品分类<span class="mui-ellipsis">{{furtypeStr}}</span></a>
@@ -383,9 +383,9 @@
         arr: [],
         area: {
           state: 0,
-          province: -1,
-          city: -1,
-          districts: -1
+          one: '',
+          two: '',
+          three: ''
         },
         cloneValidity: '3个月', // 临时的时间
         cloneCategory: '招标采办', // 临时的项目类型
@@ -825,12 +825,20 @@
       },
 
       // 招标时间
-      changeTime: function (str) {
+      changeTime: function (str, val) {
         if (modalflag) {
           model.layer = str
           model.arr = dateJson
-          model.area.state = Math.random()
-          model.area.type = 'time'
+          let myDate = new Date()
+          let year = String(myDate.getFullYear())
+          let month = String(Number(myDate.getMonth()) + 1).length === 1 ? '0' + String(Number(myDate.getMonth()) + 1) : String(Number(myDate.getMonth()) + 1)
+          let day = String(myDate.getDate()).length === 1 ? '0' + String(myDate.getDate()) : String(myDate.getDate())
+          model.area = {
+            state: Math.random(),
+            one: _.isEmpty(val) ? year : String(val).split('-')[0],
+            two: _.isEmpty(val) ? month : String(val).split('-')[1],
+            three: _.isEmpty(val) ? day : String(val).split('-')[2]
+          }
           modalflag = false
         }
         setTimeout(function () {
@@ -845,10 +853,9 @@
           model.layer = 'area'
           model.arr = []
           model.area = {
-            type: 'area',
-            province: model.thisdata.province.value,
-            city: model.thisdata.city.value,
-            district: model.thisdata.district.value,
+            one: model.thisdata.province.value || 1,
+            two: model.thisdata.city.value || 1,
+            three: model.thisdata.district.value || 8,
             state: Math.random()
           }
         }

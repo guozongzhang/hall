@@ -377,11 +377,11 @@
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>招标时间</label>
-            <span class="area-text" @click="changeTime('invitation')">{{editpro.invitation_time}}</span>
+            <span class="area-text" @click="changeTime('invitation', editpro.invitation_time)">{{editpro.invitation_time}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
 						<label>交付时间</label>
-            <span class="area-text" @click="changeTime('delivery')">{{editpro.delivery_time}}</span>
+            <span class="area-text" @click="changeTime('delivery', editpro.delivery_time)">{{editpro.delivery_time}}</span>
 					</div>
           <div class="mui-input-row sub-input-box mui-navigate-right">
 						<label>产品品类</label>
@@ -628,7 +628,10 @@ export default {
       editbaisc: {},
       areaarr: [],
       areaobj: {
-        state: 0
+        state: 0,
+        one: '',
+        two: '',
+        three: ''
       },
       oneobj: {
         state: 0
@@ -1242,12 +1245,20 @@ export default {
     },
 
     // 招标时间
-    changeTime: function (str) {
+    changeTime: function (str, val) {
+      let myDate = new Date()
+      let year = String(myDate.getFullYear())
+      let month = String(Number(myDate.getMonth()) + 1).length === 1 ? '0' + String(Number(myDate.getMonth()) + 1) : String(Number(myDate.getMonth()) + 1)
+      let day = String(myDate.getDate()).length === 1 ? '0' + String(myDate.getDate()) : String(myDate.getDate())
       if (modalflag) {
         model.layer = str
         model.areaarr = dateJson
-        model.areaobj.state = Math.random()
-        model.areaobj.type = 'time'
+        model.areaobj = {
+          state: Math.random(),
+          one: _.isEmpty(val) ? year : String(val).split('-')[0],
+          two: _.isEmpty(val) ? month : String(val).split('-')[1],
+          three: _.isEmpty(val) ? day : String(val).split('-')[2]
+        }
         modalflag = false
       }
       setTimeout(function () {
@@ -1316,10 +1327,9 @@ export default {
         model.layer = 'area'
         model.areaarr = []
         model.areaobj = {
-          type: 'area',
-          province: model.editbaisc.province.value,
-          city: model.editbaisc.city.value,
-          district: model.editbaisc.district.value,
+          one: model.editbaisc.province.value || 1,
+          two: model.editbaisc.city.value || 1,
+          three: model.editbaisc.district.value || 8,
           state: Math.random()
         }
       }

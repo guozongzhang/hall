@@ -169,9 +169,9 @@
         arr: [],
         area: {
           state: 0,
-          province: -1,
-          city: -1,
-          districts: -1
+          one: 1,
+          two: 1,
+          three: 8
         },
         clonetitel: '报备备注'
       }
@@ -187,7 +187,6 @@
             'X-DP-Token': token
           }
         }).then(function (data) {
-          // model.info = data.data
           model.thisdata.project_reportman[0].name = data.data.ui_name || '未设置'
           model.thisdata.project_reportman[0].tel = data.data.mobile || ''
           model.thisdata.project_reportman[0].email = data.data.u_email || ''
@@ -243,10 +242,9 @@
           model.layer = 'area'
           model.arr = []
           model.area = {
-            type: 'area',
-            province: model.thisdata.province.value,
-            city: model.thisdata.city.value,
-            district: model.thisdata.district.value,
+            one: model.thisdata.province.value || 1,
+            two: model.thisdata.city.value || 1,
+            three: model.thisdata.district.value || 1,
             state: Math.random()
           }
         }

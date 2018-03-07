@@ -105,9 +105,9 @@
         document.onkeydown = function (e) {
           var ev = document.all ? window.event : e
           if (ev.keyCode === 13) {
+            model.pages = 1
+            model.datalist = []
             if (!_.isEmpty(model.searchKey)) {
-              model.pages = 1
-              model.datalist = []
               model.getSearch()
             } else {
               model.getData()

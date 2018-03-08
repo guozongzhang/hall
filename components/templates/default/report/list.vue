@@ -78,6 +78,7 @@
   export default {
     data () {
       return {
+        changesearch: false,
         searchKey: '',
         linkPath: '',
         pages: 1,
@@ -125,6 +126,7 @@
 
       // 搜索框影响翻页
       searchkeyup: function () {
+        model.changesearch = true
         model.pages = 1
       },
 
@@ -179,6 +181,9 @@
       pulldownRefresh: function () {
         model.is_loading = true
         $('.mui-pull-bottom-pocket').remove()
+        if (model.changesearch) {
+          model.datalist = []
+        }
         if (!_.isEmpty(model.searchKey)) {
           // 有搜索
           model.getSearchData()

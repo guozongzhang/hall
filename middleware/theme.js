@@ -11,12 +11,14 @@ let mockRequest = async (store, params) => {
   })
   let obj = {
     theme: 'default',
-    comid: 0
+    comid: 0,
+    comname: ''
   }
   if (response.data.items.length > 0) {
     obj = {
       theme: response.data.items[0].theme,
-      comid: response.data.items[0].com_id_poi_companys
+      comid: response.data.items[0].com_id_poi_companys,
+      comname: response.data.items[0].route_abb
     }
   }
   return obj

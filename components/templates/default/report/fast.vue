@@ -69,7 +69,7 @@
         </li>
         <li class="mui-table-view-cell" style="min-height: 43px">
           <span class="upload-box" id="upload_com"  @click="upload_com()">
-            <a href="javascript:;">添加附件888</a>
+            <a href="javascript:;">添加附件</a>
             <input class="hidden" type="file" accept="image/*" capture="camera" name="files[]" style="width: 75%; display: none;" v-if="!isPhone" multiple>
             <input class="hidden" type="file" accept="image/*" name="files[]" style="width: 75%; display: none;" v-if="isPhone" multiple>
             <span class="add-btn" style="float: right">
@@ -181,7 +181,6 @@
     methods: {
       init: function () {
         model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-        window.alert(model.isPhone)
         window.mui.previewImage()
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]

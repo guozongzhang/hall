@@ -4,7 +4,7 @@
       <a target="_blank" style="position: absolute;left: 12px;top: 10px;width: 26px;height: 26px;" href="http://help.dpjia.com/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E9%A1%B9%E7%9B%AE%E6%8A%A5%E5%A4%87/%E5%BF%AB%E9%80%9F%E6%8A%A5%E5%A4%87" class="mui-pull-right">
         <span class="list-icon help-icon"></span>
       </a>
-      <input type="text" class="search-box-input" v-model="searchKey" placeholder="搜索您想要查找的项目">
+      <input type="text" class="search-box-input" v-model="searchKey" @keyup="searchkeyup()" placeholder="搜索您想要查找的项目">
       <a :href="linkPath + '/newproject'" class="mui-pull-right" style="position: absolute;right: 10px;top: 9px;width: 26px;height: 26px;">
         <span class="list-icon add-icon"></span>
       </a>
@@ -59,8 +59,8 @@
             <span class="mui-spinner"></span>
             <span class="loading-text">{{loadingText}}</span>
           </p>
-          <p class="nodata-icon" v-show="is_nodata">
-            <span class="nodata-text">没有更多数据啦~</span>
+          <p class="nodata-icon" v-show="is_nodata && !is_loading">
+            <span class="nodata-text">{{no_data_text}}</span>
           </p>
         </div>
       </div>
@@ -78,6 +78,7 @@
   export default {
     data () {
       return {
+        changesearch: false,
         searchKey: '',
         linkPath: '',
         pages: 1,
@@ -87,7 +88,8 @@
         datalist: [],
         is_loading: false,
         is_nodata: false,
-        loadingText: '正在加载...'
+        loadingText: '正在加载...',
+        no_data_text: '没有更多数据啦~'
       }
     },
     methods: {
@@ -122,6 +124,12 @@
         model.getSearchData()
       },
 
+      // 搜索框影响翻页
+      searchkeyup: function () {
+        model.changesearch = true
+        model.pages = 1
+      },
+
       // 搜索接口
       getSearchData: function () {
         let rel = {
@@ -152,12 +160,18 @@
         axios.get('functions/search/search_vague', {
           params: param
         }).then(function (msg) {
+          if (model.changesearch) {
+            model.changesearch = false
+            model.datalist = []
+          }
           if (msg.data.items.length > 0) {
+            model.no_data_text = ''
             model.datalist = _.union(model.datalist, msg.data.items)
             model.pages++
             model.is_loading = false
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
           } else {
+            model.no_data_text = '未搜索到您要找的内容，可更改关键字重新搜索'
             model.is_loading = false
             model.is_nodata = true
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
@@ -213,11 +227,17 @@
         axios.get('classes/projects', {
           params: param
         }).then(function (msg) {
+          if (model.changesearch) {
+            model.changesearch = false
+            model.datalist = []
+          }
           if (msg.data.items.length > 0) {
+            model.no_data_text = ''
             model.datalist = _.union(model.datalist, msg.data.items)
             model.pages++
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
           } else {
+            model.no_data_text = '没有更多数据啦~'
             model.is_loading = false
             model.is_nodata = true
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()

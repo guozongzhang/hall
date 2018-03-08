@@ -347,13 +347,15 @@
               <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
                 <use xlink:href="/svg/icon.svg#add"></use>
               </svg>
-              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+              <input class="hidden" type="file" accept="image/*" capture="camera" name="files[]" style="width: 75%; display: none;" v-if="!isPhone" multiple>
+              <input class="hidden" type="file" accept="image/*" name="files[]" style="width: 75%; display: none;" v-if="isPhone" multiple>
             </span>
             <span class="upload-files" id="upload_attch" @click="upload_attch()" style="position: relative;top: 0px;" v-show="recordImgs.length == 0">
               <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
                 <use xlink:href="/svg/icon.svg#add"></use>
               </svg>
-              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+              <input class="hidden" type="file" accept="image/*" name="files[]" style="width: 75%; display: none;" v-if="isPhone" multiple>
+              <input class="hidden" accept="image/*" capture="camera" type="file" name="files[]" style="width: 75%; display: none;" multiple>
             </span>
           </div>
         </div>
@@ -406,7 +408,7 @@
           <div class="mui-input-row sub-input-box attach-box">
 						<label>附件信息</label>
             <span class="upload-box" id="upload_com"  @click="upload_com()">
-              <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+              <input class="hidden" accept="image/*" capture="camera" type="file" name="files[]" style="width: 75%; display: none;" multiple>
               <span class="add-btn-upload" style="float: right">
                 <i class="fa fa-picture-o"></i>
                 <i class="fa fa-plus add-icon"></i>
@@ -616,6 +618,7 @@ let reportState = [
 export default {
   data () {
     return {
+      isPhone: false,
       initok: false,
       acticearr: [],
       oriarr: [],
@@ -670,6 +673,7 @@ export default {
   },
   methods: {
     init: async function () {
+      model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
       window.mui.previewImage()
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]

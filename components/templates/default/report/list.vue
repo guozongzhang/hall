@@ -60,7 +60,7 @@
             <span class="loading-text">{{loadingText}}</span>
           </p>
           <p class="nodata-icon" v-show="is_nodata">
-            <span class="nodata-text">未搜索到您要找的内容，可更改关键字重新搜索</span>
+            <span class="nodata-text">{{no_data_text}}</span>
           </p>
         </div>
       </div>
@@ -87,7 +87,8 @@
         datalist: [],
         is_loading: false,
         is_nodata: false,
-        loadingText: '正在加载...'
+        loadingText: '正在加载...',
+        no_data_text: '没有更多数据啦~'
       }
     },
     methods: {
@@ -158,6 +159,7 @@
             model.is_loading = false
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
           } else {
+            model.no_data_text = '未搜索到您要找的内容，可更改关键字重新搜索'
             model.is_loading = false
             model.is_nodata = true
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
@@ -218,6 +220,7 @@
             model.pages++
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()
           } else {
+            model.no_data_text = '没有更多数据啦~'
             model.is_loading = false
             model.is_nodata = true
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()

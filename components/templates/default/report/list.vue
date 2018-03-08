@@ -59,7 +59,7 @@
             <span class="mui-spinner"></span>
             <span class="loading-text">{{loadingText}}</span>
           </p>
-          <p class="nodata-icon" v-show="is_nodata">
+          <p class="nodata-icon" v-show="is_nodata && !is_loading">
             <span class="nodata-text">{{no_data_text}}</span>
           </p>
         </div>
@@ -154,6 +154,7 @@
           params: param
         }).then(function (msg) {
           if (msg.data.items.length > 0) {
+            model.no_data_text = ''
             model.datalist = _.union(model.datalist, msg.data.items)
             model.pages++
             model.is_loading = false
@@ -216,6 +217,7 @@
           params: param
         }).then(function (msg) {
           if (msg.data.items.length > 0) {
+            model.no_data_text = ''
             model.datalist = _.union(model.datalist, msg.data.items)
             model.pages++
             window.mui('#pullfresh').pullRefresh().endPullupToRefresh()

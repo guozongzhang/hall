@@ -43,7 +43,8 @@
         <span class="add-btn">
           <i class="fa fa-plus add-icon"></i>
         </span>
-        <input class="hidden"accept="image/*" capture="camera" type="file" name="files">
+        <input class="hidden" type="file" accept="image/*" capture="camera" name="files" v-if="!isPhone" multiple>
+        <input class="hidden" type="file" accept="image/*" name="files" v-if="isPhone" multiple>
       </span>
     </div>
     <div class="mui-content-padded login-btn register-btn">
@@ -72,6 +73,7 @@ export default {
   },
   data () {
     return {
+      isPhone: false,
       linkPath: '',
       verify: '获取动态密码',
       verifyState: false,
@@ -91,6 +93,7 @@ export default {
   },
   methods: {
     init: function () {
+      model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getCompany()

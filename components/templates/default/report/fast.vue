@@ -181,6 +181,7 @@
     methods: {
       init: function () {
         model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+        window.alert(model.isPhone)
         window.mui.previewImage()
         let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]

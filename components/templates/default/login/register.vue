@@ -43,7 +43,7 @@
         <span class="add-btn">
           <i class="fa fa-plus add-icon"></i>
         </span>
-        <input class="hidden" type="file" name="files">
+        <input class="hidden"accept="image/*" capture="camera" type="file" name="files">
       </span>
     </div>
     <div class="mui-content-padded login-btn register-btn">

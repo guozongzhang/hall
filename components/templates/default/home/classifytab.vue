@@ -65,6 +65,7 @@ export default {
   },
   mounted () {
     model = this
+    model.linkPath = '/' + this.$store.state.comname
     this.init()
   }
 }

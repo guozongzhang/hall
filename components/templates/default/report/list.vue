@@ -160,6 +160,10 @@
         axios.get('functions/search/search_vague', {
           params: param
         }).then(function (msg) {
+          if (model.changesearch) {
+            model.changesearch = false
+            model.datalist = []
+          }
           if (msg.data.items.length > 0) {
             model.no_data_text = ''
             model.datalist = _.union(model.datalist, msg.data.items)
@@ -181,9 +185,6 @@
       pulldownRefresh: function () {
         model.is_loading = true
         $('.mui-pull-bottom-pocket').remove()
-        if (model.changesearch) {
-          model.datalist = []
-        }
         if (!_.isEmpty(model.searchKey)) {
           // 有搜索
           model.getSearchData()
@@ -226,6 +227,10 @@
         axios.get('classes/projects', {
           params: param
         }).then(function (msg) {
+          if (model.changesearch) {
+            model.changesearch = false
+            model.datalist = []
+          }
           if (msg.data.items.length > 0) {
             model.no_data_text = ''
             model.datalist = _.union(model.datalist, msg.data.items)

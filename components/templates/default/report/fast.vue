@@ -69,8 +69,8 @@
         </li>
         <li class="mui-table-view-cell" style="min-height: 43px">
           <span class="upload-box" id="upload_com"  @click="upload_com()">
-            <a href="javascript:;">添加附件00</a>
-            <input class="hidden" type="file" accept="image/*" capture="camera" name="files[]" style="width: 75%; display: none;" multiple>
+            <a href="javascript:;">添加附件</a>
+            <input class="hidden" type="file" name="files[]" style="width: 75%; display: none;" multiple>
             <span class="add-btn" style="float: right">
               <i class="fa fa-picture-o"></i>
               <i class="fa fa-plus add-icon"></i>

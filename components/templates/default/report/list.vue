@@ -60,7 +60,7 @@
             <span class="loading-text">{{loadingText}}</span>
           </p>
           <p class="nodata-icon" v-show="is_nodata">
-            <span class="nodata-text">没有更多数据啦~</span>
+            <span class="nodata-text">未搜索到您要找的内容，可更改关键字重新搜索</span>
           </p>
         </div>
       </div>

@@ -741,22 +741,38 @@ export default {
             }
           ]
         }
-        let getresult = await axios.get('classes/projects?id=' + urlObj.id, {
-          params: {
-            with: rel
+        let param = {
+          id: urlObj.id,
+          with: rel
+        }
+        axios.get('functions/report/project', {
+          params: param
+        }).then(async function (msg) {
+          model.initok = true
+          let arr = []
+          msg.data.project_rel_project_furniture_types.items.forEach((item) => {
+            arr.push(item.name)
+          })
+          model.progoodstyepstr = arr.join('/')
+          model.basicinfo = msg.data
+          model.alinkman = model.formatLinkman((msg.data.project_rel_project_first_party_linkman || {}).items || [])
+          model.reportman = ((msg.data.project_rel_project_reportman || {}).items || [])[0] || {}
+          await model.getReportLog(urlObj.id)
+          await model.getRecordLog(urlObj.id)
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          } else {
+            window.mui.toast(error.response.data.message)
+            setTimeout(function () {
+              window.location.href = model.linkPath + '/'
+            }, 2000)
           }
         })
-        let arr = []
-        getresult.data.project_rel_project_furniture_types.items.forEach((item) => {
-          arr.push(item.name)
-        })
-        model.initok = true
-        model.progoodstyepstr = arr.join('/')
-        model.basicinfo = getresult.data
-        model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
-        model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
-        await model.getReportLog(urlObj.id)
-        await model.getRecordLog(urlObj.id)
       }
     },
 

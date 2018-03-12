@@ -673,75 +673,107 @@ export default {
   },
   methods: {
     init: async function () {
-      model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      window.mui.previewImage()
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let urlObj = querystring.parse(myURL.query)
-      let rel = {
-        relation: [
-          {
-            table: 'project_reportman',
-            key: 'project_poi_projects',
-            include: [
-              {
-                table: 'user_poi_reportman'
-              }
-            ]
-          },
-          {
-            table: 'project_attachment',
-            key: 'project_poi_projects'
-          },
-          {
-            table: 'project_furniture_types',
-            key: 'project_poi_projects'
-          },
-          {
-            table: 'project_first_party_linkman',
-            key: 'project_poi_projects'
+      let token = Cookies.get('dpjia-hall-token')
+      if (_.isEmpty($.trim(token))) {
+        var btnArray = ['否', '是']
+        window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
+          if (e.index === 1) {
+            let myURL = url.parse(window.location.href)
+            let preurl = myURL.path.split('/')[2]
+            Cookies.set('dpjia-preurl', preurl)
+            window.location.href = model.linkPath + '/login'
+          } else {
+            window.location.href = model.linkPath + '/'
           }
-        ],
-        include: [
-          {
-            table: 'first_party_province_poi_province'
-          },
-          {
-            table: 'first_party_city_poi_city'
-          },
-          {
-            table: 'first_party_district_poi_district'
-          },
-          {
-            table: 'province_poi_province',
-            keys: 'id,ProvinceName'
-          },
-          {
-            table: 'city_poi_city',
-            keys: 'id,CityName'
-          },
-          {
-            table: 'district_poi_district',
-            keys: 'id,DistrictName'
-          }
-        ]
-      }
-      let getresult = await axios.get('classes/projects?id=' + urlObj.id, {
-        params: {
+        })
+        return false
+      } else {
+        model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+        window.mui.previewImage()
+        let urlObj = querystring.parse(myURL.query)
+        let rel = {
+          relation: [
+            {
+              table: 'project_reportman',
+              key: 'project_poi_projects',
+              include: [
+                {
+                  table: 'user_poi_reportman'
+                }
+              ]
+            },
+            {
+              table: 'project_attachment',
+              key: 'project_poi_projects'
+            },
+            {
+              table: 'project_furniture_types',
+              key: 'project_poi_projects'
+            },
+            {
+              table: 'project_first_party_linkman',
+              key: 'project_poi_projects'
+            }
+          ],
+          include: [
+            {
+              table: 'first_party_province_poi_province'
+            },
+            {
+              table: 'first_party_city_poi_city'
+            },
+            {
+              table: 'first_party_district_poi_district'
+            },
+            {
+              table: 'province_poi_province',
+              keys: 'id,ProvinceName'
+            },
+            {
+              table: 'city_poi_city',
+              keys: 'id,CityName'
+            },
+            {
+              table: 'district_poi_district',
+              keys: 'id,DistrictName'
+            }
+          ]
+        }
+        let param = {
+          id: urlObj.id,
           with: rel
         }
-      })
-      let arr = []
-      getresult.data.project_rel_project_furniture_types.items.forEach((item) => {
-        arr.push(item.name)
-      })
-      model.initok = true
-      model.progoodstyepstr = arr.join('/')
-      model.basicinfo = getresult.data
-      model.alinkman = model.formatLinkman((getresult.data.project_rel_project_first_party_linkman || {}).items || [])
-      model.reportman = ((getresult.data.project_rel_project_reportman || {}).items || [])[0] || {}
-      await model.getReportLog(urlObj.id)
-      await model.getRecordLog(urlObj.id)
+        axios.get('functions/report/project', {
+          params: param
+        }).then(async function (msg) {
+          model.initok = true
+          let arr = []
+          msg.data.project_rel_project_furniture_types.items.forEach((item) => {
+            arr.push(item.name)
+          })
+          model.progoodstyepstr = arr.join('/')
+          model.basicinfo = msg.data
+          model.alinkman = model.formatLinkman((msg.data.project_rel_project_first_party_linkman || {}).items || [])
+          model.reportman = ((msg.data.project_rel_project_reportman || {}).items || [])[0] || {}
+          await model.getReportLog(urlObj.id)
+          await model.getRecordLog(urlObj.id)
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '')
+              window.location.reload()
+            }, 2000)
+          } else {
+            window.mui.toast(error.response.data.message)
+            setTimeout(function () {
+              window.location.href = model.linkPath + '/'
+            }, 2000)
+          }
+        })
+      }
     },
 
     // 格式化联系人

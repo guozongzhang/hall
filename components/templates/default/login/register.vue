@@ -43,8 +43,8 @@
         <span class="add-btn">
           <i class="fa fa-plus add-icon"></i>
         </span>
-        <input class="hidden" type="file" accept="image/*" capture="camera" name="files" v-if="!isPhone" multiple>
-        <input class="hidden" type="file" accept="image/*" name="files" v-if="isPhone" multiple>
+        <input class="hidden" type="file" accept="image/*" capture="camera" name="files[]" v-if="!isPhone" multiple>
+        <input class="hidden" type="file" accept="image/*" name="files[]" v-if="isPhone" multiple>
       </span>
     </div>
     <div class="mui-content-padded login-btn register-btn">
@@ -278,7 +278,7 @@ export default {
           url: url,
           data: {
             mode: 'image',
-            mutiple: '0'
+            mutiple: '1'
           },
           crossDomain: true,
           headers: {
@@ -287,12 +287,14 @@ export default {
           },
           success: function (data) {
             $input.unwrap()
-            var img = '<img src="' + data.url + '">'
+            var img = '<img src="' + data[0].url + '">'
             $('#upload_com').find('img').remove()
             $('#upload_com').append(img)
-            model.info.img = data.url
+            model.info.img = data[0].url
           },
           error: function (error) {
+            window.mui.toast('上传失败!')
+            $input.unwrap()
             console.log(error)
           }
         })
@@ -311,7 +313,7 @@ export default {
         designer_type: 'seller',
         ui_name: model.info.relname,
         com_id_poi_companys: this.$store.state.comid,
-        designer_url: model.info.img,
+        designer_url: model.info.img || '',
         st_id: model.info.store
       }
       axios.post('users/signUpBySmsCode', param).then(function (data) {

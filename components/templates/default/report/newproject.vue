@@ -26,7 +26,7 @@
         <div class="comInfo">
           <li class="mui-table-view-cell">
             <div class="mui-input-row">
-              <label>联系人</label>
+              <label>甲方联系人</label>
               <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
             </div>
           </li>
@@ -228,7 +228,7 @@
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goLinkBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title">添加联系人</h1>
+        <h1 class="mui-title">添加甲方联系人</h1>
         <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">

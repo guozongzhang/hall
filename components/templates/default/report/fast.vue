@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="allshow subbox-show">
+    <div class="more allshow subbox-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
@@ -23,6 +23,17 @@
             <input type="text" maxlength="20" style="width: 78%" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
           </div>
         </li>
+        <div class="comInfo">
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>甲方联系人</label>
+              <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
+            </div>
+          </li>
+          <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
+            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
+          </div>
+        </div>
         <li class="mui-table-view-cell">
           <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">项目所在地区<i>*</i><span>{{thisdata.province.text}}-{{thisdata.city.text}}-{{thisdata.district.text}}</span></a>
         </li>
@@ -86,6 +97,7 @@
         </li>
         <li style="height: 15px; background: #EEEEEE;display: none"></li>
       </ul>
+
       <vue-area :areaobj="area" :arr="arr" @getLayerThree="changearea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="onearr" @getLayerOne="change"></vue-one>
     </div>
@@ -104,6 +116,35 @@
           </div>
         </li>
       </ul>
+    </div>
+    <div class="alinkman">
+      <header class="mui-bar mui-bar-nav">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goLinkBack()">返回</a>
+        <span class="fa close-icon" @click="goHome()">×</span>
+        <h1 class="mui-title">添加甲方联系人</h1>
+        <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
+      </header>
+      <ul class="mui-table-view mui-table-view-chevron nav">
+        <li class="mui-table-view-cell linkmantext" style="padding: 0 !important" v-for="(item, num) in alinkman">
+          <div class="jzztitele" style="padding-left: 25px;">
+            第{{num+1}}联系人
+            <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="deletelinkman(item)"></div>
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人姓名</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
+          </div>
+          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;">
+            <label>联系人职务</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
+          </div>
+          <div class="mui-input-row" style="padding: 0 10px;">
+            <label>联系人电话</label>
+            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
+          </div>
+        </li>
+      </ul>
+      <span class="addjjz" @click="addsublinkman()">添加联系人</span>
     </div>
   </div>
 </template>  
@@ -125,6 +166,8 @@
     data () {
       return {
         isPhone: false,
+        clonealinkman: [],
+        alinkman: [], // 联系人
         thisdata: {
           name: '',
           first_party_name: '',
@@ -259,6 +302,58 @@
       // 删除附件图片
       deleteimg: function (index) {
         model.thisdata.projectAttachment.splice(index, 1)
+      },
+
+      // 添加联系人
+      addlinkman: function () {
+        model.clonealinkman = []
+        if (model.alinkman.length === 0) {
+          model.addsublinkman()
+        } else {
+          model.alinkman.forEach(item => {
+            model.clonealinkman.push(_.clone(item))
+          })
+        }
+        $('.more').hide()
+        $('.alinkman').show()
+      },
+
+      // 联系人返回
+      goLinkBack: function () {
+        model.alinkman = []
+        model.clonealinkman.forEach(item => {
+          model.alinkman.push(_.clone(item))
+        })
+        $('.more').show()
+        $('.alinkman').hide()
+      },
+
+      // 添加多个联系人
+      addsublinkman: function () {
+        let obj = {
+          id: 0,
+          name: '',
+          job: '',
+          tel: '',
+          delete: 'no'
+        }
+        model.alinkman.push(obj)
+      },
+
+      // 删除联系人
+      deletelinkman: function (item) {
+        model.alinkman = _.without(model.alinkman, item)
+      },
+
+      // 提交联系人
+      addlinmanBtn: function () {
+        model.alinkman.forEach((sub) => {
+          if (_.isEmpty(sub.name) && _.isEmpty(sub.job) && _.isEmpty(sub.tel)) {
+            model.alinkman = _.without(model.alinkman, sub)
+          }
+        })
+        $('.alinkman').hide()
+        $('.more').show()
       },
 
       // 控制样式开合
@@ -410,6 +505,14 @@
   }
 </script>
 <style lang="">
+  .sublinkman-style {
+    font-size: 14px;
+    color: #999;
+    text-align: right;
+    padding: 0 20px;
+    height: 24px;
+    line-height: 24px;
+  }
   .add-btn {
     position: relative;
     color: #999;
@@ -438,6 +541,24 @@
     line-height: 26px;
     color: #666;
     font-size: 14px!important;
+  }
+  .addjjz {
+    font-size: 14px;
+    float: right;
+    margin-top: 5px;
+    color: #666;
+    text-align: right;
+    margin-right: 15px;
+    margin-bottom: 40px;
+  }
+  .jzztitele {
+    margin: 0 -15px;
+    font-size: 14px;
+    background: #eee;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 15px;
+    color: #999;
   }
   .allhide{
     display: none;
@@ -586,6 +707,9 @@
     line-height: 26px;
     color: #666;
     font-size: 14px!important;
+  }
+  .alinkman {
+    display: none;
   }
   .close-icon{
     position: absolute;

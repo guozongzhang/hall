@@ -16,8 +16,8 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>公司名称<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <label>甲方名称<i>*</i></label>
+            <input type="text" maxlength="20" placeholder="请输入甲方名称" v-model="thisdata.first_party_name">
           </div>
         </li>
         <!--li class="mui-table-view-cell right0"  @click="showmore('.comInfo')">
@@ -576,7 +576,7 @@
           },
           first_party_name: {
             required: true,
-            msg: '公司名称不能为空!'
+            msg: '甲方名称不能为空!'
           },
           address: {
             required: true,

@@ -843,7 +843,7 @@ export default {
         },
         first_party_name: {
           required: true,
-          msg: '公司名称不能为空!'
+          msg: '甲方名称不能为空!'
         },
         address: {
           required: true,

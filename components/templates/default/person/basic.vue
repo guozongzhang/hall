@@ -111,7 +111,7 @@ export default {
           tel: data.data.mobile,
           fur_num: data.data.count,
           projects_count: data.data.projects_count,
-          isreporter: data.isreporter,
+          isreporter: data.data.isreporter,
           identity: {
             txt: data.data.user_type,
             none: data.data.type

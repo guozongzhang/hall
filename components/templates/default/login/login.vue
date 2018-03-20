@@ -249,7 +249,12 @@ export default {
       setTimeout(function () {
         let preurl = Cookies.get('dpjia-preurl')
         if (!_.isEmpty(preurl)) {
-          window.location.href = model.linkPath + '/' + preurl
+          let isExibite = Cookies.get('dpjia-exhibite-flag')
+          if (isExibite === 'yes') {
+            window.location.href = preurl
+          } else {
+            window.location.href = model.linkPath + '/' + preurl
+          }
         } else {
           window.location.href = model.linkPath + '/'
         }

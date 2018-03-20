@@ -16,10 +16,25 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-input-row">
-            <label>公司名称<i>*</i></label>
-            <input type="text" maxlength="20" placeholder="请输入公司名称" v-model="thisdata.first_party_name">
+            <label>甲方名称<i>*</i></label>
+            <input type="text" maxlength="20" placeholder="请输入甲方名称" v-model="thisdata.first_party_name">
           </div>
         </li>
+        <!--li class="mui-table-view-cell right0"  @click="showmore('.comInfo')">
+          <a href="javascript:;" class="mui-navigate-right">联系人</a>
+        </li-->
+        <div class="comInfo">
+          <li class="mui-table-view-cell">
+            <div class="mui-input-row">
+              <label>甲方联系人</label>
+              <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
+            </div>
+          </li>
+          <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
+            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
+          </div>
+        </div>
+
         <li class="mui-table-view-cell">
           <a href="javascript:;" class="mui-navigate-right"  @click="testarea()">项目所在地区<i>*</i><span>{{thisdata.province.text}}-{{thisdata.city.text}}-{{thisdata.district.text}}</span></a>
         </li>
@@ -110,21 +125,7 @@
           </li>
         </div>
 
-        <li class="mui-table-view-cell right0"  @click="showmore('.comInfo')">
-          <a href="javascript:;" class="mui-navigate-right">更多甲方信息</a>
-        </li>
-
-        <div class="comInfo">
-          <li class="mui-table-view-cell">
-            <div class="mui-input-row">
-              <label>甲方联系人</label>
-              <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
-            </div>
-          </li>
-          <div style="padding: 10px 0;border-bottom: 1px solid #eee;" v-show="alinkman.length > 0">
-            <div class="sublinkman-style" v-for="sublink in alinkman">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
-          </div>
-        </div>
+        
 
         <li class="mui-table-view-cell right0" @click="showmore('.reportInfo')">
           <a href="javascript:;" class="mui-navigate-right ">更多报备人信息</a>
@@ -227,7 +228,7 @@
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goLinkBack()">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title">甲方联系人</h1>
+        <h1 class="mui-title">添加甲方联系人</h1>
         <a class="mui-icon mui-pull-right complete" @click="addlinmanBtn()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
@@ -377,7 +378,8 @@
         },
         flag: 0,
         acticearr: [],
-        alinkman: [], // 甲方联系人
+        alinkman: [], // 联系人
+        clonealinkman: [], // clone联系人
         onearr: [],
         oneobj: {
           state: 'three_month'
@@ -440,10 +442,15 @@
         model.thisdata.project_furniture_types = obj
       },
 
-      // 添加甲方联系人
+      // 添加联系人
       addlinkman: function () {
+        model.clonealinkman = []
         if (model.alinkman.length === 0) {
           model.addsublinkman()
+        } else {
+          model.alinkman.forEach(item => {
+            model.clonealinkman.push(_.clone(item))
+          })
         }
         $('.more').hide()
         $('.alinkman').show()
@@ -451,6 +458,10 @@
 
       // 联系人返回
       goLinkBack: function () {
+        model.alinkman = []
+        model.clonealinkman.forEach(item => {
+          model.alinkman.push(_.clone(item))
+        })
         $('.more').show()
         $('.alinkman').hide()
       },
@@ -565,7 +576,7 @@
           },
           first_party_name: {
             required: true,
-            msg: '公司名称不能为空!'
+            msg: '甲方名称不能为空!'
           },
           address: {
             required: true,
@@ -918,7 +929,7 @@
     color: #666;
     font-size: 14px!important;
   }
-  .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .comInfo, .projectInfo, .alinkman{
+  .other, .otherRemark,.reporter,.otherCompete, .jzInfo, .reportInfo, .projectInfo, .alinkman{
     display: none;
   }
   .jzInfo, .reportInfo, .projectInfo{

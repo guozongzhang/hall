@@ -320,7 +320,13 @@ export default {
         Cookies.set('dpjia-hall-token', data.data.token)
         window.mui.toast('注册成功!')
         setTimeout(function () {
-          window.location.href = model.linkPath + '/'
+          let isExibite = Cookies.get('dpjia-exhibite-flag')
+          if (isExibite === 'yes') {
+            let preurl = Cookies.get('dpjia-preurl')
+            window.location.href = preurl
+          } else {
+            window.location.href = model.linkPath + '/'
+          }
         }, 1000)
       }).catch(function (error) {
         window.mui.toast(error.response.data.message)

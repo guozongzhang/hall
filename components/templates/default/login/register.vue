@@ -319,8 +319,8 @@ export default {
       axios.post('users/signUpBySmsCode', param).then(function (data) {
         Cookies.set('dpjia-hall-token', data.data.token)
         window.mui.toast('注册成功!')
+        let isExibite = Cookies.get('dpjia-exhibite-flag')
         setTimeout(function () {
-          let isExibite = Cookies.get('dpjia-exhibite-flag')
           if (isExibite === 'yes') {
             let preurl = Cookies.get('dpjia-preurl')
             window.location.href = preurl

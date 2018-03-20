@@ -60,6 +60,31 @@
               <div id="projectdetail" class="mui-control-content mui-active">
                 <div class="basic-box">
                   <div class="sub-detail-box">
+                    <label>甲方信息</label>
+                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
+                      <span class="fa fa-edit"></span>
+                      <span>编辑</span>
+                    </span>
+                  </div>
+                  <div class="project-sublist">
+                    <ul class="ul-list">
+                      <li class="mui-table-view-cell f16" style="display: none">
+                        <span class="c666 f16">所属区域：</span>
+                        <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
+                      </li>
+                      <li class="mui-table-view-cell f16" v-for="(sub, index) in alinkman" >
+                        <span class="c666 f16">第{{index+1}}联系人：</span>
+                        <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
+                      </li>
+                      <li class="mui-table-view-cell f16" v-show="alinkman.length == 0">
+                        <span class="c666 f16">联系人：</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="line-box"></div>
+                <div class="basic-box">
+                  <div class="sub-detail-box">
                     <label>项目信息</label>
                     <span class="edit-icon" @click="editProject(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
                       <span class="fa fa-edit"></span>
@@ -110,31 +135,7 @@
                   </div>
                 </div>
                 <div class="line-box"></div>
-                <div class="basic-box">
-                  <div class="sub-detail-box">
-                    <label>甲方信息</label>
-                    <span class="edit-icon" @click="editBuyer(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'">
-                      <span class="fa fa-edit"></span>
-                      <span>编辑</span>
-                    </span>
-                  </div>
-                  <div class="project-sublist">
-                    <ul class="ul-list">
-                      <li class="mui-table-view-cell f16" style="display: none">
-                        <span class="c666 f16">所属区域：</span>
-                        <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
-                      </li>
-                      <li class="mui-table-view-cell f16" v-for="(sub, index) in alinkman" >
-                        <span class="c666 f16">第{{index+1}}联系人：</span>
-                        <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
-                      </li>
-                      <li class="mui-table-view-cell f16" v-show="alinkman.length == 0">
-                        <span class="c666 f16">甲方联系人：</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="line-box"></div>
+                
                 <div class="basic-box">
                   <div class="sub-detail-box">
                     <label>报备人信息</label>
@@ -441,7 +442,7 @@
             <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
 					</div>
           <div class="mui-input-row sub-input-box">
-						<label>甲方联系人</label>
+						<label>联系人</label>
             <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
 					</div>
           <div style="padding: 10px 0;" v-show="alinkman.length > 0">
@@ -510,7 +511,7 @@
           <span style="position: relative;top: -1px;">返回</span>
         </a>
         <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">甲方联系人</h1>
+        <h1 class="mui-title othertitle">联系人</h1>
         <a class="mui-icon mui-pull-right save-btn" @click="subaddlinkman()">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
@@ -626,7 +627,7 @@ export default {
       recordImgs: [], // 报备记录附件
       dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
-      alinkman: [], // 甲方联系人
+      alinkman: [], // 联系人
       layer: 'area',
       editbaisc: {},
       areaarr: [],
@@ -842,7 +843,7 @@ export default {
         },
         first_party_name: {
           required: true,
-          msg: '公司名称不能为空!'
+          msg: '甲方名称不能为空!'
         },
         address: {
           required: true,
@@ -1402,7 +1403,7 @@ export default {
       modalflag = true
     },
 
-    // 添加甲方联系人
+    // 添加联系人
     addlinkman: function () {
       if (model.alinkman.length === 0) {
         model.addsublinkman()
@@ -1427,7 +1428,7 @@ export default {
       model.alinkman = _.without(model.alinkman, item)
     },
 
-    // 删除甲方联系人
+    // 删除联系人
     editalinkman: function (item) {
       if (item.id > 0) {
         model.dellinkmanids.push(item.id)
@@ -1435,7 +1436,7 @@ export default {
       model.alinkman = _.without(model.alinkman, item)
     },
 
-    // 添加甲方联系人返回
+    // 添加联系人返回
     subGoBack: function () {
       model.activeTab = 'editbuyer'
     },

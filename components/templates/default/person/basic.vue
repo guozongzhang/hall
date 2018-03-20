@@ -78,6 +78,7 @@ export default {
         fur_num: 0,
         projects_count: 0,
         tel: '-',
+        isreporter: false, // 是否拥有报备权限
         identity: {
           txt: '游客',
           none: true
@@ -110,6 +111,7 @@ export default {
           tel: data.data.mobile,
           fur_num: data.data.count,
           projects_count: data.data.projects_count,
+          isreporter: data.data.isreporter,
           identity: {
             txt: data.data.user_type,
             none: data.data.type
@@ -143,7 +145,11 @@ export default {
     // 跳转页面
     goNextPage: function (url, type) {
       if (type === 'project') {
-        window.location.href = model.linkPath + url
+        if (model.info.isreporter) {
+          window.location.href = model.linkPath + url
+        } else {
+          window.mui.toast('您的身份未审核，审核通过后才能使用［项目报备］的功能')
+        }
       }
       if (model.loginstate) {
         if (type === 'normal') {

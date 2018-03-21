@@ -1,7 +1,7 @@
 import axios from 'axios'
 let Cookies = require('js-cookie')
 function getToken () {
-  let token = Cookies.get('dpjia-hall-token')
+  let token = Cookies.get('dpjia-hall-token', {domain: '.dpjia.com'})
   let obj
   if (token) {
     obj = {

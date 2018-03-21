@@ -53,7 +53,7 @@ export default {
         var btnArray = ['否', '是']
         window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
-            Cookies.set('dpjia-preurl', '')
+            Cookies.set('dpjia-preurl', '', { domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/login'
           }
         })

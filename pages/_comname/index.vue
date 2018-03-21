@@ -66,13 +66,13 @@ export default {
       axios.get('classes/companys', {
         params: param
       }).then(function (data) {
-        Cookies.set('com-name', data.data.items[0].com_name)
+        Cookies.set('com-name', data.data.items[0].com_name, { domain: '.dpjia.com'})
         model.comName = data.data.items[0].com_name
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
+            Cookies.set('dpjia-hall-token', '', { domain: '.dpjia.com'})
             window.location.reload()
           }, 2000)
         }
@@ -99,7 +99,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
+            Cookies.set('dpjia-hall-token', '', { domain: '.dpjia.com'})
             window.location.reload()
           }, 2000)
         }

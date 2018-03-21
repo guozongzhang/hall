@@ -93,6 +93,7 @@ export default {
   },
   methods: {
     init: function () {
+      Cookies.set('dpjia-exhibite', '', { domain: '.dpjia.com'})
       model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
@@ -116,7 +117,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
+            Cookies.set('dpjia-hall-token', '', { domain: '.dpjia.com'})
             window.location.reload()
           }, 2000)
         }
@@ -140,7 +141,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
+            Cookies.set('dpjia-hall-token', '', { domain: '.dpjia.com'})
             window.location.reload()
           }, 2000)
         }
@@ -173,7 +174,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '')
+            Cookies.set('dpjia-hall-token', '', { domain: '.dpjia.com'})
             window.location.reload()
           }, 2000)
         }
@@ -317,10 +318,10 @@ export default {
         st_id: model.info.store
       }
       axios.post('users/signUpBySmsCode', param).then(function (data) {
-        Cookies.set('dpjia-hall-token', data.data.token)
+        Cookies.set('dpjia-hall-token', data.data.token, { domain: '.dpjia.com'})
         window.mui.toast('注册成功!')
+        let isExibite = Cookies.get('dpjia-exhibite-flag')
         setTimeout(function () {
-          let isExibite = Cookies.get('dpjia-exhibite-flag')
           if (isExibite === 'yes') {
             let preurl = Cookies.get('dpjia-preurl')
             window.location.href = preurl

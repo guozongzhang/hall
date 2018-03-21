@@ -67,7 +67,7 @@ export default {
         window.mui.confirm('确定要清空历史搜索记录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
             model.historyArr = []
-            Cookies.set('search-history', '')
+            Cookies.set('search-history', '', { domain: '.dpjia.com'})
           }
         })
       })

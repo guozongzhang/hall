@@ -249,12 +249,8 @@ export default {
       Cookies.set('designer-id', data.user_poi_users, { domain: '.dpjia.com'})
       setTimeout(function () {
         let preurl = Cookies.get('dpjia-preurl')
-        window.alert(preurl)
-        let isExibite = Cookies.get('dpjia-exhibite-flag')
-        window.alert(isExibite)
         if (!_.isEmpty(preurl)) {
           let isExibite = Cookies.get('dpjia-exhibite-flag')
-
           if (isExibite === 'yes') {
             window.mui.toast(preurl)
             window.location.href = preurl

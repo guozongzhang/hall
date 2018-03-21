@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     init: function () {
+      Cookies.set('dpjia-exhibite', '', { domain: '.dpjia.com'})
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let rem = Cookies.get('dpjia-hall-remeber')
@@ -253,7 +254,7 @@ export default {
         window.alert(isExibite)
         if (!_.isEmpty(preurl)) {
           let isExibite = Cookies.get('dpjia-exhibite-flag')
-          
+
           if (isExibite === 'yes') {
             window.mui.toast(preurl)
             window.location.href = preurl

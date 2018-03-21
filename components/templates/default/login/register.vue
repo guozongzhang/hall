@@ -93,6 +93,7 @@ export default {
   },
   methods: {
     init: function () {
+      Cookies.set('dpjia-exhibite', '', { domain: '.dpjia.com'})
       model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]

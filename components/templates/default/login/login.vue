@@ -250,7 +250,9 @@ export default {
         let preurl = Cookies.get('dpjia-preurl')
         if (!_.isEmpty(preurl)) {
           let isExibite = Cookies.get('dpjia-exhibite-flag')
+          window.mui.toast(isExibite)
           if (isExibite === 'yes') {
+            window.mui.toast(preurl)
             window.location.href = preurl
           } else {
             window.location.href = model.linkPath + '/' + preurl

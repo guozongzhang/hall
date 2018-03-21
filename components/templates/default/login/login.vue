@@ -248,10 +248,8 @@ export default {
       Cookies.set('designer-id', data.user_poi_users)
       setTimeout(function () {
         let preurl = Cookies.get('dpjia-preurl')
-        window.mui.toast('0000', preurl)
         let isExibite = Cookies.get('dpjia-exhibite-flag')
-        window.mui.toast('11111', isExibite)
-        return
+        window.mui.toast(preurl + '====' + isExibite)
         if (!_.isEmpty(preurl)) {
           let isExibite = Cookies.get('dpjia-exhibite-flag')
           window.mui.toast(isExibite)

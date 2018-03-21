@@ -119,13 +119,13 @@ export default {
         }
         let isupgrade = data.data.upgrade ? 'yes' : 'no'
         let vipprice = data.data.type ? 'yes' : 'no'
-        Cookies.set('can-upgrade', isupgrade, { domain: '.dpjia.com'})
-        Cookies.set('vip-price', vipprice, { domain: '.dpjia.com'})
+        Cookies.set('can-upgrade', isupgrade)
+        Cookies.set('vip-price', vipprice)
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', { domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token', '')
             window.location.reload()
           }, 2000)
         }
@@ -137,7 +137,7 @@ export default {
       if (!model.loginstate) {
         let myURL = url.parse(window.location.href)
         let preurl = myURL.path.split('/')[2]
-        Cookies.set('dpjia-preurl', preurl, { domain: '.dpjia.com'})
+        Cookies.set('dpjia-preurl', preurl)
         window.location.href = model.linkPath + '/login'
       }
     },

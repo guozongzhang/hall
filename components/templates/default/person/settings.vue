@@ -131,6 +131,7 @@ export default {
         if (e.index === 1) {
           Cookies.set('dpjia-hall-token', '')
           Cookies.set('dpjia-exhibite-flag', '')
+          Cookies.set('dpjia-preurl', '')
           window.location.href = model.linkPath + '/person'
         }
       })

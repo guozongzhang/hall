@@ -253,6 +253,7 @@ export default {
         window.alert(isExibite)
         if (!_.isEmpty(preurl)) {
           let isExibite = Cookies.get('dpjia-exhibite-flag')
+          
           if (isExibite === 'yes') {
             window.mui.toast(preurl)
             window.location.href = preurl

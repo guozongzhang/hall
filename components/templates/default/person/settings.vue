@@ -130,6 +130,7 @@ export default {
       window.mui.confirm('确定退出登录？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
           Cookies.set('dpjia-hall-token', '')
+          Cookies.set('dpjia-exhibite-flag', '')
           window.location.href = model.linkPath + '/person'
         }
       })

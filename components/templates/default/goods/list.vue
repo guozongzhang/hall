@@ -195,7 +195,7 @@ export default {
               if (e.index === 1) {
                 let myURL = url.parse(window.location.href)
                 let preurl = myURL.path.split('/')[2]
-                Cookies.set('dpjia-preurl', preurl)
+                Cookies.set('dpjia-preurl', preurl, {domain: '.dpjia.com'})
                 window.location.href = model.linkPath + '/login'
               }
             })

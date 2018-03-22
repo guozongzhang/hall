@@ -130,8 +130,8 @@ export default {
       window.mui.confirm('确定退出登录？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
           Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-          Cookies.set('dpjia-exhibite-flag', '')
-          Cookies.set('dpjia-preurl', '')
+          Cookies.set('dpjia-exhibite-flag', 'no', {domain: '.dpjia.com'})
+          Cookies.set('dpjia-preurl', '', {domain: '.dpjia.com'})
           window.location.href = model.linkPath + '/person'
         }
       })

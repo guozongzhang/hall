@@ -765,7 +765,7 @@ export default {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
               Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-              window.location.reload()
+              window.location.href = model.linkPath + '/'
             }, 2000)
           } else {
             window.mui.toast(error.response.data.message)
@@ -959,7 +959,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-            window.location.reload()
+            window.location.href = model.linkPath + '/'
           }, 2000)
         }
       })
@@ -988,7 +988,7 @@ export default {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
             Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-            window.location.reload()
+            window.location.href = model.linkPath + '/'
           }, 2000)
         }
       })

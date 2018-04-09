@@ -107,6 +107,7 @@ let querystring = require('querystring')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
+let myURL
 let pagesize = 4
 let token
 let tabsObj = {
@@ -169,9 +170,9 @@ export default {
   },
   methods: {
     inits: async function (pages) {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      token = Cookies.get('dpjia-hall-token')
+      token = Cookies.get('dpjia-hall-token-' + myURL.port)
       if (!token) {
         window.location.href = model.linkPath + '/login'
       }
@@ -233,7 +234,6 @@ export default {
     matchSearch: function (type) {
       model.is_nodata = false
       model.activeTab = type
-      let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
       delete urlObj.secondtype
       delete urlObj.thirdtype
@@ -250,7 +250,6 @@ export default {
 
     // 获取商品数据
     getGoodsList: function (pages, whereobj, addtype) {
-      let myURL = url.parse(window.location.href)
       if (addtype === 'no') {
         model.goodsArr = []
       }
@@ -289,7 +288,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -299,7 +298,6 @@ export default {
     // 下拉刷新获取数据
     pulldownRefresh: function () {
       model.is_loading = true
-      let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
       $('.mui-pull-bottom-pocket').remove()
       model.getGoodsList(model.pages, urlObj, 'getmore')
@@ -344,7 +342,7 @@ export default {
             if (error.response.data.message === 'token is invalid') {
               window.mui.toast('登录信息过期!')
               setTimeout(function () {
-                Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+                Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
                 window.location.href = model.linkPath + '/'
               }, 2000)
             }
@@ -375,7 +373,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -401,7 +399,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -426,7 +424,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -451,7 +449,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -475,7 +473,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -512,7 +510,6 @@ export default {
     // 重置分类
     resetClassify: function () {
       model.is_nodata = false
-      let myURL = url.parse(window.location.href)
       model.classifyActiveArr = []
       model.goodsArr = []
       model.pages = 1
@@ -543,7 +540,6 @@ export default {
       }
       model.goodsArr = []
       model.pages = 1
-      let myURL = url.parse(window.location.href)
       let urlObj = querystring.parse(myURL.query)
       delete urlObj.secondtype
       delete urlObj.thirdtype
@@ -566,7 +562,6 @@ export default {
     // 按照价格排序
     orderByPrice: function (type) {
       model.is_nodata = false
-      let myURL = url.parse(window.location.href)
       model.activeTab = type
       model.priceicon = !model.priceicon
       let urlObj = querystring.parse(myURL.query)

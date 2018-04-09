@@ -38,6 +38,7 @@ let ESVal = require('es-validate')
 let $ = require('jquery')
 let model
 let token
+let myURL
 export default {
   head () {
     return {
@@ -62,15 +63,15 @@ export default {
   },
   methods: {
     init: function () {
+      myURL = url.parse(window.location.href)
       model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      token = Cookies.get('dpjia-hall-token')
+      token = Cookies.get('dpjia-hall-token-' + myURL.port)
       if (!token) {
         window.location.href = model.linkPath + '/login'
       }
-      model.comname = Cookies.get('com-name')
-      token = Cookies.get('dpjia-hall-token')
+      model.comname = Cookies.get('com-name-' + myURL.port)
+      token = Cookies.get('dpjia-hall-token-' + myURL.port)
       model.getStore()
     },
 
@@ -91,7 +92,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -137,7 +138,7 @@ export default {
 
     // 提交升级成设计师信息
     upDesignBtn: function () {
-      let upgrade = Cookies.get('can-upgrade')
+      let upgrade = Cookies.get('can-upgrade-' + myURL.port)
       if (upgrade === 'no') {
         window.mui.toast('您已经是销售设计师了，暂时不能同时成为两家销售设计师!')
         return false

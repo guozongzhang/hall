@@ -93,7 +93,7 @@ export default {
     init: function () {
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let token = Cookies.get('dpjia-hall-token')
+      let token = Cookies.get('dpjia-hall-token-' + myURL.port)
       if (!token) {
         window.location.href = model.linkPath + '/login'
       }

@@ -129,6 +129,7 @@ let _ = require('underscore')
 let $ = require('jquery')
 let Cookies = require('js-cookie')
 let model
+let myURL
 export default {
   props: ['info'],
   data () {
@@ -151,7 +152,7 @@ export default {
   },
   watch: {
     info: function () {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       this.detail = this.info
       model.isshow = true
@@ -400,14 +401,14 @@ export default {
 
     // 收藏sku
     collection: function (obj) {
-      let token = Cookies.get('dpjia-hall-token')
+      let token = Cookies.get('dpjia-hall-token-' + myURL.port)
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']
         window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
             let myURL = url.parse(window.location.href)
             let preurl = myURL.path.split('/')[2]
-            Cookies.set('dpjia-preurl', preurl, {domain: '.dpjia.com'})
+            Cookies.set('dpjia-preurl-' + myURL.port, preurl, {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/login'
           }
         })

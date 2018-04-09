@@ -112,6 +112,7 @@ let querystring = require('querystring')
 let Cookies = require('js-cookie')
 let $ = require('jquery')
 let model
+let myURL
 let token
 export default {
   data () {
@@ -141,11 +142,11 @@ export default {
   },
   methods: {
     init: async function () {
-      token = Cookies.get('dpjia-hall-token')
+      myURL = url.parse(window.location.href)
+      token = Cookies.get('dpjia-hall-token-' + myURL.port)
       if (!token) {
         model.showShare = false
       }
-      let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       model.userid = urlObj.userid || 0

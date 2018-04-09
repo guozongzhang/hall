@@ -18,6 +18,7 @@ let Cookies = require('js-cookie')
 let url = require('url')
 let querystring = require('querystring')
 let model
+let myURL
 export default {
   head: {
     title: '商品详情页'
@@ -37,8 +38,8 @@ export default {
   },
   methods: {
     init: function () {
-      model.userid = Cookies.get('designer-id') || '0'
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
+      model.userid = Cookies.get('designer-id-' + myURL.port) || '0'
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       if (urlObj.id > 0) {
@@ -51,7 +52,7 @@ export default {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+              Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
               window.location.href = model.linkPath + '/'
             }, 2000)
           }

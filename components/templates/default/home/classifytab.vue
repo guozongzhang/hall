@@ -38,6 +38,7 @@ let $ = require('jquery')
 let _ = require('underscore')
 let model
 let token
+let myURL
 export default {
   data () {
     return {
@@ -47,8 +48,8 @@ export default {
   },
   methods: {
     init: function () {
-      token = Cookies.get('dpjia-hall-token')
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
+      token = Cookies.get('dpjia-hall-token-' + myURL.port)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       if (!_.isEmpty($.trim(token))) {
         axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
@@ -60,7 +61,7 @@ export default {
         }).catch(function (error) {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
           }
         })
       }
@@ -72,7 +73,7 @@ export default {
         var btnArray = ['否', '是']
         window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
-            Cookies.set('dpjia-preurl', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-preurl-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/login'
           }
         })

@@ -28,6 +28,7 @@ let _ = require('underscore')
 let ESVal = require('es-validate')
 let model
 let token
+let myURL
 export default {
   data () {
     return {
@@ -42,9 +43,9 @@ export default {
   },
   methods: {
     init: function () {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      token = Cookies.get('dpjia-hall-token')
+      token = Cookies.get('dpjia-hall-token-' + myURL.port)
       if (!_.isEmpty($.trim(token))) {
         model.loginstate = true
         model.getPersonInfo(token)
@@ -65,7 +66,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }

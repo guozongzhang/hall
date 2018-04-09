@@ -45,6 +45,7 @@ let url = require('url')
 let Cookies = require('js-cookie')
 let _ = require('underscore')
 let model
+let myURL
 export default {
   props: ['report'],
   data () {
@@ -60,7 +61,7 @@ export default {
   },
   methods: {
     init: function () {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
 
@@ -110,7 +111,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }

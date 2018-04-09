@@ -30,8 +30,10 @@
 <script>
 import axios from '~/plugins/axios'
 let model
+let url = require('url')
 let $ = require('jquery')
 let Cookies = require('js-cookie')
+let myURL
 export default {
   props: ['acticearr', 'flag'],
   data () {
@@ -62,6 +64,7 @@ export default {
   },
   methods: {
     init: function () {
+      myURL = url.parse(window.location.href)
       axios.get('/functions/furnitures/furniture_types', {
       }).then(function (data) {
         data.data.forEach(item => {
@@ -73,7 +76,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/login'
           }, 2000)
         }

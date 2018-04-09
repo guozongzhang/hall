@@ -41,13 +41,14 @@
           </div>
         </div>
         <div class="sub-detail">
-          <div class="mui-segmented-control detail-tab">
+          <div class="mui-segmented-control detail-tab" id="msg_num">
             <a class="mui-control-item mui-active" href="#projectdetail">
               <span>项目介绍</span>
               <span class="active-icon"></span>
             </a>
-            <a class="mui-control-item" href="#reportrecord">
+            <a class="mui-control-item msg-num" href="#reportrecord" @change="test()">
               <span>报备记录</span>
+              <span class="msg-style" v-if="hadRead"></span>
               <span class="active-icon"></span>
             </a>
             <a class="mui-control-item" href="#reportlog">
@@ -222,7 +223,8 @@
                     </li>
                   </ul>
                 </div>
-                <p class="no-data" v-show="reportLoglist.length == 0">您还没有报备项目,暂无报备日志哦~</p>
+                <p class="no-data" v-show="isloading">加载中...</p>
+                <p class="no-data" v-show="reportLoglist.length == 0 && !isloading">您还没有报备项目,暂无报备日志哦~</p>
               </div>
               <div id="reportlog" class="mui-control-content">
                 <div class="record-box">
@@ -575,6 +577,7 @@ let model
 let proId
 let modalflag = true
 let flag = true
+let urlObj
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let updateTypeArr = [] // 提交的项目类型数组
@@ -619,6 +622,9 @@ let reportState = [
 export default {
   data () {
     return {
+      isloading: true,
+      hadRead: false,
+      objid: 0, // 项目id
       isPhone: false,
       initok: false,
       acticearr: [],
@@ -693,7 +699,8 @@ export default {
       } else {
         model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
         window.mui.previewImage()
-        let urlObj = querystring.parse(myURL.query)
+        urlObj = querystring.parse(myURL.query)
+        model.objid = urlObj.id
         let rel = {
           relation: [
             {
@@ -756,9 +763,9 @@ export default {
           })
           model.progoodstyepstr = arr.join('/')
           model.basicinfo = msg.data
+          model.hadRead = Number(msg.data.readed) === 0
           model.alinkman = model.formatLinkman((msg.data.project_rel_project_first_party_linkman || {}).items || [])
           model.reportman = ((msg.data.project_rel_project_reportman || {}).items || [])[0] || {}
-          await model.getReportLog(urlObj.id)
           await model.getRecordLog(urlObj.id)
         }).catch(function (error) {
           if (error.response.data.message === 'token is invalid') {
@@ -775,6 +782,14 @@ export default {
           }
         })
       }
+
+      // 消息已经读取
+      window.mui('#msg_num').on('tap', '.msg-num', function () {
+        model.isloading = true
+        model.hadRead = false
+        model.reportLoglist = []
+        model.getReportLog(urlObj.id)
+      })
     },
 
     // 格式化联系人
@@ -1066,6 +1081,7 @@ export default {
           }
         })
       })
+      model.isloading = false
       model.reportLoglist = result.data.items
     },
 
@@ -2235,6 +2251,20 @@ body,html{
   -moz-transform: translate(-50%, 0);
   -o-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
+}
+.mui-control-item .msg-style{
+  position: absolute;
+  right: 24px;
+  top: 6px;
+  font-size: 14px;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  line-height: 18px;
+  text-align: center;
+  background-color: #f14f4f;
+  color: #fff;
+  border-radius: 100%;
 }
 .detail-body{
   min-height: 180px;

@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     init: function () {
+      Cookies.set('dpjia-hall-token', '')
       Cookies.set('dpjia-exhibite', '')
       let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]

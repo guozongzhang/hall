@@ -43,6 +43,7 @@
           <span class="bgicon myproject"></span>
           <span class="info">我的项目:</span>
           <span class="text">共{{info.projects_count}}个</span>
+          <span class="msg-style" v-if="info.readed > 0">{{info.readed}}</span>
         </a>
       </li>
       <li>
@@ -78,6 +79,7 @@ export default {
         fur_num: 0,
         projects_count: 0,
         tel: '-',
+        readed: 0,
         isreporter: false, // 是否拥有报备权限
         identity: {
           txt: '游客',
@@ -110,6 +112,7 @@ export default {
           header_name: data.data.ui_name || '未设置',
           tel: data.data.mobile,
           fur_num: data.data.count,
+          readed: data.data.readed || 0,
           projects_count: data.data.projects_count,
           isreporter: data.data.isreporter,
           identity: {
@@ -266,6 +269,20 @@ export default {
   }
   .mui-navigate-right:after{
     right: 0px !important;
+  }
+  .mui-navigate-right .msg-style{
+    position: absolute;
+    right: 24px;
+    top: 4px;
+    font-size: 13px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background-color: #f14f4f;
+    color: #fff;
+    border-radius: 100%;
   }
   .sjdesign {
     position: absolute;

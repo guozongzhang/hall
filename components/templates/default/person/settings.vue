@@ -40,11 +40,11 @@ export default {
     init: function () {
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      token = Cookies.get('dpjia-hall-token-' + myURL.port)
+      token = Cookies.get('dpjia-hall-token-' + window.location.port)
       if (!token) {
         window.location.href = model.linkPath + '/login'
       }
-      let vipprice = Cookies.get('vip-price-' + myURL.port)
+      let vipprice = Cookies.get('vip-price-' + window.location.port)
       if (vipprice === 'yes') {
         axios.get('classes/user_preference', {
           params: {
@@ -65,7 +65,7 @@ export default {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+              Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
               window.location.href = model.linkPath + '/'
             }, 2000)
           }
@@ -75,7 +75,7 @@ export default {
 
     // 设置专属价
     switchState: async function () {
-      let isDesigner = Cookies.get('vip-price-' + myURL.port)
+      let isDesigner = Cookies.get('vip-price-' + window.location.port)
       if (isDesigner === 'no') {
         model.isActive = false
         window.mui.toast('您不属于该云展厅的销售经理，不能开启专属价!')
@@ -130,10 +130,10 @@ export default {
       var btnArray = ['否', '是']
       window.mui.confirm('确定退出登录？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
-          Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
-          Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
-          Cookies.set('dpjia-exhibite-flag-' + myURL.port, 'no', {domain: '.dpjia.com'})
-          Cookies.set('dpjia-preurl-' + myURL.port, '', {domain: '.dpjia.com'})
+          Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+          Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+          Cookies.set('dpjia-exhibite-flag-' + window.location.port, 'no', {domain: '.dpjia.com'})
+          Cookies.set('dpjia-preurl-' + window.location.port, '', {domain: '.dpjia.com'})
           window.location.href = model.linkPath + '/person'
         }
       })

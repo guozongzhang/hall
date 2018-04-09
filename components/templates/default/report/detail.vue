@@ -683,7 +683,7 @@ export default {
     init: async function () {
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let token = Cookies.get('dpjia-hall-token-' + myURL.port)
+      let token = Cookies.get('dpjia-hall-token-' + window.location.port)
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']
         window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {

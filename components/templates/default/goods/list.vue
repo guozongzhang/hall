@@ -189,13 +189,13 @@ export default {
         let classFlag = $(event.target).attr('class')
         let listId = $(event.target).closest('.mui-media').find('.info-box').attr('data-id')
         if (classFlag.indexOf('collect-flag') > -1) {
-          let token = Cookies.get('dpjia-hall-token-' + myURL.port)
+          let token = Cookies.get('dpjia-hall-token-' + window.location.port)
           if (_.isEmpty($.trim(token))) {
             var btnArray = ['否', '是']
             window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
               if (e.index === 1) {
                 let preurl = myURL.path.split('/')[2]
-                Cookies.set('dpjia-preurl-' + myURL.port, preurl, {domain: '.dpjia.com'})
+                Cookies.set('dpjia-preurl-' + window.location.port, preurl, {domain: '.dpjia.com'})
                 window.location.href = model.linkPath + '/login'
               }
             })
@@ -255,12 +255,12 @@ export default {
 
     // 搜索接口
     searchList: function (val, type) {
-      let searchHistoryArr = Cookies.get('search-history-' + myURL.port) ? (Cookies.get('search-history-' + myURL.port) || []).split(',') : []
+      let searchHistoryArr = Cookies.get('search-history-' + window.location.port) ? (Cookies.get('search-history-' + window.location.port) || []).split(',') : []
       if ($.trim(val)) {
         searchHistoryArr.splice(0, 0, $.trim(val))
       }
       searchHistoryArr = _.union(searchHistoryArr)
-      Cookies.set('search-history-' + myURL.port, searchHistoryArr.join(','))
+      Cookies.set('search-history-' + window.location.port, searchHistoryArr.join(','))
       if (type === 'no') {
         model.goodsArr = []
       }
@@ -291,7 +291,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -318,7 +318,7 @@ export default {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+              Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
               window.location.href = model.linkPath + '/'
             }, 2000)
           }
@@ -345,7 +345,7 @@ export default {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+              Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
               window.location.href = model.linkPath + '/'
             }, 2000)
           }
@@ -432,7 +432,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -475,7 +475,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -501,7 +501,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -526,7 +526,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -551,7 +551,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -575,7 +575,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }

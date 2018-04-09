@@ -67,14 +67,14 @@ export default {
         window.mui.confirm('确定要清空历史搜索记录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
             model.historyArr = []
-            Cookies.set('search-history-' + myURL.port, '')
+            Cookies.set('search-history-' + window.location.port, '')
           }
         })
       })
     },
 
     getHot: function () {
-      model.historyArr = Cookies.get('search-history-' + myURL.port) ? (Cookies.get('search-history-' + myURL.port) || []).split(',') : []
+      model.historyArr = Cookies.get('search-history-' + window.location.port) ? (Cookies.get('search-history-' + window.location.port) || []).split(',') : []
       let len = model.historyArr.length
       if (len > 10) {
         model.historyArr = model.historyArr.slice(0, 5)

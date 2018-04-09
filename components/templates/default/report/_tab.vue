@@ -76,7 +76,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + myURL.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/login'
           }, 2000)
         }

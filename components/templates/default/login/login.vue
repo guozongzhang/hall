@@ -73,6 +73,7 @@ export default {
   methods: {
     init: function () {
       myURL = url.parse(window.location.href)
+      console.log('test', myURL)
       Cookies.set('dpjia-exhibite-' + myURL.port, '')
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let rem = Cookies.get('dpjia-hall-remeber-' + myURL.port)
@@ -236,7 +237,6 @@ export default {
 
     // 登录成功
     hadLogin: function (data) {
-      // Cookies.set('dpjia-hall-token-' + myURL.port, data.token)
       Cookies.set('dpjia-hall-token-' + myURL.port, data.token, {domain: '.dpjia.com'})
       if (model.info.remeber) {
         Cookies.set('dpjia-hall-remeber-' + myURL.port, true)

@@ -93,7 +93,7 @@ export default {
     init: function () {
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let token = Cookies.get('dpjia-hall-token-' + window.location.port)
+      let token = Cookies.get('dpjia-hall-token-' + process.env.port)
       if (!_.isEmpty(token)) {
         model.loginstate = true
         model.getPersonInfo(token)
@@ -123,13 +123,13 @@ export default {
         }
         let isupgrade = data.data.upgrade ? 'yes' : 'no'
         let vipprice = data.data.type ? 'yes' : 'no'
-        Cookies.set('can-upgrade-' + window.location.port, isupgrade)
-        Cookies.set('vip-price-' + window.location.port, vipprice)
+        Cookies.set('can-upgrade-' + process.env.port, isupgrade)
+        Cookies.set('vip-price-' + process.env.port, vipprice)
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -140,7 +140,7 @@ export default {
     isLogin: function () {
       if (!model.loginstate) {
         let preurl = myURL.path.split('/')[2]
-        Cookies.set('dpjia-preurl-' + window.location.port, preurl, {domain: '.dpjia.com'})
+        Cookies.set('dpjia-preurl-' + process.env.port, preurl, {domain: '.dpjia.com'})
         window.location.href = model.linkPath + '/login'
       }
     },

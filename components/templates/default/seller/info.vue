@@ -143,7 +143,7 @@ export default {
   methods: {
     init: async function () {
       myURL = url.parse(window.location.href)
-      token = Cookies.get('dpjia-hall-token-' + window.location.port)
+      token = Cookies.get('dpjia-hall-token-' + process.env.port)
       if (!token) {
         model.showShare = false
       }

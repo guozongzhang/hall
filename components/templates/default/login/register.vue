@@ -95,7 +95,7 @@ export default {
   methods: {
     init: function () {
       myURL = url.parse(window.location.href)
-      Cookies.set('dpjia-exhibite-' + window.location.port, '')
+      Cookies.set('dpjia-exhibite-' + process.env.port, '')
       model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getCompany()
@@ -118,7 +118,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -142,7 +142,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -175,7 +175,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -319,12 +319,12 @@ export default {
         st_id: model.info.store
       }
       axios.post('users/signUpBySmsCode', param).then(function (data) {
-        Cookies.set('dpjia-hall-token-' + window.location.port, data.data.token, {domain: '.dpjia.com'})
+        Cookies.set('dpjia-hall-token-' + process.env.port, data.data.token, {domain: '.dpjia.com'})
         window.mui.toast('注册成功!')
-        let isExibite = Cookies.get('dpjia-exhibite-flag-' + window.location.port)
+        let isExibite = Cookies.get('dpjia-exhibite-flag-' + process.env.port)
         setTimeout(function () {
           if (isExibite === 'yes') {
-            let preurl = Cookies.get('dpjia-preurl-' + window.location.port)
+            let preurl = Cookies.get('dpjia-preurl-' + process.env.port)
             window.location.href = preurl
           } else {
             window.location.href = model.linkPath + '/'

@@ -39,7 +39,7 @@ export default {
   methods: {
     init: function () {
       myURL = url.parse(window.location.href)
-      model.userid = Cookies.get('designer-id-' + window.location.port) || '0'
+      model.userid = Cookies.get('designer-id-' + process.env.port) || '0'
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let urlObj = querystring.parse(myURL.query)
       if (urlObj.id > 0) {
@@ -52,7 +52,7 @@ export default {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+              Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
               window.location.href = model.linkPath + '/'
             }, 2000)
           }

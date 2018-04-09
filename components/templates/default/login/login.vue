@@ -73,11 +73,11 @@ export default {
   methods: {
     init: function () {
       myURL = url.parse(window.location.href)
-      Cookies.set('dpjia-exhibite-' + window.location.port, '')
+      Cookies.set('dpjia-exhibite-' + process.env.port, '')
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let rem = Cookies.get('dpjia-hall-remeber-' + window.location.port)
-      let number = Cookies.get('dpjia-hall-number-' + window.location.port)
-      let pwd = Cookies.get('dpjia-hall-pwd-' + window.location.port)
+      let rem = Cookies.get('dpjia-hall-remeber-' + process.env.port)
+      let number = Cookies.get('dpjia-hall-number-' + process.env.port)
+      let pwd = Cookies.get('dpjia-hall-pwd-' + process.env.port)
       if (String(rem) === 'true') {
         model.info.remeber = true
         model.info.number = number
@@ -101,13 +101,13 @@ export default {
       axios.get('classes/companys', {
         params: param
       }).then(function (data) {
-        Cookies.set('com-name-' + window.location.port, data.data.items[0].com_name)
+        Cookies.set('com-name-' + process.env.port, data.data.items[0].com_name)
         model.comName = data.data.items[0].com_name
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + window.location.port, '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -236,22 +236,22 @@ export default {
 
     // 登录成功
     hadLogin: function (data) {
-      Cookies.set('dpjia-hall-token-' + window.location.port, data.token, {domain: '.dpjia.com'})
+      Cookies.set('dpjia-hall-token-' + process.env.port, data.token, {domain: '.dpjia.com'})
       if (model.info.remeber) {
-        Cookies.set('dpjia-hall-remeber-' + window.location.port, true)
-        Cookies.set('dpjia-hall-number-' + window.location.port, model.info.number)
-        Cookies.set('dpjia-hall-pwd-' + window.location.port, model.info.pwd)
+        Cookies.set('dpjia-hall-remeber-' + process.env.port, true)
+        Cookies.set('dpjia-hall-number-' + process.env.port, model.info.number)
+        Cookies.set('dpjia-hall-pwd-' + process.env.port, model.info.pwd)
       } else {
-        Cookies.set('dpjia-hall-remeber-' + window.location.port, false)
-        Cookies.set('dpjia-hall-number-' + window.location.port, '')
-        Cookies.set('dpjia-hall-pwd-' + window.location.port, '')
+        Cookies.set('dpjia-hall-remeber-' + process.env.port, false)
+        Cookies.set('dpjia-hall-number-' + process.env.port, '')
+        Cookies.set('dpjia-hall-pwd-' + process.env.port, '')
       }
       window.mui.toast('登录成功!')
-      Cookies.set('designer-id-' + window.location.port, data.user_poi_users)
+      Cookies.set('designer-id-' + process.env.port, data.user_poi_users)
       setTimeout(function () {
-        let preurl = Cookies.get('dpjia-preurl-' + window.location.port)
+        let preurl = Cookies.get('dpjia-preurl-' + process.env.port)
         if (!_.isEmpty(preurl)) {
-          let isExibite = Cookies.get('dpjia-exhibite-flag-' + window.location.port)
+          let isExibite = Cookies.get('dpjia-exhibite-flag-' + process.env.port)
           if (isExibite === 'yes') {
             window.location.href = preurl
           } else {

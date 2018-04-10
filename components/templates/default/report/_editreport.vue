@@ -9,7 +9,20 @@
     <a class="mui-icon mui-pull-right save-btn" @click="confEditReport()">提交</a>
   </header>
   <div class="textarea-box">
-    <div class="line-box"></div>
+    <ul class="mui-table-view mui-table-view-chevron">
+        <div class="reporter">
+          <li class="mui-table-view-cell type-style"> 
+            <div class="mui-radio cssradiodiv">
+              <input type="radio" name="style" value="self" v-model="reporter.isself"/> 
+              <label>自己</label>
+            </div>
+            <div class="mui-radio cssradiodiv">
+              <input type="radio" name="style" value="other" v-model="reporter.isself"/> 
+              <label>其他人</label>
+            </div>
+          </li>
+        </div>
+      </ul>
     <div>
       <div class="mui-input-row sub-input-box">
         <label>姓名</label>
@@ -51,7 +64,18 @@ export default {
   data () {
     return {
       linkPath: '',
-      reporter: {}
+      reporter: {},
+      newdata: {
+        id: 0,
+        isself: '',
+        name: '',
+        relationship: '',
+        commission: '',
+        ascendancy: '',
+        tel: '',
+        email: '',
+        goback: false
+      }
     }
   },
   watch: {
@@ -100,7 +124,7 @@ export default {
         strengths: model.reporter.ascendancy || '',
         tel: model.reporter.tel,
         email: model.reporter.email,
-        is_self: 'yes'
+        is_self: model.reporter.isself === 'self' ? 'yes' : 'no'
       }
       axios.put('functions/report/project_reportman', null, {
         data: param
@@ -124,9 +148,33 @@ export default {
   }
 }
 </script>
-
 <style>
 .mui-icon-back:before, .mui-icon-left-nav:before{
   font-size: 20px !important;
+}
+.cssradiodiv {
+  position: relative;
+  float: left;
+  width: 80px;
+  line-height: 34px;
+  height: 100%;
+}
+.cssradiodiv label{
+  font-size: 14px;
+  margin-left: 27px;
+  padding-right: 20px;
+}
+.cssradiodiv input[type="radio"] {
+  top: 9px;
+  left: 0;
+  width: 28px;
+  height: 28px;
+}
+.cssradiodiv input[type="radio"]::before{
+  font-size: 20px !important;
+}
+.type-style {
+  padding: 0 10px;
+  height: 40px;
 }
 </style>

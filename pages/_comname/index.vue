@@ -18,6 +18,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
 let model
 export default {
@@ -39,6 +40,7 @@ export default {
   },
   data () {
     return {
+      linkPath: '',
       comName: '',
       hotids: [],
       newfurArr: [],
@@ -51,6 +53,8 @@ export default {
   },
   methods: {
     init: async function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       await model.getInitData()
       await model.getCompanyData()
     },

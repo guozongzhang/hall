@@ -152,7 +152,7 @@
           table: 'projects',
           like: JSON.stringify(['name', 'amount']),
           search: $.trim(model.searchKey),
-          where: JSON.stringify({com_id_poi_companys: this.$store.state.comid}),
+          new_where: JSON.stringify({com_id_poi_companys: this.$store.state.comid}),
           with: JSON.stringify(rel),
           limit: pagesize,
           skip: (model.pages - 1) * pagesize

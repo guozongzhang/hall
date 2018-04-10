@@ -681,6 +681,7 @@ export default {
   },
   methods: {
     init: async function () {
+      // model.activeTab = 'editreport'
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let token = Cookies.get('dpjia-hall-token-' + process.env.port)
@@ -1565,6 +1566,7 @@ export default {
     editReport: function (id) {
       model.reporter = {
         id: id,
+        isself: Number(model.reportman.user_poi_users) > 0 ? 'self' : 'other',
         name: model.reportman.name,
         relationship: model.reportman.project_relation,
         commission: model.reportman.royalties_expectation,

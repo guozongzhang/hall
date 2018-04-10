@@ -236,6 +236,7 @@ export default {
 
     // 登录成功
     hadLogin: function (data) {
+      // Cookies.set('dpjia-hall-token-' + process.env.port, data.token)
       Cookies.set('dpjia-hall-token-' + process.env.port, data.token, {domain: '.dpjia.com'})
       if (model.info.remeber) {
         Cookies.set('dpjia-hall-remeber-' + process.env.port, true)

@@ -1,7 +1,9 @@
 import axios from 'axios'
 let Cookies = require('js-cookie')
 function getToken () {
-  let token = Cookies.get('dpjia-hall-token-' + process.env.PORT)
+  window.mui.toast('端口号：', process.env.port)
+  let token = Cookies.get('dpjia-hall-token-' + process.env.port)
+  window.mui.toast('token:', process.env.port)
   let obj
   if (token) {
     obj = {

@@ -19,9 +19,7 @@
 <script>
 import axios from '~/plugins/axios'
 let Cookies = require('js-cookie')
-let url = require('url')
 let model
-let myURL
 export default {
   head: {
     title: '首页',
@@ -53,7 +51,6 @@ export default {
   },
   methods: {
     init: async function () {
-      myURL = url.parse(window.location.href)
       await model.getInitData()
       await model.getCompanyData()
     },

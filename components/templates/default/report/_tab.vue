@@ -30,10 +30,8 @@
 <script>
 import axios from '~/plugins/axios'
 let model
-let url = require('url')
 let $ = require('jquery')
 let Cookies = require('js-cookie')
-let myURL
 export default {
   props: ['acticearr', 'flag'],
   data () {
@@ -64,7 +62,6 @@ export default {
   },
   methods: {
     init: function () {
-      myURL = url.parse(window.location.href)
       axios.get('/functions/furnitures/furniture_types', {
       }).then(function (data) {
         data.data.forEach(item => {

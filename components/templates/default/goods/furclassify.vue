@@ -25,6 +25,7 @@ import axios from '~/plugins/axios'
 let Cookies = require('js-cookie')
 let url = require('url')
 let model
+let myURL
 export default {
   data () {
     return {
@@ -36,7 +37,7 @@ export default {
   },
   methods: {
     init: function () {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getClassify()
     },
@@ -59,7 +60,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }

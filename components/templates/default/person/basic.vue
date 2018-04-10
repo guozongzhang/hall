@@ -43,6 +43,7 @@
           <span class="bgicon myproject"></span>
           <span class="info">我的项目:</span>
           <span class="text">共{{info.projects_count}}个</span>
+          <span class="msg-style" v-if="info.readed > 0">{{info.readed}}</span>
         </a>
       </li>
       <li>
@@ -66,6 +67,7 @@ let url = require('url')
 let Cookies = require('js-cookie')
 let _ = require('underscore')
 let model
+let myURL
 export default {
   data () {
     return {
@@ -78,6 +80,7 @@ export default {
         fur_num: 0,
         projects_count: 0,
         tel: '-',
+        readed: 0,
         isreporter: false, // 是否拥有报备权限
         identity: {
           txt: '游客',
@@ -88,9 +91,9 @@ export default {
   },
   methods: {
     init: function () {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-      let token = Cookies.get('dpjia-hall-token')
+      let token = Cookies.get('dpjia-hall-token-' + process.env.port)
       if (!_.isEmpty(token)) {
         model.loginstate = true
         model.getPersonInfo(token)
@@ -110,6 +113,7 @@ export default {
           header_name: data.data.ui_name || '未设置',
           tel: data.data.mobile,
           fur_num: data.data.count,
+          readed: data.data.readed || 0,
           projects_count: data.data.projects_count,
           isreporter: data.data.isreporter,
           identity: {
@@ -119,13 +123,13 @@ export default {
         }
         let isupgrade = data.data.upgrade ? 'yes' : 'no'
         let vipprice = data.data.type ? 'yes' : 'no'
-        Cookies.set('can-upgrade', isupgrade)
-        Cookies.set('vip-price', vipprice)
+        Cookies.set('can-upgrade-' + process.env.port, isupgrade)
+        Cookies.set('vip-price-' + process.env.port, vipprice)
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -135,9 +139,8 @@ export default {
     // 是否要登录
     isLogin: function () {
       if (!model.loginstate) {
-        let myURL = url.parse(window.location.href)
         let preurl = myURL.path.split('/')[2]
-        Cookies.set('dpjia-preurl', preurl, {domain: '.dpjia.com'})
+        Cookies.set('dpjia-preurl-' + process.env.port, preurl, {domain: '.dpjia.com'})
         window.location.href = model.linkPath + '/login'
       }
     },
@@ -266,6 +269,20 @@ export default {
   }
   .mui-navigate-right:after{
     right: 0px !important;
+  }
+  .mui-navigate-right .msg-style{
+    position: absolute;
+    right: 24px;
+    top: 4px;
+    font-size: 13px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background-color: #f14f4f;
+    color: #fff;
+    border-radius: 100%;
   }
   .sjdesign {
     position: absolute;

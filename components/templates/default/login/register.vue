@@ -61,6 +61,7 @@ let ESVal = require('es-validate')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
+let myURL
 let startTime = 60
 export default {
   head () {
@@ -93,9 +94,9 @@ export default {
   },
   methods: {
     init: function () {
-      Cookies.set('dpjia-exhibite', '')
+      myURL = url.parse(window.location.href)
+      Cookies.set('dpjia-exhibite-' + process.env.port, '')
       model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      let myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getCompany()
       model.getStore()
@@ -117,7 +118,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -141,7 +142,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -174,7 +175,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -318,12 +319,12 @@ export default {
         st_id: model.info.store
       }
       axios.post('users/signUpBySmsCode', param).then(function (data) {
-        Cookies.set('dpjia-hall-token', data.data.token, {domain: '.dpjia.com'})
+        Cookies.set('dpjia-hall-token-' + process.env.port, data.data.token, {domain: '.dpjia.com'})
         window.mui.toast('注册成功!')
-        let isExibite = Cookies.get('dpjia-exhibite-flag')
+        let isExibite = Cookies.get('dpjia-exhibite-flag-' + process.env.port)
         setTimeout(function () {
           if (isExibite === 'yes') {
-            let preurl = Cookies.get('dpjia-preurl')
+            let preurl = Cookies.get('dpjia-preurl-' + process.env.port)
             window.location.href = preurl
           } else {
             window.location.href = model.linkPath + '/'

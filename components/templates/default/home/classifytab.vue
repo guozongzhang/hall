@@ -21,7 +21,9 @@
     </li>
     <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3">
       <a :href="linkPath + '/person'">
-        <span class="mui-icon self-icon per-icon"></span>
+        <span class="mui-icon self-icon per-icon">
+          <span class="mui-badge" style="top: 2px" v-if="msgnum > 0">{{msgnum}}</span>
+        </span>
         <div class="mui-media-body label-text">个人中心</div>
       </a>
     </li>
@@ -29,31 +31,49 @@
 </div> 
 </template>
 <script>
+import axios from '~/plugins/axios'
 let url = require('url')
 let Cookies = require('js-cookie')
 let $ = require('jquery')
 let _ = require('underscore')
 let model
+let token
+let myURL
 export default {
   data () {
     return {
+      msgnum: 0, // 未读消息数量
       linkPath: ''
     }
   },
   methods: {
     init: function () {
-      let myURL = url.parse(window.location.href)
+      myURL = url.parse(window.location.href)
+      token = Cookies.get('dpjia-hall-token-' + process.env.port)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+      if (!_.isEmpty($.trim(token))) {
+        axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
+          headers: {
+            'X-DP-Token': token
+          }
+        }).then(function (data) {
+          model.msgnum = data.data.readed || 0
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
+          }
+        })
+      }
     },
 
     // 我的收藏
     toMyCollect: function () {
-      let token = Cookies.get('dpjia-hall-token')
       if (_.isEmpty($.trim(token))) {
         var btnArray = ['否', '是']
         window.mui.confirm('还未登录,是否登录？', '友情提示', btnArray, function (e) {
           if (e.index === 1) {
-            Cookies.set('dpjia-preurl', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-preurl-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/login'
           }
         })

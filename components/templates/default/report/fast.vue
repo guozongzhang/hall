@@ -158,6 +158,7 @@
   let $ = require('jquery')
   let _ = require('underscore')
   let model
+  let myURL
   let modalflag = true
   export default {
     head: {
@@ -223,11 +224,11 @@
     },
     methods: {
       init: function () {
+        myURL = url.parse(window.location.href)
         model.isPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent)
         window.mui.previewImage()
-        let myURL = url.parse(window.location.href)
         model.linkPath = '/' + myURL.pathname.split('/')[1]
-        let token = Cookies.get('dpjia-hall-token')
+        let token = Cookies.get('dpjia-hall-token-' + process.env.port)
         axios.get('users/cloud_personal?com_id=' + this.$store.state.comid, {
           headers: {
             'X-DP-Token': token
@@ -240,7 +241,7 @@
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+              Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
               window.location.href = model.linkPath + '/login'
             }, 2000)
           }

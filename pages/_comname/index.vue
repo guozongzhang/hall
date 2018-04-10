@@ -18,6 +18,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+let url = require('url')
 let Cookies = require('js-cookie')
 let model
 export default {
@@ -39,6 +40,7 @@ export default {
   },
   data () {
     return {
+      linkPath: '',
       comName: '',
       hotids: [],
       newfurArr: [],
@@ -51,6 +53,8 @@ export default {
   },
   methods: {
     init: async function () {
+      let myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
       await model.getInitData()
       await model.getCompanyData()
     },
@@ -66,13 +70,13 @@ export default {
       axios.get('classes/companys', {
         params: param
       }).then(function (data) {
-        Cookies.set('com-name', data.data.items[0].com_name)
+        Cookies.set('com-name-' + process.env.port, data.data.items[0].com_name)
         model.comName = data.data.items[0].com_name
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }
@@ -99,7 +103,7 @@ export default {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
             window.location.href = model.linkPath + '/'
           }, 2000)
         }

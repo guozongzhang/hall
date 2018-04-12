@@ -74,6 +74,8 @@ export default {
     return {
       linkPath: '',
       isselect: false,
+      resettype: '',
+      resetname: '',
       reporter: {
         id: 0,
         isself: '',
@@ -97,6 +99,8 @@ export default {
     'report': function () {
       model.isselect = false
       model.reporter = _.extend(model.reporter, this.report)
+      model.resettype = this.report.isself
+      model.resetname = this.report.name
       if (this.report.isself === 'other') {
         model.clonereporter = {
           name: _.clone(this.report.name),
@@ -149,7 +153,8 @@ export default {
     // 查看是否返回
     gotoisselect: function () {
       model.isselect = false
-      model.reporter = _.extend(model.reporter, this.report)
+      model.reporter.isself = model.resettype
+      model.reporter.name = model.resetname
     },
 
     // 確定提交保存人信息

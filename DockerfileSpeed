@@ -1,0 +1,3 @@
+FROM registry.docker-cn.com/keymetrics/pm2:latest-alpine
+WORKDIR /app
+CMD ["npm", "start"] 

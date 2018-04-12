@@ -1589,6 +1589,7 @@ export default {
         id: proId,
         name: obj.name,
         project_relation: obj.relationship,
+        user_poi_users: obj.isself === 'self' ? 100 : 0,
         royalties_expectation: obj.commission,
         strengths: obj.ascendancy,
         tel: obj.tel,

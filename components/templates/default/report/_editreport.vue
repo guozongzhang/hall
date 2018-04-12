@@ -33,7 +33,7 @@
   <div class="textarea-box" style="top:58px" v-show="!isselect">
     <div>
       <div class="mui-input-row sub-input-box" @click="selectstyle()">
-        <label>报备人姓名</label>
+        <label style="width: 32%">报备人姓名</label>
         <span class="mui-navigate-right bbrname">{{reporter.name}}</span>
       </div>
       <div class="mui-input-row sub-input-box" v-bind:class="reporter.isself === 'self' ? 'selfbg' : ''">
@@ -223,7 +223,7 @@ export default {
 }
 .bbrname{
   display: inline-block;
-  width: 66%;
+  width: 60%;
   padding: 9px 5px 10px;
   text-align: right
 }  

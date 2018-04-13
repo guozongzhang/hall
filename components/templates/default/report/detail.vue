@@ -14,6 +14,9 @@
         <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait_handle'">
           <span class="list-icon reset-icon"></span>
         </a>
+        <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 60px;height: 26px;" @click="perfectFunc()" v-show="basicinfo.state == 'had_handle' || basicinfo.state == 'adopt'">
+          <span style="font-size: 14px;color: #666;">完善项目</span>
+        </a>
       </header>
       <div class="detail-box" v-show="initok">
         <div class="basic-info">
@@ -557,6 +560,9 @@
         </div>
       </div>
     </div>
+    <div v-show="activeTab == 'perfectpro'" class="subbox-show">
+      <vue-perfectpro :perfect="reporter"></vue-perfectpro>
+    </div>
   </div>
 </template>
 <script>
@@ -564,6 +570,7 @@ import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
 import editReportvue from './_editreport.vue'
+import perfectProvue from './_perfectpro.vue'
 import Tab from './_tab.vue'
 let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
@@ -677,6 +684,7 @@ export default {
     'vue-area': Area,
     'vue-one': proType,
     'vue-editreport': editReportvue,
+    'vue-perfectpro': perfectProvue,
     'vue-tab': Tab
   },
   methods: {
@@ -791,6 +799,11 @@ export default {
         model.reportLoglist = []
         model.getReportLog(urlObj.id)
       })
+    },
+
+    // 20180413-yuguo-完善项目信息
+    perfectFunc: function () {
+      model.activeTab = 'perfectpro'
     },
 
     // 格式化联系人

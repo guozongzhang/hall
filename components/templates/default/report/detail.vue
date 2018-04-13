@@ -254,7 +254,7 @@
                         <p style="font-size: 14px;color: #666">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
-                    <li v-show="recordLoglist.length == 0">
+                    <li v-show="recordLoglist.length == 0 && basicinfo.state != 'wait'">
                       <div class="li-box">
                         <p>
                           <span class="last-white-line"></span>
@@ -265,7 +265,7 @@
                     </li>
                   </ul>
                 </div>
-                <p class="no-data" v-show="recordLoglist.length == 0"></p>
+                <p class="no-data" v-if="recordLoglist.length == 0 && basicinfo.state == 'wait'">您还没有报备该项目，所以暂无报备记录</p>
               </div>
             </div>
           </div>
@@ -1589,6 +1589,7 @@ export default {
         id: proId,
         name: obj.name,
         project_relation: obj.relationship,
+        user_poi_users: obj.isself === 'self' ? 100 : 0,
         royalties_expectation: obj.commission,
         strengths: obj.ascendancy,
         tel: obj.tel,

@@ -216,7 +216,7 @@
                         <p>
                           <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                           <span class="pointer"></span>
-                          <span>{{sub.operator}}</span>
+                          <span>{{sub.operator || '未设置'}}</span>
                           <span>{{sub.text}}</span>
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
@@ -561,7 +561,7 @@
       </div>
     </div>
     <div v-show="activeTab == 'perfectpro'" class="subbox-show">
-      <vue-perfectpro :perfect="reporter"></vue-perfectpro>
+      <vue-perfectpro :perfect="perfectproobj"></vue-perfectpro>
     </div>
   </div>
 </template>
@@ -630,6 +630,7 @@ let reportState = [
 export default {
   data () {
     return {
+      perfectproobj: {}, // 完善项目
       isloading: true,
       hadRead: false,
       objid: 0, // 项目id
@@ -689,7 +690,6 @@ export default {
   },
   methods: {
     init: async function () {
-      // model.activeTab = 'editreport'
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let token = Cookies.get('dpjia-hall-token-' + process.env.port)
@@ -803,6 +803,7 @@ export default {
 
     // 20180413-yuguo-完善项目信息
     perfectFunc: function () {
+      model.perfectproobj = model.basicinfo
       model.activeTab = 'perfectpro'
     },
 

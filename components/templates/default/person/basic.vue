@@ -6,7 +6,7 @@
       <div class="name">
         <p>
           <span>
-            <a href="javascript:;" @click="isLogin()"  v-bind:class="!info.identity.none ? 'loginend' : ''">{{info.header_name}}
+            <a href="javascript:;" @click="isLogin()"  v-bind:class="!info.identity.none ? 'loginend' : ''">{{info.header_name || '未设置'}}
             </a>
           </span>
         </p>

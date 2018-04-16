@@ -2,12 +2,12 @@
 <div>
   <div class="subbox-show" style="position: relative" v-show="subactive == 'home'">
     <header class="mui-bar mui-bar-nav">
-      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goSubBack()">
         <span style="position: relative;top: -1px;">返回</span>
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
       <h1 class="mui-title othertitle">编辑项目信息</h1>
-      <a class="mui-icon mui-pull-right save-btn" @click="confEditPro()">提交</a>
+      <a class="mui-icon mui-pull-right save-btn" @click="EditPro()">提交</a>
     </header>
     <div class="textarea-box" v-show="!isLoading">
       <div class="line-box"></div>
@@ -26,11 +26,11 @@
         </div>
         <div class="mui-input-row sub-input-box mui-navigate-right">
           <label>产品品类</label>
-          <span class="area-text" style="padding-right: 20px;" @click="changeGoodsType()">{{editpro.type}}</span>
+          <span class="area-text" style="padding-right: 18px;" @click="changeGoodsType()">{{FilterProjectType((editpro.project_rel_project_furniture_types || {}).items || [])}}</span>
         </div>
         <div class="mui-input-row sub-input-box mui-navigate-right">
           <label>项目类型</label>
-          <span class="area-text" style="padding-right: 34px;" @click="changeProType()">{{editpro.category}}</span>
+          <span class="area-text" style="padding-right: 34px;" @click="changeProType()">{{filterProType(editpro.category)}}</span>
         </div>
         <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('intro','编辑项目介绍')">
           <label>项目介绍</label>
@@ -65,6 +65,9 @@
   </div>
   <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
   <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
+  <div v-if="isshowtype">
+    <vue-tabs :acticearr="acticearr" :flag="flag" @submitArr="getClassifyInfo"></vue-tabs>
+  </div>
   <div v-if="subactive == 'textarea'">
     <vue-textarea :textareaobj="textareaobj" @textareaFun="getTextareaInfo"></vue-textarea>
   </div>
@@ -75,6 +78,7 @@ import axios from '~/plugins/axios'
 import Area from '../../common/threelayer.vue'
 import proType from '../../common/onelayer.vue'
 import textareaVue from './_textarea.vue'
+import Tabs from '../_tab.vue'
 let $ = require('jquery')
 let _ = require('underscore')
 let moment = require('moment')
@@ -88,6 +92,7 @@ export default {
   props: ['projectinfo'],
   data () {
     return {
+      isshowtype: false, // 是否显示产品分类
       subactive: 'home', // 当前显示区域
       isLoading: true, // 是否加载数据
       editpro: {}, // 项目数据
@@ -107,13 +112,16 @@ export default {
         type: '',
         title: '',
         content: ''
-      }
+      },
+      flag: 0,
+      acticearr: []
     }
   },
   components: {
     'vue-area': Area,
     'vue-one': proType,
-    'vue-textarea': textareaVue
+    'vue-textarea': textareaVue,
+    'vue-tabs': Tabs
   },
   methods: {
     // 初始化数据
@@ -123,11 +131,23 @@ export default {
       model.isLoading = false
       model.editpro.invitation_time = model.forMatTime(model.projectinfo.invitation_time, 'YYYY-MM-DD')
       model.editpro.delivery_time = model.forMatTime(model.projectinfo.delivery_time, 'YYYY-MM-DD')
-      model.editpro.category = model.filterProType(model.projectinfo.category)
-      model.editpro.category_str = model.projectinfo.category
       model.editproImg = model.projectinfo.project_rel_project_attachment.items
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+    },
+
+    // 返回首页
+    goHome: function () {
+      window.location.href = model.linkPath + '/'
+    },
+
+    // 返回完善项目页
+    goSubBack: function () {
+      let obj = {
+        flag: false,
+        data: {}
+      }
+      model.$emit('getProject', obj)
     },
 
     // 时间格式化
@@ -136,6 +156,15 @@ export default {
       moment.locale('Chinese (Simplified)')
       let timetype = type || 'YYYY-MM-DD HH:mm:ss'
       return moment(parseInt(value)).format(timetype)
+    },
+
+    // 项目品类
+    FilterProjectType: function (arr) {
+      let str = []
+      arr.forEach((sub) => {
+        str.push(sub.name)
+      })
+      return str.join('/')
     },
 
     // 项目类型过滤
@@ -157,8 +186,7 @@ export default {
 
     // get项目类型
     getVueOneInfo: function (str) {
-      model.editpro.category_str = str[0].value
-      model.editpro.category = str[0].text
+      model.editpro.category = str[0].value
     },
 
     // 编辑多文本信息
@@ -172,13 +200,19 @@ export default {
     },
 
     // 产品品类
-    changeGoodsType: async function () {
+    changeGoodsType: function () {
+      model.isshowtype = true
       model.flag = Math.random()
       $('#classifylist').show()
       $('.content-box').addClass('animated bounceInRight')
       setTimeout(function () {
         // $('.content-box').removeClass('bounceInRight')
       }, 1000)
+    },
+
+    // 获取产品品类信息
+    getClassifyInfo: function (obj, info) {
+      model.editpro.project_rel_project_furniture_types.items = obj
     },
 
     // 获取多行文本信息
@@ -202,6 +236,7 @@ export default {
 
     // 获取项目常量信息
     getPorState: async function () {
+      proTypeArr = []
       let param = {
         where: JSON.stringify({
           state_types: {
@@ -289,6 +324,16 @@ export default {
     // 删除项目附件图片
     deleteImg: function (obj) {
       model.editproImg = _.without(model.editproImg, obj)
+    },
+
+    // 提交项目信息
+    EditPro: function () {
+      model.editpro.project_rel_project_attachment.items = model.editproImg
+      let obj = {
+        flag: true,
+        data: model.editpro
+      }
+      model.$emit('getProject', obj)
     }
   },
   mounted () {

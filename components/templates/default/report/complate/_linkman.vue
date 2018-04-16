@@ -55,7 +55,11 @@ export default {
 
     // 返回编辑
     subGoBack: function () {
-      model.$emit('cancelEdit')
+      let obj = {
+        flag: false,
+        data: []
+      }
+      model.$emit('getLinkman', obj)
     },
 
     // 返回首页
@@ -85,8 +89,11 @@ export default {
 
     // 提交
     subaddlinkman: function () {
-      model.$emit('getLinkman', model.alinkman)
-      console.log(model.alinkman)
+      let obj = {
+        flag: true,
+        data: model.alinkman
+      }
+      model.$emit('getLinkman', obj)
     }
   },
   mounted () {

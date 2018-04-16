@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     init: function () {
-      console.log(this.textareaobj)
       model.textarea = this.textareaobj
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]

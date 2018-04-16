@@ -264,10 +264,10 @@
     </div>
   </div>
   <div v-if="subTab == 'linkman'">
-    <vue-linkman :linkmanobj="linkmanarr" @getLinkman="getLinkmanInfo" @cancelEdit="cancelEditSub"></vue-linkman>
+    <vue-linkman :linkmanobj="linkmanarr" @getLinkman="getLinkmanInfo"></vue-linkman>
   </div>
   <div v-if="subTab == 'project'">
-    <vue-project :projectinfo="basicinfo"></vue-project>
+    <vue-project :projectinfo="basicinfo" @getProject="getProjectInfo"></vue-project>
   </div>
 </div>
 </template>
@@ -343,9 +343,11 @@ export default {
     },
 
     // 获取甲方信息
-    getLinkmanInfo: function (arr) {
+    getLinkmanInfo: function (obj) {
+      if (obj.flag) {
+        model.linkmanarr = obj.data
+      }
       model.subTab = 'home'
-      model.linkmanarr = arr
     },
 
     // 编辑项目信息
@@ -353,8 +355,18 @@ export default {
       model.subTab = 'project'
     },
 
-    // 返回不编辑了
-    cancelEditSub: function () {
+    // 获取项目信息
+    getProjectInfo: function (obj) {
+      if (obj.flag) {
+        let arr = []
+        obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
+          arr.push(sub.name)
+        })
+        model.progoodstyepstr = arr.join('/')
+        model.basicinfo = obj.data
+        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
+        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
+      }
       model.subTab = 'home'
     },
 

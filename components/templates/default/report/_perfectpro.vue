@@ -268,6 +268,7 @@
   </div>
   <div v-if="subTab == 'report'">
     <vue-reportman :report="reportman" @getReportMan="getReportManInfo"></vue-reportman>
+  </div>
   <div v-if="subTab == 'project'">
     <vue-project :projectinfo="basicinfo" @getProject="getProjectInfo"></vue-project>
   </div>
@@ -303,7 +304,7 @@ export default {
   },
   components: {
     'vue-linkman': linkmanVue,
-    'vue-reportman': reportmanVue
+    'vue-reportman': reportmanVue,
     'vue-project': projectVue
   },
   watch: {
@@ -325,7 +326,6 @@ export default {
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       model.getPorState()
     },
-
 
     // 退出编辑
     goBackPerPect: function () {
@@ -352,7 +352,7 @@ export default {
     // 编辑按钮
     editReport: function (val) {
       model.subTab = 'report'
-    }, 
+    },
 
     // 获取甲方信息
     getLinkmanInfo: function (obj) {

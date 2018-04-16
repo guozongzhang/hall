@@ -89,15 +89,11 @@ export default {
 
     // 提交
     subaddlinkman: function () {
-<<<<<<< HEAD
-      model.$emit('getLinkman', model.alinkman)
-=======
       let obj = {
         flag: true,
         data: model.alinkman
       }
       model.$emit('getLinkman', obj)
->>>>>>> develop
     }
   },
   mounted () {

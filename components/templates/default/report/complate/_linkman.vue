@@ -53,6 +53,16 @@ export default {
       model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
 
+    // 返回编辑
+    subGoBack: function () {
+      model.$emit('cancelEdit')
+    },
+
+    // 返回首页
+    goHome: function () {
+      window.location.href = model.linkPath + '/'
+    },
+
     // 添加多个联系人
     addsublinkman: function () {
       let obj = {

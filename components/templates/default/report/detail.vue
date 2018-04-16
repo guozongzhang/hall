@@ -561,7 +561,7 @@
       </div>
     </div>
     <div v-show="activeTab == 'perfectpro'" class="subbox-show">
-      <vue-perfectpro :perfect="perfectproobj"></vue-perfectpro>
+      <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
     </div>
   </div>
 </template>
@@ -799,6 +799,14 @@ export default {
         model.reportLoglist = []
         model.getReportLog(urlObj.id)
       })
+    },
+
+    // 20180416-yuguo-获取完善项目信息
+    getProject: function (obj) {
+      console.log('0000000', obj)
+      if (!obj.flag) {
+        model.activeTab = 'home'
+      }
     },
 
     // 20180413-yuguo-完善项目信息

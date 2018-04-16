@@ -272,14 +272,17 @@
   <div v-if="subTab == 'project'">
     <vue-project :projectinfo="basicinfo" @getProject="getProjectInfo"></vue-project>
   </div>
+  <div v-if="subTab == 'compete'">
+    <vue-compete :compete="competeinfo" @getCompete="getCompeteInfo"></vue-compete>
+  </div>
 </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
 import linkmanVue from './complate/_linkman.vue'
 import reportmanVue from './complate/_reportman.vue'
-
 import projectVue from './complate/_project.vue'
+import competeVue from './complate/_compete.vue'
 let url = require('url')
 let moment = require('moment')
 let _ = require('underscore')
@@ -297,6 +300,11 @@ export default {
       linkmanarr: [], // 甲方信息
       reportman: {}, // 报备人信息
       progoodstyepstr: '', // 项目分类
+      competeinfo: {
+        second_party_competitor: '',
+        competitor_strengths: '',
+        competitor_projections: ''
+      }, // 竞争者
       reportLoglist: [],
       recordLoglist: [],
       isloading: false
@@ -305,14 +313,19 @@ export default {
   components: {
     'vue-linkman': linkmanVue,
     'vue-reportman': reportmanVue,
-    'vue-project': projectVue
+    'vue-project': projectVue,
+    'vue-compete': competeVue
   },
   watch: {
     'perfect': function () {
       model.basicinfo = this.perfect
       model.linkmanarr = this.perfect.project_rel_project_first_party_linkman.items
       model.reportman = this.perfect.project_rel_project_reportman.items[0]
-      console.log('sss', model.reportman)
+      model.competeinfo = {
+        second_party_competitor: this.perfect.second_party_competitor,
+        competitor_strengths: this.perfect.competitor_strengths,
+        competitor_projections: this.perfect.competitor_projections
+      }
       let arr = []
       this.perfect.project_rel_project_furniture_types.items.forEach((item) => {
         arr.push(item.name)
@@ -354,6 +367,11 @@ export default {
       model.subTab = 'report'
     },
 
+    // 编辑竞争信息
+    editCompetitors: function (id) {
+      model.subTab = 'compete'
+    },
+
     // 获取甲方信息
     getLinkmanInfo: function (obj) {
       if (obj.flag) {
@@ -382,10 +400,19 @@ export default {
       model.subTab = 'home'
     },
 
+    // 获取报备人信息
     getReportManInfo: function (obj) {
-      console.log(obj)
       model.subTab = 'home'
       model.reportman = obj
+    },
+
+    // 获取竞争者信息
+    getCompeteInfo: function (obj) {
+      model.subTab = 'home'
+      // model.competeinfo = obj
+      model.basicinfo.second_party_competitor = obj.second_party_competitor
+      model.basicinfo.competitor_strengths = obj.competitor_strengths
+      model.basicinfo.competitor_projections = obj.competitor_projections
     },
 
     // 返回云展廳首頁

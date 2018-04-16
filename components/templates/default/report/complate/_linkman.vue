@@ -76,7 +76,6 @@ export default {
     // 提交
     subaddlinkman: function () {
       model.$emit('getLinkman', model.alinkman)
-      console.log(model.alinkman)
     }
   },
   mounted () {

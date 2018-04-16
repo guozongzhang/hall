@@ -53,7 +53,7 @@
               <div class="basic-box">
                 <div class="sub-detail-box">
                   <label>甲方信息</label>
-                  <span class="edit-icon" @click="editBuyer(basicinfo.id)">
+                  <span class="edit-icon" @click="editBtn('linkman')">
                     <span class="fa fa-edit"></span>
                     <span>编辑</span>
                   </span>
@@ -131,7 +131,7 @@
               <div class="basic-box">
                 <div class="sub-detail-box">
                   <label>报备人信息</label>
-                  <span class="edit-icon" @click="editReport(reportman.id)">
+                  <span class="edit-icon" @click="editBtn('report')">
                     <span class="fa fa-edit"></span>
                     <span>编辑</span>
                   </span>
@@ -266,11 +266,16 @@
   <div v-if="subTab == 'linkman'">
     <vue-linkman :linkmanobj="linkmanarr" @getLinkman="getLinkmanInfo"></vue-linkman>
   </div>
+  <div v-if="subTab == 'report'">
+    <vue-reportman :report="reportman" @getReportMan="getReportManInfo"></vue-reportman>
+  </div>
 </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
 import linkmanVue from './complate/_linkman.vue'
+import reportmanVue from './complate/_reportman.vue'
+
 let url = require('url')
 let moment = require('moment')
 let _ = require('underscore')
@@ -294,13 +299,15 @@ export default {
     }
   },
   components: {
-    'vue-linkman': linkmanVue
+    'vue-linkman': linkmanVue,
+    'vue-reportman': reportmanVue
   },
   watch: {
     'perfect': function () {
       model.basicinfo = this.perfect
       model.linkmanarr = this.perfect.project_rel_project_first_party_linkman.items
       model.reportman = this.perfect.project_rel_project_reportman.items[0]
+      console.log('sss', model.reportman)
       let arr = []
       this.perfect.project_rel_project_furniture_types.items.forEach((item) => {
         arr.push(item.name)
@@ -315,15 +322,21 @@ export default {
       model.getPorState()
     },
 
-    // 编辑甲方信息
-    editBuyer: function (id) {
-      model.subTab = 'linkman'
+    // 编辑按钮
+    editBtn: function (val) {
+      model.subTab = val
     },
 
     // 获取甲方信息
     getLinkmanInfo: function (arr) {
       model.subTab = 'home'
       model.linkmanarr = arr
+    },
+
+    getReportManInfo: function (obj) {
+      console.log(obj)
+      model.subTab = 'home'
+      model.reportman = obj
     },
 
     // 返回云展廳首頁

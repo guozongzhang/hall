@@ -545,8 +545,9 @@
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
     </div>
-    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
-
+    <div v-if="isshowtype">
+      <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
+    </div>
     <div v-show="activeTab == 'edittextarea'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
@@ -561,7 +562,7 @@
       </div>
     </div>
     <div v-show="activeTab == 'perfectpro'" class="subbox-show">
-      <vue-perfectpro :perfect="perfectproobj"></vue-perfectpro>
+      <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
     </div>
   </div>
 </template>
@@ -630,6 +631,7 @@ let reportState = [
 export default {
   data () {
     return {
+      isshowtype: false,
       perfectproobj: {}, // 完善项目
       isloading: true,
       hadRead: false,
@@ -801,6 +803,14 @@ export default {
       })
     },
 
+    // 20180416-yuguo-获取完善项目信息
+    getProject: function (obj) {
+      console.log('0000000', obj)
+      if (!obj.flag) {
+        model.activeTab = 'home'
+      }
+    },
+
     // 20180413-yuguo-完善项目信息
     perfectFunc: function () {
       model.perfectproobj = model.basicinfo
@@ -896,6 +906,7 @@ export default {
 
     // 获取产品分类
     getclassifyArr (obj, info) {
+      model.isshowtype = false
       model.editpro.type = info
       model.acticearr = obj
       let res = []
@@ -1366,6 +1377,7 @@ export default {
 
     // 产品品类
     changeGoodsType: async function () {
+      model.isshowtype = true
       model.flag = Math.random()
       $('#classifylist').show()
       $('.content-box').addClass('animated bounceInRight')

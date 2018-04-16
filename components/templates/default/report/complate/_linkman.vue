@@ -53,6 +53,20 @@ export default {
       model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
 
+    // 返回编辑
+    subGoBack: function () {
+      let obj = {
+        flag: false,
+        data: []
+      }
+      model.$emit('getLinkman', obj)
+    },
+
+    // 返回首页
+    goHome: function () {
+      window.location.href = model.linkPath + '/'
+    },
+
     // 添加多个联系人
     addsublinkman: function () {
       let obj = {
@@ -75,8 +89,11 @@ export default {
 
     // 提交
     subaddlinkman: function () {
-      model.$emit('getLinkman', model.alinkman)
-      console.log(model.alinkman)
+      let obj = {
+        flag: true,
+        data: model.alinkman
+      }
+      model.$emit('getLinkman', obj)
     }
   },
   mounted () {

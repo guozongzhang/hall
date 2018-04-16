@@ -2,7 +2,7 @@
 <div>
   <div v-if="subTab == 'home'">
     <header class="mui-bar mui-bar-nav">
-      <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">
+      <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goBackPerPect()">
         <span style="position: relative;top: -1px;">返回</span>
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
@@ -53,7 +53,7 @@
               <div class="basic-box">
                 <div class="sub-detail-box">
                   <label>甲方信息</label>
-                  <span class="edit-icon" @click="editBuyer(basicinfo.id)">
+                  <span class="edit-icon" @click="editLinkman(basicinfo.id)">
                     <span class="fa fa-edit"></span>
                     <span>编辑</span>
                   </span>
@@ -266,11 +266,15 @@
   <div v-if="subTab == 'linkman'">
     <vue-linkman :linkmanobj="linkmanarr" @getLinkman="getLinkmanInfo"></vue-linkman>
   </div>
+  <div v-if="subTab == 'project'">
+    <vue-project :projectinfo="basicinfo" @getProject="getProjectInfo"></vue-project>
+  </div>
 </div>
 </template>
 <script>
 import axios from '~/plugins/axios'
 import linkmanVue from './complate/_linkman.vue'
+import projectVue from './complate/_project.vue'
 let url = require('url')
 let moment = require('moment')
 let _ = require('underscore')
@@ -294,7 +298,8 @@ export default {
     }
   },
   components: {
-    'vue-linkman': linkmanVue
+    'vue-linkman': linkmanVue,
+    'vue-project': projectVue
   },
   watch: {
     'perfect': function () {
@@ -315,15 +320,54 @@ export default {
       model.getPorState()
     },
 
+    // 退出编辑
+    goBackPerPect: function () {
+      var btnArray = ['直接退出', '提交并退出']
+      window.mui.confirm('是否对完善的内容进行提交？', '友情提示', btnArray, function (e) {
+        if (e.index === 1) {
+          console.log('提交')
+        } else {
+          console.log('退出')
+          let obj = {
+            flag: false,
+            data: ''
+          }
+          model.$emit('subEditProject', obj)
+        }
+      })
+    },
+
     // 编辑甲方信息
-    editBuyer: function (id) {
+    editLinkman: function (id) {
       model.subTab = 'linkman'
     },
 
     // 获取甲方信息
-    getLinkmanInfo: function (arr) {
+    getLinkmanInfo: function (obj) {
+      if (obj.flag) {
+        model.linkmanarr = obj.data
+      }
       model.subTab = 'home'
-      model.linkmanarr = arr
+    },
+
+    // 编辑项目信息
+    editProject: function (id) {
+      model.subTab = 'project'
+    },
+
+    // 获取项目信息
+    getProjectInfo: function (obj) {
+      if (obj.flag) {
+        let arr = []
+        obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
+          arr.push(sub.name)
+        })
+        model.progoodstyepstr = arr.join('/')
+        model.basicinfo = obj.data
+        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
+        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
+      }
+      model.subTab = 'home'
     },
 
     // 返回云展廳首頁
@@ -403,7 +447,10 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+html .mui-popup .mui-popup-buttons .mui-popup-button{
+  font-size: 14px !important;
+}
 .mui-icon-back:before, .mui-icon-left-nav:before{
   font-size: 20px !important;
 }

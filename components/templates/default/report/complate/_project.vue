@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="subbox-show" style="position: relative">
+  <div class="subbox-show" style="position: relative" v-show="subactive == 'home'">
     <header class="mui-bar mui-bar-nav">
       <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
         <span style="position: relative;top: -1px;">返回</span>
@@ -9,7 +9,7 @@
       <h1 class="mui-title othertitle">编辑项目信息</h1>
       <a class="mui-icon mui-pull-right save-btn" @click="confEditPro()">提交</a>
     </header>
-    <div class="textarea-box">
+    <div class="textarea-box" v-show="!isLoading">
       <div class="line-box"></div>
       <div style="background-color: #fff;">
         <div class="mui-input-row sub-input-box">
@@ -53,8 +53,8 @@
               <i class="fa fa-plus add-icon"></i>
             </span>
           </span>
-          <div class="attach-img-box" v-show="editproImg.length > 0">
-            <div class="img-box" v-for="img in editproImg" v-show="img.show">
+          <div class="attach-img-box" v-if="editproImg.length > 0">
+            <div class="img-box" v-for="img in editproImg">
               <span class="delete-img" @click="deleteImg(img)">×</span>
               <img :src="img.file_url" :data-preview-src="img.file_url"/>
             </div>
@@ -64,41 +64,68 @@
     </div>
   </div>
   <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
+  <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
+  <div v-if="subactive == 'textarea'">
+    <vue-textarea :textareaobj="textareaobj" @textareaFun="getTextareaInfo"></vue-textarea>
+  </div>
 </div>
 </template>
 <script>
+import axios from '~/plugins/axios'
 import Area from '../../common/threelayer.vue'
+import proType from '../../common/onelayer.vue'
+import textareaVue from './_textarea.vue'
+let $ = require('jquery')
 let _ = require('underscore')
 let moment = require('moment')
 let url = require('url')
 let dateJson = require('~/static/js/date.json')
-let modalflag = true
+let modalflag = true // 模态框日期等选择标志
+let proTypeArr = [] // 项目分类数组
 let model
 let myURL
 export default {
   props: ['projectinfo'],
   data () {
     return {
-      editpro: {},
-      editproImg: [],
-      areaarr: [],
+      subactive: 'home', // 当前显示区域
+      isLoading: true, // 是否加载数据
+      editpro: {}, // 项目数据
+      editproImg: [], // 项目附件图片
+      areaarr: [], // 日期数据
       areaobj: {
         state: 0,
-        one: '',
-        two: '',
-        three: ''
+        one: '', // 一级
+        two: '', // 二级
+        three: '' // 三级
+      },
+      oneobj: {
+        state: 0
+      },
+      protypearrs: [],
+      textareaobj: {
+        type: '',
+        title: '',
+        content: ''
       }
     }
   },
   components: {
-    'vue-area': Area
+    'vue-area': Area,
+    'vue-one': proType,
+    'vue-textarea': textareaVue
   },
   methods: {
-    init: function () {
+    // 初始化数据
+    init: async function () {
       model.editpro = this.projectinfo
+      await model.getPorState()
+      model.isLoading = false
       model.editpro.invitation_time = model.forMatTime(model.projectinfo.invitation_time, 'YYYY-MM-DD')
       model.editpro.delivery_time = model.forMatTime(model.projectinfo.delivery_time, 'YYYY-MM-DD')
-      console.log(model.editpro)
+      model.editpro.category = model.filterProType(model.projectinfo.category)
+      model.editpro.category_str = model.projectinfo.category
+      model.editproImg = model.projectinfo.project_rel_project_attachment.items
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
@@ -109,6 +136,55 @@ export default {
       moment.locale('Chinese (Simplified)')
       let timetype = type || 'YYYY-MM-DD HH:mm:ss'
       return moment(parseInt(value)).format(timetype)
+    },
+
+    // 项目类型过滤
+    filterProType: function (str) {
+      let res = ''
+      proTypeArr.forEach((item) => {
+        if (str === item.value) {
+          res = item.text
+        }
+      })
+      return res
+    },
+
+    // 项目类型
+    changeProType: function () {
+      model.protypearrs = proTypeArr
+      model.oneobj.state = Math.random()
+    },
+
+    // get项目类型
+    getVueOneInfo: function (str) {
+      model.editpro.category_str = str[0].value
+      model.editpro.category = str[0].text
+    },
+
+    // 编辑多文本信息
+    editText: function (type, title) {
+      model.textareaobj = {
+        type: type,
+        title: title,
+        content: model.editpro[type]
+      }
+      model.subactive = 'textarea'
+    },
+
+    // 产品品类
+    changeGoodsType: async function () {
+      model.flag = Math.random()
+      $('#classifylist').show()
+      $('.content-box').addClass('animated bounceInRight')
+      setTimeout(function () {
+        // $('.content-box').removeClass('bounceInRight')
+      }, 1000)
+    },
+
+    // 获取多行文本信息
+    getTextareaInfo: function (obj) {
+      model.editpro[obj.type] = obj.content
+      model.subactive = 'home'
     },
 
     // 获取选择地区信息
@@ -122,6 +198,28 @@ export default {
         model.editpro.delivery_time = str[0].text + '-' + str[1].text + '-' + str[2].text
       }
       modalflag = true
+    },
+
+    // 获取项目常量信息
+    getPorState: async function () {
+      let param = {
+        where: JSON.stringify({
+          state_types: {
+            $in: ['report_projecttype', 'report_state']
+          }
+        })
+      }
+      let res = await axios.get('classes/selectable_states', {params: param})
+      res.data.items.forEach((item) => {
+        // 项目类型
+        if (item.state_types === 'report_projecttype') {
+          let tmp = {
+            'text': item.alias,
+            'value': item.name
+          }
+          proTypeArr.push(tmp)
+        }
+      })
     },
 
     // 招标时间
@@ -144,6 +242,53 @@ export default {
       setTimeout(function () {
         modalflag = true
       }, 500)
+    },
+
+    // 上传图片
+    upload_com: function () {
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+      var $input = $('#upload_com').find('input')
+      $input.unbind().click()
+      $input.unbind().change(function () {
+        if ($input.val() === '') {
+          return false
+        }
+        var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+        $input.wrap(form)
+        window.$('#upload_com').find('form').ajaxSubmit({
+          type: 'post',
+          url: url,
+          data: {
+            mode: 'image',
+            mutiple: '1'
+          },
+          crossDomain: true,
+          headers: {
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
+          },
+          success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                file_url: sub.url
+              }
+              model.editproImg.push(imgtmp)
+            })
+            $input.unwrap()
+          },
+          error: function (error) {
+            window.mui.toast('上传失败!')
+            $input.unwrap()
+            console.log(error)
+          }
+        })
+      })
+    },
+
+    // 删除项目附件图片
+    deleteImg: function (obj) {
+      model.editproImg = _.without(model.editproImg, obj)
     }
   },
   mounted () {

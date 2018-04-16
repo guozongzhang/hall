@@ -2,7 +2,7 @@
 <div>
   <div class="subbox-show" style="position: relative">
     <header class="mui-bar mui-bar-nav">
-      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
+      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goTextBack()">返回</a>
       <span class="fa close-icon" @click="goHome()">×</span>
       <h1 class="mui-title othertitle">{{textarea.title}}</h1>
       <a class="mui-icon mui-pull-right save-btn" @click="confEditTextarea()">提交</a>
@@ -35,7 +35,25 @@ export default {
 
     // 提交输入信息
     confEditTextarea: function () {
-      model.$emit('textareaFun', model.textarea)
+      let obj = {
+        flag: true,
+        data: model.textarea
+      }
+      model.$emit('textareaFun', obj)
+    },
+
+    // 返回多行文本编辑
+    goTextBack: function () {
+      let obj = {
+        flag: false,
+        data: {}
+      }
+      model.$emit('textareaFun', obj)
+    },
+
+    // 返回首页
+    goHome: function () {
+      window.location.href = model.linkPath + '/'
     }
   },
   mounted () {

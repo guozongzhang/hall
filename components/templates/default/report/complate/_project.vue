@@ -143,11 +143,8 @@ export default {
 
     // 返回完善项目页
     goSubBack: function () {
-      let obj = {
-        flag: false,
-        data: {}
-      }
-      model.$emit('getProject', obj)
+      model.editpro.project_rel_project_attachment.items = model.editproImg
+      model.$emit('getProject', model.editpro)
     },
 
     // 时间格式化
@@ -217,7 +214,9 @@ export default {
 
     // 获取多行文本信息
     getTextareaInfo: function (obj) {
-      model.editpro[obj.type] = obj.content
+      if (obj.flag) {
+        model.editpro[obj.data.type] = obj.data.content
+      }
       model.subactive = 'home'
     },
 
@@ -329,11 +328,7 @@ export default {
     // 提交项目信息
     EditPro: function () {
       model.editpro.project_rel_project_attachment.items = model.editproImg
-      let obj = {
-        flag: true,
-        data: model.editpro
-      }
-      model.$emit('getProject', obj)
+      model.$emit('getProject', model.editpro)
     }
   },
   mounted () {

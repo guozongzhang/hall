@@ -312,7 +312,6 @@ export default {
       model.basicinfo = this.perfect
       model.linkmanarr = this.perfect.project_rel_project_first_party_linkman.items
       model.reportman = this.perfect.project_rel_project_reportman.items[0]
-      console.log('sss', model.reportman)
       let arr = []
       this.perfect.project_rel_project_furniture_types.items.forEach((item) => {
         arr.push(item.name)
@@ -369,21 +368,18 @@ export default {
 
     // 获取项目信息
     getProjectInfo: function (obj) {
-      if (obj.flag) {
-        let arr = []
-        obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
-          arr.push(sub.name)
-        })
-        model.progoodstyepstr = arr.join('/')
-        model.basicinfo = obj.data
-        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
-      }
+      let arr = []
+      obj.project_rel_project_furniture_types.items.forEach((sub) => {
+        arr.push(sub.name)
+      })
+      model.progoodstyepstr = arr.join('/')
+      model.basicinfo = obj
+      model.basicinfo.invitation_time = String(Date.parse(new Date(obj.invitation_time)))
+      model.basicinfo.delivery_time = String(Date.parse(new Date(obj.delivery_time)))
       model.subTab = 'home'
     },
 
     getReportManInfo: function (obj) {
-      console.log(obj)
       model.subTab = 'home'
       model.reportman = obj
     },

@@ -65,6 +65,7 @@ export default {
       competitors: {
 
       },
+      clonecompet: {},
       jzds: [],
       activeTab: 'one'
     }
@@ -72,7 +73,8 @@ export default {
   methods: {
     init: function () {
       model.competitors = this.compete
-      console.log(model.competitors)
+      console.log('1111', this.compete)
+      model.clonecompet = _.clone(this.compete)
       let jzdsarr = model.competitors.second_party_competitor.split(',')
       jzdsarr.forEach(item => {
         model.jzds.push({value: item})
@@ -83,6 +85,11 @@ export default {
 
     enterOtherCompete: function () {
       model.activeTab = 'two'
+      model.jzds = []
+      let jzdsarr = model.competitors.second_party_competitor.split(',')
+      jzdsarr.forEach(item => {
+        model.jzds.push({value: item})
+      })
     },
 
     // 添加竞争者
@@ -104,23 +111,24 @@ export default {
         }
       })
       model.competitors.second_party_competitor = arr.join(',')
-      console.log(model.competitors)
       model.activeTab = 'one'
     },
 
     // 提交
     confEditComp: function () {
       model.$emit('getCompete', model.competitors)
-    }
+    },
 
-    // // 返回编辑
-    // subGoBack: function () {
-    //   let obj = {
-    //     flag: false,
-    //     data: []
-    //   }
-    //   model.$emit('getLinkman', obj)
-    // },
+    // 返回编辑
+    goSubBack: function () {
+      model.activeTab = 'one'
+    },
+
+    // 返回详情
+    goBack: function () {
+      model.$emit('getCompete', model.clonecompet)
+      console.log('222', model.clonecompet)
+    }
 
     // // 返回首页
     // goHome: function () {

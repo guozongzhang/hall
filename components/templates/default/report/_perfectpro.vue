@@ -409,10 +409,11 @@ export default {
     // 获取竞争者信息
     getCompeteInfo: function (obj) {
       model.subTab = 'home'
-      // model.competeinfo = obj
-      model.basicinfo.second_party_competitor = obj.second_party_competitor
-      model.basicinfo.competitor_strengths = obj.competitor_strengths
-      model.basicinfo.competitor_projections = obj.competitor_projections
+      // model.basicinfo.second_party_competitor = obj.second_party_competitor
+      // model.basicinfo.competitor_strengths = obj.competitor_strengths
+      // model.basicinfo.competitor_projections = obj.competitor_projections
+      model.competeinfo = _.extend(model.competeinfo, obj)
+      model.basicinfo = _.extend(model.basicinfo, obj)
     },
 
     // 返回云展廳首頁

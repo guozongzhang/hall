@@ -72,6 +72,11 @@ export default {
     return {
       linkPath: '',
       isselect: false,
+      lsobj: {
+        name: '',
+        tel: '',
+        email: ''
+      },
       resetreporter: {},
       reporter: {
         id: 0,
@@ -91,8 +96,6 @@ export default {
     init: function () {
       model.resetreporter = _.clone(this.report)
       model.reporter = this.report
-      console.log(this.report)
-      console.log('this.report.user_poi_users', this.report.user_poi_users)
       model.reporter.isself = this.report.user_poi_users > 0 ? 'self' : 'other'
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
@@ -125,13 +128,15 @@ export default {
     // 选择报备人类型
     selectstyle: function () {
       model.isselect = !model.isselect
+      model.lsobj = _.extend(model.lsobj, model.reporter)
     },
 
     // 查看是否返回
     gotoisselect: function () {
       model.isselect = false
-      model.reporter.isself = model.resetreporter.user_poi_users > 0 ? 'self' : 'other'
-      model.changetype()
+      model.reporter = _.extend(model.reporter, model.lsobj)
+      // model.reporter.isself = model.resetreporter.user_poi_users > 0 ? 'self' : 'other'
+      // model.changetype()
     },
 
     // 確定提交保存人信息

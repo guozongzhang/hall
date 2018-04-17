@@ -127,14 +127,25 @@ export default {
     // 初始化数据
     init: async function () {
       model.editpro = this.projectinfo
+      console.log(this.projectinfo)
       await model.getPorState()
       model.isLoading = false
       model.editpro.invitation_time = model.forMatTime(model.projectinfo.invitation_time, 'YYYY-MM-DD')
       model.editpro.delivery_time = model.forMatTime(model.projectinfo.delivery_time, 'YYYY-MM-DD')
+      model.projectinfo.project_rel_project_attachment.items.forEach(item => {
+        item.delete = 'no'
+      })
+
+      // 产品品类
+      model.acticearr = model.projectinfo.project_rel_project_furniture_types.items
       model.editproImg = model.projectinfo.project_rel_project_attachment.items
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+
+
     },
+
+
 
     // 返回首页
     goHome: function () {
@@ -143,9 +154,10 @@ export default {
 
     // 返回完善项目页
     goSubBack: function () {
+      model.editpro.project_rel_project_attachment.items = model.editproImg
       let obj = {
         flag: false,
-        data: {}
+        data: model.editpro
       }
       model.$emit('getProject', obj)
     },
@@ -200,7 +212,7 @@ export default {
     },
 
     // 产品品类
-    changeGoodsType: function () {
+    changeGoodsType: async function () {
       model.isshowtype = true
       model.flag = Math.random()
       $('#classifylist').show()
@@ -217,7 +229,9 @@ export default {
 
     // 获取多行文本信息
     getTextareaInfo: function (obj) {
-      model.editpro[obj.type] = obj.content
+      if (obj.flag) {
+        model.editpro[obj.data.type] = obj.data.content
+      }
       model.subactive = 'home'
     },
 
@@ -306,7 +320,8 @@ export default {
             data.forEach((sub) => {
               let imgtmp = {
                 id: 0,
-                file_url: sub.url
+                file_url: sub.url,
+                delete: 'no'
               }
               model.editproImg.push(imgtmp)
             })

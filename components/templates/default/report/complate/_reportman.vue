@@ -122,7 +122,11 @@ export default {
 
     // 返回详情
     goBack: function () {
-      model.$emit('getReportMan', model.resetreporter)
+      let obj = {
+        flag: false,
+        data: model.resetreporter
+      }
+      model.$emit('getReportMan', obj)
     },
 
     // 选择报备人类型
@@ -168,10 +172,15 @@ export default {
         royalties_expectation: model.reporter.royalties_expectation || '',
         strengths: model.reporter.strengths || '',
         tel: model.reporter.tel,
-        email: model.reporter.email
+        email: model.reporter.email,
+        isself: model.reporter.isself === 'self' ? 'yes' : 'no'
       }
       param = _.extend(param, {user_poi_users: model.reporter.isself === 'self' ? 100 : 0})
-      model.$emit('getReportMan', param)
+      let obj = {
+        flag: true,
+        data: param
+      }
+      model.$emit('getReportMan', obj)
     }
   },
   mounted () {

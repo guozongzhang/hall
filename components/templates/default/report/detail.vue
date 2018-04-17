@@ -805,9 +805,11 @@ export default {
 
     // 20180416-yuguo-获取完善项目信息
     getProject: function (obj) {
-      console.log('0000000', obj)
-      if (!obj.flag) {
-        model.activeTab = 'home'
+      // window.location.href = location
+      if (obj === 'report') {
+        window.location.href = model.linkPath + '/report'
+      } else {
+        window.location.href = location
       }
     },
 
@@ -1292,6 +1294,7 @@ export default {
 
     // 保存项目信息
     confEditPro: function () {
+      console.log('time', model.editpro.delivery_time)
       let param = {
         id: proId,
         number: model.editpro.number,

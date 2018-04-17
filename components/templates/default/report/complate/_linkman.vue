@@ -10,7 +10,7 @@
       <a class="mui-icon mui-pull-right save-btn" @click="subaddlinkman()">提交</a>
     </header>
     <ul class="mui-table-view mui-table-view-chevron nav">
-      <li class="mui-table-view-cell linkmantext linkman-box" style="padding: 0 !important" v-for="(item, num) in alinkman">
+      <li class="mui-table-view-cell linkmantext linkman-box" style="padding: 0 !important" v-for="(item, num) in alinkman" v-if="item.delete == 'no'">
         <div class="jzztitele" style="padding-left: 25px;">
           第{{num+1}}联系人
           <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="deletelinkman(item)"></div>
@@ -43,7 +43,7 @@ export default {
   data () {
     return {
       alinkman: [],
-      dellinkmanids: [] // 标记删除联系人id
+      deleteObjArr: []
     }
   },
   methods: {
@@ -81,9 +81,6 @@ export default {
 
     // 删除联系人
     deletelinkman: function (item) {
-      if (item.id > 0) {
-        model.dellinkmanids.push(item.id)
-      }
       model.alinkman = _.without(model.alinkman, item)
     },
 

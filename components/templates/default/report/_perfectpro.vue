@@ -7,7 +7,7 @@
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
       <h1 class="mui-title">项目详情</h1>
-      <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;">
+      <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;" @click="commitInfo()">
         <span style="font-size: 14px;color: #666;">提交</span>
       </a>
     </header>  
@@ -64,7 +64,7 @@
                       <span class="c666 f16">所属区域：</span>
                       <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                     </li>
-                    <li class="mui-table-view-cell f16" v-for="(sub, index) in linkmanarr" >
+                    <li class="mui-table-view-cell f16" v-for="(sub, index) in linkmanarr" v-if="sub.delete == 'no'">
                       <span class="c666 f16">第{{index+1}}联系人：</span>
                       <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
                     </li>
@@ -283,6 +283,7 @@ import linkmanVue from './complate/_linkman.vue'
 import reportmanVue from './complate/_reportman.vue'
 import projectVue from './complate/_project.vue'
 import competeVue from './complate/_compete.vue'
+let Cookies = require('js-cookie')
 let url = require('url')
 let moment = require('moment')
 let _ = require('underscore')
@@ -296,6 +297,7 @@ export default {
     return {
       subTab: 'home',
       basicinfo: {},
+      isedittextarr: [],
       stars: [5, 4, 3, 2, 1],
       linkmanarr: [], // 甲方信息
       reportman: {}, // 报备人信息
@@ -345,14 +347,62 @@ export default {
       var btnArray = ['直接退出', '提交并退出']
       window.mui.confirm('是否对完善的内容进行提交？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
-          console.log('提交')
+          model.commitInfo('report')
         } else {
-          console.log('退出')
-          let obj = {
-            flag: false,
-            data: ''
-          }
-          model.$emit('subEditProject', obj)
+          model.$emit('subEditProject', 'report')
+        }
+      })
+    },
+
+    // 提交保存
+    commitInfo: function (reportval) {
+      let param = {
+        id: model.perfect.id,
+        // 项目信息
+        number: model.basicinfo.number,
+        name: model.basicinfo.name,
+        category: model.basicinfo.category,
+        validity: model.basicinfo.validity,
+        remark: model.basicinfo.remark,
+        invitation_time: model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
+        delivery_time: model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
+        risk_analysis: model.basicinfo.risk_analysis,
+        feasibility: model.basicinfo.feasibility,
+        sketch: model.basicinfo.sketch,
+        intro: model.basicinfo.intro,
+        percent: model.basicinfo.percent,
+        project_attachment: JSON.stringify(model.basicinfo.project_rel_project_attachment.items),
+        // 甲方联系人
+        project_first_party_linkman: JSON.stringify(model.linkmanarr),
+        // 竞争者信息
+        second_party_competitor: model.competeinfo.second_party_competitor,
+        competitor_strengths: model.competeinfo.competitor_strengths,
+        competitor_projections: model.competeinfo.competitor_projections,
+        isedittextarr: JSON.stringify(model.isedittextarr)
+      }
+
+      // 判断产品分类是否存在以及被更新
+      if (model.basicinfo.project_rel_project_furniture_types.items.length > 0) {
+        if (model.basicinfo.project_rel_project_furniture_types.items[0].id === 0) {
+          param = _.extend(param, {project_furniture_types: JSON.stringify(model.basicinfo.project_rel_project_furniture_types.items)})
+        }
+      }
+      // 判断报备人信息是否被更新
+      if (_.has(model.reportman, 'isself')) {
+        param = _.extend(param, {project_reportman: JSON.stringify(model.reportman)})
+      }
+
+      axios.put('functions/report/project', null, {
+        data: param
+      }).then(function (data) {
+        model.$emit('subEditProject', reportval || '')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            window.location.href = model.linkPath + '/'
+          }, 2000)
         }
       })
     },
@@ -376,6 +426,7 @@ export default {
     getLinkmanInfo: function (obj) {
       if (obj.flag) {
         model.linkmanarr = obj.data
+        model.isedittextarr.push('【甲方信息】')
       }
       model.subTab = 'home'
     },
@@ -388,29 +439,36 @@ export default {
     // 获取项目信息
     getProjectInfo: function (obj) {
       if (obj.flag) {
-        let arr = []
-        obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
-          arr.push(sub.name)
-        })
-        model.progoodstyepstr = arr.join('/')
-        model.basicinfo = obj.data
-        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
+        model.isedittextarr.push('【项目信息】')
       }
+      let arr = []
+      obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
+        arr.push(sub.name)
+      })
+      model.progoodstyepstr = arr.join('/')
+      model.basicinfo = obj.data
+      model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
+      model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
       model.subTab = 'home'
     },
 
     // 获取报备人信息
     getReportManInfo: function (obj) {
+      if (obj.flag) {
+        model.isedittextarr.push('【报备人信息】')
+      }
       model.subTab = 'home'
-      model.reportman = obj
+      model.reportman = obj.data
     },
 
     // 获取竞争者信息
     getCompeteInfo: function (obj) {
+      if (obj.flag) {
+        model.isedittextarr.push('【竞争信息】')
+      }
       model.subTab = 'home'
-      model.competeinfo = _.extend(model.competeinfo, obj)
-      model.basicinfo = _.extend(model.basicinfo, obj)
+      model.competeinfo = _.extend(model.competeinfo, obj.data)
+      model.basicinfo = _.extend(model.basicinfo, obj.data)
     },
 
     // 返回云展廳首頁

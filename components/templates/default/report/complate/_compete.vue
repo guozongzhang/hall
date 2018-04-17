@@ -73,7 +73,6 @@ export default {
   methods: {
     init: function () {
       model.competitors = this.compete
-      console.log('1111', this.compete)
       model.clonecompet = _.clone(this.compete)
       let jzdsarr = model.competitors.second_party_competitor.split(',')
       jzdsarr.forEach(item => {
@@ -116,7 +115,11 @@ export default {
 
     // 提交
     confEditComp: function () {
-      model.$emit('getCompete', model.competitors)
+      let obj = {
+        flag: false,
+        data: model.competitors
+      }
+      model.$emit('getCompete', obj)
     },
 
     // 返回编辑
@@ -126,43 +129,13 @@ export default {
 
     // 返回详情
     goBack: function () {
-      model.$emit('getCompete', model.clonecompet)
-      console.log('222', model.clonecompet)
+      let obj = {
+        flag: true,
+        data: model.clonecompet
+      }
+      model.$emit('getCompete', obj)
     }
 
-    // // 返回首页
-    // goHome: function () {
-    //   window.location.href = model.linkPath + '/'
-    // },
-
-    // // 添加多个联系人
-    // addsublinkman: function () {
-    //   let obj = {
-    //     id: 0,
-    //     name: '',
-    //     job: '',
-    //     tel: '',
-    //     delete: 'no'
-    //   }
-    //   model.alinkman.push(obj)
-    // },
-
-    // // 删除联系人
-    // deletelinkman: function (item) {
-    //   if (item.id > 0) {
-    //     model.dellinkmanids.push(item.id)
-    //   }
-    //   model.alinkman = _.without(model.alinkman, item)
-    // },
-
-    // // 提交
-    // subaddlinkman: function () {
-    //   let obj = {
-    //     flag: true,
-    //     data: model.alinkman
-    //   }
-    //   model.$emit('getLinkman', obj)
-    // }
   },
   mounted () {
     model = this

@@ -305,7 +305,8 @@ export default {
             data.forEach((sub) => {
               let imgtmp = {
                 id: 0,
-                file_url: sub.url
+                file_url: sub.url,
+                delete: 'no'
               }
               model.editproImg.push(imgtmp)
             })

@@ -7,7 +7,7 @@
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
       <h1 class="mui-title">项目详情</h1>
-      <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;">
+      <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;" @click="commitInfo()">
         <span style="font-size: 14px;color: #666;">提交</span>
       </a>
     </header>  
@@ -64,7 +64,7 @@
                       <span class="c666 f16">所属区域：</span>
                       <span class="alist-text">{{(basicinfo.first_party_province_poi_province || {}).ProvinceName}}-{{(basicinfo.first_party_city_poi_city || {}).CityName}}-{{(basicinfo.first_party_district_poi_district || {}).DistrictName}}</span>
                     </li>
-                    <li class="mui-table-view-cell f16" v-for="(sub, index) in linkmanarr" >
+                    <li class="mui-table-view-cell f16" v-for="(sub, index) in linkmanarr" v-if="sub.delete == 'no'">
                       <span class="c666 f16">第{{index+1}}联系人：</span>
                       <span class="alist-text">{{sub.name}}{{sub.job ? '/' + sub.job : ''}}{{sub.tel ? '/' + sub.tel : ''}}</span>
                     </li>
@@ -278,8 +278,8 @@
 import axios from '~/plugins/axios'
 import linkmanVue from './complate/_linkman.vue'
 import reportmanVue from './complate/_reportman.vue'
-
 import projectVue from './complate/_project.vue'
+let Cookies = require('js-cookie')
 let url = require('url')
 let moment = require('moment')
 let _ = require('underscore')
@@ -339,6 +339,28 @@ export default {
             data: ''
           }
           model.$emit('subEditProject', obj)
+        }
+      })
+    },
+
+    // 提交保存
+    commitInfo: function () {
+      let param = {
+        linkman: model.linkmanarr,
+        projectInfo: model.basicinfo
+      }
+      console.log('0000', param)
+      axios.put('functions/report/project', null, {
+        data: param
+      }).then(function (data) {
+        console.log(data)
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            window.location.href = model.linkPath + '/'
+          }, 2000)
         }
       })
     },

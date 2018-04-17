@@ -409,9 +409,6 @@ export default {
     // 获取竞争者信息
     getCompeteInfo: function (obj) {
       model.subTab = 'home'
-      // model.basicinfo.second_party_competitor = obj.second_party_competitor
-      // model.basicinfo.competitor_strengths = obj.competitor_strengths
-      // model.basicinfo.competitor_projections = obj.competitor_projections
       model.competeinfo = _.extend(model.competeinfo, obj)
       model.basicinfo = _.extend(model.basicinfo, obj)
     },
@@ -454,7 +451,6 @@ export default {
     // 返回详情
     goBack: function () {
       model.reporter.goback = true
-      // model.$emit('getEditReport', model.reporter)
     },
 
     // 获取项目常量信息

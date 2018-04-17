@@ -135,8 +135,6 @@ export default {
     gotoisselect: function () {
       model.isselect = false
       model.reporter = _.extend(model.reporter, model.lsobj)
-      // model.reporter.isself = model.resetreporter.user_poi_users > 0 ? 'self' : 'other'
-      // model.changetype()
     },
 
     // 確定提交保存人信息

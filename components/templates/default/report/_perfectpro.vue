@@ -438,13 +438,10 @@ export default {
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       urlObj = querystring.parse(myURL.query)
       model.getPorState()
-
+      model.getRecordLog(urlObj.id)
       // 消息已经读取
       window.mui('#msg_project').on('tap', '.msg-num', function () {
         model.getReportLog(urlObj.id)
-      })
-      window.mui('#msg_project').on('tap', '.msg-recordLog', function () {
-        model.getRecordLog(urlObj.id)
       })
     },
 

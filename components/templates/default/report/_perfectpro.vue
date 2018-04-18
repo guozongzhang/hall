@@ -226,7 +226,7 @@
                         <span class="white-line"></span>
                         <span class="pointer"></span>
                         <span class="dashed-line"></span>
-                        <span class="add-btn" @click="addRecord(reportman.id)">
+                        <span class="add-btn" @click="addRecord(basicinfo.id)">
                           <span class="icon">+</span>
                           <span>进度跟踪</span>
                         </span>
@@ -311,16 +311,14 @@
   <div v-if="subTab == 'compete'">
     <vue-compete :compete="competeinfo" @getCompete="getCompeteInfo"></vue-compete>
   </div>
-  <div class="mui-popup-backdrop mui-active modal"></div>
+  <div class="mui-popup-backdrop mui-active modal"  @click="cencle()"></div>
   <div class="mui-popup mui-popup-in modal">
     <div class="mui-popup-inner">
-      <div class="mui-popup-title">友情提示</div>
       <div class="mui-popup-text">是否对完善的内容进行提交？</div>
-      <span class="btnclose" @click="cencle()">X</span>
     </div>
     <div class="mui-popup-buttons">
       <span class="mui-popup-button" @click="exit('direct')">直接退出</span>
-      <span class="mui-popup-button mui-popup-button-bold" @click="exit()">提交并退出</span>
+      <span class="mui-popup-button"  @click="exit()">提交并退出</span>
     </div>
   </div>
 </div>
@@ -490,6 +488,7 @@ export default {
 
     // 退出
     exit: function (val) {
+      model.cencle()
       if (val === 'direct') {
         model.$emit('subEditProject', 'report')
       } else {
@@ -653,7 +652,10 @@ export default {
       axios.put('functions/report/project', null, {
         data: param
       }).then(function (data) {
-        model.$emit('subEditProject', reportval || '')
+        window.mui.toast('提交成功!')
+        setTimeout(function () {
+          model.$emit('subEditProject', reportval)
+        }, 1000)
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
@@ -813,14 +815,7 @@ html .mui-popup .mui-popup-buttons .mui-popup-button{
   display: none;
 }
 .mui-popup-inner {
-  position: relative
-}
-.mui-popup-inner .btnclose {
-  position: absolute;
-  right: -10px;
-  top: -20px;
-  font-size: 20px;
-  color: #fff;
+  font-size: 14px;
 }
 .mui-popup {
   overflow: initial

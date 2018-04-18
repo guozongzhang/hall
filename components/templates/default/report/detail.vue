@@ -805,7 +805,6 @@ export default {
 
     // 20180416-yuguo-获取完善项目信息
     getProject: function (obj) {
-      // window.location.href = location
       if (obj === 'report') {
         window.location.href = model.linkPath + '/report'
       } else {

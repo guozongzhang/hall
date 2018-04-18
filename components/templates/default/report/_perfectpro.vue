@@ -42,7 +42,7 @@
             <span class="msg-style" v-if="hadRead"></span>
             <span class="active-icon"></span>
           </a>
-          <a class="mui-control-item" href="#reportlog1">
+          <a class="mui-control-item msg-recordLog" href="#reportlog1">
             <span>进度跟踪</span>
             <span class="active-icon"></span>
           </a>
@@ -265,7 +265,7 @@
   </div>
   <div v-show="subTab == 'record'" class="subbox-show record-show">
     <header class="mui-bar mui-bar-nav">
-      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBackxmgz()">
         <span style="position: relative;top: -1px;">返回</span>
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
@@ -443,6 +443,9 @@ export default {
       window.mui('#msg_project').on('tap', '.msg-num', function () {
         model.getReportLog(urlObj.id)
       })
+      window.mui('#msg_project').on('tap', '.msg-recordLog', function () {
+        model.getRecordLog(urlObj.id)
+      })
     },
 
     // 退出编辑
@@ -459,6 +462,33 @@ export default {
       model.recordImgs = []
       model.subTab = 'record'
       proId = id
+    },
+
+    // 返回项目跟踪
+    goBackxmgz: function () {
+      model.subTab = 'home'
+    },
+
+    // 获取项目跟踪记录
+    getRecordLog: async function (id) {
+      let param = {
+        where: {
+          project_poi_projects: id
+        },
+        with: {
+          relation: [
+            {
+              table: 'project_track_files',
+              key: 'imgaes_poi_project_track'
+            }
+          ]
+        },
+        order: '-id'
+      }
+      let result = await axios.get('classes/project_track', {
+        params: param
+      })
+      model.recordLoglist = result.data.items
     },
 
     // 退出

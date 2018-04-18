@@ -815,7 +815,7 @@ html .mui-popup .mui-popup-buttons .mui-popup-button{
   display: none;
 }
 .mui-popup-inner {
-  font-size: 14px;
+  padding: 25px;
 }
 .mui-popup {
   overflow: initial

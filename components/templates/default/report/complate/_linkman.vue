@@ -90,6 +90,19 @@ export default {
 
     // 提交
     subaddlinkman: function () {
+      let telval = /^1[3|4|5|7|8][0-9]{9}$/
+      let istruephone = true
+      model.alinkman.forEach(item => {
+        if (!_.isEmpty(item.tel)) {
+          if (!telval.test(item.tel)) {
+            istruephone = false
+          }
+        }
+      })
+      if (istruephone === false) {
+        window.mui.toast('手机号格式错误!')
+        return false
+      }
       let obj = {
         flag: true,
         data: model.alinkman

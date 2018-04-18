@@ -226,7 +226,7 @@
                         <span class="white-line"></span>
                         <span class="pointer"></span>
                         <span class="dashed-line"></span>
-                        <span class="add-btn" @click="addRecord(basicinfo.id)">
+                        <span class="add-btn" @click="addRecord(reportman.id)">
                           <span class="icon">+</span>
                           <span>进度跟踪</span>
                         </span>
@@ -259,6 +259,42 @@
               <p class="no-data" v-if="recordLoglist.length == 0 && basicinfo.state == 'wait'">您还没有报备该项目，所以暂无报备记录</p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-show="subTab == 'record'" class="subbox-show record-show">
+    <header class="mui-bar mui-bar-nav">
+      <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
+        <span style="position: relative;top: -1px;">返回</span>
+      </a>
+      <span class="fa close-icon" @click="goHome()">×</span>
+      <h1 class="mui-title othertitle">进度跟踪</h1>
+      <a class="mui-icon mui-pull-right save-btn" @click="confAddRecord()">提交</a>
+    </header>
+    <div class="textarea-box">
+      <div class="line-box"></div>
+      <div class="text-input">
+        <textarea type="text" v-model="recordtext"  class="mui-input-clear" placeholder="请输入最新的跟踪记录"></textarea>
+        <div class="attach-box" style="padding: 0 10px;margin-top: 10px;min-height: 55px;">
+          <span v-for="img in recordImgs" v-show="recordImgs.length > 0" style="display: inline-block;width: 40px;height: 40px;position: relative;margin-right: 10px;margin-bottom: 10px;">
+            <img :src="img.file_url" :data-preview-src="img.file_url">
+            <span class="deleteimg" @click="deleteattchimg(img)">×</span>
+          </span>
+          <span class="upload-files" id="upload_attch" @click="upload_attch()" v-show="recordImgs.length > 0" style="position: relative;top: -15px;">
+            <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
+              <use xlink:href="/svg/icon.svg#add"></use>
+            </svg>
+            <input class="hidden" type="file" accept="image/*" capture="camera" name="files[]" style="width: 75%; display: none;" v-if="!isPhone" multiple>
+            <input class="hidden" type="file" accept="image/*" name="files[]" style="width: 75%; display: none;" v-if="isPhone" multiple>
+          </span>
+          <span class="upload-files" id="upload_attch" @click="upload_attch()" style="position: relative;top: 0px;" v-show="recordImgs.length == 0">
+            <svg class="svg-style" style="position: relative;top: 8px;left: 8px;">
+              <use xlink:href="/svg/icon.svg#add"></use>
+            </svg>
+            <input class="hidden" type="file" accept="image/*" name="files[]" style="width: 75%; display: none;" v-if="isPhone" multiple>
+            <input class="hidden" accept="image/*" capture="camera" type="file" name="files[]" style="width: 75%; display: none;" multiple>
+          </span>
         </div>
       </div>
     </div>
@@ -304,6 +340,8 @@ let _ = require('underscore')
 let model
 let urlObj
 let myURL
+let flag = true
+let proId
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
 let reportState = [
@@ -363,7 +401,10 @@ export default {
       reportLoglist: [],
       recordLoglist: [],
       isloading: false,
-      hadRead: false
+      hadRead: false,
+      recordtext: '',
+      recordImgs: [],
+      isPhone: false
     }
   },
   components: {
@@ -412,6 +453,14 @@ export default {
       })
     },
 
+    // 添加跟踪记录
+    addRecord: async function (id) {
+      model.recordtext = ''
+      model.recordImgs = []
+      model.subTab = 'record'
+      proId = id
+    },
+
     // 退出
     exit: function (val) {
       if (val === 'direct') {
@@ -427,6 +476,90 @@ export default {
         display: 'none',
         opacity: 0
       })
+    },
+
+    // 上传报备记录附件
+    upload_attch: function () {
+      var url = process.env.baseUrl + 'upload' || 'http://192.168.1.120/openapi/api/1.0/upload'
+      var $input = $('#upload_attch').find('input')
+      $input.unbind().click()
+      $input.unbind().change(function () {
+        if ($input.val() === '') {
+          return false
+        }
+        var form = $("<form class='uploadform' method='post' enctype='multipart/form-data' action='" + url + "'></form>")
+        $input.wrap(form)
+        window.$('#upload_attch').find('form').ajaxSubmit({
+          type: 'post',
+          url: url,
+          data: {
+            mode: 'image',
+            mutiple: '1'
+          },
+          crossDomain: true,
+          headers: {
+            'X-DP-Key': '7748955b16d6f1a02be76db2773dd316',
+            'X-DP-ID': '7748955b16d6f1a0'
+          },
+          success: function (data) {
+            data.forEach((sub) => {
+              let imgtmp = {
+                id: 0,
+                file_url: sub.url
+              }
+              model.recordImgs.push(imgtmp)
+            })
+            $input.unwrap()
+          },
+          error: function (error) {
+            window.mui.toast('上传失败!')
+            $input.unwrap()
+            console.log(error)
+          }
+        })
+      })
+    },
+
+    // 删除报备记录附件（图片）
+    deleteattchimg: function (obj) {
+      model.recordImgs = _.without(model.recordImgs, obj)
+    },
+
+    // 确定添加跟踪记录
+    confAddRecord: function () {
+      if (!model.recordtext && model.recordImgs.length === 0) {
+        window.mui.toast('请填写跟踪记录或者上传附件！')
+        return
+      }
+      if (flag) {
+        flag = false
+        let param = {
+          project_poi_projects: proId,
+          remark: model.recordtext,
+          track_files: JSON.stringify(model.recordImgs)
+        }
+        axios.post('functions/report/project_track', null, {
+          data: param
+        }).then(function (data) {
+          data.data.imgaes_rel_project_track_files = {
+            items: model.recordImgs
+          }
+          model.recordLoglist.unshift(data.data)
+          window.mui.toast('添加跟踪记录成功！')
+          flag = true
+          setTimeout(function () {
+            model.subTab = 'home'
+          }, 1000)
+        }).catch(function (error) {
+          if (error.response.data.message === 'token is invalid') {
+            window.mui.toast('登录信息过期!')
+            setTimeout(function () {
+              Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+              window.location.href = model.linkPath + '/login'
+            }, 2000)
+          }
+        })
+      }
     },
 
     // 获取报备记录

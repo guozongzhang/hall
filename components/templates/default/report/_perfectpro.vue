@@ -275,6 +275,18 @@
   <div v-if="subTab == 'compete'">
     <vue-compete :compete="competeinfo" @getCompete="getCompeteInfo"></vue-compete>
   </div>
+  <div class="mui-popup-backdrop mui-active modal"></div>
+  <div class="mui-popup mui-popup-in modal">
+    <div class="mui-popup-inner">
+      <div class="mui-popup-title">友情提示</div>
+      <div class="mui-popup-text">是否对完善的内容进行提交？</div>
+      <span class="btnclose" @click="cencle()">X</span>
+    </div>
+    <div class="mui-popup-buttons">
+      <span class="mui-popup-button" @click="exit('direct')">直接退出</span>
+      <span class="mui-popup-button mui-popup-button-bold" @click="exit()">提交并退出</span>
+    </div>
+  </div>
 </div>
 </template>
 <script>
@@ -285,6 +297,7 @@ import projectVue from './complate/_project.vue'
 import competeVue from './complate/_compete.vue'
 let Cookies = require('js-cookie')
 let url = require('url')
+let $ = require('jquery')
 let moment = require('moment')
 let _ = require('underscore')
 let model
@@ -344,13 +357,26 @@ export default {
 
     // 退出编辑
     goBackPerPect: function () {
-      var btnArray = ['直接退出', '提交并退出']
-      window.mui.confirm('是否对完善的内容进行提交？', '友情提示', btnArray, function (e) {
-        if (e.index === 1) {
-          model.commitInfo('report')
-        } else {
-          model.$emit('subEditProject', 'report')
-        }
+      $('.modal').css({
+        display: 'block',
+        opacity: 1
+      })
+    },
+
+    // 退出
+    exit: function (val) {
+      if (val === 'direct') {
+        model.$emit('subEditProject', 'report')
+      } else {
+        model.commitInfo('report')
+      }
+    },
+
+    // 取消
+    cencle: function () {
+      $('.modal').css({
+        display: 'none',
+        opacity: 0
       })
     },
 
@@ -550,6 +576,22 @@ export default {
 <style scoped>
 html .mui-popup .mui-popup-buttons .mui-popup-button{
   font-size: 14px !important;
+}
+.modal{
+  display: none;
+}
+.mui-popup-inner {
+  position: relative
+}
+.mui-popup-inner .btnclose {
+  position: absolute;
+  right: -10px;
+  top: -20px;
+  font-size: 20px;
+  color: #fff;
+}
+.mui-popup {
+  overflow: initial
 }
 .mui-icon-back:before, .mui-icon-left-nav:before{
   font-size: 20px !important;

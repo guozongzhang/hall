@@ -65,7 +65,7 @@
   </div>
   <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
   <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
-  <div v-if="isshowtype">
+  <div v-show="isshowtype">
     <vue-tabs :acticearr="acticearr" :flag="flag" @submitArr="getClassifyInfo"></vue-tabs>
   </div>
   <div v-if="subactive == 'textarea'">
@@ -138,14 +138,11 @@ export default {
 
       // 产品品类
       model.acticearr = model.projectinfo.project_rel_project_furniture_types.items
+      console.log('model.acticearr', model.acticearr)
       model.editproImg = model.projectinfo.project_rel_project_attachment.items
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
-
-
     },
-
-
 
     // 返回首页
     goHome: function () {
@@ -217,14 +214,15 @@ export default {
       model.flag = Math.random()
       $('#classifylist').show()
       $('.content-box').addClass('animated bounceInRight')
-      setTimeout(function () {
-        // $('.content-box').removeClass('bounceInRight')
-      }, 1000)
+      // setTimeout(function () {
+      //   // $('.content-box').removeClass('bounceInRight')
+      // }, 1000)
     },
 
     // 获取产品品类信息
     getClassifyInfo: function (obj, info) {
       model.editpro.project_rel_project_furniture_types.items = obj
+      model.acticearr = obj
     },
 
     // 获取多行文本信息

@@ -502,7 +502,7 @@
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell comp-input-box" v-for="(item, num) in jzds">
           <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row" style="width:60%;float:left;height: 44px;">
+          <div class="mui-input-row" style="width:80%;float:left;height: 44px;">
             <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
           <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>

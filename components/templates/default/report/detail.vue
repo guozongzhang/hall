@@ -34,8 +34,8 @@
           <div class="fz16 intro-style mui-ellipsis">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
-            <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
-            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 15px;color: #999">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
+            <span style="display: inline-block;float: left;margin-left: 10px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
+            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 10px;color: #999">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
             <span class="left-circle icon-circle"></span>

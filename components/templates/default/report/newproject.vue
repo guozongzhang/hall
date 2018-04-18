@@ -279,7 +279,7 @@
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell textareaclass jzzli" v-for="(item, num) in jzds">
           <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row" style="width:60%;float:left;">
+          <div class="mui-input-row" style="width:80%;float:left;">
             <label style="width:1%"><i></i></label>
             <input style="width:99%!important" maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
@@ -288,7 +288,9 @@
       </ul>
       <span class="addjjz" @click="addjjz()">添加竞争者</span>
     </div>
-    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
+    <div v-if="isshowtype">
+      <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
+    </div>
   </div>
 </template>  
 <script>
@@ -315,6 +317,7 @@
     },
     data () {
       return {
+        isshowtype: false,
         isPhone: false,
         thisdata: {
           name: '',
@@ -438,6 +441,7 @@
 
       // 获取产品分类
       getclassifyArr (obj, info) {
+        model.isshowtype = false
         model.furtypeStr = info
         model.acticearr = obj
         model.thisdata.project_furniture_types = obj
@@ -646,6 +650,7 @@
 
       // 弹出分类模态框
       showClassify: function () {
+        model.isshowtype = true
         model.flag = Math.random()
         $('#classifylist').show()
         $('.content-box').addClass('animated bounceInRight')

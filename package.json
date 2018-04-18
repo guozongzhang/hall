@@ -14,6 +14,7 @@
     "dev": "HOST=0.0.0.0 PORT=5001 nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
+    "dockerbuild": "cnpm install &&  npm run build",
     "deploy": "pm2-docker start npm -- start",
     "update": "pm2 delete `pwd` && git branch -D tmp && git fetch origin develop:tmp && git merge tmp && npm run build && pm2 start npm --name `pwd` -- start",
     "generate": "nuxt generate",

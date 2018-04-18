@@ -16,11 +16,11 @@
       <div class="reporter">
         <li class="mui-table-view-cell type-style"> 
           <div class="mui-radio cssradiodiv">
-            <input type="radio" name="style" value="self" v-model="reporter.isself"/> 
+            <input type="radio" name="style" value="self" v-model="reporter.isself" @change="changetype('self')"/> 
             <label>自己</label>
           </div>
           <div class="mui-radio cssradiodiv">
-            <input type="radio" name="style" value="other" v-model="reporter.isself"/> 
+            <input type="radio" name="style" value="other" v-model="reporter.isself"  @change="changetype('other')"/> 
             <label>其他人</label>
           </div>
         </li>
@@ -38,7 +38,7 @@
       </div>
       <div class="mui-input-row sub-input-box" v-bind:class="reporter.isself === 'self' ? 'selfbg' : ''">
         <label>联系电话</label>
-        <input v-bind:disabled="reporter.isself === 'self' ? true : false" type="text" placeholder="输入联系电话" v-model="reporter.tel">
+        <input v-bind:disabled="reporter.isself === 'self' ? true : false" type="number" placeholder="输入联系电话" v-model="reporter.tel">
       </div>
       <div class="mui-input-row sub-input-box" v-bind:class="reporter.isself === 'self' ? 'selfbg' : ''">
         <label>联系邮箱</label>
@@ -46,25 +46,23 @@
       </div>
       <div class="mui-input-row sub-input-box">
         <label>项目关系</label>
-        <input type="text" placeholder="输入项目关系务" v-model="reporter.relationship">
+        <input type="text" placeholder="输入项目关系务" v-model="reporter.project_relation">
       </div>
       <div class="mui-input-row sub-input-box">
         <label>期望提成</label>
-        <input type="number" placeholder="输入期望提成" v-model="reporter.commission">
+        <input type="number" placeholder="输入期望提成" v-model="reporter.royalties_expectation">
       </div>
       <div class="mui-input-row sub-input-box">
         <label>项目优势</label>
-        <input type="text" placeholder="输入项目优势" v-model="reporter.ascendancy">
+        <input type="text" placeholder="输入项目优势" v-model="reporter.strengths">
       </div>
     </div>
   </div>
 </div>
 </template>
 <script>
-import axios from '~/plugins/axios'
 import storage from '~/plugins/storage'
 let url = require('url')
-let Cookies = require('js-cookie')
 let _ = require('underscore')
 let model
 let myURL
@@ -74,64 +72,47 @@ export default {
     return {
       linkPath: '',
       isselect: false,
-      resettype: '',
-      resetname: '',
+      lsobj: {
+        name: '',
+        tel: '',
+        email: ''
+      },
+      resetreporter: {},
       reporter: {
         id: 0,
         isself: '',
         name: '',
         user_poi_users: '',
-        relationship: '',
-        commission: '',
-        ascendancy: '',
+        project_relation: '',
+        royalties_expectation: '',
+        strengths: '',
         tel: '',
         email: '',
         goback: false
-      },
-      clonereporter: {
-        name: '',
-        tel: '',
-        email: ''
       }
     }
   },
-  watch: {
-    'report': function () {
-      model.isselect = false
-      model.reporter = _.extend(model.reporter, this.report)
-      model.resettype = this.report.isself
-      model.resetname = this.report.name
-      if (this.report.isself === 'other') {
-        model.clonereporter = {
-          name: _.clone(this.report.name),
-          tel: _.clone(this.report.tel),
-          email: _.clone(this.report.email)
-        }
-      } else {
-        model.clonereporter = {
-          name: '',
-          tel: '',
-          email: ''
-        }
-      }
+  methods: {
+    init: function () {
+      model.resetreporter = _.clone(this.report)
+      model.reporter = this.report
+      model.reporter.isself = this.report.user_poi_users > 0 ? 'self' : 'other'
+      myURL = url.parse(window.location.href)
+      model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
-    'reporter.isself': function (data) {
+
+    // 修改类型
+    changetype: function (val) {
       if (model.reporter.isself === 'self') {
         model.reporter.name = storage.get('userinfo').username
         model.reporter.tel = storage.get('userinfo').usertel
         model.reporter.email = storage.get('userinfo').useremail
       }
       if (model.reporter.isself === 'other') {
-        model.reporter.name = model.clonereporter.name || ''
-        model.reporter.tel = model.clonereporter.tel || ''
-        model.reporter.email = model.clonereporter.email || ''
+        model.reporter.name = model.resetreporter.user_poi_users === 0 ? model.resetreporter.name : ''
+        model.reporter.tel = model.resetreporter.user_poi_users === 0 ? model.resetreporter.tel : ''
+        model.reporter.email = model.resetreporter.user_poi_users === 0 ? model.resetreporter.email : ''
       }
-    }
-  },
-  methods: {
-    init: function () {
-      myURL = url.parse(window.location.href)
-      model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
 
     // 返回云展廳首頁
@@ -141,20 +122,23 @@ export default {
 
     // 返回详情
     goBack: function () {
-      model.reporter.goback = true
-      model.$emit('getEditReport', model.reporter)
+      let obj = {
+        flag: false,
+        data: model.resetreporter
+      }
+      model.$emit('getReportMan', obj)
     },
 
     // 选择报备人类型
     selectstyle: function () {
       model.isselect = !model.isselect
+      model.lsobj = _.extend(model.lsobj, model.reporter)
     },
 
     // 查看是否返回
     gotoisselect: function () {
       model.isselect = false
-      model.reporter.isself = model.resettype
-      model.reporter.name = model.resetname
+      model.reporter = _.extend(model.reporter, model.lsobj)
     },
 
     // 確定提交保存人信息
@@ -165,10 +149,6 @@ export default {
           return
         }
         model.isselect = !model.isselect
-        return
-      }
-      if (_.isEmpty(model.reporter.name)) {
-        window.mui.toast('名字不能为空!')
         return
       }
       let telval = /^1[3|4|5|7|8][0-9]{9}$/
@@ -188,27 +168,19 @@ export default {
       let param = {
         id: model.reporter.id,
         name: model.reporter.name || '',
-        project_relation: model.reporter.relationship || '',
-        royalties_expectation: model.reporter.commission || '',
-        strengths: model.reporter.ascendancy || '',
+        project_relation: model.reporter.project_relation || '',
+        royalties_expectation: model.reporter.royalties_expectation || '',
+        strengths: model.reporter.strengths || '',
         tel: model.reporter.tel,
         email: model.reporter.email,
-        is_self: model.reporter.isself === 'self' ? 'yes' : 'no'
+        isself: model.reporter.isself === 'self' ? 'yes' : 'no'
       }
-      axios.put('functions/report/project_reportman', null, {
+      param = _.extend(param, {user_poi_users: model.reporter.isself === 'self' ? 100 : 0})
+      let obj = {
+        flag: true,
         data: param
-      }).then(function (data) {
-        model.reporter.goback = false
-        model.$emit('getEditReport', model.reporter)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
-          setTimeout(function () {
-            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
-            window.location.href = model.linkPath + '/'
-          }, 2000)
-        }
-      })
+      }
+      model.$emit('getReportMan', obj)
     }
   },
   mounted () {
@@ -223,9 +195,9 @@ export default {
 }
 .bbrname{
   display: inline-block;
-  width: 60%;
-  padding: 9px 5px 10px;
-  text-align: right
+  width: 68%;
+  padding: 9px 30px 10px 5px;
+  text-align: right;
 }  
 .selfbg{
   background: #f4f4f4

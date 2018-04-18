@@ -49,6 +49,7 @@ export default {
           item.furniture_types.forEach(furitem => {
             if (model.acticearr.length > 0) {
               model.acticearr.forEach(acitem => {
+                console.log(acitem, furitem)
                 if (acitem.type_poi_furniture_types === furitem.id) {
                   item.active.push(acitem.type_poi_furniture_types)
                 }

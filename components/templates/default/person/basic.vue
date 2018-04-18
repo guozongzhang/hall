@@ -6,7 +6,7 @@
       <div class="name">
         <p>
           <span>
-            <a href="javascript:;" @click="isLogin()"  v-bind:class="!info.identity.none ? 'loginend' : ''">{{info.header_name}}
+            <a href="javascript:;" @click="isLogin()"  v-bind:class="!info.identity.none ? 'loginend' : ''">{{info.header_name || '未设置'}}
             </a>
           </span>
         </p>
@@ -63,6 +63,7 @@
 </template>
 <script>
 import axios from '~/plugins/axios'
+import storage from '~/plugins/storage'
 let url = require('url')
 let Cookies = require('js-cookie')
 let _ = require('underscore')
@@ -121,6 +122,12 @@ export default {
             none: data.data.type
           }
         }
+        let userobj = {
+          username: data.data.ui_name || '',
+          usertel: data.data.mobile || '',
+          useremail: data.data.u_email || ''
+        }
+        storage.set('userinfo', userobj)
         let isupgrade = data.data.upgrade ? 'yes' : 'no'
         let vipprice = data.data.type ? 'yes' : 'no'
         Cookies.set('can-upgrade-' + process.env.port, isupgrade)

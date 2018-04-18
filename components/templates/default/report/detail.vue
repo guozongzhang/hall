@@ -14,6 +14,9 @@
         <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 26px;height: 26px;" @click="optFunc(basicinfo.state)" v-show="basicinfo.state == 'wait_handle'">
           <span class="list-icon reset-icon"></span>
         </a>
+        <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 60px;height: 26px;" @click="perfectFunc()" v-show="basicinfo.state == 'had_handle' || basicinfo.state == 'adopt'">
+          <span style="font-size: 14px;color: #666;">完善项目</span>
+        </a>
       </header>
       <div class="detail-box" v-show="initok">
         <div class="basic-info">
@@ -31,8 +34,8 @@
           <div class="fz16 intro-style mui-ellipsis">{{basicinfo.sketch}}</div>
           <span class="fa fa-angle-right edit-basic" @click="editBasic(basicinfo.id)" v-show="basicinfo.state == 'wait' || basicinfo.state == 'rescinded' || basicinfo.state == 'had_reset'"></span>
           <div class="fz12" style="height: 24px;">
-            <span style="display: inline-block;float: left;margin-left: 15px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
-            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 15px;color: #999">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
+            <span style="display: inline-block;float: left;margin-left: 10px;color: #999">有效期{{valtimeFilter(basicinfo.validity)}}</span>
+            <span style="display: inline-block;margin-left: 10px;float: right;margin-right: 10px;color: #999">创建时间:{{forMatTime(basicinfo.create_time)}}</span>
           </div>
           <div class="go-report" v-if="basicinfo.state == 'wait' || basicinfo.state == 'had_reset' || basicinfo.state == 'rescinded'">
             <span class="left-circle icon-circle"></span>
@@ -46,7 +49,7 @@
               <span>项目介绍</span>
               <span class="active-icon"></span>
             </a>
-            <a class="mui-control-item msg-num" href="#reportrecord" @change="test()">
+            <a class="mui-control-item msg-num" href="#reportrecord">
               <span>报备记录</span>
               <span class="msg-style" v-if="hadRead"></span>
               <span class="active-icon"></span>
@@ -213,7 +216,7 @@
                         <p>
                           <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                           <span class="pointer"></span>
-                          <span>{{sub.operator}}</span>
+                          <span>{{sub.operator || '未设置'}}</span>
                           <span>{{sub.text}}</span>
                           <span>了项目</span>
                           <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
@@ -254,7 +257,7 @@
                         <p style="font-size: 14px;color: #666">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>
                     </li>
-                    <li v-show="recordLoglist.length == 0">
+                    <li v-show="recordLoglist.length == 0 && basicinfo.state != 'wait'">
                       <div class="li-box">
                         <p>
                           <span class="last-white-line"></span>
@@ -265,7 +268,7 @@
                     </li>
                   </ul>
                 </div>
-                <p class="no-data" v-show="recordLoglist.length == 0"></p>
+                <p class="no-data" v-if="recordLoglist.length == 0 && basicinfo.state == 'wait'">您还没有报备该项目，所以暂无报备记录</p>
               </div>
             </div>
           </div>
@@ -499,7 +502,7 @@
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell comp-input-box" v-for="(item, num) in jzds">
           <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row" style="width:60%;float:left;height: 44px;">
+          <div class="mui-input-row" style="width:80%;float:left;height: 44px;">
             <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
           </div>
           <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>
@@ -542,8 +545,9 @@
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
     </div>
-    <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
-
+    <div v-if="isshowtype">
+      <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
+    </div>
     <div v-show="activeTab == 'edittextarea'" class="subbox-show">
       <header class="mui-bar mui-bar-nav">
         <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
@@ -557,6 +561,9 @@
         </div>
       </div>
     </div>
+    <div v-show="activeTab == 'perfectpro'" class="subbox-show">
+      <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
+    </div>
   </div>
 </template>
 <script>
@@ -564,6 +571,7 @@ import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
 import editReportvue from './_editreport.vue'
+import perfectProvue from './_perfectpro.vue'
 import Tab from './_tab.vue'
 let ESVal = require('es-validate')
 let dateJson = require('~/static/js/date.json')
@@ -623,6 +631,8 @@ let reportState = [
 export default {
   data () {
     return {
+      isshowtype: false,
+      perfectproobj: {}, // 完善项目
       isloading: true,
       hadRead: false,
       objid: 0, // 项目id
@@ -677,11 +687,11 @@ export default {
     'vue-area': Area,
     'vue-one': proType,
     'vue-editreport': editReportvue,
+    'vue-perfectpro': perfectProvue,
     'vue-tab': Tab
   },
   methods: {
     init: async function () {
-      // model.activeTab = 'editreport'
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
       let token = Cookies.get('dpjia-hall-token-' + process.env.port)
@@ -793,6 +803,22 @@ export default {
       })
     },
 
+    // 20180416-yuguo-获取完善项目信息
+    getProject: function (obj) {
+      if (obj === 'report') {
+        window.location.href = model.linkPath + '/report'
+      } else {
+        window.location.href = location
+      }
+    },
+
+    // 20180413-yuguo-完善项目信息
+    perfectFunc: function () {
+      console.log(model.basicinfo)
+      model.perfectproobj = model.basicinfo
+      model.activeTab = 'perfectpro'
+    },
+
     // 格式化联系人
     formatLinkman: function (arr) {
       arr.forEach((sub) => {
@@ -882,6 +908,7 @@ export default {
 
     // 获取产品分类
     getclassifyArr (obj, info) {
+      model.isshowtype = false
       model.editpro.type = info
       model.acticearr = obj
       let res = []
@@ -1267,6 +1294,7 @@ export default {
 
     // 保存项目信息
     confEditPro: function () {
+      console.log('time', model.editpro.delivery_time)
       let param = {
         id: proId,
         number: model.editpro.number,
@@ -1352,6 +1380,7 @@ export default {
 
     // 产品品类
     changeGoodsType: async function () {
+      model.isshowtype = true
       model.flag = Math.random()
       $('#classifylist').show()
       $('.content-box').addClass('animated bounceInRight')
@@ -1589,6 +1618,7 @@ export default {
         id: proId,
         name: obj.name,
         project_relation: obj.relationship,
+        user_poi_users: obj.isself === 'self' ? 100 : 0,
         royalties_expectation: obj.commission,
         strengths: obj.ascendancy,
         tel: obj.tel,

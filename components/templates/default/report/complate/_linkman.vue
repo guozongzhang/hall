@@ -43,12 +43,16 @@ export default {
   data () {
     return {
       alinkman: [],
-      deleteObjArr: []
+      deleteObjArr: [],
+      clonealinkman: []
     }
   },
   methods: {
     init: function () {
       model.alinkman = this.linkmanobj
+      this.linkmanobj.forEach(item => {
+        model.clonealinkman.push(_.clone(item))
+      })
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
@@ -57,7 +61,7 @@ export default {
     subGoBack: function () {
       let obj = {
         flag: false,
-        data: []
+        data: model.clonealinkman
       }
       model.$emit('getLinkman', obj)
     },

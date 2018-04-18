@@ -116,7 +116,7 @@ export default {
     // 提交
     confEditComp: function () {
       let obj = {
-        flag: false,
+        flag: true,
         data: model.competitors
       }
       model.$emit('getCompete', obj)
@@ -130,7 +130,7 @@ export default {
     // 返回详情
     goBack: function () {
       let obj = {
-        flag: true,
+        flag: false,
         data: model.clonecompet
       }
       model.$emit('getCompete', obj)

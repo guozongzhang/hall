@@ -96,6 +96,7 @@ export default {
       subactive: 'home', // 当前显示区域
       isLoading: true, // 是否加载数据
       editpro: {}, // 项目数据
+      cloneeditpro: {},
       editproImg: [], // 项目附件图片
       areaarr: [], // 日期数据
       areaobj: {
@@ -127,18 +128,19 @@ export default {
     // 初始化数据
     init: async function () {
       model.editpro = this.projectinfo
-      console.log(this.projectinfo)
+      model.cloneeditpro = _.clone(this.projectinfo)
       await model.getPorState()
       model.isLoading = false
       model.editpro.invitation_time = model.forMatTime(model.projectinfo.invitation_time, 'YYYY-MM-DD')
       model.editpro.delivery_time = model.forMatTime(model.projectinfo.delivery_time, 'YYYY-MM-DD')
+      model.cloneeditpro.invitation_time = model.forMatTime(model.cloneeditpro.invitation_time, 'YYYY-MM-DD')
+      model.cloneeditpro.delivery_time = model.forMatTime(model.cloneeditpro.delivery_time, 'YYYY-MM-DD')
       model.projectinfo.project_rel_project_attachment.items.forEach(item => {
         item.delete = 'no'
       })
 
       // 产品品类
       model.acticearr = model.projectinfo.project_rel_project_furniture_types.items
-      console.log('model.acticearr', model.acticearr)
       model.editproImg = model.projectinfo.project_rel_project_attachment.items
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
@@ -151,10 +153,9 @@ export default {
 
     // 返回完善项目页
     goSubBack: function () {
-      model.editpro.project_rel_project_attachment.items = model.editproImg
       let obj = {
         flag: false,
-        data: model.editpro
+        data: model.cloneeditpro
       }
       model.$emit('getProject', obj)
     },
@@ -342,6 +343,7 @@ export default {
     // 提交项目信息
     EditPro: function () {
       model.editpro.project_rel_project_attachment.items = model.editproImg
+      console.log(model.editpro.invitation_time)
       let obj = {
         flag: true,
         data: model.editpro

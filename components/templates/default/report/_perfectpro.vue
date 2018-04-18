@@ -32,14 +32,14 @@
         </div>
       </div>
       <div class="sub-detail">
-        <div class="mui-segmented-control detail-tab" id="msg_num">
+        <div class="mui-segmented-control detail-tab" id="msg_project">
           <a class="mui-control-item mui-active" href="#projectdetail1">
             <span>项目介绍</span>
             <span class="active-icon"></span>
           </a>
-          <a class="mui-control-item msg-num" href="#reportrecord1" @change="test()">
+          <a class="mui-control-item msg-num" href="#reportrecord1">
             <span>报备记录</span>
-            <span class="msg-style"></span>
+            <span class="msg-style" v-if="hadRead"></span>
             <span class="active-icon"></span>
           </a>
           <a class="mui-control-item" href="#reportlog1">
@@ -296,14 +296,54 @@ import reportmanVue from './complate/_reportman.vue'
 import projectVue from './complate/_project.vue'
 import competeVue from './complate/_compete.vue'
 let Cookies = require('js-cookie')
+let querystring = require('querystring')
 let url = require('url')
 let $ = require('jquery')
 let moment = require('moment')
 let _ = require('underscore')
 let model
+let urlObj
 let myURL
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
+let reportState = [
+  {
+    key: 'had_reset',
+    value: '驳回'
+  },
+  {
+    key: 'adopt',
+    value: '采纳'
+  },
+  {
+    key: 'reject',
+    value: '拒绝'
+  },
+  {
+    key: 'had_handle',
+    value: '受理'
+  },
+  {
+    key: 'wait_handle',
+    value: '报备'
+  },
+  {
+    key: 'wait',
+    value: '新建'
+  },
+  {
+    key: 'rescinded',
+    value: '撤回'
+  },
+  {
+    key: 'shutdown',
+    value: '关闭'
+  },
+  {
+    key: 'overdue',
+    value: '过期'
+  }
+]
 export default {
   props: ['perfect'],
   data () {
@@ -322,7 +362,8 @@ export default {
       }, // 竞争者
       reportLoglist: [],
       recordLoglist: [],
-      isloading: false
+      isloading: false,
+      hadRead: false
     }
   },
   components: {
@@ -336,6 +377,8 @@ export default {
       model.basicinfo = this.perfect
       model.linkmanarr = this.perfect.project_rel_project_first_party_linkman.items
       model.reportman = this.perfect.project_rel_project_reportman.items[0]
+      console.log(this.perfect)
+      model.hadRead = Number(this.perfect.readed) === 0
       model.competeinfo = {
         second_party_competitor: this.perfect.second_party_competitor,
         competitor_strengths: this.perfect.competitor_strengths,
@@ -352,7 +395,13 @@ export default {
     init: function () {
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
+      urlObj = querystring.parse(myURL.query)
       model.getPorState()
+
+      // 消息已经读取
+      window.mui('#msg_project').on('tap', '.msg-num', function () {
+        model.getReportLog(urlObj.id)
+      })
     },
 
     // 退出编辑
@@ -378,6 +427,29 @@ export default {
         display: 'none',
         opacity: 0
       })
+    },
+
+    // 获取报备记录
+    getReportLog: async function (id) {
+      let param = {
+        flow_id: 36,
+        id: id,
+        order: '-id',
+        report_name: model.basicinfo.name
+      }
+      let result = await axios.get('functions/report/record', {
+        params: param
+      })
+      result.data.items.forEach((item) => {
+        reportState.forEach((sub) => {
+          if (item.flow_state === sub.key) {
+            item.text = sub.value
+          }
+        })
+      })
+      model.isloading = false
+      model.hadRead = false
+      model.reportLoglist = result.data.items
     },
 
     // 提交保存
@@ -451,9 +523,9 @@ export default {
     // 获取甲方信息
     getLinkmanInfo: function (obj) {
       if (obj.flag) {
-        model.linkmanarr = obj.data
         model.isedittextarr.push('【甲方信息】')
       }
+      model.linkmanarr = obj.data
       model.subTab = 'home'
     },
 

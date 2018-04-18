@@ -49,7 +49,7 @@
               <span>项目介绍</span>
               <span class="active-icon"></span>
             </a>
-            <a class="mui-control-item msg-num" href="#reportrecord" @change="test()">
+            <a class="mui-control-item msg-num" href="#reportrecord">
               <span>报备记录</span>
               <span class="msg-style" v-if="hadRead"></span>
               <span class="active-icon"></span>
@@ -815,6 +815,7 @@ export default {
 
     // 20180413-yuguo-完善项目信息
     perfectFunc: function () {
+      console.log(model.basicinfo)
       model.perfectproobj = model.basicinfo
       model.activeTab = 'perfectpro'
     },

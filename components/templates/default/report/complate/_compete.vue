@@ -74,6 +74,7 @@ export default {
     init: function () {
       model.competitors = this.compete
       model.clonecompet = _.clone(this.compete)
+      console.log('xxx', this.compete)
       let jzdsarr = model.competitors.second_party_competitor.split(',')
       jzdsarr.forEach(item => {
         model.jzds.push({value: item})

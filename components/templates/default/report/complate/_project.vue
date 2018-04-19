@@ -343,7 +343,6 @@ export default {
     // 提交项目信息
     EditPro: function () {
       model.editpro.project_rel_project_attachment.items = model.editproImg
-      console.log(model.editpro.invitation_time)
       let obj = {
         flag: true,
         data: model.editpro

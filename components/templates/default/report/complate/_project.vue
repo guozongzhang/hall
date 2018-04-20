@@ -165,7 +165,7 @@ export default {
       model.cloneeditpro.project_rel_project_furniture_types.items = furtype
       model.cloneeditpro.project_rel_project_attachment.items = attachment
       model.cloneeditpro.invitation_time = model.cloneeditpro.invitation_time === '' ? '' : String(Date.parse(new Date(model.cloneeditpro.invitation_time)))
-      model.cloneeditpro.delivery_time = model.cloneeditpro.invitation_time === '' ? '' : String(Date.parse(new Date(model.cloneeditpro.delivery_time)))
+      model.cloneeditpro.delivery_time = model.cloneeditpro.delivery_time === '' ? '' : String(Date.parse(new Date(model.cloneeditpro.delivery_time)))
       let obj = {
         flag: false,
         data: model.cloneeditpro
@@ -355,9 +355,10 @@ export default {
 
     // 提交项目信息
     EditPro: function () {
+      console.log(model.editpro)
       model.editpro.project_rel_project_attachment.items = model.editproImg
       model.editpro.invitation_time = model.editpro.invitation_time === '' ? '' : String(Date.parse(new Date(model.editpro.invitation_time)))
-      model.editpro.delivery_time = model.editpro.invitation_time === '' ? '' : String(Date.parse(new Date(model.editpro.delivery_time)))
+      model.editpro.delivery_time = model.editpro.delivery_time === '' ? '' : String(Date.parse(new Date(model.editpro.delivery_time)))
       let obj = {
         flag: true,
         data: model.editpro

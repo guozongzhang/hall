@@ -649,11 +649,14 @@ export default {
         model.basicinfo = obj.data
         return
       }
+
+      console.log('sss', obj.data)
+
       let ms = {
         id: proId,
         number: obj.data.number,
-        invitation_time: obj.data.invitation_time,
-        delivery_time: obj.data.delivery_time,
+        invitation_time: obj.data.invitation_time === '' ? 0 : obj.data.invitation_time,
+        delivery_time: obj.data.delivery_time === '' ? 0 : obj.data.delivery_time,
         category: obj.data.category,
         intro: obj.data.intro,
         risk_analysis: obj.data.risk_analysis,
@@ -666,6 +669,7 @@ export default {
           ms = _.extend(ms, {project_furniture_types: JSON.stringify(obj.data.project_rel_project_furniture_types.items)})
         }
       }
+      console.log('xxx', ms)
       let arr = []
       obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
         arr.push(sub.name)

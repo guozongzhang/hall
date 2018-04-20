@@ -367,50 +367,10 @@
         </div>
       </div>
     </div>
+    
 
     
     
-    <div v-show="activeTab == 'editcomp'" class="subbox-show" style="position: relative">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">
-          <span style="position: relative;top: -1px;">返回</span>
-        </a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
-      </header>
-      <ul class="mui-table-view mui-table-view-chevron nav">
-        <li class="mui-table-view-cell comp-input-box" v-for="(item, num) in jzds">
-          <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row" style="width:80%;float:left;height: 44px;">
-            <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
-          </div>
-          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>
-        </li>
-      </ul>
-      <span class="addjjz" @click="addjjz()">添加竞争者</span>
-    </div>
-    
-    <div>
-      <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
-      <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
-    </div>
-    <div v-if="isshowtype">
-      <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
-    </div>
-    <div v-show="activeTab == 'edittextarea'" class="subbox-show">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">{{edittextareaobj.title}}</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confEditTextarea()">提交</a>
-      </header>
-      <div class="textarea-box edit-box">
-        <div class="edittext">
-          <textarea type="text" class="" v-model="edittextareaobj.content" placeholder="最多输入500个字符"></textarea>
-        </div>
-      </div>
-    </div>
     <div v-if="activeTab == 'editproject'" class="subbox-show">
       <vue-project :projectinfo="perfectproobj" @getProject="getProjectInfo"></vue-project>
     </div>
@@ -426,6 +386,18 @@
     <div v-if="activeTab == 'editbuyer'" class="subbox-show" style="position: relative">
       <vue-linkman :linkmanobj="buyer" @getLinkman="getLinkmanInfo"></vue-linkman>
     </div>
+
+    <div v-show="activeTab == 'perfectpro'" class="subbox-show">
+      <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
+    </div>
+
+
+
+
+    <div>
+      <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
+      <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
+    </div>
   </div>
 </template>
 <script>
@@ -435,7 +407,8 @@ import proType from '../common/onelayer.vue'
 import editReportvue from './complate/_reportman.vue'
 import comPetevue from './complate/_compete.vue'
 import linkMan from './complate/_linkman.vue'
-import perfectProvue from './complate/_project.vue'
+import perfectProvue from './_perfectpro.vue'
+import perfectvue from './complate/_project.vue'
 import Tab from './_tab.vue'
 let ESVal = require('es-validate')
 // let dateJson = require('~/static/js/date.json')
@@ -502,11 +475,11 @@ export default {
       objid: 0, // 项目id
       isPhone: false,
       initok: false,
-      acticearr: [],
-      oriarr: [],
+      // acticearr: [],
+      // oriarr: [],
       flag: 0,
       recordImgs: [], // 报备记录附件
-      dellinkmanids: [], // 删除联系人id
+      // dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
       alinkman: [], // 联系人
       layer: 'area',
@@ -537,14 +510,14 @@ export default {
       competitors: {},
       classifyArr: [],
       progoodstyepstr: '',
-      editcomtitle: '', // 编辑竞争者、竞争对手（标题）
-      editcomtstr: '', // 编辑竞争者、竞争对手字段
-      jzds: [], // 竞争者
-      edittextareaobj: { // 编辑多文字
-        key: '', // 关键字
-        title: '', // 标题
-        content: '' // 内容
-      },
+      // editcomtitle: '', // 编辑竞争者、竞争对手（标题）
+      // editcomtstr: '', // 编辑竞争者、竞争对手字段
+      // jzds: [], // 竞争者
+      // edittextareaobj: { // 编辑多文字
+      //   key: '', // 关键字
+      //   title: '', // 标题
+      //   content: '' // 内容
+      // },
 
       isedittextarr: []
     }
@@ -554,7 +527,8 @@ export default {
     'vue-one': proType,
     'vue-reportman': editReportvue,
     'vue-compete': comPetevue,
-    'vue-project': perfectProvue,
+    'vue-project': perfectvue,
+    'vue-perfectpro': perfectProvue,
     'vue-linkman': linkMan,
     'vue-tab': Tab
   },
@@ -645,7 +619,6 @@ export default {
           model.hadRead = Number(msg.data.readed) === 0
           model.alinkman = model.formatLinkman((msg.data.project_rel_project_first_party_linkman || {}).items || [])
           model.reportman = ((msg.data.project_rel_project_reportman || {}).items || [])[0] || {}
-          console.log('model.reportman', model.reportman)
           await model.getRecordLog(urlObj.id)
         }).catch(function (error) {
           if (error.response.data.message === 'token is invalid') {
@@ -683,36 +656,43 @@ export default {
 
     // 获取项目信息
     getProjectInfo: function (obj) {
-
-      if (obj.flag === false) {
+      console.log('obj----', obj)
+      if (!obj.flag) {
         model.activeTab = 'home'
-        model.basicinfo = _.extend(model.basicinfo, obj.data)
+        model.basicinfo = obj.data
+        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
+        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
+        console.log('3', model.basicinfo)
         return
       }
-      // let ms = {
-      //   number: model.basicinfo.number,
-      //   invitation_time: model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
-      //   delivery_time: model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
-      //   type: model.filterGoodsType(model.basicinfo.project_rel_project_furniture_types.items),
-      //   category: model.filterProType(model.basicinfo.category),
-      //   category_str: model.basicinfo.category,
-      //   intro: model.basicinfo.intro,
-      //   risk_analysis: model.basicinfo.risk_analysis,
-      //   remark: model.basicinfo.remark
-      // }
+      let ms = {
+        id: proId,
+        number: obj.data.number,
+        invitation_time: obj.data.invitation_time,
+        delivery_time: obj.data.delivery_time,
+        category: obj.data.category,
+        intro: obj.data.intro,
+        risk_analysis: obj.data.risk_analysis,
+        remark: obj.data.remark,
+        project_attachment: JSON.stringify(model.basicinfo.project_rel_project_attachment.items)
+      }
+      // 判断产品分类是否存在以及被更新
+      if (obj.data.project_rel_project_furniture_types.items.length > 0) {
+        if (obj.data.project_rel_project_furniture_types.items[0].id === 0) {
+          ms = _.extend(ms, {project_furniture_types: JSON.stringify(obj.data.project_rel_project_furniture_types.items)})
+        }
+      }
       let arr = []
       obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
         arr.push(sub.name)
       })
       model.progoodstyepstr = arr.join('/')
-      model.basicinfo = obj.data
-      model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-      model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
-      
       axios.put('functions/report/project', null, {
-        data: obj.data
+        data: ms
       }).then(function (data) {
-        model.basicinfo = _.extend(model.basicinfo, obj.data)
+        model.basicinfo = _.extend(model.basicinfo, ms)
+        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
+        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
         model.activeTab = 'home'
         window.mui.toast('编辑项目信息成功')
       }).catch(function (error) {
@@ -738,16 +718,6 @@ export default {
         sub.delete = sub.delete ? sub.delete : 'no'
       })
       return arr
-    },
-
-    // 编辑textarea
-    editText: function (key, title) {
-      model.activeTab = 'edittextarea'
-      model.edittextareaobj = {
-        key: key,
-        title: title,
-        content: model.editpro[key]
-      }
     },
 
     // 报备人 ---------------------------------------
@@ -791,17 +761,6 @@ export default {
           }, 2000)
         }
       })
-    },
-
-    // 保存多文字编辑
-    confEditTextarea: function () {
-      model.activeTab = 'editproject'
-      model.editpro[model.edittextareaobj.key] = model.edittextareaobj.content
-    },
-
-    // 编辑多文字返回
-    goEditBack: function () {
-      model.activeTab = 'editproject'
     },
 
     // 编辑必填信息
@@ -860,53 +819,6 @@ export default {
         window.mui.toast(result.msg)
       }
       return result.status
-    },
-
-    // 获取产品分类
-    getclassifyArr (obj, info) {
-      // model.isshowtype = false
-      // model.editpro.type = info
-      // model.acticearr = obj
-      // let res = []
-      // let oriids = []
-      // let newids = []
-      // if (model.oriarr.length > 0) {
-      //   oriids = _.map(model.oriarr, item => {
-      //     return item.type_poi_furniture_types
-      //   })
-      // }
-      // if (obj.length > 0) {
-      //   newids = _.map(obj, item => {
-      //     return item.type_poi_furniture_types
-      //   })
-      // }
-      // if (obj.length > 0) {
-      //   obj.forEach(item => {
-      //     if (oriids.indexOf(item.type_poi_furniture_types) < 0) {
-      //       let tmp = {
-      //         type_poi_furniture_types: item.type_poi_furniture_types,
-      //         name: item.name,
-      //         id: 0,
-      //         delete: 'no'
-      //       }
-      //       res.push(tmp)
-      //     }
-      //   })
-      // }
-      // if (model.oriarr.length > 0) {
-      //   model.oriarr.forEach(oriitem => {
-      //     if (newids.indexOf(oriitem.type_poi_furniture_types) < 0) {
-      //       let tmp = {
-      //         id: oriitem.id,
-      //         name: oriitem.name,
-      //         type_poi_furniture_types: oriitem.type_poi_furniture_types,
-      //         delete: 'yes'
-      //       }
-      //       res.push(tmp)
-      //     }
-      //   })
-      // }
-      // updateTypeArr = res
     },
 
     // 保存必填信息
@@ -1207,111 +1119,13 @@ export default {
       return res
     },
 
-    // 编辑产品品类
-    filterGoodsType: function (arr) {
-      model.oriarr = _.clone(arr)
-      model.acticearr = arr
-      let subarr = []
-      arr.forEach((item) => {
-        subarr.push(item.name)
-      })
-      return subarr.join('/')
-    },
-
     // 编辑项目信息
     editProject: function (id) {
-      console.log('000')
       model.perfectproobj = model.basicinfo
-      console.log('model.perfectproobj', model.perfectproobj)
-      //  = {
-      //   number: model.basicinfo.number,
-      //   invitation_time: model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
-      //   delivery_time: model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
-      //   type: model.filterGoodsType(model.basicinfo.project_rel_project_furniture_types.items),
-      //   category: model.filterProType(model.basicinfo.category),
-      //   category_str: model.basicinfo.category,
-      //   intro: model.basicinfo.intro,
-      //   risk_analysis: model.basicinfo.risk_analysis,
-      //   remark: model.basicinfo.remark,
-      //   project_rel_project_attachment: model.basicinfo.project_rel_project_attachment.items
-      // }
-      // let tmparr = []
-      // if (model.basicinfo.project_rel_project_attachment.count > 0) {
-      //   model.basicinfo.project_rel_project_attachment.items.forEach((item) => {
-      //     let tmp = {
-      //       id: item.id,
-      //       delete: 'no',
-      //       file_url: item.file_url,
-      //       show: true
-      //     }
-      //     tmparr.push(tmp)
-      //   })
-      // }
-      // model.perfectproobj = model.editpro
-      // model.editproImg = tmparr
+      console.log('1', model.basicinfo)
+      console.log('2', model.perfectproobj)
       model.activeTab = 'editproject'
       proId = id
-    },
-
-    // 保存项目信息
-    confEditPro: function () {
-      // let param = {
-      //   id: proId,
-      //   number: model.editpro.number,
-      //   invitation_time: model.editpro.invitation_time || '0',
-      //   delivery_time: model.editpro.delivery_time || '0',
-      //   project_furniture_types: JSON.stringify(updateTypeArr),
-      //   category: model.editpro.category_str,
-      //   intro: model.editpro.intro,
-      //   risk_analysis: model.editpro.risk_analysis,
-      //   remark: model.editpro.remark,
-      //   project_attachment: JSON.stringify(model.editproImg)
-      // }
-      // axios.put('functions/report/project', null, {
-      //   data: param
-      // }).then(function (data) {
-      //   window.mui.toast('编辑项目信息成功')
-      //   setTimeout(function () {
-      //     location.reload()
-      //   }, 1000)
-      //   model.init()
-      // }).catch(function (error) {
-      //   if (error.response.data.message === 'token is invalid') {
-      //     window.mui.toast('登录信息过期!')
-      //     setTimeout(function () {
-      //       Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-      //       window.location.href = model.linkPath + '/login'
-      //     }, 2000)
-      //   }
-      // })
-    },
-
-    // 招标时间
-    changeTime: function (str, val) {
-      // let myDate = new Date()
-      // let year = String(myDate.getFullYear())
-      // let month = String(Number(myDate.getMonth()) + 1).length === 1 ? '0' + String(Number(myDate.getMonth()) + 1) : String(Number(myDate.getMonth()) + 1)
-      // let day = String(myDate.getDate()).length === 1 ? '0' + String(myDate.getDate()) : String(myDate.getDate())
-      // if (modalflag) {
-      //   model.layer = str
-      //   model.areaarr = dateJson
-      //   model.areaobj = {
-      //     state: Math.random(),
-      //     one: _.isEmpty(val) ? year : String(val).split('-')[0],
-      //     two: _.isEmpty(val) ? month : String(val).split('-')[1],
-      //     three: _.isEmpty(val) ? day : String(val).split('-')[2]
-      //   }
-      //   modalflag = false
-      // }
-      // setTimeout(function () {
-      //   modalflag = true
-      // }, 500)
-    },
-
-    // 项目类型
-    changeProType: function () {
-      model.protypearrs = proTypeArr
-      model.oneobj.state = Math.random()
     },
 
     // get项目类型
@@ -1429,54 +1243,6 @@ export default {
       }
       modalflag = true
     },
-
-    // 添加联系人
-    // addlinkman: function () {
-    //   if (model.alinkman.length === 0) {
-    //     model.addsublinkman()
-    //   }
-    //   model.activeTab = 'editlinkman'
-    // },
-
-    // // 添加多个联系人
-    // addsublinkman: function () {
-    //   let obj = {
-    //     id: 0,
-    //     name: '',
-    //     job: '',
-    //     tel: '',
-    //     delete: 'no'
-    //   }
-    //   model.alinkman.push(obj)
-    // },
-
-    // // 删除联系人
-    // deletelinkman: function (item) {
-    //   model.alinkman = _.without(model.alinkman, item)
-    // },
-
-    // // 删除联系人
-    // editalinkman: function (item) {
-    //   if (item.id > 0) {
-    //     model.dellinkmanids.push(item.id)
-    //   }
-    //   model.alinkman = _.without(model.alinkman, item)
-    // },
-
-    // 添加联系人返回
-    // subGoBack: function () {
-    //   model.activeTab = 'editbuyer'
-    // },
-
-    // 提交联系人
-    // subaddlinkman: function () {
-    //   model.alinkman.forEach((sub) => {
-    //     if (_.isEmpty(sub.name) && _.isEmpty(sub.job) && _.isEmpty(sub.tel)) {
-    //       model.alinkman = _.without(model.alinkman, sub)
-    //     }
-    //   })
-    //   model.activeTab = 'editbuyer'
-    // },
 
     // 确认保存甲方信息
     confEditBuyer: function () {

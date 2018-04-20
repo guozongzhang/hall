@@ -707,8 +707,6 @@ export default {
       })
       model.progoodstyepstr = arr.join('/')
       model.basicinfo = obj.data
-      model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-      model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
       model.subTab = 'home'
     },
 

@@ -94,7 +94,6 @@ export default {
   },
   methods: {
     init: function () {
-      console.log('this.report', this.report)
       model.resetreporter = _.clone(this.report)
       model.reporter = this.report
       model.reporter.isself = this.report.user_poi_users > 0 ? 'self' : 'other'
@@ -123,7 +122,6 @@ export default {
 
     // 返回详情
     goBack: function () {
-      console.log(model.resetreporter)
       let obj = {
         flag: false,
         data: model.resetreporter

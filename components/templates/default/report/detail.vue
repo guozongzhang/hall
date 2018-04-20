@@ -644,13 +644,9 @@ export default {
 
     // 获取项目信息
     getProjectInfo: function (obj) {
-      console.log('obj----', obj)
       if (!obj.flag) {
         model.activeTab = 'home'
         model.basicinfo = obj.data
-        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
-        console.log('3', model.basicinfo)
         return
       }
       let ms = {
@@ -679,8 +675,6 @@ export default {
         data: ms
       }).then(function (data) {
         model.basicinfo = _.extend(model.basicinfo, ms)
-        model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-        model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
         model.activeTab = 'home'
         window.mui.toast('编辑项目信息成功')
       }).catch(function (error) {
@@ -729,7 +723,6 @@ export default {
     // 获取报备人信息
     getReportManInfo: function (obj) {
       if (!obj.flag) {
-        console.log('relationship', obj)
         model.activeTab = 'home'
         model.reportman = obj.data
         return
@@ -1112,8 +1105,6 @@ export default {
     // 编辑项目信息
     editProject: function (id) {
       model.perfectproobj = model.basicinfo
-      console.log('1', model.basicinfo)
-      console.log('2', model.perfectproobj)
       model.activeTab = 'editproject'
       proId = id
     },
@@ -1169,7 +1160,6 @@ export default {
       }
       if (obj.flag === false) {
         model.activeTab = 'home'
-        console.log(obj.data)
         model.basicinfo.project_rel_project_first_party_linkman.items = obj.data
         model.alinkman = obj.data
         return

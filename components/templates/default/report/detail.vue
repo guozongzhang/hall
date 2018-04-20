@@ -732,12 +732,6 @@ export default {
         console.log('relationship', obj)
         model.activeTab = 'home'
         model.reportman = obj.data
-        // model.reporter.name = obj.data.name
-        // model.reporter.project_relation = obj.data.project_relation
-        // model.reporter.royalties_expectation = obj.data.commission
-        // model.reporter.strengths = obj.data.ascendancy
-        // model.reporter.tel = obj.data.tel
-        // model.reporter.email = obj.data.email
         return
       }
       let ms = obj.data
@@ -747,12 +741,6 @@ export default {
       }).then(function (data) {
         window.mui.toast('修改报备人成功')
         model.reportman = obj.data
-        // model.reporter.name = obj.data.name
-        // model.reporter.project_relation = obj.data.relationship
-        // model.reporter.royalties_expectation = obj.data.commission
-        // model.reporter.strengths = obj.data.ascendancy
-        // model.reporter.tel = obj.data.tel
-        // model.reporter.email = obj.data.email
         model.activeTab = 'home'
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {

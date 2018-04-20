@@ -50,6 +50,7 @@ export default {
   methods: {
     init: function () {
       model.alinkman = this.linkmanobj
+      console.log(this.linkmanobj)
       this.linkmanobj.forEach(item => {
         model.clonealinkman.push(_.clone(item))
       })
@@ -59,6 +60,7 @@ export default {
 
     // 返回编辑
     subGoBack: function () {
+      console.log(model.clonealinkman)
       let obj = {
         flag: false,
         data: model.clonealinkman

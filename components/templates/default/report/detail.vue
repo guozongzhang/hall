@@ -475,11 +475,8 @@ export default {
       objid: 0, // 项目id
       isPhone: false,
       initok: false,
-      // acticearr: [],
-      // oriarr: [],
       flag: 0,
       recordImgs: [], // 报备记录附件
-      // dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
       alinkman: [], // 联系人
       layer: 'area',
@@ -506,19 +503,10 @@ export default {
       editpro: {},
       editproImg: [],
       reporter: {},
-      buyer: {},
+      buyer: [],
       competitors: {},
       classifyArr: [],
       progoodstyepstr: '',
-      // editcomtitle: '', // 编辑竞争者、竞争对手（标题）
-      // editcomtstr: '', // 编辑竞争者、竞争对手字段
-      // jzds: [], // 竞争者
-      // edittextareaobj: { // 编辑多文字
-      //   key: '', // 关键字
-      //   title: '', // 标题
-      //   content: '' // 内容
-      // },
-
       isedittextarr: []
     }
   },
@@ -740,8 +728,16 @@ export default {
 
     // 获取报备人信息
     getReportManInfo: function (obj) {
-      if (obj.flag === false) {
-        model.basicinfo = _.extend(model.basicinfo, obj.data)
+      if (!obj.flag) {
+        console.log('relationship', obj)
+        model.activeTab = 'home'
+        model.reportman = obj.data
+        // model.reporter.name = obj.data.name
+        // model.reporter.project_relation = obj.data.project_relation
+        // model.reporter.royalties_expectation = obj.data.commission
+        // model.reporter.strengths = obj.data.ascendancy
+        // model.reporter.tel = obj.data.tel
+        // model.reporter.email = obj.data.email
         return
       }
       let ms = obj.data
@@ -750,7 +746,13 @@ export default {
         data: ms
       }).then(function (data) {
         window.mui.toast('修改报备人成功')
-        model.basicinfo = _.extend(model.basicinfo, obj.data)
+        model.reportman = obj.data
+        // model.reporter.name = obj.data.name
+        // model.reporter.project_relation = obj.data.relationship
+        // model.reporter.royalties_expectation = obj.data.commission
+        // model.reporter.strengths = obj.data.ascendancy
+        // model.reporter.tel = obj.data.tel
+        // model.reporter.email = obj.data.email
         model.activeTab = 'home'
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
@@ -1179,7 +1181,9 @@ export default {
       }
       if (obj.flag === false) {
         model.activeTab = 'home'
-        model.basicinfo = _.extend(model.basicinfo, ms)
+        console.log(obj.data)
+        model.basicinfo.project_rel_project_first_party_linkman.items = obj.data
+        model.alinkman = obj.data
         return
       }
       axios.put('functions/report/project', null, {
@@ -1188,6 +1192,7 @@ export default {
         window.mui.toast('编辑甲方信息成功')
         model.activeTab = 'home'
         model.basicinfo.project_rel_project_first_party_linkman.items = obj.data
+        model.alinkman = obj.data
       }).catch(function (error) {
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
@@ -1244,56 +1249,6 @@ export default {
       modalflag = true
     },
 
-    // 确认保存甲方信息
-    confEditBuyer: function () {
-      let tmplinkman = []
-      model.dellinkmanids.forEach((sub) => {
-        let obj = {
-          id: sub,
-          delete: 'yes'
-        }
-        tmplinkman.push(obj)
-      })
-      model.alinkman.forEach((tmp) => {
-        tmplinkman.push(tmp)
-      })
-      let param = {
-        id: proId,
-        first_party_province_poi_province: model.buyer.pro_id,
-        first_party_city_poi_city: model.buyer.city_id,
-        first_party_district_poi_district: model.buyer.dis_id,
-        project_first_party_linkman: JSON.stringify(tmplinkman)
-      }
-      axios.put('functions/report/project', null, {
-        data: param
-      }).then(function (data) {
-        model.basicinfo.first_party_province_poi_province = {
-          id: model.buyer.pro_id,
-          ProvinceName: model.buyer.area.split('-')[0]
-        }
-        model.basicinfo.first_party_city_poi_city = {
-          id: model.buyer.city_id,
-          CityName: model.buyer.area.split('-')[1]
-        }
-        model.basicinfo.first_party_district_poi_district = {
-          id: model.buyer.dis_id,
-          DistrictName: model.buyer.area.split('-')[2]
-        }
-        window.mui.toast('编辑甲方信息成功')
-        setTimeout(function () {
-          model.activeTab = 'home'
-        }, 1000)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
-          setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-            window.location.href = model.linkPath + '/login'
-          }, 2000)
-        }
-      })
-    },
-
     // 编辑竞争信息 --------------------------
     editCompetitors: function (id) {
       model.competitors = {
@@ -1311,6 +1266,7 @@ export default {
       let ms = obj.data
       ms = _.extend(ms, {id: proId})
       if (obj.flag === false) {
+        model.activeTab = 'home'
         model.basicinfo = _.extend(model.basicinfo, ms)
         return
       }

@@ -123,6 +123,7 @@ export default {
 
     // 返回详情
     goBack: function () {
+      console.log(model.resetreporter)
       let obj = {
         flag: false,
         data: model.resetreporter

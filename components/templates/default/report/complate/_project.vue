@@ -88,6 +88,8 @@ let modalflag = true // 模态框日期等选择标志
 let proTypeArr = [] // 项目分类数组
 let model
 let myURL
+let furtype = []
+let attachment = []
 export default {
   props: ['projectinfo'],
   data () {
@@ -135,13 +137,20 @@ export default {
       model.editpro.delivery_time = model.forMatTime(model.projectinfo.delivery_time, 'YYYY-MM-DD')
       model.cloneeditpro.invitation_time = model.forMatTime(model.cloneeditpro.invitation_time, 'YYYY-MM-DD')
       model.cloneeditpro.delivery_time = model.forMatTime(model.cloneeditpro.delivery_time, 'YYYY-MM-DD')
+      attachment = []
       model.projectinfo.project_rel_project_attachment.items.forEach(item => {
+        attachment.push(item)
+        model.editproImg.push(item)
         item.delete = 'no'
       })
 
+      furtype = []
+      model.projectinfo.project_rel_project_furniture_types.items.forEach(item => {
+        furtype.push(item)
+        model.acticearr.push(item)
+      })
+
       // 产品品类
-      model.acticearr = model.projectinfo.project_rel_project_furniture_types.items
-      model.editproImg = model.projectinfo.project_rel_project_attachment.items
       myURL = url.parse(window.location.href)
       model.linkPath = '/' + myURL.pathname.split('/')[1]
     },
@@ -153,6 +162,10 @@ export default {
 
     // 返回完善项目页
     goSubBack: function () {
+      model.cloneeditpro.project_rel_project_furniture_types.items = furtype
+      model.cloneeditpro.project_rel_project_attachment.items = attachment
+      model.cloneeditpro.invitation_time = model.cloneeditpro.invitation_time === '' ? 0 : String(Date.parse(new Date(model.cloneeditpro.invitation_time)))
+      model.cloneeditpro.delivery_time = model.cloneeditpro.delivery_time === '' ? 0 : String(Date.parse(new Date(model.cloneeditpro.delivery_time)))
       let obj = {
         flag: false,
         data: model.cloneeditpro
@@ -342,8 +355,8 @@ export default {
 
     // 提交项目信息
     EditPro: function () {
+      console.log(model.editpro)
       model.editpro.project_rel_project_attachment.items = model.editproImg
-      console.log(model.editpro.invitation_time)
       let obj = {
         flag: true,
         data: model.editpro

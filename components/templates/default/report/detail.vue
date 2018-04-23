@@ -367,202 +367,36 @@
         </div>
       </div>
     </div>
-    <div v-show="activeTab == 'editproject'" class="subbox-show">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
-          <span style="position: relative;top: -1px;">返回</span>
-        </a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">编辑项目信息</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confEditPro()">提交</a>
-      </header>
-      <div class="textarea-box">
-        <div class="line-box"></div>
-        <div>
-          <div class="mui-input-row sub-input-box">
-						<label>项目编号</label>
-						<input type="text" placeholder="输入项目编号" maxlength="11" style="width: 73%;" v-model="editpro.number">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>招标时间</label>
-            <span class="area-text" @click="changeTime('invitation', editpro.invitation_time)">{{editpro.invitation_time}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>交付时间</label>
-            <span class="area-text" @click="changeTime('delivery', editpro.delivery_time)">{{editpro.delivery_time}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right">
-						<label>产品品类</label>
-            <span class="area-text" style="padding-right: 20px;" @click="changeGoodsType()">{{editpro.type}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right">
-						<label>项目类型</label>
-            <span class="area-text" style="padding-right: 34px;" @click="changeProType()">{{editpro.category}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('intro','编辑项目介绍')">
-						<label>项目介绍</label>
-            <span class="area-text sub-input-text">{{String(editpro.intro).length > 16 ? String(editpro.intro).substring(0, 16) + '...': String(editpro.intro)}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('risk_analysis','编辑风险分析')">
-						<label>风险分析</label>
-            <span class="area-text sub-input-text">{{String(editpro.risk_analysis).length > 16 ? String(editpro.risk_analysis).substring(0, 16) + '...': String(editpro.risk_analysis)}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right" @click="editText('remark','编辑项目备注')">
-						<label>项目备注</label>
-            <span class="area-text sub-input-text">{{String(editpro.remark).length > 16 ? String(editpro.remark).substring(0, 16) + '...': String(editpro.remark)}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box attach-box">
-						<label>附件信息</label>
-            <span class="upload-box" id="upload_com"  @click="upload_com()">
-              <input class="hidden" accept="image/*" capture="camera" type="file" name="files[]" style="width: 75%; display: none;" multiple>
-              <span class="add-btn-upload" style="float: right">
-                <i class="fa fa-picture-o"></i>
-                <i class="fa fa-plus add-icon"></i>
-              </span>
-            </span>
-            <div class="attach-img-box" v-show="editproImg.length > 0">
-              <div class="img-box" v-for="img in editproImg" v-show="img.show">
-                <span class="delete-img" @click="deleteImg(img)">×</span>
-                <img :src="img.file_url" :data-preview-src="img.file_url"/>
-              </div>
-            </div>
-					</div>
-        </div>
-      </div>
+    
+
+    
+    
+    <div v-if="activeTab == 'editproject'" class="subbox-show">
+      <vue-project :projectinfo="perfectproobj" @getProject="getProjectInfo"></vue-project>
     </div>
-    <div v-show="activeTab == 'editbuyer'" class="subbox-show">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
-          <span style="position: relative;top: -1px;">返回</span>
-        </a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">编辑甲方信息</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confEditBuyer()">提交</a>
-      </header>
-      <div class="textarea-box">
-        <div class="line-box"></div>
-        <div>
-          <div class="mui-input-row sub-input-box" style="display: none">
-						<label>所属区域</label>
-            <span class="area-text" @click="changeAre()">{{buyer.area}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>联系人</label>
-            <a href="javascript:;" style="display: inline-block;width: 70%;height: 34px;" class="mui-navigate-right" @click="addlinkman()"></a>
-					</div>
-          <div style="padding: 10px 0;" v-show="alinkman.length > 0">
-            <div class="sublinkman-style" v-for="sublink in alinkman" v-if="sublink.delete == 'no'">{{sublink.name}}{{sublink.job ? '/' + sublink.job : ''}}{{sublink.tel ? '/' + sublink.tel : ''}}</div>
-          </div>
-        </div>
-      </div>
+
+    <div v-if="activeTab == 'editcompetitors'" class="subbox-show">
+      <vue-compete :compete="competitors" @getCompete="getCompeteInfo"></vue-compete>
     </div>
-    <div v-show="activeTab == 'editreport'" class="subbox-show">
-      <vue-editreport :report="reporter" @getEditReport="confEditReport"></vue-editreport>
+
+    <div v-if="activeTab == 'editreport'" class="subbox-show">
+      <vue-reportman :report="reportman" @getReportMan="getReportManInfo"></vue-reportman>
     </div>
-    <div v-show="activeTab == 'editcompetitors'" class="subbox-show">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goBack()">
-          <span style="position: relative;top: -1px;">返回</span>
-        </a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">编辑竞争信息</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confEditComp()">提交</a>
-      </header>
-      <div class="textarea-box">
-        <div class="line-box"></div>
-        <div>
-          <div class="mui-input-row sub-input-box mui-navigate-right" @click="enterOtherCompete('second_party_competitor','乙方竞争对手')">
-						<label>乙方对手</label>
-            <span class="area-text sub-input-text">{{((competitors.second_party_competitor || '').split(',') || []).join('/')}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box mui-navigate-right" style="display: none" @click="enterOtherCompete('competitor','报备人对手')">
-						<label>竞争对手</label>
-            <span class="area-text sub-input-text">{{((competitors.competitor || '').split(',') || []).join('/')}}</span>
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>项目亮点</label>
-						<input type="text" placeholder="输入项目亮点" v-model="competitors.competitor_strengths">
-					</div>
-          <div class="mui-input-row sub-input-box">
-						<label>形式预测</label>
-						<input type="text" placeholder="输入形式预测" v-model="competitors.competitor_projections">
-					</div>
-        </div>
-      </div>
+
+    <div v-if="activeTab == 'editbuyer'" class="subbox-show" style="position: relative">
+      <vue-linkman :linkmanobj="buyer" @getLinkman="getLinkmanInfo"></vue-linkman>
     </div>
-    <div v-show="activeTab == 'editcomp'" class="subbox-show" style="position: relative">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left sub-go-back" @click="goSubBack()">
-          <span style="position: relative;top: -1px;">返回</span>
-        </a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title otherCompetetitle">{{editcomtitle}}</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="endOtherCompete()">提交</a>
-      </header>
-      <ul class="mui-table-view mui-table-view-chevron nav">
-        <li class="mui-table-view-cell comp-input-box" v-for="(item, num) in jzds">
-          <div class="jzztitele">第{{num+1}}竞争者</div>
-          <div class="mui-input-row" style="width:80%;float:left;height: 44px;">
-            <input maxlength="20" type="text"  class="mui-input-clear othertextarea" v-model="item.value"/> 
-          </div>
-          <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 14px" @click="deletejzz(item)"></div>
-        </li>
-      </ul>
-      <span class="addjjz" @click="addjjz()">添加竞争者</span>
+
+    <div v-show="activeTab == 'perfectpro'" class="subbox-show">
+      <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
     </div>
-    <div v-show="activeTab == 'editlinkman'" class="subbox-show" style="position: relative">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="subGoBack()">
-          <span style="position: relative;top: -1px;">返回</span>
-        </a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">联系人</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="subaddlinkman()">提交</a>
-      </header>
-      <ul class="mui-table-view mui-table-view-chevron nav">
-        <li class="mui-table-view-cell linkmantext linkman-box" style="padding: 0 !important" v-for="(item, num) in alinkman">
-          <div class="jzztitele" style="padding-left: 25px;">
-            第{{num+1}}联系人
-            <div v-show="num != 0" class="fa fa-times-circle" style="color:red; float: right;width: 10%; margin-top: 8px" @click="editalinkman(item)"></div>
-          </div>
-          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
-            <label class="linkman-title">联系人姓名</label>
-            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.name"/> 
-          </div>
-          <div class="mui-input-row" style="border-bottom: 1px solid #eee;padding: 0 10px;background-color: #fff;">
-            <label class="linkman-title">联系人职务</label>
-            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.job"/> 
-          </div>
-          <div class="mui-input-row" style="padding: 0 10px;background-color: #fff;">
-            <label class="linkman-title">联系人电话</label>
-            <input style="width:60%!important" maxlength="20" type="text"  class="mui-input-clear" v-model="item.tel"/> 
-          </div>
-        </li>
-      </ul>
-      <span class="addlinkman" @click="addsublinkman()">添加联系人</span>
-    </div>
+
+
+
+
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
-    </div>
-    <div v-if="isshowtype">
-      <vue-tab :acticearr="acticearr" :flag="flag" @submitArr="getclassifyArr"></vue-tab>
-    </div>
-    <div v-show="activeTab == 'edittextarea'" class="subbox-show">
-      <header class="mui-bar mui-bar-nav">
-        <a class="mui-icon mui-icon-left-nav mui-pull-left go-back" @click="goEditBack()">返回</a>
-        <span class="fa close-icon" @click="goHome()">×</span>
-        <h1 class="mui-title othertitle">{{edittextareaobj.title}}</h1>
-        <a class="mui-icon mui-pull-right save-btn" @click="confEditTextarea()">提交</a>
-      </header>
-      <div class="textarea-box edit-box">
-        <div class="edittext">
-          <textarea type="text" class="" v-model="edittextareaobj.content" placeholder="最多输入500个字符"></textarea>
-        </div>
-      </div>
-    </div>
-    <div v-show="activeTab == 'perfectpro'" class="subbox-show">
-      <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
     </div>
   </div>
 </template>
@@ -570,11 +404,14 @@
 import axios from '~/plugins/axios'
 import Area from '../common/threelayer.vue'
 import proType from '../common/onelayer.vue'
-import editReportvue from './_editreport.vue'
+import editReportvue from './complate/_reportman.vue'
+import comPetevue from './complate/_compete.vue'
+import linkMan from './complate/_linkman.vue'
 import perfectProvue from './_perfectpro.vue'
+import perfectvue from './complate/_project.vue'
 import Tab from './_tab.vue'
 let ESVal = require('es-validate')
-let dateJson = require('~/static/js/date.json')
+// let dateJson = require('~/static/js/date.json')
 let url = require('url')
 let querystring = require('querystring')
 let $ = require('jquery')
@@ -589,7 +426,7 @@ let urlObj
 let myURL
 let proTypeArr = [] // 项目类型
 let proValTime = [] // 项目有效期
-let updateTypeArr = [] // 提交的项目类型数组
+// let updateTypeArr = [] // 提交的项目类型数组
 let reportState = [
   {
     key: 'had_reset',
@@ -638,11 +475,8 @@ export default {
       objid: 0, // 项目id
       isPhone: false,
       initok: false,
-      acticearr: [],
-      oriarr: [],
       flag: 0,
       recordImgs: [], // 报备记录附件
-      dellinkmanids: [], // 删除联系人id
       getmoreopt: false,
       alinkman: [], // 联系人
       layer: 'area',
@@ -669,25 +503,21 @@ export default {
       editpro: {},
       editproImg: [],
       reporter: {},
-      buyer: {},
+      buyer: [],
       competitors: {},
       classifyArr: [],
       progoodstyepstr: '',
-      editcomtitle: '', // 编辑竞争者、竞争对手（标题）
-      editcomtstr: '', // 编辑竞争者、竞争对手字段
-      jzds: [], // 竞争者
-      edittextareaobj: { // 编辑多文字
-        key: '', // 关键字
-        title: '', // 标题
-        content: '' // 内容
-      }
+      isedittextarr: []
     }
   },
   components: {
     'vue-area': Area,
     'vue-one': proType,
-    'vue-editreport': editReportvue,
+    'vue-reportman': editReportvue,
+    'vue-compete': comPetevue,
+    'vue-project': perfectvue,
     'vue-perfectpro': perfectProvue,
+    'vue-linkman': linkMan,
     'vue-tab': Tab
   },
   methods: {
@@ -812,9 +642,56 @@ export default {
       }
     },
 
+    // 获取项目信息
+    getProjectInfo: function (obj) {
+      if (!obj.flag) {
+        model.activeTab = 'home'
+        model.basicinfo = obj.data
+        return
+      }
+      let ms = {
+        id: proId,
+        number: obj.data.number,
+        invitation_time: _.isEmpty(obj.data.invitation_time) ? 0 : obj.data.invitation_time,
+        delivery_time: _.isEmpty(obj.data.delivery_time) ? 0 : obj.data.delivery_time,
+        category: obj.data.category,
+        intro: obj.data.intro,
+        risk_analysis: obj.data.risk_analysis,
+        remark: obj.data.remark,
+        project_attachment: JSON.stringify(model.basicinfo.project_rel_project_attachment.items)
+      }
+      // 判断产品分类是否存在以及被更新
+      if (obj.data.project_rel_project_furniture_types.items.length > 0) {
+        if (obj.data.project_rel_project_furniture_types.items[0].id === 0) {
+          ms = _.extend(ms, {project_furniture_types: JSON.stringify(obj.data.project_rel_project_furniture_types.items)})
+        }
+      }
+      let arr = []
+      obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
+        arr.push(sub.name)
+      })
+      model.progoodstyepstr = arr.join('/')
+      axios.put('functions/report/project', null, {
+        data: ms
+      }).then(function (data) {
+        ms.invitation_time = String(Date.parse(new Date(ms.invitation_time)))
+        ms.delivery_time = String(Date.parse(new Date(ms.delivery_time)))
+        model.basicinfo = _.extend(model.basicinfo, ms)
+        model.activeTab = 'home'
+        window.mui.toast('编辑项目信息成功')
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            window.location.href = model.linkPath + '/login'
+          }, 2000)
+        }
+      })
+    },
+
     // 20180413-yuguo-完善项目信息
     perfectFunc: function () {
-      console.log(model.basicinfo)
       model.perfectproobj = model.basicinfo
       model.activeTab = 'perfectpro'
     },
@@ -827,25 +704,48 @@ export default {
       return arr
     },
 
-    // 编辑textarea
-    editText: function (key, title) {
-      model.activeTab = 'edittextarea'
-      model.edittextareaobj = {
-        key: key,
-        title: title,
-        content: model.editpro[key]
+    // 报备人 ---------------------------------------
+    // 编辑报备人信息
+    editReport: function (id) {
+      model.reporter = {
+        id: id,
+        isself: Number(model.reportman.user_poi_users) > 0 ? 'self' : 'other',
+        name: model.reportman.name,
+        relationship: model.reportman.project_relation,
+        commission: model.reportman.royalties_expectation,
+        ascendancy: model.reportman.strengths,
+        tel: model.reportman.tel,
+        email: model.reportman.email,
+        goback: false
       }
+      model.activeTab = 'editreport'
+      proId = id
     },
 
-    // 保存多文字编辑
-    confEditTextarea: function () {
-      model.activeTab = 'editproject'
-      model.editpro[model.edittextareaobj.key] = model.edittextareaobj.content
-    },
-
-    // 编辑多文字返回
-    goEditBack: function () {
-      model.activeTab = 'editproject'
+    // 获取报备人信息
+    getReportManInfo: function (obj) {
+      if (!obj.flag) {
+        model.activeTab = 'home'
+        model.reportman = obj.data
+        return
+      }
+      let ms = obj.data
+      ms = _.extend(ms, {is_self: ms.isself})
+      axios.put('functions/report/project_reportman', null, {
+        data: ms
+      }).then(function (data) {
+        window.mui.toast('修改报备人成功')
+        model.reportman = obj.data
+        model.activeTab = 'home'
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
+            window.location.href = model.linkPath + '/'
+          }, 2000)
+        }
+      })
     },
 
     // 编辑必填信息
@@ -904,53 +804,6 @@ export default {
         window.mui.toast(result.msg)
       }
       return result.status
-    },
-
-    // 获取产品分类
-    getclassifyArr (obj, info) {
-      model.isshowtype = false
-      model.editpro.type = info
-      model.acticearr = obj
-      let res = []
-      let oriids = []
-      let newids = []
-      if (model.oriarr.length > 0) {
-        oriids = _.map(model.oriarr, item => {
-          return item.type_poi_furniture_types
-        })
-      }
-      if (obj.length > 0) {
-        newids = _.map(obj, item => {
-          return item.type_poi_furniture_types
-        })
-      }
-      if (obj.length > 0) {
-        obj.forEach(item => {
-          if (oriids.indexOf(item.type_poi_furniture_types) < 0) {
-            let tmp = {
-              type_poi_furniture_types: item.type_poi_furniture_types,
-              name: item.name,
-              id: 0,
-              delete: 'no'
-            }
-            res.push(tmp)
-          }
-        })
-      }
-      if (model.oriarr.length > 0) {
-        model.oriarr.forEach(oriitem => {
-          if (newids.indexOf(oriitem.type_poi_furniture_types) < 0) {
-            let tmp = {
-              id: oriitem.id,
-              name: oriitem.name,
-              type_poi_furniture_types: oriitem.type_poi_furniture_types,
-              delete: 'yes'
-            }
-            res.push(tmp)
-          }
-        })
-      }
-      updateTypeArr = res
     },
 
     // 保存必填信息
@@ -1251,107 +1104,11 @@ export default {
       return res
     },
 
-    // 编辑产品品类
-    filterGoodsType: function (arr) {
-      model.oriarr = _.clone(arr)
-      model.acticearr = arr
-      let subarr = []
-      arr.forEach((item) => {
-        subarr.push(item.name)
-      })
-      return subarr.join('/')
-    },
-
     // 编辑项目信息
     editProject: function (id) {
-      model.editpro = {
-        number: model.basicinfo.number,
-        invitation_time: model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
-        delivery_time: model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
-        type: model.filterGoodsType(model.basicinfo.project_rel_project_furniture_types.items),
-        category: model.filterProType(model.basicinfo.category),
-        category_str: model.basicinfo.category,
-        intro: model.basicinfo.intro,
-        risk_analysis: model.basicinfo.risk_analysis,
-        remark: model.basicinfo.remark
-      }
-      let tmparr = []
-      if (model.basicinfo.project_rel_project_attachment.count > 0) {
-        model.basicinfo.project_rel_project_attachment.items.forEach((item) => {
-          let tmp = {
-            id: item.id,
-            delete: 'no',
-            file_url: item.file_url,
-            show: true
-          }
-          tmparr.push(tmp)
-        })
-      }
-      model.editproImg = tmparr
+      model.perfectproobj = model.basicinfo
       model.activeTab = 'editproject'
       proId = id
-    },
-
-    // 保存项目信息
-    confEditPro: function () {
-      console.log('time', model.editpro.delivery_time)
-      let param = {
-        id: proId,
-        number: model.editpro.number,
-        invitation_time: model.editpro.invitation_time || '0',
-        delivery_time: model.editpro.delivery_time || '0',
-        project_furniture_types: JSON.stringify(updateTypeArr),
-        category: model.editpro.category_str,
-        intro: model.editpro.intro,
-        risk_analysis: model.editpro.risk_analysis,
-        remark: model.editpro.remark,
-        project_attachment: JSON.stringify(model.editproImg)
-      }
-      axios.put('functions/report/project', null, {
-        data: param
-      }).then(function (data) {
-        window.mui.toast('编辑项目信息成功')
-        setTimeout(function () {
-          location.reload()
-        }, 1000)
-        model.init()
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
-          setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-            window.location.href = model.linkPath + '/login'
-          }, 2000)
-        }
-      })
-    },
-
-    // 招标时间
-    changeTime: function (str, val) {
-      let myDate = new Date()
-      let year = String(myDate.getFullYear())
-      let month = String(Number(myDate.getMonth()) + 1).length === 1 ? '0' + String(Number(myDate.getMonth()) + 1) : String(Number(myDate.getMonth()) + 1)
-      let day = String(myDate.getDate()).length === 1 ? '0' + String(myDate.getDate()) : String(myDate.getDate())
-      if (modalflag) {
-        model.layer = str
-        model.areaarr = dateJson
-        model.areaobj = {
-          state: Math.random(),
-          one: _.isEmpty(val) ? year : String(val).split('-')[0],
-          two: _.isEmpty(val) ? month : String(val).split('-')[1],
-          three: _.isEmpty(val) ? day : String(val).split('-')[2]
-        }
-        modalflag = false
-      }
-      setTimeout(function () {
-        modalflag = true
-      }, 500)
-    },
-
-    // 项目类型
-    changeProType: function () {
-      model.protypearrs = proTypeArr
-      model.oneobj.state = Math.random()
     },
 
     // get项目类型
@@ -1389,20 +1146,43 @@ export default {
       }, 1000)
     },
 
-    // 编辑甲方信息
+    // 编辑甲方信息 -----------------------
     editBuyer: function (id) {
-      model.buyer = {
-        area: (model.basicinfo.first_party_province_poi_province || {}).ProvinceName + '-' + (model.basicinfo.first_party_city_poi_city || {}).CityName + '-' + (model.basicinfo.first_party_district_poi_district || {}).DistrictName,
-        pro_id: (model.basicinfo.first_party_province_poi_province || {}).id,
-        city_id: (model.basicinfo.first_party_city_poi_city || {}).id,
-        dis_id: (model.basicinfo.first_party_district_poi_district || {}).id,
-        first_party_linkman: model.basicinfo.first_party_linkman,
-        first_party_job: model.basicinfo.first_party_job,
-        first_party_tel: model.basicinfo.first_party_tel
-      }
+      model.buyer = model.basicinfo.project_rel_project_first_party_linkman.items
       model.activeTab = 'editbuyer'
       proId = id
     },
+
+    // 获取甲方信息
+    getLinkmanInfo: function (obj) {
+      let ms = {
+        project_first_party_linkman: JSON.stringify(obj.data),
+        project_rel_project_first_party_linkman: JSON.stringify(obj.data),
+        id: proId
+      }
+      if (obj.flag === false) {
+        model.activeTab = 'home'
+        model.basicinfo.project_rel_project_first_party_linkman.items = obj.data
+        model.alinkman = obj.data
+        return
+      }
+      axios.put('functions/report/project', null, {
+        data: ms
+      }).then(function (data) {
+        window.mui.toast('编辑甲方信息成功')
+        model.activeTab = 'home'
+        model.basicinfo.project_rel_project_first_party_linkman.items = obj.data
+        model.alinkman = obj.data
+      }).catch(function (error) {
+        if (error.response.data.message === 'token is invalid') {
+          window.mui.toast('登录信息过期!')
+          setTimeout(function () {
+            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
+            window.location.href = model.linkPath + '/login'
+          }, 2000)
+        }
+      })
+    }, // 编辑甲方信息 -----------------------
 
     // 选择地区
     changeAre: function () {
@@ -1449,188 +1229,7 @@ export default {
       modalflag = true
     },
 
-    // 添加联系人
-    addlinkman: function () {
-      if (model.alinkman.length === 0) {
-        model.addsublinkman()
-      }
-      model.activeTab = 'editlinkman'
-    },
-
-    // 添加多个联系人
-    addsublinkman: function () {
-      let obj = {
-        id: 0,
-        name: '',
-        job: '',
-        tel: '',
-        delete: 'no'
-      }
-      model.alinkman.push(obj)
-    },
-
-    // 删除联系人
-    deletelinkman: function (item) {
-      model.alinkman = _.without(model.alinkman, item)
-    },
-
-    // 删除联系人
-    editalinkman: function (item) {
-      if (item.id > 0) {
-        model.dellinkmanids.push(item.id)
-      }
-      model.alinkman = _.without(model.alinkman, item)
-    },
-
-    // 添加联系人返回
-    subGoBack: function () {
-      model.activeTab = 'editbuyer'
-    },
-
-    // 提交联系人
-    subaddlinkman: function () {
-      model.alinkman.forEach((sub) => {
-        if (_.isEmpty(sub.name) && _.isEmpty(sub.job) && _.isEmpty(sub.tel)) {
-          model.alinkman = _.without(model.alinkman, sub)
-        }
-      })
-      model.activeTab = 'editbuyer'
-    },
-
-    // 确认保存甲方信息
-    confEditBuyer: function () {
-      let tmplinkman = []
-      model.dellinkmanids.forEach((sub) => {
-        let obj = {
-          id: sub,
-          delete: 'yes'
-        }
-        tmplinkman.push(obj)
-      })
-      model.alinkman.forEach((tmp) => {
-        tmplinkman.push(tmp)
-      })
-      let param = {
-        id: proId,
-        first_party_province_poi_province: model.buyer.pro_id,
-        first_party_city_poi_city: model.buyer.city_id,
-        first_party_district_poi_district: model.buyer.dis_id,
-        project_first_party_linkman: JSON.stringify(tmplinkman)
-      }
-      axios.put('functions/report/project', null, {
-        data: param
-      }).then(function (data) {
-        model.basicinfo.first_party_province_poi_province = {
-          id: model.buyer.pro_id,
-          ProvinceName: model.buyer.area.split('-')[0]
-        }
-        model.basicinfo.first_party_city_poi_city = {
-          id: model.buyer.city_id,
-          CityName: model.buyer.area.split('-')[1]
-        }
-        model.basicinfo.first_party_district_poi_district = {
-          id: model.buyer.dis_id,
-          DistrictName: model.buyer.area.split('-')[2]
-        }
-        window.mui.toast('编辑甲方信息成功')
-        setTimeout(function () {
-          model.activeTab = 'home'
-        }, 1000)
-      }).catch(function (error) {
-        if (error.response.data.message === 'token is invalid') {
-          window.mui.toast('登录信息过期!')
-          setTimeout(function () {
-            Cookies.set('dpjia-hall-token', '', {domain: '.dpjia.com'})
-            window.location.href = model.linkPath + '/login'
-          }, 2000)
-        }
-      })
-    },
-
-    // 编辑竞争对手
-    enterOtherCompete: function (str, title) {
-      model.jzds = []
-      model.editcomtstr = str
-      model.activeTab = 'editcomp'
-      model.editcomtitle = title
-      let arr = (model.competitors[str]).split(',')
-      if (arr.length > 0) {
-        arr.forEach((sub) => {
-          let obj = {
-            value: sub
-          }
-          model.jzds.push(obj)
-        })
-      }
-    },
-
-    // 删除竞争对手
-    deletejzz: function (item) {
-      model.jzds = _.without(model.jzds, item)
-    },
-
-    // 添加竞争对手
-    addjjz: function () {
-      model.jzds.push({value: ''})
-    },
-
-    // 竞争对手返回
-    goSubBack: function () {
-      model.activeTab = 'editcompetitors'
-    },
-
-    // 提交竞争对手
-    endOtherCompete: function () {
-      let arr = []
-      model.jzds.forEach((item) => {
-        if (!_.isEmpty(item.value)) {
-          arr.push(item.value)
-        }
-      })
-      model.competitors[model.editcomtstr] = arr.join(',')
-      model.activeTab = 'editcompetitors'
-    },
-
-    // 编辑报备人信息
-    editReport: function (id) {
-      model.reporter = {
-        id: id,
-        isself: Number(model.reportman.user_poi_users) > 0 ? 'self' : 'other',
-        name: model.reportman.name,
-        relationship: model.reportman.project_relation,
-        commission: model.reportman.royalties_expectation,
-        ascendancy: model.reportman.strengths,
-        tel: model.reportman.tel,
-        email: model.reportman.email,
-        goback: false
-      }
-      model.activeTab = 'editreport'
-      proId = id
-    },
-
-    // 确定提交报备人信息
-    confEditReport: function (obj) {
-      if (obj.goback) {
-        model.goBack()
-        return
-      }
-      model.reportman = {
-        id: proId,
-        name: obj.name,
-        project_relation: obj.relationship,
-        user_poi_users: obj.isself === 'self' ? 100 : 0,
-        royalties_expectation: obj.commission,
-        strengths: obj.ascendancy,
-        tel: obj.tel,
-        email: obj.email
-      }
-      window.mui.toast('编辑报备人信息成功')
-      setTimeout(function () {
-        model.activeTab = 'home'
-      }, 1000)
-    },
-
-    // 编辑竞争信息
+    // 编辑竞争信息 --------------------------
     editCompetitors: function (id) {
       model.competitors = {
         second_party_competitor: model.basicinfo.second_party_competitor,
@@ -1642,23 +1241,20 @@ export default {
       proId = id
     },
 
-    // 确定提交竞争信息
-    confEditComp: function () {
-      let param = {
-        id: proId,
-        second_party_competitor: model.competitors.second_party_competitor || '',
-        competitor: model.competitors.competitor || '',
-        competitor_strengths: model.competitors.competitor_strengths || '',
-        competitor_projections: model.competitors.competitor_projections || ''
+    // 获取竞争者信息
+    getCompeteInfo: function (obj) {
+      let ms = obj.data
+      ms = _.extend(ms, {id: proId})
+      if (obj.flag === false) {
+        model.activeTab = 'home'
+        model.basicinfo = _.extend(model.basicinfo, ms)
+        return
       }
       axios.put('functions/report/project', null, {
-        data: param
+        data: ms
       }).then(function (data) {
-        model.basicinfo.second_party_competitor = model.competitors.second_party_competitor
-        model.basicinfo.competitor = model.competitors.competitor
-        model.basicinfo.competitor_strengths = model.competitors.competitor_strengths
-        model.basicinfo.competitor_projections = model.competitors.competitor_projections
         window.mui.toast('编辑竞争信息成功')
+        model.basicinfo = _.extend(model.basicinfo, ms)
         setTimeout(function () {
           model.activeTab = 'home'
         }, 1000)
@@ -1671,7 +1267,7 @@ export default {
           }, 2000)
         }
       })
-    },
+    }, // 编辑竞争信息 --------------------------
 
     // 删除报备记录附件（图片）
     deleteattchimg: function (obj) {

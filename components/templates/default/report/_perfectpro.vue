@@ -621,8 +621,8 @@ export default {
         category: model.basicinfo.category,
         validity: model.basicinfo.validity,
         remark: model.basicinfo.remark,
-        invitation_time: model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
-        delivery_time: model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
+        invitation_time: _.isEmpty(model.basicinfo.invitation_time) ? 0 : model.forMatTime(model.basicinfo.invitation_time, 'YYYY-MM-DD'),
+        delivery_time: _.isEmpty(model.basicinfo.delivery_time) ? 0 : model.forMatTime(model.basicinfo.delivery_time, 'YYYY-MM-DD'),
         risk_analysis: model.basicinfo.risk_analysis,
         feasibility: model.basicinfo.feasibility,
         sketch: model.basicinfo.sketch,
@@ -700,6 +700,8 @@ export default {
     getProjectInfo: function (obj) {
       if (obj.flag) {
         model.isedittextarr.push('【项目信息】')
+        obj.data.invitation_time = _.isEmpty(obj.data.invitation_time) ? 0 : String(Date.parse(new Date(obj.data.invitation_time)))
+        obj.data.delivery_time = _.isEmpty(obj.data.delivery_time) ? 0 : String(Date.parse(new Date(obj.data.delivery_time)))
       }
       let arr = []
       obj.data.project_rel_project_furniture_types.items.forEach((sub) => {
@@ -707,8 +709,6 @@ export default {
       })
       model.progoodstyepstr = arr.join('/')
       model.basicinfo = obj.data
-      model.basicinfo.invitation_time = String(Date.parse(new Date(obj.data.invitation_time)))
-      model.basicinfo.delivery_time = String(Date.parse(new Date(obj.data.delivery_time)))
       model.subTab = 'home'
     },
 

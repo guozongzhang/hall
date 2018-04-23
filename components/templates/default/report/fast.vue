@@ -5,7 +5,8 @@
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">快速报备</h1>
-        <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
+        <a class="mui-icon mui-pull-right complete"  @click="submit()" v-if="!submiting">提交</a>
+        <a class="mui-icon mui-pull-right complete" v-if="submiting">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell bbnameli">
@@ -219,7 +220,8 @@
           two: 1,
           three: 8
         },
-        clonetitel: '报备备注'
+        clonetitel: '报备备注',
+        submiting: false
       }
     },
     methods: {
@@ -427,6 +429,7 @@
         if (!model.ValidateForm(model.thisdata)) {
           return false
         }
+        model.submiting = true
         let submitData = _.extend(model.thisdata, {
           project_attachment: JSON.stringify(model.thisdata.projectAttachment),
           project_reportman: JSON.stringify(model.thisdata.project_reportman),
@@ -440,6 +443,7 @@
           window.mui.toast('快速报备项目成功')
           window.location.href = model.linkPath + '/report'
         }).catch(function () {
+          model.submiting = false
           window.mui.toast('失败!')
         })
       },

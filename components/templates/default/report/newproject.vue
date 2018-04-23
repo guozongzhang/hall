@@ -5,7 +5,8 @@
         <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left sub-go-back">返回</a>
         <span class="fa close-icon" @click="goHome()">×</span>
         <h1 class="mui-title">新建项目</h1>
-        <a class="mui-icon mui-pull-right complete"  @click="submit()">提交</a>
+        <a class="mui-icon mui-pull-right complete"  @click="submit()" v-if="!submiting">提交</a>
+        <a class="mui-icon mui-pull-right complete" v-if="submiting">提交</a>
       </header>
       <ul class="mui-table-view mui-table-view-chevron nav">
         <li class="mui-table-view-cell">
@@ -404,6 +405,7 @@
         info: {},
         linkPath: '',
         layer: '',
+        submiting: false,
         cloneInfo: {
           name: '',
           email: '',
@@ -549,6 +551,7 @@
           window.mui.toast('报备人姓名不能为空!')
           return false
         }
+        model.submiting = true
         let submitData = _.extend(model.thisdata, {
           first_party_province_poi_province: 1,
           first_party_city_poi_city: 1,
@@ -569,6 +572,7 @@
           window.mui.toast('创建项目成功')
           window.location.href = model.linkPath + '/report'
         }).catch(function () {
+          model.submiting = false
           window.mui.toast('失败!')
         })
       },

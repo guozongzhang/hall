@@ -617,6 +617,7 @@ export default {
         id: model.perfect.id,
         // 项目信息
         number: model.basicinfo.number,
+        projects_status: model.basicinfo.state,
         name: model.basicinfo.name,
         category: model.basicinfo.category,
         validity: model.basicinfo.validity,

@@ -236,10 +236,11 @@ export default {
 
     // 登录成功
     hadLogin: function (data) {
+      console.log(data.token)
       if (process.env.environment === 'dev') {
-        Cookies.set('dpjia-hall-token-' + process.env.port, '')
+        Cookies.set('dpjia-hall-token-' + process.env.port, data.token)
       } else {
-        Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
+        Cookies.set('dpjia-hall-token-' + process.env.port, data.token, {domain: '.dpjia.com'})
       }
       if (model.info.remeber) {
         Cookies.set('dpjia-hall-remeber-' + process.env.port, true)

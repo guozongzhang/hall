@@ -201,16 +201,21 @@
                 <ul>
                   <li v-for="(sub, num) in reportLoglist">
                     <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
-                      <p>
-                        <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
-                        <span class="pointer"></span>
-                        <span>{{sub.operator || '未设置'}}</span>
-                        <span>{{sub.text}}</span>
-                        <span>了项目</span>
-                        <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
-                      </p>
-                      <p style="font-size: 14px;color: #999;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
-                    </div>
+                        <p v-if="(basicinfo.state == 'had_handle' || basicinfo.state == 'adopt') && sub.flow_remark">
+                          <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
+                          <span class="pointer"></span>
+                          <span>{{sub.flow_remark}}</span>
+                        </p>
+                        <p v-else>
+                          <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
+                          <span class="pointer"></span>
+                          <span>{{sub.operator || '未设置'}}</span>
+                          <span>{{sub.text}}</span>
+                          <span>了项目</span>
+                          <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
+                        </p>
+                        <p style="font-size: 14px;color: #999;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
+                      </div>
                   </li>
                 </ul>
               </div>

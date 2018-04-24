@@ -212,7 +212,7 @@
                           <span>{{sub.operator || '未设置'}}</span>
                           <span>{{sub.text}}</span>
                           <span>了项目</span>
-                          <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
+                          <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span> 
                         </p>
                         <p style="font-size: 14px;color: #999;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                       </div>

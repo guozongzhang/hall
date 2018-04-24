@@ -7,7 +7,10 @@
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
       <h1 class="mui-title">项目详情</h1>
-      <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;" @click="commitInfo()">
+      <a href="javascript:;" v-if="!issubmit" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;" @click="commitInfo()">
+        <span style="font-size: 14px;color: #666;">提交</span>
+      </a>
+      <a href="javascript:;" v-if="issubmit" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;">
         <span style="font-size: 14px;color: #666;">提交</span>
       </a>
     </header>  
@@ -407,7 +410,8 @@ export default {
       hadRead: false,
       recordtext: '',
       recordImgs: [],
-      isPhone: false
+      isPhone: false,
+      issubmit: false
     }
   },
   components: {
@@ -618,6 +622,7 @@ export default {
 
     // 提交保存
     commitInfo: function (reportval) {
+      model.issubmit = true
       let param = {
         id: model.perfect.id,
         // 项目信息
@@ -663,6 +668,7 @@ export default {
           model.$emit('subEditProject', reportval)
         }, 1000)
       }).catch(function (error) {
+        model.issubmit = false
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {

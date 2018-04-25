@@ -7,7 +7,10 @@
       </a>
       <span class="fa close-icon" @click="goHome()">×</span>
       <h1 class="mui-title">项目详情</h1>
-      <a href="javascript:;" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;" @click="commitInfo()">
+      <a href="javascript:;" v-if="!issubmit" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;" @click="commitInfo()">
+        <span style="font-size: 14px;color: #666;">提交</span>
+      </a>
+      <a href="javascript:;" v-if="issubmit" class="mui-pull-right" style="position: absolute;right: 8px;top: 10px;width: 36px;height: 26px;">
         <span style="font-size: 14px;color: #666;">提交</span>
       </a>
     </header>  
@@ -201,13 +204,18 @@
                 <ul>
                   <li v-for="(sub, num) in reportLoglist">
                     <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
-                      <p>
+                      <p v-if="(sub.flow_state == 'had_handle' || sub.flow_state == 'adopt') && sub.flow_remark">
+                        <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
+                        <span class="pointer"></span>
+                        <span>{{sub.flow_remark}}</span>
+                      </p>
+                      <p v-else>
                         <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                         <span class="pointer"></span>
                         <span>{{sub.operator || '未设置'}}</span>
                         <span>{{sub.text}}</span>
                         <span>了项目</span>
-                        <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span>
+                        <span v-show="sub.flow_remark">[备注]{{sub.flow_remark}}</span> 
                       </p>
                       <p style="font-size: 14px;color: #999;">{{forMatTime(sub.create_time, 'YYYY.MM.DD HH:mm:ss')}}</p>
                     </div>
@@ -402,7 +410,8 @@ export default {
       hadRead: false,
       recordtext: '',
       recordImgs: [],
-      isPhone: false
+      isPhone: false,
+      issubmit: false
     }
   },
   components: {
@@ -613,10 +622,12 @@ export default {
 
     // 提交保存
     commitInfo: function (reportval) {
+      model.issubmit = true
       let param = {
         id: model.perfect.id,
         // 项目信息
         number: model.basicinfo.number,
+        projects_status: model.basicinfo.state,
         name: model.basicinfo.name,
         category: model.basicinfo.category,
         validity: model.basicinfo.validity,
@@ -657,6 +668,7 @@ export default {
           model.$emit('subEditProject', reportval)
         }, 1000)
       }).catch(function (error) {
+        model.issubmit = false
         if (error.response.data.message === 'token is invalid') {
           window.mui.toast('登录信息过期!')
           setTimeout(function () {

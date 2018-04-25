@@ -65,8 +65,11 @@ export default {
           if (error.response.data.message === 'token is invalid') {
             window.mui.toast('登录信息过期!')
             setTimeout(function () {
-              Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
-              // Cookies.set('dpjia-hall-token-' + process.env.port, '')
+              if (process.env.environment === 'dev') {
+                Cookies.set('dpjia-hall-token-' + process.env.port, '')
+              } else {
+                Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
+              }
               window.location.href = model.linkPath + '/'
             }, 2000)
           }
@@ -131,8 +134,8 @@ export default {
       var btnArray = ['否', '是']
       window.mui.confirm('确定退出登录？', '友情提示', btnArray, function (e) {
         if (e.index === 1) {
-          Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
-          Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
+          Cookies.set('dpjia-hall-token-' + process.env.port, '')
+          // Cookies.set('dpjia-hall-token-' + process.env.port, '', {domain: '.dpjia.com'})
           Cookies.set('dpjia-exhibite-flag-' + process.env.port, 'no', {domain: '.dpjia.com'})
           Cookies.set('dpjia-preurl-' + process.env.port, '', {domain: '.dpjia.com'})
           window.location.href = model.linkPath + '/person'

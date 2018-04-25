@@ -60,6 +60,7 @@ module.exports = {
   plugins: ['~plugins/common', '~plugins/ga.js'],
   env: {
     baseUrl: ENV ? ENV.api : 'http://192.168.1.120/openapi/api/1.0/',
-    port: ENV ? ENV.port : '5009'
+    port: ENV ? ENV.port : '5009',
+    environment: ENV ? ENV.environment : 'dev'
   }
 }

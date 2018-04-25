@@ -204,7 +204,7 @@
                 <ul>
                   <li v-for="(sub, num) in reportLoglist">
                     <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
-                      <p v-if="(basicinfo.state == 'had_handle' || basicinfo.state == 'adopt') && sub.flow_remark">
+                      <p v-if="(sub.flow_state == 'had_handle' || sub.flow_state == 'adopt') && sub.flow_remark">
                         <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                         <span class="pointer"></span>
                         <span>{{sub.flow_remark}}</span>

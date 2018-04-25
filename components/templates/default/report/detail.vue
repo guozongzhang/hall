@@ -213,7 +213,7 @@
                   <ul>
                     <li v-for="(sub, num) in reportLoglist">
                       <div class="li-box" v-bind:class="num == 0 ? 'first' : ''">
-                        <p v-if="(basicinfo.state == 'had_handle' || basicinfo.state == 'adopt' || basicinfo.state == 'overdue') && sub.flow_remark">
+                        <p v-if="(sub.flow_state == 'had_handle' || sub.flow_state == 'adopt' || sub.flow_state == 'overdue') && sub.flow_remark">
                           <span class="last-white-line" v-show="num == (reportLoglist.length - 1)"></span>
                           <span class="pointer"></span>
                           <span>{{sub.flow_remark}}</span>
@@ -395,10 +395,6 @@
     <div v-show="activeTab == 'perfectpro'" class="subbox-show">
       <vue-perfectpro :perfect="perfectproobj" @subEditProject="getProject"></vue-perfectpro>
     </div>
-
-
-
-
     <div>
       <vue-area :areaobj="areaobj" :arr="areaarr" @getLayerThree="getArea"></vue-area>
       <vue-one :oneobj="oneobj" :onearr="protypearrs" @getLayerOne="getVueOneInfo"></vue-one>
@@ -697,6 +693,7 @@ export default {
 
     // 20180413-yuguo-完善项目信息
     perfectFunc: function () {
+      model.basicinfo = _.extend(model.basicinfo, {readed: model.hadRead ? 0 : 1})
       model.perfectproobj = model.basicinfo
       model.activeTab = 'perfectpro'
     },
